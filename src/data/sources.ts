@@ -1,0 +1,133 @@
+import { sourceRecordSchema, type SourceRecord } from '@/types/content';
+
+const sourceRecords = [
+  {
+    id: 'resume-aiml',
+    label: 'AI/ML Engineer résumé',
+    kind: 'resume',
+    publicHref: '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',
+    isPublic: true,
+  },
+  {
+    id: 'resume-software',
+    label: 'Software Engineer résumé',
+    kind: 'resume',
+    publicHref: '/resumes/Mohamed-Hafez-Software-Engineer.pdf',
+    isPublic: true,
+  },
+  {
+    id: 'resume-android',
+    label: 'Android Developer résumé',
+    kind: 'resume',
+    publicHref: '/resumes/Mohamed-Hafez-Android-Developer.pdf',
+    isPublic: true,
+  },
+  {
+    id: 'resume-teaching',
+    label: 'TA / Instructor résumé',
+    kind: 'resume',
+    publicHref: '/resumes/Mohamed-Hafez-TA-Instructor.pdf',
+    isPublic: true,
+  },
+  {
+    id: 'official-yorkspace',
+    label: 'YorkSpace thesis record',
+    kind: 'official',
+    publicHref:
+      'https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e',
+    isPublic: true,
+  },
+  {
+    id: 'official-thesis-handle',
+    label: 'Thesis permanent handle',
+    kind: 'official',
+    publicHref: 'https://hdl.handle.net/10315/43932',
+    isPublic: true,
+  },
+  {
+    id: 'github-profile',
+    label: 'GitHub profile',
+    kind: 'github',
+    publicHref: 'https://github.com/Mohamed-Nader555',
+    isPublic: true,
+  },
+  {
+    id: 'github-northstar-rag',
+    label: 'Northstar RAG repository',
+    kind: 'github',
+    publicHref: 'https://github.com/Mohamed-Nader555/northstar-rag-system',
+    isPublic: true,
+  },
+  {
+    id: 'github-thesis-experiments',
+    label: 'Thesis experiments repository',
+    kind: 'github',
+    publicHref: 'https://github.com/Mohamed-Nader555/Thesis-Experiments',
+    isPublic: true,
+  },
+  {
+    id: 'github-dive',
+    label: 'Dive Simulation repository',
+    kind: 'github',
+    publicHref: 'https://github.com/Mohamed-Nader555/Diving-Simulation-App',
+    isPublic: true,
+  },
+  {
+    id: 'github-dostava',
+    label: 'Dostava repository',
+    kind: 'github',
+    publicHref: 'https://github.com/Mohamed-Nader555/Dostava',
+    isPublic: true,
+  },
+  {
+    id: 'case-study-asc-pie',
+    label: 'ASC-PIE research case study',
+    kind: 'case-study',
+    publicHref: '/research/asc-pie',
+    isPublic: true,
+  },
+  {
+    id: 'case-study-northstar',
+    label: 'Northstar RAG case study',
+    kind: 'case-study',
+    publicHref: '/work/northstar-rag',
+    isPublic: true,
+  },
+  {
+    id: 'case-study-minds-eye',
+    label: 'Mind’s Eye case study',
+    kind: 'case-study',
+    publicHref: '/work/minds-eye',
+    isPublic: true,
+  },
+  {
+    id: 'case-study-dive',
+    label: 'Dive case study',
+    kind: 'case-study',
+    publicHref: '/work/dive',
+    isPublic: true,
+  },
+  {
+    id: 'case-study-dostava',
+    label: 'Dostava case study',
+    kind: 'case-study',
+    publicHref: '/work/dostava',
+    isPublic: true,
+  },
+  {
+    id: 'public-experience',
+    label: 'Professional experience',
+    kind: 'approved-source',
+    publicHref: '/experience',
+    isPublic: true,
+  },
+  {
+    id: 'public-availability',
+    label: 'Availability and work authorization',
+    kind: 'approved-source',
+    publicHref: '/about',
+    isPublic: true,
+  },
+] as const satisfies readonly SourceRecord[];
+
+export const sources = sourceRecordSchema.array().parse(sourceRecords);
