@@ -2,7 +2,10 @@
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
 import { getEvidenceForProject } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { resolveSources } from '@/lib/content/resolve-sources';
+import {
+  resolveSources,
+  resolveSourcesForRoute,
+} from '@/lib/content/resolve-sources';
 
 export const prerender = true;
 
@@ -29,6 +32,10 @@ const officialSources = resolveSources([
   'official-thesis-handle',
   'github-thesis-experiments',
 ]);
+const statusSource = resolveSourcesForRoute(
+  statusRecord.sourceIds,
+  Astro.url.pathname,
+)[0];
 ---
 
 <BaseLayout
@@ -45,9 +52,12 @@ const officialSources = resolveSources([
         <span>Thesis</span>
         <strong>Official degree status · 2026</strong>
       </p>
-      <p>
+      <p role="group" aria-label="SPRINT-PP status and source">
         <span>SPRINT-PP</span>
         <strong>{statusRecord.statement}</strong>
+        <a class="source-link" href={statusSource.publicHref}>
+          Source · {statusSource.label}
+        </a>
       </p>
     </div>
   </header>

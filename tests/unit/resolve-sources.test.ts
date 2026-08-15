@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { sources } from '@/data';
-import { resolveSources } from '@/lib/content/resolve-sources';
+import {
+  resolveSources,
+  resolveSourcesForRoute,
+} from '@/lib/content/resolve-sources';
 
 describe('resolveSources', () => {
   it('returns public sources in the requested order as immutable records', () => {
@@ -45,5 +48,16 @@ describe('resolveSources', () => {
     expect(() =>
       resolveSources(['public-without-href'], hrefLessRegistry),
     ).toThrow('Public source lacks a href: public-without-href');
+  });
+
+  it('rejects circular evidence sources after normalizing the rendered route', () => {
+    expect(() =>
+      resolveSourcesForRoute(
+        ['case-study-asc-pie'],
+        'https://portfolio.test/research/asc-pie/?view=full#status',
+      ),
+    ).toThrow(
+      'Circular evidence source case-study-asc-pie resolves to the current route: /research/asc-pie',
+    );
   });
 });

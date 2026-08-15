@@ -19,6 +19,12 @@ describe('verified evidence corpus', () => {
     expect(text).not.toMatch(
       /CEH certified|published SPRINT-PP|accepted SPRINT-PP/i,
     );
+
+    const sprintStatus = evidence.find(
+      (item) => item.id === 'sprint-pp-status',
+    );
+    expect(sprintStatus?.sourceIds).toEqual(['resume-aiml', 'resume-teaching']);
+    expect(sprintStatus?.sourceIds).not.toContain('case-study-asc-pie');
   });
 
   it('keeps historical app availability accurate', () => {

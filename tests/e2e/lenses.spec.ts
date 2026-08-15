@@ -94,6 +94,15 @@ test('AI/ML depth exposes ASC-PIE and SPRINT-PP with official-first sourcing', a
     'href',
     'https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e',
   );
+  const sprintStatus = depth
+    .getByRole('article')
+    .filter({ hasText: 'SPRINT-PP research status' });
+  await expect(
+    sprintStatus.getByRole('link', { name: 'Source · AI/ML Engineer résumé' }),
+  ).toHaveAttribute('href', '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf');
+  await expect(sprintStatus.locator('a[href="/research/asc-pie"]')).toHaveCount(
+    0,
+  );
   await expect(page.locator('body')).not.toContainText(
     /published SPRINT-PP|accepted SPRINT-PP/i,
   );

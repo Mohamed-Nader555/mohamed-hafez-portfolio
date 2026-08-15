@@ -1,12 +1,19 @@
 ---
-interface ArchitectureStep {
+interface ArchitectureNode {
+  id: string;
   label: string;
   detail: string;
 }
 
+interface ArchitectureEdge {
+  from: string;
+  to: string;
+}
+
 interface ArchitectureDefinition {
   summary: string;
-  steps: readonly ArchitectureStep[];
+  nodes: readonly ArchitectureNode[];
+  edges: readonly ArchitectureEdge[];
 }
 
 interface Props {
@@ -18,56 +25,197 @@ const architectures = {
   'asc-pie': {
     summary:
       'Privacy datasets move through preprocessing and shared PII labels before model training and named-entity recognition evaluation.',
-    steps: [
-      { label: 'Privacy datasets', detail: 'Real and synthetic text' },
-      { label: 'Preprocessing', detail: 'Dataset-specific preparation' },
-      { label: 'Shared PII labels', detail: 'Comparable representation' },
-      { label: 'Model training', detail: 'Transformer experiments' },
-      { label: 'NER evaluation', detail: 'Cross-dataset comparison' },
+    nodes: [
+      {
+        id: 'privacy-datasets',
+        label: 'Privacy datasets',
+        detail: 'Real and synthetic text',
+      },
+      {
+        id: 'preprocessing',
+        label: 'Preprocessing',
+        detail: 'Dataset-specific preparation',
+      },
+      {
+        id: 'shared-pii-labels',
+        label: 'Shared PII labels',
+        detail: 'Comparable representation',
+      },
+      {
+        id: 'model-training',
+        label: 'Model training',
+        detail: 'Transformer experiments',
+      },
+      {
+        id: 'ner-evaluation',
+        label: 'NER evaluation',
+        detail: 'Cross-dataset comparison',
+      },
+    ],
+    edges: [
+      { from: 'privacy-datasets', to: 'preprocessing' },
+      { from: 'preprocessing', to: 'shared-pii-labels' },
+      { from: 'shared-pii-labels', to: 'model-training' },
+      { from: 'model-training', to: 'ner-evaluation' },
     ],
   },
   'northstar-rag': {
     summary:
       'Document sources are ingested and chunked, embedded locally, filtered through persistent retrieval, and supplied to grounded generation with citations or refusal.',
-    steps: [
-      { label: 'Document sources', detail: 'PDF, text, Markdown' },
-      { label: 'Ingest + chunk', detail: 'Clean, overlapping passages' },
-      { label: 'Local embeddings', detail: 'all-MiniLM-L6-v2' },
-      { label: 'Chroma retrieval', detail: 'Distance-filtered evidence' },
-      { label: 'Grounded answer', detail: 'Citations or fixed refusal' },
+    nodes: [
+      {
+        id: 'document-sources',
+        label: 'Document sources',
+        detail: 'PDF, text, Markdown',
+      },
+      {
+        id: 'ingest-chunk',
+        label: 'Ingest and chunk',
+        detail: 'Clean, overlapping passages',
+      },
+      {
+        id: 'local-embeddings',
+        label: 'Local embeddings',
+        detail: 'all-MiniLM-L6-v2',
+      },
+      {
+        id: 'chroma-retrieval',
+        label: 'Chroma retrieval',
+        detail: 'Distance-filtered evidence',
+      },
+      {
+        id: 'grounded-answer',
+        label: 'Grounded answer',
+        detail: 'Citations or fixed refusal',
+      },
+    ],
+    edges: [
+      { from: 'document-sources', to: 'ingest-chunk' },
+      { from: 'ingest-chunk', to: 'local-embeddings' },
+      { from: 'local-embeddings', to: 'chroma-retrieval' },
+      { from: 'chroma-retrieval', to: 'grounded-answer' },
     ],
   },
   'minds-eye': {
     summary:
       'Wearable input reaches an Android client, which coordinates recognition services and converts OCR or vision results into spoken output.',
-    steps: [
-      { label: 'Wearable input', detail: 'Arduino-based device' },
-      { label: 'Android client', detail: 'Java coordination layer' },
-      { label: 'Recognition services', detail: 'REST and Retrofit' },
-      { label: 'OCR / vision result', detail: 'Text and currency recognition' },
-      { label: 'Speech output', detail: 'Accessible playback' },
+    nodes: [
+      {
+        id: 'wearable-input',
+        label: 'Wearable input',
+        detail: 'Arduino-based device',
+      },
+      {
+        id: 'android-client',
+        label: 'Android client',
+        detail: 'Java coordination layer',
+      },
+      {
+        id: 'recognition-services',
+        label: 'Recognition services',
+        detail: 'REST and Retrofit',
+      },
+      {
+        id: 'ocr-vision-result',
+        label: 'OCR / vision result',
+        detail: 'Text and currency recognition',
+      },
+      {
+        id: 'speech-output',
+        label: 'Speech output',
+        detail: 'Accessible playback',
+      },
+    ],
+    edges: [
+      { from: 'wearable-input', to: 'android-client' },
+      { from: 'android-client', to: 'recognition-services' },
+      { from: 'recognition-services', to: 'ocr-vision-result' },
+      { from: 'ocr-vision-result', to: 'speech-output' },
     ],
   },
   dive: {
     summary:
       'The Android client coordinates the safety-classification API, Firebase data services, and location-aware planning services.',
-    steps: [
-      { label: 'Diver inputs', detail: 'Planning context' },
-      { label: 'Android client', detail: 'Java mobile experience' },
-      { label: 'Retrofit API', detail: 'Service boundary' },
-      { label: 'Safety classifier', detail: 'Python + scikit-learn' },
-      { label: 'Planning result', detail: 'Profile + recommendations' },
+    nodes: [
+      {
+        id: 'android-client',
+        label: 'Android Java client',
+        detail: 'Mobile planning experience',
+      },
+      {
+        id: 'retrofit-api',
+        label: 'Retrofit API',
+        detail: 'Network service boundary',
+      },
+      {
+        id: 'safety-classifier',
+        label: 'Python / scikit-learn safety classifier',
+        detail: 'Safety profile classification',
+      },
+      {
+        id: 'firebase-services',
+        label: 'Firebase services',
+        detail: 'Authentication, Realtime Database, Storage',
+      },
+      {
+        id: 'location-services',
+        label: 'Google location services',
+        detail: 'Maps, Location, Places',
+      },
+    ],
+    edges: [
+      { from: 'android-client', to: 'retrofit-api' },
+      { from: 'retrofit-api', to: 'safety-classifier' },
+      { from: 'android-client', to: 'firebase-services' },
+      { from: 'android-client', to: 'location-services' },
     ],
   },
   dostava: {
     summary:
-      'The Android interface uses MVVM to coordinate remote APIs, local persistence, notifications, and map-based tracking.',
-    steps: [
-      { label: 'Android interface', detail: 'Java product workflow' },
-      { label: 'MVVM', detail: 'Presentation boundary' },
-      { label: 'Retrofit + Room', detail: 'Remote and local data' },
-      { label: 'Firebase + Maps', detail: 'Notifications and location' },
-      { label: 'Delivery state', detail: 'Orders and tracking' },
+      'The Android interface uses MVVM to coordinate remote APIs and local persistence, while delivery workflows connect notifications and map-based tracking.',
+    nodes: [
+      {
+        id: 'android-interface',
+        label: 'Android Java interface',
+        detail: 'Product workflow',
+      },
+      {
+        id: 'mvvm-presentation',
+        label: 'MVVM presentation',
+        detail: 'Presentation boundary',
+      },
+      {
+        id: 'retrofit-services',
+        label: 'Retrofit services',
+        detail: 'Remote data',
+      },
+      {
+        id: 'room-persistence',
+        label: 'Room persistence',
+        detail: 'Local data',
+      },
+      {
+        id: 'delivery-workflows',
+        label: 'Delivery workflows',
+        detail: 'Orders and tracking',
+      },
+      {
+        id: 'firebase-notifications',
+        label: 'Firebase notifications',
+        detail: 'Delivery updates',
+      },
+      {
+        id: 'maps-tracking',
+        label: 'Google Maps tracking',
+        detail: 'Location-aware delivery state',
+      },
+    ],
+    edges: [
+      { from: 'android-interface', to: 'mvvm-presentation' },
+      { from: 'mvvm-presentation', to: 'retrofit-services' },
+      { from: 'android-interface', to: 'room-persistence' },
+      { from: 'delivery-workflows', to: 'firebase-notifications' },
+      { from: 'delivery-workflows', to: 'maps-tracking' },
     ],
   },
 } as const satisfies Record<string, ArchitectureDefinition>;
@@ -78,6 +226,31 @@ const architecture = architectures[slug];
 if (!architecture) {
   throw new Error(`Missing architecture definition for ${slug}`);
 }
+
+const nodeById = new Map(
+  architecture.nodes.map((node) => [node.id, node] as const),
+);
+
+if (nodeById.size !== architecture.nodes.length) {
+  throw new Error(`Duplicate architecture node for ${slug}`);
+}
+
+const relationships = architecture.edges.map((edge) => {
+  const from = nodeById.get(edge.from);
+  const to = nodeById.get(edge.to);
+
+  if (!from || !to) {
+    throw new Error(
+      `Architecture edge ${edge.from} -> ${edge.to} references a missing node for ${slug}`,
+    );
+  }
+
+  return { edge, from, to };
+});
+
+const relationshipText = relationships
+  .map(({ from, to }) => `${from.label} to ${to.label}`)
+  .join('; ');
 ---
 
 <figure
@@ -85,20 +258,35 @@ if (!architecture) {
   aria-label={`${title} architecture`}
   aria-describedby={`${slug}-architecture-summary`}
 >
-  <ol aria-hidden="true">
+  <ol class="architecture-diagram__nodes" aria-hidden="true">
     {
-      architecture.steps.map((step, index) => (
-        <li>
-          <span class="architecture-diagram__step">
+      architecture.nodes.map((node, index) => (
+        <li data-node-id={node.id}>
+          <span class="architecture-diagram__node-index">
             {String(index + 1).padStart(2, '0')}
           </span>
-          <strong>{step.label}</strong>
-          <small>{step.detail}</small>
+          <strong>{node.label}</strong>
+          <small>{node.detail}</small>
         </li>
       ))
     }
   </ol>
+  <p class="architecture-diagram__relationships-heading" aria-hidden="true">
+    Directed relationships
+  </p>
+  <ul class="architecture-diagram__relationships" aria-hidden="true">
+    {
+      relationships.map(({ edge, from, to }) => (
+        <li data-edge-from={edge.from} data-edge-to={edge.to}>
+          <span>{from.label}</span>
+          <span class="architecture-diagram__arrow">→</span>
+          <span>{to.label}</span>
+        </li>
+      ))
+    }
+  </ul>
   <figcaption id={`${slug}-architecture-summary`}>
     {architecture.summary}
+    <span class="visually-hidden"> Relationships: {relationshipText}.</span>
   </figcaption>
 </figure>

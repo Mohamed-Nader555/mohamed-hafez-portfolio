@@ -38,3 +38,30 @@ export function resolveSources(
     }),
   );
 }
+
+function normalizeRoute(value: string): string {
+  const pathname = decodeURIComponent(
+    new URL(value, 'https://portfolio.invalid').pathname,
+  ).replace(/\/{2,}/g, '/');
+
+  return pathname === '/' ? pathname : pathname.replace(/\/$/, '');
+}
+
+export function resolveSourcesForRoute(
+  sourceIds: readonly string[],
+  currentRoute: string,
+  sourceRegistry: readonly SourceRecord[] = sources,
+): readonly PublicSource[] {
+  const normalizedCurrentRoute = normalizeRoute(currentRoute);
+  const resolved = resolveSources(sourceIds, sourceRegistry);
+
+  for (const source of resolved) {
+    if (normalizeRoute(source.publicHref) === normalizedCurrentRoute) {
+      throw new Error(
+        `Circular evidence source ${source.id} resolves to the current route: ${normalizedCurrentRoute}`,
+      );
+    }
+  }
+
+  return resolved;
+}

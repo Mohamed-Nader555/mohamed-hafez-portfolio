@@ -22,8 +22,7 @@ const roleById = new Map(roles.map((role) => [role.id, role.label]));
     <h2>{entry.data.title}</h2>
     <p>{entry.data.summary}</p>
     <p class="case-study-card__ownership">
-      <strong>Owned:</strong>
-      {entry.data.ownership}
+      <strong>Owned:</strong>{' '}{entry.data.ownership}
     </p>
     <ul class="technology-list" aria-label={`${entry.data.title} technologies`}>
       {

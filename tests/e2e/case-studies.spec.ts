@@ -55,6 +55,10 @@ test('work index publishes exactly the five curated detailed case studies', asyn
       )
     ).sort(),
   ).toEqual(caseStudies.map(({ slug }) => `/work/${slug}`).sort());
+
+  await expect(
+    page.locator('.case-study-card__ownership').first(),
+  ).toContainText(/^Owned: Mohamed/);
 });
 
 for (const study of caseStudies) {
@@ -89,7 +93,7 @@ for (const study of caseStudies) {
   });
 }
 
-test('case-study architecture is accessible and suppressed repositories stay private', async ({
+test('case-study architecture exposes the same directed relationships visually and accessibly', async ({
   page,
 }) => {
   await page.goto('/work/northstar-rag');
@@ -99,27 +103,105 @@ test('case-study architecture is accessible and suppressed repositories stay pri
   });
   await expect(diagram).toContainText('Document sources');
   await expect(diagram).toContainText('Grounded answer');
+  await expect(diagram).toContainText(
+    'Relationships: Document sources to Ingest and chunk; Ingest and chunk to Local embeddings; Local embeddings to Chroma retrieval; Chroma retrieval to Grounded answer.',
+  );
+  await expect(
+    diagram.locator(
+      '[data-edge-from="document-sources"][data-edge-to="ingest-chunk"]',
+    ),
+  ).toHaveCount(1);
   await expect(page.locator('body')).not.toContainText(
     /github-northstar-rag|github-dostava/i,
   );
   await expect(page.locator('a[href*="Northstar"]')).toHaveCount(0);
 });
 
-test('tablet keeps the architecture sequence readable from left to right', async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 820, height: 1180 });
-  await page.goto('/work/northstar-rag');
+const expectedEdges = {
+  'asc-pie': [
+    ['privacy-datasets', 'preprocessing'],
+    ['preprocessing', 'shared-pii-labels'],
+    ['shared-pii-labels', 'model-training'],
+    ['model-training', 'ner-evaluation'],
+  ],
+  'northstar-rag': [
+    ['document-sources', 'ingest-chunk'],
+    ['ingest-chunk', 'local-embeddings'],
+    ['local-embeddings', 'chroma-retrieval'],
+    ['chroma-retrieval', 'grounded-answer'],
+  ],
+  'minds-eye': [
+    ['wearable-input', 'android-client'],
+    ['android-client', 'recognition-services'],
+    ['recognition-services', 'ocr-vision-result'],
+    ['ocr-vision-result', 'speech-output'],
+  ],
+  dive: [
+    ['android-client', 'retrofit-api'],
+    ['retrofit-api', 'safety-classifier'],
+    ['android-client', 'firebase-services'],
+    ['android-client', 'location-services'],
+  ],
+  dostava: [
+    ['android-interface', 'mvvm-presentation'],
+    ['mvvm-presentation', 'retrofit-services'],
+    ['android-interface', 'room-persistence'],
+    ['delivery-workflows', 'firebase-notifications'],
+    ['delivery-workflows', 'maps-tracking'],
+  ],
+} as const;
 
-  const steps = page.locator('.architecture-diagram li');
-  const first = await steps.first().boundingBox();
-  const last = await steps.last().boundingBox();
+for (const [slug, edges] of Object.entries(expectedEdges)) {
+  test(`${slug} architecture renders only its documented directed edges`, async ({
+    page,
+  }) => {
+    await page.goto(`/work/${slug}`);
 
-  expect(first).not.toBeNull();
-  expect(last).not.toBeNull();
-  expect(Math.abs((first?.y ?? 0) - (last?.y ?? 0))).toBeLessThan(8);
-  expect(first?.x).toBeLessThan(last?.x ?? 0);
-});
+    const renderedEdges = await page
+      .locator('.architecture-diagram [data-edge-from][data-edge-to]')
+      .evaluateAll((items) =>
+        items.map((item) => [
+          item.getAttribute('data-edge-from'),
+          item.getAttribute('data-edge-to'),
+        ]),
+      );
+
+    expect(renderedEdges).toEqual(edges);
+  });
+}
+
+for (const slug of ['dive', 'dostava'] as const) {
+  for (const width of [320, 360, 720, 820, 1440]) {
+    test(`${slug} branched architecture remains readable without overflow at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: width < 600 ? 1000 : 1180 });
+      await page.goto(`/work/${slug}`);
+
+      const diagram = page.locator('.architecture-diagram');
+      await expect(diagram).toBeVisible();
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth),
+      ).toBe(width);
+
+      const edgeBoxes = await diagram
+        .locator('[data-edge-from][data-edge-to]')
+        .evaluateAll((items) =>
+          items.map((item) => {
+            const box = item.getBoundingClientRect();
+            return { left: box.left, right: box.right, width: box.width };
+          }),
+        );
+      expect(edgeBoxes).toHaveLength(expectedEdges[slug].length);
+      expect(
+        edgeBoxes.every(
+          ({ left, right, width: edgeWidth }) =>
+            left >= 0 && right <= width && edgeWidth > 0,
+        ),
+      ).toBe(true);
+    });
+  }
+}
 
 test('desktop long-form content remains usable at 200% zoom', async ({
   page,

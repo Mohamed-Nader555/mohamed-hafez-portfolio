@@ -78,7 +78,7 @@ const records = [
     topics: ['SPRINT-PP', 'research', 'privacy'],
     aliases: ['SPRINT PP', 'paper status', 'publication status'],
     roleWeights: { aiml: 5, software: 2, android: 0, teaching: 3 },
-    sourceIds: ['case-study-asc-pie'],
+    sourceIds: ['resume-aiml', 'resume-teaching'],
     public: true,
   },
 ] as const satisfies readonly EvidenceRecord[];

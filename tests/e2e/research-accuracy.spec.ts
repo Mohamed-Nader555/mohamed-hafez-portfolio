@@ -12,6 +12,18 @@ test('thesis page states official and under-review statuses accurately', async (
   await expect(
     page.getByText(/submitted and (currently )?under review/i),
   ).toBeVisible();
+  const sprintStatus = page.getByRole('group', {
+    name: 'SPRINT-PP status and source',
+  });
+  await expect(sprintStatus).toContainText(
+    'SPRINT-PP is a research paper submitted and under review.',
+  );
+  await expect(
+    sprintStatus.getByRole('link', { name: 'Source · AI/ML Engineer résumé' }),
+  ).toHaveAttribute('href', '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf');
+  await expect(sprintStatus.locator('a[href="/research/asc-pie"]')).toHaveCount(
+    0,
+  );
   await expect(page.getByRole('link', { name: /YorkSpace/i })).toHaveAttribute(
     'href',
     /yorku\.ca/,

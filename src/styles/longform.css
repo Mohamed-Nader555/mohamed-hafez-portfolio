@@ -132,49 +132,83 @@
     box-shadow: var(--shadow-surface);
   }
 
-  .architecture-diagram ol {
+  .architecture-diagram__nodes {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+    gap: var(--space-3);
     padding: 0;
     list-style: none;
   }
 
-  .architecture-diagram li {
-    position: relative;
+  .architecture-diagram__nodes li {
     display: grid;
     min-inline-size: 0;
     align-content: start;
     gap: var(--space-2);
-    padding-inline-end: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--color-ink-850) 70%, transparent);
   }
 
-  .architecture-diagram li:not(:last-child)::after {
-    position: absolute;
-    inset-block-start: 1.15rem;
-    inset-inline-end: calc(var(--space-5) * -0.64);
-    color: var(--color-evidence-500);
-    content: '→';
-    font-family: var(--font-utility);
-  }
-
-  .architecture-diagram__step {
+  .architecture-diagram__node-index {
     color: var(--color-ai-300);
     font-family: var(--font-utility);
     font-size: var(--type-xs);
   }
 
-  .architecture-diagram strong {
+  .architecture-diagram__nodes strong {
     color: var(--color-ink-100);
     font-size: var(--type-sm);
     line-height: 1.3;
     overflow-wrap: anywhere;
   }
 
-  .architecture-diagram small {
+  .architecture-diagram__nodes small {
     color: var(--color-ink-300);
     font-size: var(--type-xs);
     line-height: 1.4;
+  }
+
+  .architecture-diagram__relationships-heading {
+    margin-block: var(--space-6) var(--space-3);
+    color: var(--color-ink-300);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-utility);
+    text-transform: uppercase;
+  }
+
+  .architecture-diagram__relationships {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .architecture-diagram__relationships li {
+    display: grid;
+    min-inline-size: 0;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--color-ink-200);
+    font-size: var(--type-xs);
+    line-height: 1.4;
+  }
+
+  .architecture-diagram__relationships li span {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .architecture-diagram__arrow {
+    color: var(--color-evidence-500);
+    font-family: var(--font-utility);
   }
 
   .architecture-diagram figcaption {
@@ -323,6 +357,11 @@
 
   .research-status strong {
     color: var(--color-verified-500);
+  }
+
+  .research-status .source-link {
+    justify-self: start;
+    font-size: var(--type-xs);
   }
 
   .research-record,
@@ -495,22 +534,8 @@
       border-block-end: 0;
     }
 
-    .architecture-diagram ol {
+    .architecture-diagram__relationships {
       grid-template-columns: 1fr;
-    }
-
-    .architecture-diagram li {
-      padding-block-end: var(--space-5);
-      padding-inline-start: var(--space-5);
-      border-inline-start: 1px solid var(--border-subtle);
-    }
-
-    .architecture-diagram li:not(:last-child)::after {
-      inset-block-start: auto;
-      inset-block-end: -0.2rem;
-      inset-inline-start: -0.36rem;
-      inset-inline-end: auto;
-      content: '↓';
     }
   }
 
@@ -521,6 +546,16 @@
 
     .about-contact nav {
       grid-template-columns: 1fr;
+    }
+
+    .architecture-diagram__relationships li {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+
+    .architecture-diagram__arrow {
+      transform: rotate(90deg);
+      justify-self: start;
     }
   }
 }

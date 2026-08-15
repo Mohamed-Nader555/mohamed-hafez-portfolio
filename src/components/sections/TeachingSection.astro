@@ -1,10 +1,10 @@
 ---
-import { sources } from '@/data';
 import {
   selectPublicSourceForEvidence,
   type DeepReadonly,
   type ResolvedLens,
 } from '@/lib/content/resolve-lens';
+import { resolveSourcesForRoute } from '@/lib/content/resolve-sources';
 import type { EvidenceRecord } from '@/types/content';
 
 interface Props {
@@ -15,7 +15,12 @@ const { lens } = Astro.props;
 const { research, teaching } = lens.depthEvidence;
 
 function sourceFor(record: DeepReadonly<EvidenceRecord>) {
-  return selectPublicSourceForEvidence(record, lens.roleId, sources);
+  const routeSafeSources = resolveSourcesForRoute(
+    record.sourceIds,
+    Astro.url.pathname,
+  );
+
+  return selectPublicSourceForEvidence(record, lens.roleId, routeSafeSources);
 }
 ---
 
