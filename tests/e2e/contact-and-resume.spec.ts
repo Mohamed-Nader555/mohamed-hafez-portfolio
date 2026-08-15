@@ -120,6 +120,8 @@ test('contact actions remain usable at 320px without JavaScript', async ({
   for (const link of await contact.getByRole('link').all()) {
     const box = await link.boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(44);
+    await expect(link).toHaveCSS('flex-direction', 'column');
+    await expect(link).not.toHaveCSS('row-gap', '0px');
   }
 
   await expect(page.locator('form')).toHaveCount(0);

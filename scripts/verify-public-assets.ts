@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 export const requiredResumePaths = [
   'resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',
@@ -19,19 +20,13 @@ export interface PublicAssetVerificationReport {
 }
 
 const MAX_RESUME_BYTES = 5 * 1024 * 1024;
-const PDF_SIGNATURE = Buffer.from('%PDF');
 const prohibitedPublicPathPatterns = [
-  /(?:^|[/\\])master(?:[-_. /\\]|$)/i,
-  /comprehensive/i,
-  /credential/i,
-  /service[-_ ]?account/i,
-  /password/i,
-  /private[-_ ]?key/i,
-  /(?:^|[/\\])private(?:[-_. /\\]|$)/i,
-  /(?:^|[/\\])raw[-_ ]?(?:source|export|analytics|chat)/i,
-  /(?:^|[/\\])\.env(?:\.|$)/i,
-  /(?:^|[/\\])\.dev\.vars(?:\.|$)/i,
-  /\.(?:jks|keystore|pem|p12|pfx|key)$/i,
+  /(?:^|[-_.\s/])(?:master|comprehensive|private|credentials?|password)(?=$|[-_.\s/])/i,
+  /(?:^|[-_.\s/])raw[-_.\s]+(?:source|data|export|analytics|chat)(?=$|[-_.\s/])/i,
+  /(?:^|[-_.\s/])service[-_.\s]+account(?=$|[-_.\s/])/i,
+  /(?:^|[/])\.env(?:$|[-_.\s/])/i,
+  /(?:^|[/])\.dev\.vars(?:$|[-_.\s/])/i,
+  /\.(?:jks|keystore|pem|p12|pfx|key|sig|asc)$/i,
 ] as const;
 
 async function listFiles(directory: string): Promise<string[]> {
@@ -48,6 +43,48 @@ async function listFiles(directory: string): Promise<string[]> {
 
 function toPublicPath(publicDir: string, absolutePath: string) {
   return relative(publicDir, absolutePath).split(sep).join('/');
+}
+
+async function validatePdf(absolutePath: string, publicPath: string) {
+  const data = new Uint8Array(await readFile(absolutePath));
+  let passwordRequired = false;
+  const loadingTask = getDocument({ data, disableWorker: true });
+  loadingTask.onPassword = () => {
+    passwordRequired = true;
+    throw new Error(`Encrypted PDF requires a password: ${publicPath}`);
+  };
+
+  try {
+    const document = await loadingTask.promise;
+    if (passwordRequired) {
+      throw new Error(`Encrypted PDF is not allowed: ${publicPath}`);
+    }
+    if (document.numPages !== 2) {
+      throw new Error(
+        `Public resume ${publicPath} must contain exactly two pages (found ${document.numPages}).`,
+      );
+    }
+  } catch (error: unknown) {
+    if (passwordRequired) {
+      throw new Error(`Encrypted PDF is not allowed: ${publicPath}`, {
+        cause: error,
+      });
+    }
+    if (
+      error instanceof Error &&
+      error.message.includes('must contain exactly two pages')
+    ) {
+      throw error;
+    }
+    throw new Error(
+      `Public resume ${publicPath} could not be parsed as a valid PDF.`,
+      {
+        cause: error,
+      },
+    );
+  } finally {
+    await loadingTask.destroy();
+  }
 }
 
 export async function verifyPublicAssets(
@@ -85,17 +122,16 @@ export async function verifyPublicAssets(
       continue;
     }
 
-    const [fileStat, signature] = await Promise.all([
-      stat(absolutePath),
-      readFile(absolutePath).then((content) => content.subarray(0, 4)),
-    ]);
+    const fileStat = await stat(absolutePath);
     if (fileStat.size >= MAX_RESUME_BYTES) {
       errors.push(`Public resume ${publicPath} must be smaller than 5 MiB.`);
     }
-    if (!signature.equals(PDF_SIGNATURE)) {
-      errors.push(
-        `Public resume ${publicPath} must begin with the %PDF signature.`,
-      );
+    if (fileStat.size < MAX_RESUME_BYTES) {
+      try {
+        await validatePdf(absolutePath, publicPath);
+      } catch (error: unknown) {
+        errors.push(error instanceof Error ? error.message : String(error));
+      }
     }
   }
 
