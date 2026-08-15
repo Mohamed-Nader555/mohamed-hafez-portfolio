@@ -1,0 +1,57 @@
+---
+import { profile } from '@/data';
+import type { ResolvedLens } from '@/lib/content/resolve-lens';
+
+interface Props {
+  lens: ResolvedLens;
+  breadthLabels: readonly string[];
+}
+
+const { lens, breadthLabels } = Astro.props;
+---
+
+<section
+  class="lens-hero shell-container"
+  aria-label={`${lens.label} overview`}
+>
+  <div class="lens-hero__copy">
+    <p class="utility-label">Recruiter lens · {lens.label}</p>
+    <h1 id="lens-title">
+      <span>{lens.label}</span>
+      <span class="lens-hero__thesis">Evidence made easy to inspect.</span>
+    </h1>
+    <p class="lens-hero__lead">{lens.summary}</p>
+    <p class="lens-hero__breadth">
+      <span>Also evidenced across</span>
+      {breadthLabels.join(' · ')}
+    </p>
+    <div class="lens-actions">
+      <a class="primary-action" href={`mailto:${profile.contacts.email}`}>
+        Email Mohamed
+      </a>
+      <a class="secondary-action" href={lens.resumeHref}>
+        View {lens.label} résumé
+      </a>
+    </div>
+  </div>
+
+  <aside class="lens-hero__context" aria-label="Recruiter screening summary">
+    <p class="context-signal">
+      <span aria-hidden="true"></span>{profile.availability}
+    </p>
+    <dl>
+      <div>
+        <dt>Location</dt>
+        <dd>{profile.location}</dd>
+      </div>
+      <div>
+        <dt>Work authorization</dt>
+        <dd>{profile.workAuthorization}</dd>
+      </div>
+      <div>
+        <dt>Sponsorship</dt>
+        <dd>{profile.sponsorship}</dd>
+      </div>
+    </dl>
+  </aside>
+</section>

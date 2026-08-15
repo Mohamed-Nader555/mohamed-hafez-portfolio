@@ -1,0 +1,62 @@
+---
+import { sources } from '@/data';
+import type { ScreeningFact } from '@/types/content';
+
+interface Props {
+  facts: readonly ScreeningFact[];
+  preferredSourceId: string;
+}
+
+const { facts, preferredSourceId } = Astro.props;
+const sourceById = new Map(sources.map((source) => [source.id, source]));
+const priorityFacts = [
+  'availability',
+  'location',
+  'work-authorization',
+  'sponsorship',
+]
+  .map((id) => facts.find((fact) => fact.id === id))
+  .filter((fact): fact is ScreeningFact => Boolean(fact));
+
+function resolveSource(fact: ScreeningFact) {
+  const sourceId = fact.sourceIds.includes(preferredSourceId)
+    ? preferredSourceId
+    : fact.sourceIds[0];
+  const source = sourceById.get(sourceId);
+
+  if (!source?.isPublic || !source.publicHref) {
+    throw new Error(`Screening fact ${fact.id} lacks a public source.`);
+  }
+
+  return source;
+}
+---
+
+<section
+  class="lens-section evidence-section shell-container"
+  aria-labelledby="evidence-title"
+>
+  <header class="section-heading">
+    <p class="utility-label">Recruiter screening</p>
+    <h2 id="evidence-title">60-second evidence</h2>
+    <p>Core hiring details, each tied to an approved public record.</p>
+  </header>
+
+  <div class="evidence-grid">
+    {
+      priorityFacts.map((fact) => {
+        const source = resolveSource(fact);
+
+        return (
+          <article class="evidence-fact">
+            <p class="evidence-fact__label">{fact.label}</p>
+            <p class="evidence-fact__statement">{fact.statement}</p>
+            <a class="source-link" href={source.publicHref}>
+              Source · {source.label}
+            </a>
+          </article>
+        );
+      })
+    }
+  </div>
+</section>

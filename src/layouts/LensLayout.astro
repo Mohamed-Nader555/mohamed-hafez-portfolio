@@ -1,0 +1,36 @@
+---
+import ContactSection from '@/components/sections/ContactSection.astro';
+import EvidencePanel from '@/components/sections/EvidencePanel.astro';
+import ExperienceSection from '@/components/sections/ExperienceSection.astro';
+import FeaturedWork from '@/components/sections/FeaturedWork.astro';
+import Hero from '@/components/sections/Hero.astro';
+import TeachingSection from '@/components/sections/TeachingSection.astro';
+import { roles, screeningFacts } from '@/data';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { resolveLens } from '@/lib/content/resolve-lens';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  roleId: RoleId;
+}
+
+const { roleId } = Astro.props;
+const lens = resolveLens(roleId);
+const breadthLabels = roles
+  .filter((role) => role.id !== roleId)
+  .map((role) => role.label);
+const preferredSourceId = `resume-${roleId}`;
+---
+
+<BaseLayout
+  title={lens.title}
+  description={lens.description}
+  roleId={lens.roleId}
+>
+  <Hero lens={lens} breadthLabels={breadthLabels} />
+  <EvidencePanel facts={screeningFacts} preferredSourceId={preferredSourceId} />
+  <FeaturedWork projects={lens.projects} />
+  <ExperienceSection lens={lens} />
+  <TeachingSection lens={lens} />
+  <ContactSection />
+</BaseLayout>

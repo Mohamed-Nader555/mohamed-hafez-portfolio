@@ -1,0 +1,91 @@
+---
+import { sources } from '@/data';
+import type { ResolvedLens } from '@/lib/content/resolve-lens';
+import type { EvidenceRecord } from '@/types/content';
+
+interface Props {
+  lens: ResolvedLens;
+}
+
+const { lens } = Astro.props;
+const sourceById = new Map(sources.map((source) => [source.id, source]));
+const research = lens.evidence
+  .filter(
+    (record) =>
+      record.id.startsWith('asc-pie-') || record.id === 'sprint-pp-status',
+  )
+  .slice(0, 2);
+const teaching = lens.evidence
+  .filter(
+    (record) =>
+      record.id.startsWith('teaching-') || record.id === 'ceh-training',
+  )
+  .slice(0, 2);
+
+function sourceFor(record: EvidenceRecord) {
+  const source = record.sourceIds
+    .map((id) => sourceById.get(id))
+    .find((candidate) => candidate?.isPublic && candidate.publicHref);
+
+  if (!source?.publicHref) {
+    throw new Error(`Depth evidence ${record.id} lacks a public source.`);
+  }
+
+  return source;
+}
+---
+
+<section
+  class="lens-section depth-section shell-container"
+  aria-labelledby="depth-title"
+>
+  <header class="section-heading section-heading--split">
+    <div>
+      <p class="utility-label">Evidence beyond delivery</p>
+      <h2 id="depth-title">Research &amp; teaching depth</h2>
+    </div>
+    <p>
+      Technical work supported by research discipline and clear instruction.
+    </p>
+  </header>
+
+  <div class="depth-grid">
+    <section aria-labelledby="research-depth-title">
+      <p class="depth-grid__label">Research record</p>
+      <h3 id="research-depth-title">Privacy-aware systems</h3>
+      {
+        research.map((record) => {
+          const source = sourceFor(record);
+          return (
+            <article>
+              <h4>{record.title}</h4>
+              <p>{record.statement}</p>
+              <a class="source-link" href={source.publicHref}>
+                Source · {source.label}
+              </a>
+            </article>
+          );
+        })
+      }
+    </section>
+
+    <section aria-labelledby="teaching-depth-title">
+      <p class="depth-grid__label">Teaching record</p>
+      <h3 id="teaching-depth-title">Technical instruction</h3>
+      {
+        teaching.map((record) => {
+          const source = sourceFor(record);
+          return (
+            <article>
+              <h4>{record.title}</h4>
+              <p>{record.statement}</p>
+              <a class="source-link" href={source.publicHref}>
+                Source · {source.label}
+              </a>
+            </article>
+          );
+        })
+      }
+    </section>
+  </div>
+</section>

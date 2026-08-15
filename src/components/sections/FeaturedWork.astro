@@ -1,0 +1,82 @@
+---
+import { sources } from '@/data';
+import type { ProjectRecord } from '@/types/content';
+
+interface Props {
+  projects: readonly ProjectRecord[];
+}
+
+const { projects } = Astro.props;
+const sourceById = new Map(sources.map((source) => [source.id, source]));
+
+function resolveProjectSource(project: ProjectRecord) {
+  const projectSources = project.sourceIds
+    .map((id) => sourceById.get(id))
+    .filter((source) => source?.isPublic && source.publicHref);
+  const source =
+    projectSources.find((candidate) => candidate?.kind === 'case-study') ??
+    projectSources.find((candidate) => candidate?.kind === 'official') ??
+    projectSources[0];
+
+  if (!source?.publicHref) {
+    throw new Error(`Project ${project.id} lacks a public evidence target.`);
+  }
+
+  return source;
+}
+---
+
+<section
+  class="lens-section featured-section shell-container"
+  aria-label="Featured work"
+  aria-labelledby="featured-title"
+>
+  <header class="section-heading section-heading--split">
+    <div>
+      <p class="utility-label">Role-ranked portfolio</p>
+      <h2 id="featured-title">Featured work</h2>
+    </div>
+    <p>Ordered by verified relevance to the active recruiter lens.</p>
+  </header>
+
+  <div class="project-grid">
+    {
+      projects.slice(0, 4).map((project, index) => {
+        const source = resolveProjectSource(project);
+
+        return (
+          <article class="project-card">
+            <div class="project-card__index" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </div>
+            <div class="project-card__body">
+              <p class="project-card__type">
+                {project.detailLevel === 'detailed'
+                  ? 'Detailed case study'
+                  : 'Supporting evidence'}
+              </p>
+              <h3>{project.title}</h3>
+              <p>{project.summary}</p>
+              <p class="project-card__ownership">{project.ownership}</p>
+              <ul
+                class="technology-list"
+                aria-label={`${project.title} technologies`}
+              >
+                {project.technologies.slice(0, 5).map((technology) => (
+                  <li>{technology}</li>
+                ))}
+              </ul>
+              <a
+                class="project-card__link"
+                href={source.publicHref}
+                aria-label={`View ${project.title} evidence`}
+              >
+                Inspect evidence <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </article>
+        );
+      })
+    }
+  </div>
+</section>

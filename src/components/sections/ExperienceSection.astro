@@ -1,0 +1,72 @@
+---
+import { sources } from '@/data';
+import type { ResolvedLens } from '@/lib/content/resolve-lens';
+
+interface Props {
+  lens: ResolvedLens;
+}
+
+const { lens } = Astro.props;
+const sourceById = new Map(sources.map((source) => [source.id, source]));
+const experienceRecords = lens.evidence
+  .filter(
+    (record) =>
+      record.id.startsWith('bass-') ||
+      record.id === 'android-historical-play-store',
+  )
+  .slice(0, 3);
+const capabilities = [
+  ...new Set(
+    lens.projects.slice(0, 4).flatMap((project) => project.technologies),
+  ),
+].slice(0, 10);
+
+function sourceFor(sourceIds: readonly string[]) {
+  const source = sourceIds
+    .map((id) => sourceById.get(id))
+    .find((candidate) => candidate?.isPublic && candidate.publicHref);
+
+  if (!source?.publicHref) {
+    throw new Error('Experience evidence lacks a public source.');
+  }
+
+  return source;
+}
+---
+
+<section
+  class="lens-section experience-section shell-container"
+  aria-labelledby="experience-title"
+>
+  <header class="section-heading">
+    <p class="utility-label">Delivery record</p>
+    <h2 id="experience-title">Experience &amp; capabilities</h2>
+  </header>
+
+  <div class="experience-layout">
+    <div class="experience-records">
+      {
+        experienceRecords.map((record) => {
+          const source = sourceFor(record.sourceIds);
+
+          return (
+            <article>
+              <h3>{record.title}</h3>
+              <p>{record.statement}</p>
+              <a class="source-link" href={source.publicHref}>
+                Source · {source.label}
+              </a>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <aside class="capability-console" aria-label={`${lens.label} capabilities`}>
+      <p class="utility-label">Visible in the work above</p>
+      <ul>
+        {capabilities.map((capability) => <li>{capability}</li>)}
+      </ul>
+    </aside>
+  </div>
+</section>
