@@ -55,8 +55,7 @@
 
     .lens-link:hover,
     .primary-action:hover,
-    .secondary-action:hover,
-    .skip-link {
+    .secondary-action:hover {
       transform: none;
     }
   }

@@ -39,6 +39,20 @@ test('reduced motion removes shell and lens transitions', async ({ page }) => {
   ]);
 });
 
+test('reduced motion keeps the skip link hidden until keyboard focus', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+
+  const skipLink = page.getByRole('link', { name: 'Skip to main content' });
+  await expect(skipLink).not.toBeInViewport();
+
+  await page.keyboard.press('Tab');
+  await expect(skipLink).toBeFocused();
+  await expect(skipLink).toBeInViewport();
+});
+
 test('shell entrance keeps recruiter content at full opacity', async ({
   page,
 }) => {
