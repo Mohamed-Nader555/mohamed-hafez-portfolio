@@ -9,12 +9,7 @@ const records = [
     topics: ['Northstar', 'RAG', 'ownership'],
     aliases: ['Northstar RAG', 'retrieval-augmented generation'],
     roleWeights: { aiml: 5, software: 5, android: 1, teaching: 2 },
-    sourceIds: [
-      'resume-aiml',
-      'resume-software',
-      'github-northstar-rag',
-      'case-study-northstar',
-    ],
+    sourceIds: ['resume-aiml', 'resume-software', 'case-study-northstar'],
     public: true,
   },
   {
@@ -24,7 +19,7 @@ const records = [
     topics: ['Northstar', 'ingestion', 'PDF', 'Markdown'],
     aliases: ['document loader', 'supported document formats'],
     roleWeights: { aiml: 5, software: 5, android: 0, teaching: 2 },
-    sourceIds: ['github-northstar-rag', 'case-study-northstar'],
+    sourceIds: ['case-study-northstar'],
     public: true,
   },
   {
@@ -35,7 +30,7 @@ const records = [
     topics: ['Northstar', 'chunking', 'retrieval'],
     aliases: ['chunk size', 'chunk overlap', 'text splitting'],
     roleWeights: { aiml: 5, software: 4, android: 0, teaching: 2 },
-    sourceIds: ['github-northstar-rag', 'case-study-northstar'],
+    sourceIds: ['case-study-northstar'],
     public: true,
   },
   {
@@ -46,7 +41,7 @@ const records = [
     topics: ['Northstar', 'sentence-transformers', 'Chroma', 'embeddings'],
     aliases: ['all MiniLM L6 v2', 'vector store', 'cosine distance'],
     roleWeights: { aiml: 5, software: 5, android: 0, teaching: 2 },
-    sourceIds: ['github-northstar-rag', 'case-study-northstar'],
+    sourceIds: ['case-study-northstar'],
     public: true,
   },
   {
@@ -57,7 +52,7 @@ const records = [
     topics: ['Northstar', 'refusal behavior', 'retrieval threshold'],
     aliases: ['unsupported question', 'distance filter', 'strict refusal'],
     roleWeights: { aiml: 5, software: 5, android: 0, teaching: 3 },
-    sourceIds: ['github-northstar-rag', 'case-study-northstar'],
+    sourceIds: ['case-study-northstar'],
     public: true,
   },
   {
@@ -68,7 +63,7 @@ const records = [
     topics: ['Northstar', 'citations', 'grounded generation'],
     aliases: ['source attribution', 'cited answer'],
     roleWeights: { aiml: 5, software: 5, android: 0, teaching: 3 },
-    sourceIds: ['github-northstar-rag', 'case-study-northstar'],
+    sourceIds: ['case-study-northstar'],
     public: true,
   },
   {
@@ -79,7 +74,7 @@ const records = [
     topics: ['FastAPI', 'Docker', 'Docker Compose', 'API'],
     aliases: ['Northstar deployment', 'health endpoint', 'ask endpoint'],
     roleWeights: { aiml: 4, software: 5, android: 0, teaching: 2 },
-    sourceIds: ['github-northstar-rag', 'case-study-northstar'],
+    sourceIds: ['case-study-northstar'],
     public: true,
   },
   {
@@ -90,7 +85,7 @@ const records = [
     topics: ['pytest', 'RAGAS', 'evaluation', 'testing'],
     aliases: ['RAG metrics', 'Northstar tests'],
     roleWeights: { aiml: 5, software: 5, android: 0, teaching: 3 },
-    sourceIds: ['github-northstar-rag', 'case-study-northstar'],
+    sourceIds: ['case-study-northstar'],
     public: true,
   },
 ] as const satisfies readonly EvidenceRecord[];

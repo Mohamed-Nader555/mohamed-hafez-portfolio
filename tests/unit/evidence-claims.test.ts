@@ -71,6 +71,21 @@ describe('verified evidence corpus', () => {
     ).toBe(true);
   });
 
+  it.each(['github-northstar-rag', 'github-dostava'])(
+    'keeps %s as non-public audit provenance only',
+    (auditSourceId) => {
+      const auditSource = sources.find((source) => source.id === auditSourceId);
+      const publicConsumerSourceIds = [
+        ...evidence.flatMap((item) => item.sourceIds),
+        ...projects.flatMap((project) => project.sourceIds),
+      ];
+
+      expect(auditSource?.isPublic).toBe(false);
+      expect(auditSource?.publicHref).toBeUndefined();
+      expect(publicConsumerSourceIds).not.toContain(auditSourceId);
+    },
+  );
+
   it('rejects unresolved and private citation targets', () => {
     const fixture = {
       ...evidence[0],

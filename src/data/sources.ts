@@ -53,10 +53,9 @@ const sourceRecords = [
   },
   {
     id: 'github-northstar-rag',
-    label: 'Northstar RAG repository',
+    label: 'Northstar implementation audit provenance',
     kind: 'github',
-    publicHref: 'https://github.com/Mohamed-Nader555/northstar-rag-system',
-    isPublic: true,
+    isPublic: false,
   },
   {
     id: 'github-thesis-experiments',
@@ -74,10 +73,9 @@ const sourceRecords = [
   },
   {
     id: 'github-dostava',
-    label: 'Dostava repository',
+    label: 'Dostava implementation audit provenance',
     kind: 'github',
-    publicHref: 'https://github.com/Mohamed-Nader555/Dostava',
-    isPublic: true,
+    isPublic: false,
   },
   {
     id: 'case-study-asc-pie',

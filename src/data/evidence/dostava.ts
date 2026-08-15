@@ -9,12 +9,7 @@ const records = [
     topics: ['Dostava', 'Android', 'courier', 'delivery'],
     aliases: ['delivery app', 'courier app'],
     roleWeights: { aiml: 1, software: 4, android: 5, teaching: 1 },
-    sourceIds: [
-      'resume-android',
-      'resume-software',
-      'github-dostava',
-      'case-study-dostava',
-    ],
+    sourceIds: ['resume-android', 'resume-software', 'case-study-dostava'],
     public: true,
   },
   {
