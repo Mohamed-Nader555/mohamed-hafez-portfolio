@@ -134,7 +134,10 @@ const contentRoutes: readonly RouteJavaScriptBudget[] = [
   '/experience',
   '/about',
   '/privacy',
-].map((path) => ({ path, assistant: false }));
+].map((path) => ({
+  path,
+  assistant: ['/', '/software', '/android', '/teaching'].includes(path),
+}));
 
 const invokedScript = process.argv[1];
 if (invokedScript && import.meta.url === pathToFileURL(invokedScript).href) {
@@ -147,7 +150,7 @@ if (invokedScript && import.meta.url === pathToFileURL(invokedScript).href) {
         ...report.routes.map((route) => route.gzipBytes),
       );
       process.stdout.write(
-        `Verified ${report.routes.length} content routes: maximum JavaScript ${Math.ceil(maximum / 1024)} KB gzip (120 KB budget). The assistant-specific 180 KB gate is covered by unit tests and activates when that route is added.\n`,
+        `Verified ${report.routes.length} content routes: maximum JavaScript ${Math.ceil(maximum / 1024)} KB gzip; recruiter lens routes use the 180 KB assistant budget and all other routes use the 120 KB budget.\n`,
       );
     })
     .catch((error: unknown) => {

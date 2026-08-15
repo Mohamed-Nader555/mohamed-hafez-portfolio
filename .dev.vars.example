@@ -1,0 +1,5 @@
+# Cloudflare's official local test keys; replace only through Cloudflare secrets in production.
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+RATE_LIMIT_HASH_SECRET=local-test-only-not-a-production-secret
+AI_MODEL=@cf/meta/llama-3.1-8b-instruct-fast
+PUBLIC_TURNSTILE_SITEKEY=1x00000000000000000000AA

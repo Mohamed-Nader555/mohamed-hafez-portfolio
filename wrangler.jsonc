@@ -2,4 +2,21 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "mohamed-hafez-portfolio",
   "compatibility_date": "2026-08-14",
+  "ai": { "binding": "AI" },
+  "vars": {
+    "AI_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast",
+    "PUBLIC_TURNSTILE_SITEKEY": "1x00000000000000000000AA",
+  },
+  "ratelimits": [
+    {
+      "name": "CHAT_SESSION_RATE_LIMITER",
+      "namespace_id": "10001",
+      "simple": { "limit": 5, "period": 60 },
+    },
+    {
+      "name": "CHAT_GLOBAL_RATE_LIMITER",
+      "namespace_id": "10002",
+      "simple": { "limit": 60, "period": 60 },
+    },
+  ],
 }
