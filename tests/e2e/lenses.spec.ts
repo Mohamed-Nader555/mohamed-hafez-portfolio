@@ -78,6 +78,45 @@ test('the default AI/ML hierarchy makes the full engineering and teaching breadt
   ]);
 });
 
+test('AI/ML depth exposes ASC-PIE and SPRINT-PP with official-first sourcing', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  const depth = page.getByRole('region', { name: 'Research & teaching depth' });
+  await expect(depth).toContainText('ASC-PIE');
+  await expect(depth).toContainText(
+    'SPRINT-PP is a research paper submitted and under review.',
+  );
+  await expect(
+    depth.getByRole('link', { name: 'Source · YorkSpace thesis record' }),
+  ).toHaveAttribute(
+    'href',
+    'https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e',
+  );
+  await expect(page.locator('body')).not.toContainText(
+    /published SPRINT-PP|accepted SPRINT-PP/i,
+  );
+});
+
+test('teaching depth exposes CEH as training with the matching resume source', async ({
+  page,
+}) => {
+  await page.goto('/teaching');
+
+  const depth = page.getByRole('region', { name: 'Research & teaching depth' });
+  await expect(depth).toContainText(
+    'Mohamed completed CEH training; he did not receive an official CEH certification.',
+  );
+  const ceh = depth
+    .getByRole('article')
+    .filter({ hasText: 'CEH training status' });
+  await expect(
+    ceh.getByRole('link', { name: 'Source · TA / Instructor résumé' }),
+  ).toHaveAttribute('href', '/resumes/Mohamed-Hafez-TA-Instructor.pdf');
+  await expect(page.locator('body')).not.toContainText(/CEH certified/i);
+});
+
 test('lens, contact, resume, and case-study links remain real without JavaScript', async ({
   browser,
 }) => {

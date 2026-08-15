@@ -1,15 +1,16 @@
 ---
 import { sources } from '@/data';
+import type { DeepReadonly } from '@/lib/content/resolve-lens';
 import type { ProjectRecord } from '@/types/content';
 
 interface Props {
-  projects: readonly ProjectRecord[];
+  projects: readonly DeepReadonly<ProjectRecord>[];
 }
 
 const { projects } = Astro.props;
 const sourceById = new Map(sources.map((source) => [source.id, source]));
 
-function resolveProjectSource(project: ProjectRecord) {
+function resolveProjectSource(project: DeepReadonly<ProjectRecord>) {
   const projectSources = project.sourceIds
     .map((id) => sourceById.get(id))
     .filter((source) => source?.isPublic && source.publicHref);

@@ -66,6 +66,23 @@ export const roleLensSchema = z.object({
   summary: z.string().min(1),
   resumeHref: z.string().startsWith('/resumes/').endsWith('.pdf'),
   featuredProjectIds: z.array(z.string().min(1)).min(1),
+  depthEvidenceIds: z
+    .object({
+      research: z.array(z.string().min(1)).min(1),
+      teaching: z.array(z.string().min(1)).min(1),
+    })
+    .superRefine((selection, context) => {
+      const seen = new Set<string>();
+      for (const id of [...selection.research, ...selection.teaching]) {
+        if (seen.has(id)) {
+          context.addIssue({
+            code: 'custom',
+            message: `Duplicate depth evidence id: ${id}`,
+          });
+        }
+        seen.add(id);
+      }
+    }),
   sourceIds: sourceIdsSchema,
 });
 export type RoleLens = z.infer<typeof roleLensSchema>;

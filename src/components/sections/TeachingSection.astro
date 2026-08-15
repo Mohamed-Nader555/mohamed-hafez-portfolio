@@ -1,6 +1,10 @@
 ---
 import { sources } from '@/data';
-import type { ResolvedLens } from '@/lib/content/resolve-lens';
+import {
+  selectPublicSourceForEvidence,
+  type DeepReadonly,
+  type ResolvedLens,
+} from '@/lib/content/resolve-lens';
 import type { EvidenceRecord } from '@/types/content';
 
 interface Props {
@@ -8,30 +12,10 @@ interface Props {
 }
 
 const { lens } = Astro.props;
-const sourceById = new Map(sources.map((source) => [source.id, source]));
-const research = lens.evidence
-  .filter(
-    (record) =>
-      record.id.startsWith('asc-pie-') || record.id === 'sprint-pp-status',
-  )
-  .slice(0, 2);
-const teaching = lens.evidence
-  .filter(
-    (record) =>
-      record.id.startsWith('teaching-') || record.id === 'ceh-training',
-  )
-  .slice(0, 2);
+const { research, teaching } = lens.depthEvidence;
 
-function sourceFor(record: EvidenceRecord) {
-  const source = record.sourceIds
-    .map((id) => sourceById.get(id))
-    .find((candidate) => candidate?.isPublic && candidate.publicHref);
-
-  if (!source?.publicHref) {
-    throw new Error(`Depth evidence ${record.id} lacks a public source.`);
-  }
-
-  return source;
+function sourceFor(record: DeepReadonly<EvidenceRecord>) {
+  return selectPublicSourceForEvidence(record, lens.roleId, sources);
 }
 ---
 
