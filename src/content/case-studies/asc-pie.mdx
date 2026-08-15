@@ -1,0 +1,59 @@
+---
+slug: asc-pie
+title: ASC-PIE
+summary: A PII-aware named-entity recognition evaluation framework developed as Mohamed's completed M.A. thesis at York University.
+roles:
+  - aiml
+  - software
+  - teaching
+ownership: Mohamed designed and built the research pipeline, corpus standardization, and evaluation framework.
+technologies:
+  - Python
+  - PyTorch
+  - Hugging Face Transformers
+  - scikit-learn
+  - seqeval
+sourceIds:
+  - official-yorkspace
+  - official-thesis-handle
+  - github-thesis-experiments
+  - case-study-asc-pie
+featured: true
+publishedAt: 2026-08-14
+---
+
+## Context
+
+Privacy-oriented named-entity recognition datasets use different sources, annotation schemes, and PII categories. ASC-PIE provides a shared evaluation framework for studying those differences without treating each dataset as an isolated experiment.
+
+## Ownership
+
+Mohamed designed and built the research pipeline, corpus-standardization work, experiment workflow, and evaluation framework. The work became his M.A. thesis, **“ASC-PIE: An Evaluation Framework for PII-Aware Named-Entity Recognition.”**
+
+## Constraints
+
+The datasets combine real and synthetic text and do not begin with one common label system. Comparisons therefore require explicit preprocessing and label mapping before model results can be evaluated consistently.
+
+## Architecture
+
+`privacy datasets → preprocessing → shared PII labels → model training → NER evaluation`
+
+The experiment repository keeps dataset preparation, combined Hugging Face datasets, model training artifacts, and evaluation dependencies in one reproducible workflow.
+
+## Implementation
+
+The pipeline uses Python, PyTorch, Hugging Face Transformers and Datasets, scikit-learn, and seqeval. Individual preprocessing workflows prepare source datasets, then map their labels into the common representation used for training and evaluation.
+
+## Outcome
+
+York University completed and officially awarded Mohamed’s M.A. in Information Systems & Technology in 2026. The related SPRINT-PP research paper is **submitted and under review**; it is not presented as published or accepted.
+
+## Evidence
+
+- [YorkSpace thesis record](https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e)
+- [Permanent thesis handle](https://hdl.handle.net/10315/43932)
+- [Public thesis experiments repository](https://github.com/Mohamed-Nader555/Thesis-Experiments)
+
+## Reflection
+
+The project reinforced that comparable model evaluation starts with transparent data and label decisions. A shared schema makes differences between datasets visible instead of hiding them inside separate preprocessing notebooks.

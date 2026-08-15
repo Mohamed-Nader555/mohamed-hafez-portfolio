@@ -1,0 +1,60 @@
+---
+slug: minds-eye
+title: Mind's Eye
+summary: An assistive smart-glasses system combining Android, embedded hardware, computer vision, OCR, APIs, and text-to-speech.
+roles:
+  - aiml
+  - android
+  - teaching
+ownership: Mohamed delivered more than 80% of the system and built its Egyptian-currency recognition capability from scratch.
+technologies:
+  - Android
+  - Java
+  - Arduino
+  - OpenCV
+  - Tesseract OCR
+  - Retrofit
+  - REST APIs
+sourceIds:
+  - resume-aiml
+  - resume-android
+  - resume-software
+  - case-study-minds-eye
+featured: true
+publishedAt: 2026-08-14
+---
+
+## Context
+
+Mind’s Eye is an assistive smart-glasses system that helps turn visual information into spoken output. The project combines a wearable device, an Android client, and recognition services rather than treating computer vision as a stand-alone model demo.
+
+## Ownership
+
+Mohamed delivered more than 80% of the system. He also built the Egyptian-currency recognition capability from scratch and integrated it into the broader assistive workflow.
+
+## Constraints
+
+The solution had to coordinate wearable hardware, a mobile client, camera-derived inputs, external recognition services, and speech output. Each boundary needed a clear data path so the user received a usable result rather than disconnected component outputs.
+
+## Architecture
+
+`Arduino wearable → Android Java client → REST recognition services → OCR / vision result → text-to-speech`
+
+OpenCV supports the computer-vision work, while Tesseract OCR extracts text for spoken playback.
+
+## Implementation
+
+The Android client uses Java and Retrofit to communicate with REST APIs. It connects the Arduino-based wearable input to recognition flows, including the custom Egyptian-currency capability and OCR-to-speech behavior.
+
+## Outcome
+
+The delivered system brought mobile, embedded, cloud, computer-vision, and speech components into one assistive workflow. No user-count or recognition-accuracy metric is claimed without a verified source.
+
+## Evidence
+
+- AI/ML Engineer, Software Engineer, and Android Developer résumés referenced by the portfolio’s role lenses
+- Approved public project materials summarized in this case study
+
+## Reflection
+
+Mind’s Eye showed the value of treating integration as a first-class engineering problem. A recognition feature becomes useful only when device input, service communication, and accessible output work together.

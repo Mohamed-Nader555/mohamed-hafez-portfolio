@@ -1,4 +1,4 @@
-export { evidence } from '@/data/evidence';
+export { evidence, getEvidenceForProject } from '@/data/evidence';
 export { profile } from '@/data/profile';
 export { projects } from '@/data/projects';
 export { roles } from '@/data/roles';

@@ -1,0 +1,63 @@
+---
+slug: dive
+title: Dive Simulation & Safety Profile Planner
+summary: A client-owned Android and machine-learning project for recreational scuba planning, safety-profile classification, and recommendations.
+roles:
+  - aiml
+  - software
+  - android
+ownership: Mohamed owned and implemented the project end to end, from the Android client and service integrations to the safety-classification workflow.
+technologies:
+  - Android
+  - Java
+  - Python
+  - scikit-learn
+  - Retrofit
+  - Firebase
+  - Google Maps
+  - Google Cloud Platform
+sourceIds:
+  - resume-aiml
+  - resume-android
+  - github-dive
+  - case-study-dive
+featured: true
+publishedAt: 2026-08-14
+---
+
+## Context
+
+Dive is a recreational scuba-planning client project that combines trip-planning features with a machine-learning safety profile and recommendations.
+
+## Ownership
+
+Mohamed owned and implemented the project end to end. His work covered the Android application, Python safety-classification component, API integration, Firebase services, maps and location features, and the delivered planning experience.
+
+## Constraints
+
+The application brings together diver inputs, planning data, safety classification, cloud data, and location services. Those capabilities needed to remain one coherent mobile workflow rather than separate technical demonstrations.
+
+## Architecture
+
+`Android Java client → Retrofit API → Python / scikit-learn safety classifier`
+
+`Android Java client → Firebase Authentication / Realtime Database / Storage`
+
+`Android Java client → Google Maps / Location / Places`
+
+## Implementation
+
+The Android client uses Java, Retrofit, and Gson for service communication. Firebase provides authentication, realtime data, and storage. Google Maps, Location, and Places support planning context, while the Python classifier supplies the safety-profile behavior.
+
+## Outcome
+
+The delivered client project combines dive planning, safety classification, recommendations, account and data services, and location-aware mobile features in one application.
+
+## Evidence
+
+- [Dive Simulation repository](https://github.com/Mohamed-Nader555/Diving-Simulation-App)
+- AI/ML Engineer and Android Developer résumés referenced by the portfolio’s role lenses
+
+## Reflection
+
+Owning the full project made the boundaries between model behavior, service contracts, and mobile experience visible. The useful result was the integrated planner, not any one library in isolation.

@@ -1,0 +1,60 @@
+---
+slug: northstar-rag
+title: Northstar RAG System
+summary: An independently built, end-to-end RAG engineering project for grounded retrieval, citation-backed answers, strict refusals, evaluation, testing, and Docker delivery.
+roles:
+  - aiml
+  - software
+ownership: Mohamed independently built the complete ingestion, retrieval, generation, evaluation, testing, and deployment workflow.
+technologies:
+  - Python
+  - FastAPI
+  - LangChain text splitters
+  - sentence-transformers
+  - Chroma
+  - RAGAS
+  - pytest
+  - Docker
+sourceIds:
+  - resume-aiml
+  - resume-software
+  - github-northstar-rag
+  - case-study-northstar
+featured: true
+publishedAt: 2026-08-14
+---
+
+## Context
+
+Northstar answers questions over a small internal-document corpus while keeping each answer tied to retrieved evidence. The goal was to demonstrate the complete engineering path from document ingestion to an API response a reader can verify.
+
+## Ownership
+
+Mohamed independently built the project end to end: ingestion, chunking, embeddings, vector storage, retrieval filters, grounded generation, citations, refusal behavior, evaluation, automated tests, and Docker packaging.
+
+## Constraints
+
+The service must not answer when the indexed documents do not support a question. It also needs citations that identify the source document, page, and chunk rather than returning unsupported prose.
+
+## Architecture
+
+`PDF / TXT / Markdown → clean text → recursive chunks → local embeddings → persistent Chroma → filtered retrieval → grounded prompt → answer + citations`
+
+The default pipeline uses 700-character chunks with 100-character overlap, retrieves the nearest candidates, and rejects chunks beyond a configurable cosine-distance threshold.
+
+## Implementation
+
+FastAPI and Uvicorn expose health and question-answering endpoints. PyMuPDF extracts PDFs, LangChain text splitters create chunks, `all-MiniLM-L6-v2` generates local embeddings, and Chroma persists vectors. A strict generation prompt receives only surviving chunks. Docker and Docker Compose package the API and persistent data volumes.
+
+## Outcome
+
+The delivered system demonstrates grounded retrieval, source-level citations, deterministic refusal when evidence is insufficient, pytest coverage, and a RAGAS pipeline for faithfulness, answer relevancy, context precision, and context recall.
+
+## Evidence
+
+- [Northstar RAG repository](https://github.com/Mohamed-Nader555/northstar-rag-system)
+- AI/ML Engineer and Software Engineer résumés referenced by the portfolio’s role lenses
+
+## Reflection
+
+The key engineering lesson was to make “I do not have enough evidence” part of the architecture. Retrieval thresholds, citations, and evaluation are product behavior, not optional additions after generation works.

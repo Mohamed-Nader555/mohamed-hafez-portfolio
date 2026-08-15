@@ -1,128 +1,132 @@
-import { evidenceRecordSchema, type EvidenceRecord } from '@/types/content';
+import { projects } from '@/data/projects';
+import { sources } from '@/data/sources';
+import {
+  evidenceRecordSchema,
+  type EvidenceRecord,
+  type SourceRecord,
+} from '@/types/content';
+
+import { diveEvidence } from './dive';
+import { dostavaEvidence } from './dostava';
+import {
+  bassEvidence,
+  experienceEvidence,
+  mercatoEvidence,
+} from './experience';
+import { mindsEyeEvidence } from './minds-eye';
+import { northstarEvidence } from './northstar';
+import { researchEvidence } from './research';
+import { screeningEvidence } from './screening';
+import { teachingEvidence } from './teaching';
 
 const evidenceRecords = [
-  {
-    id: 'asc-pie-thesis-awarded',
-    title: 'ASC-PIE thesis completion',
-    statement:
-      'Mohamed’s M.A. in Information Systems & Technology at York University was completed and awarded in 2026; the thesis is “ASC-PIE: An Evaluation Framework for PII-Aware Named-Entity Recognition.”',
-    topics: ['ASC-PIE', 'thesis', 'York University', 'PII-aware NER'],
-    aliases: ['ASC PIE', 'PII-aware named entity recognition'],
-    roleWeights: { aiml: 5, software: 3, android: 0, teaching: 4 },
-    sourceIds: [
-      'official-yorkspace',
-      'official-thesis-handle',
-      'case-study-asc-pie',
-    ],
-    public: true,
-  },
-  {
-    id: 'sprint-pp-status',
-    title: 'SPRINT-PP research status',
-    statement: 'SPRINT-PP is a research paper submitted and under review.',
-    topics: ['SPRINT-PP', 'research', 'privacy'],
-    aliases: ['sprint pp', 'publication status'],
-    roleWeights: { aiml: 5, software: 2, android: 0, teaching: 3 },
-    sourceIds: ['case-study-asc-pie'],
-    public: true,
-  },
-  {
-    id: 'northstar-grounded-rag',
-    title: 'Northstar grounded RAG delivery',
-    statement:
-      'Northstar is an independently built, end-to-end RAG engineering project demonstrating grounded retrieval, citations, refusal behavior, evaluation, testing, and Docker deployment.',
-    topics: ['Northstar', 'RAG', 'retrieval', 'citations', 'Docker'],
-    aliases: ['Northstar RAG', 'retrieval augmented generation'],
-    roleWeights: { aiml: 5, software: 5, android: 1, teaching: 2 },
-    sourceIds: [
-      'resume-aiml',
-      'resume-software',
-      'github-northstar-rag',
-      'case-study-northstar',
-    ],
-    public: true,
-  },
-  {
-    id: 'dive-end-to-end-ownership',
-    title: 'Dive project ownership',
-    statement:
-      'Mohamed owned and implemented the Dive Simulation & Safety Profile Planner project end to end.',
-    topics: ['Dive', 'Android', 'machine learning', 'safety planning'],
-    aliases: ['Dive Simulation', 'Safety Profile Planner'],
-    roleWeights: { aiml: 3, software: 4, android: 5, teaching: 1 },
-    sourceIds: [
-      'resume-aiml',
-      'resume-android',
-      'github-dive',
-      'case-study-dive',
-    ],
-    public: true,
-  },
-  {
-    id: 'mercato-football-talent',
-    title: 'Mercato platform purpose',
-    statement:
-      'Mercato Star Finder is a football-talent platform where players present their skills for club agents to scout and sign them.',
-    topics: ['Mercato', 'Android', 'football talent'],
-    aliases: ['Mercato Star Finder', 'football talent platform'],
-    roleWeights: { aiml: 0, software: 2, android: 4, teaching: 1 },
-    sourceIds: ['resume-android'],
-    public: true,
-  },
-  {
-    id: 'android-historical-play-store',
-    title: 'Historical Android app availability',
-    statement:
-      'Four Android apps were previously published under client-owned Google Play listings and are no longer available because the clients did not continue maintenance or request updates.',
-    topics: ['Android', 'Google Play', 'historical availability'],
-    aliases: ['Play Store', 'Google Play apps'],
-    roleWeights: { aiml: 1, software: 3, android: 5, teaching: 1 },
-    sourceIds: ['resume-android', 'resume-software'],
-    public: true,
-  },
-  {
-    id: 'ceh-training',
-    title: 'CEH training status',
-    statement:
-      'Mohamed completed CEH training; it is not an official CEH certification.',
-    topics: ['CEH', 'training', 'security'],
-    aliases: ['Certified Ethical Hacker', 'CEH certification'],
-    roleWeights: { aiml: 1, software: 2, android: 1, teaching: 2 },
-    sourceIds: ['resume-aiml', 'resume-teaching'],
-    public: true,
-  },
-  {
-    id: 'bass-enterprise-engineering',
-    title: 'BASS enterprise engineering',
-    statement:
-      'At BASS, Mohamed developed Java and Spring Boot services with REST and SOAP APIs and supported enterprise document workflows in regulated, PII-aware environments.',
-    topics: ['BASS', 'Java', 'Spring Boot', 'enterprise systems'],
-    aliases: ['enterprise content management', 'ECM'],
-    roleWeights: { aiml: 2, software: 5, android: 1, teaching: 3 },
-    sourceIds: [
-      'resume-aiml',
-      'resume-software',
-      'resume-teaching',
-      'public-experience',
-    ],
-    public: true,
-  },
-  {
-    id: 'teaching-technical-communication',
-    title: 'Teaching and technical communication',
-    statement:
-      'Mohamed has teaching-assistant and technical-instruction experience in Data Visualization, Systems Architecture, Data Structures, Java/OOP, and AI/ML fundamentals.',
-    topics: ['teaching', 'technical instruction', 'Data Structures', 'AI/ML'],
-    aliases: ['teaching assistant', 'technical instructor', 'TA'],
-    roleWeights: { aiml: 2, software: 2, android: 1, teaching: 5 },
-    sourceIds: [
-      'resume-aiml',
-      'resume-software',
-      'resume-teaching',
-      'public-experience',
-    ],
-    public: true,
-  },
-] as const satisfies readonly EvidenceRecord[];
+  ...researchEvidence,
+  ...northstarEvidence,
+  ...mindsEyeEvidence,
+  ...diveEvidence,
+  ...dostavaEvidence,
+  ...experienceEvidence,
+  ...teachingEvidence,
+  ...screeningEvidence,
+];
 
-export const evidence = evidenceRecordSchema.array().parse(evidenceRecords);
+export function validateEvidenceCorpus(
+  records: readonly EvidenceRecord[],
+  sourceRegistry: readonly SourceRecord[],
+): readonly EvidenceRecord[] {
+  const validated = evidenceRecordSchema.array().parse(records);
+  const evidenceIds = new Set<string>();
+  const sourceById = new Map(
+    sourceRegistry.map((source) => [source.id, source]),
+  );
+
+  for (const record of validated) {
+    if (evidenceIds.has(record.id)) {
+      throw new Error(`Duplicate evidence id: ${record.id}`);
+    }
+    evidenceIds.add(record.id);
+
+    for (const sourceId of record.sourceIds) {
+      const source = sourceById.get(sourceId);
+      if (!source) {
+        throw new Error(
+          `Evidence ${record.id} references unknown source ${sourceId}`,
+        );
+      }
+      if (!source.isPublic || !source.publicHref) {
+        throw new Error(
+          `Evidence ${record.id} must reference a public source: ${sourceId}`,
+        );
+      }
+    }
+
+    Object.freeze(record.topics);
+    Object.freeze(record.aliases);
+    Object.freeze(record.roleWeights);
+    Object.freeze(record.sourceIds);
+    Object.freeze(record);
+  }
+
+  return Object.freeze(validated);
+}
+
+export const evidence = validateEvidenceCorpus(evidenceRecords, sources);
+
+const evidenceById = new Map(evidence.map((record) => [record.id, record]));
+
+function canonicalRecords(
+  records: readonly EvidenceRecord[],
+): readonly EvidenceRecord[] {
+  return records.map((record) => {
+    const canonical = evidenceById.get(record.id);
+    if (!canonical) {
+      throw new Error(
+        `Evidence is missing from the canonical corpus: ${record.id}`,
+      );
+    }
+    return canonical;
+  });
+}
+
+const projectEvidence = new Map<string, readonly EvidenceRecord[]>([
+  ['asc-pie', canonicalRecords(researchEvidence)],
+  ['northstar-rag', canonicalRecords(northstarEvidence)],
+  ['minds-eye', canonicalRecords(mindsEyeEvidence)],
+  ['dive', canonicalRecords(diveEvidence)],
+  ['dostava', canonicalRecords(dostavaEvidence)],
+  ['bass', canonicalRecords(bassEvidence)],
+  ['mercato', canonicalRecords(mercatoEvidence)],
+  ['teaching-experience', canonicalRecords(teachingEvidence)],
+]);
+
+export function getEvidenceForProject(
+  projectId: string,
+): readonly EvidenceRecord[] {
+  if (!/^[a-z0-9-]+$/.test(projectId)) {
+    throw new Error(`Invalid project id: ${projectId}`);
+  }
+
+  if (!projects.some((project) => project.id === projectId)) {
+    throw new Error(`Unknown project: ${projectId}`);
+  }
+
+  const records = projectEvidence.get(projectId);
+  if (!records || records.length === 0) {
+    throw new Error(`No evidence configured for project: ${projectId}`);
+  }
+
+  return Object.freeze([...records]);
+}
+
+export {
+  bassEvidence,
+  diveEvidence,
+  dostavaEvidence,
+  experienceEvidence,
+  mercatoEvidence,
+  mindsEyeEvidence,
+  northstarEvidence,
+  researchEvidence,
+  screeningEvidence,
+  teachingEvidence,
+};

@@ -1,0 +1,60 @@
+---
+slug: dostava
+title: Dostava Delivery
+summary: An on-demand courier Android application with order workflows, remote and local data layers, notifications, and map-based tracking.
+roles:
+  - software
+  - android
+ownership: Mohamed delivered the Android application and its documented mobile architecture and service integrations.
+technologies:
+  - Java
+  - MVVM
+  - Retrofit
+  - Room
+  - Firebase
+  - Google Maps
+sourceIds:
+  - resume-android
+  - resume-software
+  - github-dostava
+  - case-study-dostava
+featured: true
+publishedAt: 2026-08-14
+---
+
+## Context
+
+Dostava is an on-demand courier Android application built around customer order and delivery workflows, notifications, and location-aware tracking.
+
+## Ownership
+
+Mohamed delivered the Android application using its documented Java and MVVM architecture and integrated the remote, local, notification, and mapping services used by the product workflows.
+
+## Constraints
+
+The order experience needed both remote service access and local persistence. Delivery workflows also had to coordinate application state with notifications and map-based location behavior.
+
+## Architecture
+
+`Android Java UI → MVVM presentation → Retrofit remote services`
+
+`Android Java UI → Room local persistence`
+
+`delivery workflows → Firebase notifications + Google Maps tracking`
+
+## Implementation
+
+The app uses Java with MVVM to separate presentation behavior from its data layers. Retrofit handles remote APIs, Room provides local persistence, Firebase supports the mobile workflow and notifications, and Google Maps supplies delivery location and tracking features.
+
+## Outcome
+
+Dostava was previously published under a client-owned Google Play listing. It is no longer available because the client did not continue maintenance or request updates, so this portfolio does not present a current store-download action.
+
+## Evidence
+
+- [Dostava repository](https://github.com/Mohamed-Nader555/Dostava)
+- Android Developer and Software Engineer résumés referenced by the portfolio’s role lenses
+
+## Reflection
+
+Dostava reinforced the importance of separating remote and local data responsibilities in a workflow-heavy mobile product. That separation makes order state easier to reason about when network, notification, and map events meet.
