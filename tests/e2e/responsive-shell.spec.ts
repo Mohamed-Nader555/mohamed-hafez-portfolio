@@ -149,6 +149,70 @@ for (const viewport of [
   });
 }
 
+for (const fontMode of ['loaded', 'blocked'] as const) {
+  test(`320px identity and compact actions fit with first-party fonts ${fontMode}`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.setViewportSize({ width: 320, height: 800 });
+
+    if (fontMode === 'blocked') {
+      await page.route('**/*.woff2', (route) => route.abort());
+    }
+
+    await page.goto('/');
+    await page.evaluate(() => document.fonts.ready);
+
+    const identity = page.getByText('Mohamed Hafez', { exact: true });
+    await expect(identity).toBeVisible();
+    const identityFit = await identity.evaluate((node) => ({
+      clientWidth: node.clientWidth,
+      scrollWidth: node.scrollWidth,
+      visibleText: (node as HTMLElement).innerText,
+    }));
+    expect(identityFit.visibleText).toBe('Mohamed Hafez');
+    expect(identityFit.scrollWidth).toBeLessThanOrEqual(
+      identityFit.clientWidth,
+    );
+
+    const disclosure = page.locator('details.site-menu');
+    const summary = disclosure.getByText('Explore', { exact: true });
+    const summaryBox = await summary.boundingBox();
+    expect(summaryBox).not.toBeNull();
+    expect(summaryBox?.width ?? 0).toBeGreaterThanOrEqual(44);
+    expect(summaryBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(320);
+
+    await summary.click();
+    await expect(disclosure).toHaveAttribute('open', '');
+    const navigation = disclosure.getByRole('navigation', { name: 'Primary' });
+
+    for (const destination of primaryDestinations) {
+      const link = navigation.getByRole('link', {
+        name: destination.name,
+        exact: true,
+      });
+      const box = await link.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box?.x ?? -1).toBeGreaterThanOrEqual(0);
+      expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(320);
+
+      const hitLinkText = await page.evaluate(({ x, y, width, height }) => {
+        const hit = document.elementFromPoint(x + width / 2, y + height / 2);
+        return hit?.closest('a')?.textContent?.trim() ?? null;
+      }, box!);
+      expect(hitLinkText).toBe(destination.name);
+      await link.click({ trial: true });
+    }
+
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(320);
+  });
+}
+
 test('skip link and recruiter lenses work without JavaScript', async ({
   browser,
 }) => {
