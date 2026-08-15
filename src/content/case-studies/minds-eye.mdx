@@ -24,6 +24,8 @@ featured: true
 publishedAt: 2026-08-14
 ---
 
+import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+
 ## Context
 
 Mind’s Eye is an assistive smart-glasses system that helps turn visual information into spoken output. The project combines a wearable device, an Android client, and recognition services rather than treating computer vision as a stand-alone model demo.
@@ -37,6 +39,8 @@ Mohamed delivered more than 80% of the system. He also built the Egyptian-curren
 The solution had to coordinate wearable hardware, a mobile client, camera-derived inputs, external recognition services, and speech output. Each boundary needed a clear data path so the user received a usable result rather than disconnected component outputs.
 
 ## Architecture
+
+<ArchitectureDiagram slug="minds-eye" title="Mind's Eye" />
 
 `Arduino wearable → Android Java client → REST recognition services → OCR / vision result → text-to-speech`
 

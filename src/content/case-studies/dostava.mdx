@@ -21,6 +21,8 @@ featured: true
 publishedAt: 2026-08-14
 ---
 
+import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+
 ## Context
 
 Dostava is an on-demand courier Android application built around customer order and delivery workflows, notifications, and location-aware tracking.
@@ -34,6 +36,8 @@ Mohamed delivered the Android application using its documented Java and MVVM arc
 The order experience needed both remote service access and local persistence. Delivery workflows also had to coordinate application state with notifications and map-based location behavior.
 
 ## Architecture
+
+<ArchitectureDiagram slug="dostava" title="Dostava Delivery" />
 
 `Android Java UI → MVVM presentation → Retrofit remote services`
 

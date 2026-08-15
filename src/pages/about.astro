@@ -1,0 +1,82 @@
+---
+import { evidence, profile, screeningFacts } from '@/data';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { resolveSources } from '@/lib/content/resolve-sources';
+
+export const prerender = true;
+
+const education = evidence.find(
+  (record) => record.id === 'asc-pie-degree-awarded',
+);
+if (!education) throw new Error('About page is missing education evidence.');
+const educationSource = resolveSources(education.sourceIds)[0];
+const phoneHref = profile.contacts.phone.replace(/[^+\d]/g, '');
+---
+
+<BaseLayout
+  title="About Mohamed Hafez"
+  description="Mohamed Hafez is a Toronto-based engineer with AI/ML, software, Android, research, and teaching experience."
+  roleId="aiml"
+>
+  <header class="longform-hero shell-container">
+    <p class="utility-label">About Mohamed Hafez</p>
+    <h1>Engineering breadth, one evidence standard</h1>
+    <p class="longform-hero__summary">
+      Mohamed works across AI/ML, software systems, Android products, and
+      technical teaching. The same standard applies throughout: make ownership
+      clear, keep status precise, and link public evidence.
+    </p>
+  </header>
+
+  <section class="about-grid shell-container" aria-labelledby="screening-title">
+    <div class="section-heading">
+      <p class="utility-label">Recruiter screening</p>
+      <h2 id="screening-title">Practical fit, stated directly</h2>
+    </div>
+    <dl>
+      {
+        screeningFacts.map((fact) => (
+          <div>
+            <dt>{fact.label}</dt>
+            <dd>{fact.statement}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section
+    class="education-record shell-container"
+    aria-labelledby="education-title"
+  >
+    <div>
+      <p class="utility-label">Education</p>
+      <h2 id="education-title">York University</h2>
+    </div>
+    <div>
+      <p>{education.statement}</p>
+      <a class="source-link" href={educationSource.publicHref}
+        >Source · {educationSource.label}</a
+      >
+    </div>
+  </section>
+
+  <section
+    class="about-contact shell-container"
+    aria-labelledby="about-contact-title"
+  >
+    <div>
+      <p class="utility-label">Public contact</p>
+      <h2 id="about-contact-title">Continue directly</h2>
+      <p>{profile.availability} · {profile.location}</p>
+    </div>
+    <nav aria-label="Public contact channels">
+      <a aria-label="Email Mohamed" href={`mailto:${profile.contacts.email}`}
+        >Email</a
+      >
+      <a href={`tel:${phoneHref}`}>Phone</a>
+      <a href={profile.contacts.linkedIn}>LinkedIn</a>
+      <a href={profile.contacts.github}>GitHub</a>
+    </nav>
+  </section>
+</BaseLayout>

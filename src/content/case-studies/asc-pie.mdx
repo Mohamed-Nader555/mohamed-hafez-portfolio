@@ -22,6 +22,8 @@ featured: true
 publishedAt: 2026-08-14
 ---
 
+import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+
 ## Context
 
 Privacy-oriented named-entity recognition datasets use different sources, annotation schemes, and PII categories. ASC-PIE provides a shared evaluation framework for studying those differences without treating each dataset as an isolated experiment.
@@ -35,6 +37,8 @@ Mohamed designed and built the research pipeline, corpus-standardization work, e
 The datasets combine real and synthetic text and do not begin with one common label system. Comparisons therefore require explicit preprocessing and label mapping before model results can be evaluated consistently.
 
 ## Architecture
+
+<ArchitectureDiagram slug="asc-pie" title="ASC-PIE" />
 
 `privacy datasets → preprocessing → shared PII labels → model training → NER evaluation`
 

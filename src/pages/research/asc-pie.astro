@@ -1,0 +1,105 @@
+---
+import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+import { getEvidenceForProject } from '@/data';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { resolveSources } from '@/lib/content/resolve-sources';
+
+export const prerender = true;
+
+const records = getEvidenceForProject('asc-pie');
+const recordById = new Map(records.map((record) => [record.id, record]));
+const titleRecord = recordById.get('asc-pie-thesis-title');
+const degreeRecord = recordById.get('asc-pie-degree-awarded');
+const statusRecord = recordById.get('sprint-pp-status');
+
+if (!titleRecord || !degreeRecord || !statusRecord) {
+  throw new Error(
+    'ASC-PIE research page is missing required evidence records.',
+  );
+}
+
+const thesisTitle = titleRecord.statement
+  .match(/[“"](.+)[”"]/)?.[1]
+  ?.replace(/\.$/, '');
+if (!thesisTitle)
+  throw new Error('Unable to derive the official thesis title.');
+
+const officialSources = resolveSources([
+  'official-yorkspace',
+  'official-thesis-handle',
+  'github-thesis-experiments',
+]);
+---
+
+<BaseLayout
+  title={`${thesisTitle} — Mohamed Hafez`}
+  description={titleRecord.statement}
+  roleId="aiml"
+>
+  <header class="longform-hero shell-container">
+    <p class="utility-label">York University · M.A. research</p>
+    <h1>{thesisTitle}</h1>
+    <p class="longform-hero__summary">{degreeRecord.statement}</p>
+    <div class="research-status" aria-label="Research status">
+      <p>
+        <span>Thesis</span>
+        <strong>Official degree status · 2026</strong>
+      </p>
+      <p>
+        <span>SPRINT-PP</span>
+        <strong>{statusRecord.statement}</strong>
+      </p>
+    </div>
+  </header>
+
+  <section
+    class="research-record shell-container"
+    aria-labelledby="research-framework-title"
+  >
+    <div class="section-heading">
+      <p class="utility-label">Research framework</p>
+      <h2 id="research-framework-title">
+        A comparable path through privacy datasets
+      </h2>
+    </div>
+    <ArchitectureDiagram slug="asc-pie" title="ASC-PIE" />
+    <div class="evidence-record-grid">
+      {
+        records
+          .filter((record) =>
+            [
+              'asc-pie-evaluation-framework',
+              'asc-pie-dataset-pipeline',
+              'asc-pie-label-standardization',
+              'asc-pie-experiment-stack',
+            ].includes(record.id),
+          )
+          .map((record) => (
+            <article>
+              <h3>{record.title}</h3>
+              <p>{record.statement}</p>
+            </article>
+          ))
+      }
+    </div>
+  </section>
+
+  <section
+    class="official-records shell-container"
+    aria-labelledby="official-records-title"
+  >
+    <div>
+      <p class="utility-label">Official and public records</p>
+      <h2 id="official-records-title">Verify the work</h2>
+    </div>
+    <ul>
+      {
+        officialSources.map((source) => (
+          <li>
+            <a href={source.publicHref}>{source.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

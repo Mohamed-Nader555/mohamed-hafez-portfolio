@@ -1,0 +1,92 @@
+---
+import { evidence } from '@/data';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { resolveSources } from '@/lib/content/resolve-sources';
+
+export const prerender = true;
+
+const groups = [
+  {
+    label: 'Enterprise systems',
+    ids: ['bass-java-services', 'bass-api-delivery', 'bass-document-workflows'],
+  },
+  {
+    label: 'Product delivery',
+    ids: [
+      'dive-end-to-end-ownership',
+      'dostava-network-data',
+      'android-historical-play-store',
+    ],
+  },
+  {
+    label: 'Teaching and communication',
+    ids: [
+      'teaching-delivery',
+      'teaching-computing-topics',
+      'teaching-ai-ml',
+      'ceh-training',
+    ],
+  },
+] as const;
+const evidenceById = new Map(evidence.map((record) => [record.id, record]));
+
+const resolvedGroups = groups.map((group) => ({
+  ...group,
+  records: group.ids.map((id) => {
+    const record = evidenceById.get(id);
+    if (!record) throw new Error(`Missing experience evidence: ${id}`);
+    const source = resolveSources(record.sourceIds).find(
+      (candidate) => candidate.publicHref !== '/experience',
+    );
+    if (!source)
+      throw new Error(`Experience evidence has no non-circular source: ${id}`);
+    return { record, source };
+  }),
+}));
+---
+
+<BaseLayout
+  title="Professional responsibility — Mohamed Hafez"
+  description="Responsibility-led evidence across enterprise systems, client products, mobile delivery, and technical teaching."
+  roleId="software"
+>
+  <header class="longform-hero shell-container">
+    <p class="utility-label">Professional experience</p>
+    <h1>Responsibility across systems, products, and classrooms</h1>
+    <p class="longform-hero__summary">
+      A responsibility-led view of what Mohamed developed, integrated,
+      supported, and taught—organized by outcome rather than chronology.
+    </p>
+  </header>
+
+  <section
+    class="responsibility-groups shell-container"
+    aria-label="Responsibility and outcomes"
+  >
+    {
+      resolvedGroups.map((group) => (
+        <section
+          aria-labelledby={`${group.label.toLowerCase().replaceAll(' ', '-')}-title`}
+        >
+          <header>
+            <p class="utility-label">Responsibility area</p>
+            <h2 id={`${group.label.toLowerCase().replaceAll(' ', '-')}-title`}>
+              {group.label}
+            </h2>
+          </header>
+          <div>
+            {group.records.map(({ record, source }) => (
+              <article>
+                <h3>{record.title}</h3>
+                <p>{record.statement}</p>
+                <a class="source-link" href={source.publicHref}>
+                  Source · {source.label}
+                </a>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </section>
+</BaseLayout>

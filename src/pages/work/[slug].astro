@@ -1,0 +1,59 @@
+---
+import CaseStudyLayout from '@/layouts/CaseStudyLayout.astro';
+import { projects } from '@/data';
+import { resolveSources } from '@/lib/content/resolve-sources';
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+export const prerender = true;
+
+export const getStaticPaths = (async () => {
+  const entries = await getCollection('caseStudies');
+  const detailedProjects = projects.filter(
+    (project) => project.detailLevel === 'detailed',
+  );
+  const publishedSlugs = new Set(entries.map((entry) => entry.data.slug));
+  const canonicalSlugs = new Set(
+    detailedProjects.map((project) => project.slug),
+  );
+
+  if (
+    entries.length !== 5 ||
+    canonicalSlugs.size !== 5 ||
+    [...publishedSlugs].some((slug) => !canonicalSlugs.has(slug)) ||
+    [...canonicalSlugs].some((slug) => !publishedSlugs.has(slug))
+  ) {
+    throw new Error(
+      'Case-study routes must match the five canonical detailed projects.',
+    );
+  }
+
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  entry: CollectionEntry<'caseStudies'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const resolvedSources = resolveSources(entry.data.sourceIds);
+const pagePath = `/work/${entry.data.slug}`;
+const publicEvidence = Object.freeze(
+  resolvedSources.filter((source) => source.publicHref !== pagePath),
+);
+---
+
+<CaseStudyLayout
+  title={entry.data.title}
+  summary={entry.data.summary}
+  ownership={entry.data.ownership}
+  roles={entry.data.roles}
+  technologies={entry.data.technologies}
+  sources={publicEvidence}
+>
+  <Content />
+</CaseStudyLayout>

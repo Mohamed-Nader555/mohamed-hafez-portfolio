@@ -1,0 +1,68 @@
+---
+import CaseStudyEvidence from '@/components/case-study/CaseStudyEvidence.astro';
+import { roles } from '@/data';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { PublicSource } from '@/lib/content/resolve-sources';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  title: string;
+  summary: string;
+  ownership: string;
+  roles: readonly RoleId[];
+  technologies: readonly string[];
+  sources: readonly PublicSource[];
+}
+
+const {
+  title,
+  summary,
+  ownership,
+  roles: studyRoles,
+  technologies,
+  sources,
+} = Astro.props;
+const roleById = new Map(roles.map((role) => [role.id, role.label]));
+const roleId = studyRoles[0] ?? 'aiml';
+---
+
+<BaseLayout
+  title={`${title} — Mohamed Hafez`}
+  description={summary}
+  roleId={roleId}
+>
+  <header class="longform-hero shell-container">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/work">Work</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{title}</span>
+    </nav>
+    <p class="utility-label">
+      Detailed case study · {
+        studyRoles.map((role) => roleById.get(role)).join(' · ')
+      }
+    </p>
+    <h1>{title}</h1>
+    <p class="longform-hero__summary">{summary}</p>
+    <div class="case-study-brief">
+      <div>
+        <p class="utility-label">Ownership</p>
+        <p>{ownership}</p>
+      </div>
+      <div>
+        <p class="utility-label">Technologies</p>
+        <ul class="technology-list" aria-label={`${title} technologies`}>
+          {technologies.map((technology) => <li>{technology}</li>)}
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <article class="case-study-prose shell-container">
+    <slot />
+  </article>
+
+  <div class="shell-container longform-evidence-wrap">
+    <CaseStudyEvidence sources={sources} />
+  </div>
+</BaseLayout>

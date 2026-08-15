@@ -25,6 +25,8 @@ featured: true
 publishedAt: 2026-08-14
 ---
 
+import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+
 ## Context
 
 Dive is a recreational scuba-planning client project that combines trip-planning features with a machine-learning safety profile and recommendations.
@@ -38,6 +40,11 @@ Mohamed owned and implemented the project end to end. His work covered the Andro
 The application brings together diver inputs, planning data, safety classification, cloud data, and location services. Those capabilities needed to remain one coherent mobile workflow rather than separate technical demonstrations.
 
 ## Architecture
+
+<ArchitectureDiagram
+  slug="dive"
+  title="Dive Simulation & Safety Profile Planner"
+/>
 
 `Android Java client → Retrofit API → Python / scikit-learn safety classifier`
 

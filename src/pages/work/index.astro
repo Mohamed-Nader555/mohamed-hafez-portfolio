@@ -1,0 +1,54 @@
+---
+import CaseStudyCard from '@/components/case-study/CaseStudyCard.astro';
+import { projects } from '@/data';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { resolveSources } from '@/lib/content/resolve-sources';
+import { getCollection } from 'astro:content';
+
+export const prerender = true;
+
+const entries = await getCollection('caseStudies');
+const detailedProjects = projects.filter(
+  (project) => project.detailLevel === 'detailed',
+);
+const entryBySlug = new Map(entries.map((entry) => [entry.data.slug, entry]));
+const orderedEntries = detailedProjects.map((project) => {
+  const entry = entryBySlug.get(project.slug);
+  if (!entry) throw new Error(`Missing case-study entry for ${project.slug}`);
+  resolveSources(entry.data.sourceIds);
+  return entry;
+});
+
+if (entries.length !== 5 || orderedEntries.length !== 5) {
+  throw new Error(
+    'The work index must publish exactly five detailed case studies.',
+  );
+}
+---
+
+<BaseLayout
+  title="Evidence-led work — Mohamed Hafez"
+  description="Five detailed engineering and research case studies with ownership, architecture, outcomes, and public evidence."
+  roleId="aiml"
+>
+  <header class="longform-hero longform-hero--index shell-container">
+    <p class="utility-label">Curated for recruiter review</p>
+    <h1>Evidence-led work</h1>
+    <p class="longform-hero__summary">
+      Five detailed records, ordered by default AI/ML relevance. Each one
+      separates context, personal ownership, constraints, architecture,
+      implementation, outcome, and evidence.
+    </p>
+  </header>
+
+  <section
+    class="work-index shell-container"
+    aria-label="Detailed case studies"
+  >
+    {
+      orderedEntries.map((entry, index) => (
+        <CaseStudyCard entry={entry} index={index} />
+      ))
+    }
+  </section>
+</BaseLayout>

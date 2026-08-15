@@ -23,6 +23,8 @@ featured: true
 publishedAt: 2026-08-14
 ---
 
+import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+
 ## Context
 
 Northstar answers questions over a small internal-document corpus while keeping each answer tied to retrieved evidence. The goal was to demonstrate the complete engineering path from document ingestion to an API response a reader can verify.
@@ -36,6 +38,8 @@ Mohamed independently built the project end to end: ingestion, chunking, embeddi
 The service must not answer when the indexed documents do not support a question. It also needs citations that identify the source document, page, and chunk rather than returning unsupported prose.
 
 ## Architecture
+
+<ArchitectureDiagram slug="northstar-rag" title="Northstar RAG System" />
 
 `PDF / TXT / Markdown → clean text → recursive chunks → local embeddings → persistent Chroma → filtered retrieval → grounded prompt → answer + citations`
 
