@@ -1,0 +1,63 @@
+@layer motion {
+  .site-shell {
+    animation: shell-enter var(--motion-duration-slow) var(--motion-ease-out)
+      both;
+  }
+
+  .lens-link,
+  .primary-nav a,
+  .primary-action,
+  .secondary-action {
+    transition:
+      color var(--motion-duration-fast) ease,
+      border-color var(--motion-duration-fast) ease,
+      background-color var(--motion-duration-base) ease,
+      transform var(--motion-duration-base) var(--motion-ease-out);
+  }
+
+  .lens-link:hover,
+  .primary-action:hover,
+  .secondary-action:hover {
+    transform: translateY(-1px);
+  }
+
+  @keyframes shell-enter {
+    from {
+      transform: translateY(0.75rem);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-delay: 0s !important;
+      animation-duration: 0s !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-delay: 0s !important;
+      transition-duration: 0s !important;
+    }
+
+    .site-shell {
+      animation-name: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .lens-link:hover,
+    .primary-action:hover,
+    .secondary-action:hover,
+    .skip-link {
+      transform: none;
+    }
+  }
+}

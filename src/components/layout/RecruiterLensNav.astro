@@ -1,0 +1,18 @@
+---
+import { RecruiterLensSwitcher } from '@/components/lenses/RecruiterLensSwitcher';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  activeRole: RoleId;
+}
+
+const { activeRole } = Astro.props;
+---
+
+<nav class="recruiter-lens-nav" aria-label="Recruiter lens">
+  <div class="provenance-origin">
+    <span class="provenance-kicker">Verified record</span>
+    <span class="provenance-title">Four focused views</span>
+  </div>
+  <RecruiterLensSwitcher activeRole={activeRole} />
+</nav>

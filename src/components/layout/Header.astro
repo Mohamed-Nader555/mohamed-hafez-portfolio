@@ -1,0 +1,55 @@
+---
+import RecruiterLensNav from '@/components/layout/RecruiterLensNav.astro';
+import { profile } from '@/data/profile';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  activeRole: RoleId;
+}
+
+const { activeRole } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="shell-container">
+    <div class="header-console">
+      <div class="header-bar">
+        <a class="site-identity" href="/" aria-label="Mohamed Hafez, home">
+          <span class="identity-monogram" aria-hidden="true">MH</span>
+          <span class="identity-copy">
+            <span class="identity-name">Mohamed Hafez</span>
+            <span class="identity-subtitle">Engineering evidence</span>
+          </span>
+        </a>
+
+        <nav class="primary-nav primary-nav--desktop" aria-label="Primary">
+          <a href="/work">Work</a>
+          <a href="/research/asc-pie">Research</a>
+          <a href="/experience">Experience</a>
+          <a href="/about">About</a>
+          <a class="primary-contact" href={`mailto:${profile.contacts.email}`}>
+            Contact
+          </a>
+        </nav>
+
+        <details class="site-menu">
+          <summary>Explore</summary>
+          <nav class="primary-nav primary-nav--compact" aria-label="Primary">
+            <a href="/work">Work</a>
+            <a href="/research/asc-pie">Research</a>
+            <a href="/experience">Experience</a>
+            <a href="/about">About</a>
+            <a
+              class="primary-contact"
+              href={`mailto:${profile.contacts.email}`}
+            >
+              Contact
+            </a>
+          </nav>
+        </details>
+      </div>
+
+      <RecruiterLensNav activeRole={activeRole} />
+    </div>
+  </div>
+</header>

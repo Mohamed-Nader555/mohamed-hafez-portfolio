@@ -1,0 +1,82 @@
+@layer tokens {
+  :root {
+    color-scheme: dark;
+
+    --color-ink-950: #050817;
+    --color-ink-900: #081126;
+    --color-ink-850: #0b1530;
+    --color-ink-800: #10203d;
+    --color-ink-700: #173154;
+    --color-ink-300: #8fa5c3;
+    --color-ink-200: #b9c9df;
+    --color-ink-100: #e8f2ff;
+    --color-evidence-700: #177f9d;
+    --color-evidence-500: #55dffd;
+    --color-evidence-300: #a8efff;
+    --color-ai-700: #9d287f;
+    --color-ai-500: #ff4fd8;
+    --color-ai-300: #ffb0ec;
+    --color-verified-500: #69dba8;
+
+    --font-display:
+      Bahnschrift, 'Aptos Display', 'Segoe UI Variable Display', 'Segoe UI',
+      sans-serif;
+    --font-body:
+      Aptos, 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+    --font-utility:
+      'Cascadia Code', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+
+    --type-xs: clamp(0.72rem, 0.69rem + 0.12vw, 0.78rem);
+    --type-sm: clamp(0.84rem, 0.8rem + 0.18vw, 0.94rem);
+    --type-body: clamp(1rem, 0.96rem + 0.18vw, 1.1rem);
+    --type-lead: clamp(1.08rem, 0.99rem + 0.42vw, 1.32rem);
+    --type-title: clamp(2.45rem, 1.62rem + 3.7vw, 5.4rem);
+    --type-identity: clamp(1rem, 0.93rem + 0.25vw, 1.14rem);
+
+    --leading-tight: 0.98;
+    --leading-body: 1.65;
+    --tracking-display: -0.045em;
+    --tracking-utility: 0.095em;
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+    --space-section: clamp(4rem, 9vw, 8rem);
+
+    --width-shell: 80rem;
+    --width-reading: 44rem;
+    --width-gutter: clamp(1rem, 4vw, 3rem);
+
+    --radius-sm: 0.35rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1.2rem;
+
+    --border-subtle: color-mix(
+      in srgb,
+      var(--color-evidence-500) 16%,
+      transparent
+    );
+    --border-strong: color-mix(
+      in srgb,
+      var(--color-evidence-500) 42%,
+      transparent
+    );
+    --shadow-surface: 0 1.4rem 5rem rgb(0 2 15 / 32%);
+
+    --motion-duration-fast: 140ms;
+    --motion-duration-base: 220ms;
+    --motion-duration-slow: 620ms;
+    --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+    --focus-ring:
+      0 0 0 0.2rem var(--color-ink-950), 0 0 0 0.4rem var(--color-evidence-500);
+  }
+}

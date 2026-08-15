@@ -1,0 +1,49 @@
+---
+import Footer from '@/components/layout/Footer.astro';
+import Header from '@/components/layout/Header.astro';
+import type { RoleId } from '@/types/content';
+import '@/styles/tokens.css';
+import '@/styles/reset.css';
+import '@/styles/global.css';
+import '@/styles/components.css';
+import '@/styles/motion.css';
+
+interface Props {
+  title: string;
+  description: string;
+  roleId: RoleId;
+}
+
+const { title, description, roleId } = Astro.props;
+const canonicalUrl = new URL(
+  Astro.url.pathname,
+  Astro.site ?? Astro.url.origin,
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#050817" />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mohamed Hafez" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="site-shell" data-shell>
+      <a class="skip-link" href="#main-content">Skip to main content</a>
+      <Header activeRole={roleId} />
+      <main class="site-main" id="main-content" tabindex="-1">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

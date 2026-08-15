@@ -1,0 +1,32 @@
+import { roles } from '@/data/roles';
+import type { RoleId } from '@/types/content';
+
+type RecruiterLensSwitcherProps = {
+  activeRole: RoleId;
+};
+
+export function RecruiterLensSwitcher({
+  activeRole,
+}: RecruiterLensSwitcherProps) {
+  return (
+    <ul className="lens-list">
+      {roles.map((role) => {
+        const isActive = role.id === activeRole;
+
+        return (
+          <li className="lens-item" key={role.id}>
+            <a
+              aria-current={isActive ? 'page' : undefined}
+              aria-label={role.label}
+              className={`lens-link${role.id === 'aiml' ? ' lens-link--ai' : ''}`}
+              data-lens={role.id}
+              href={role.route}
+            >
+              {role.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}

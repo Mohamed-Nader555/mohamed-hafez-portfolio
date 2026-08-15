@@ -1,16 +1,58 @@
 ---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { profile } from '@/data/profile';
+import { roles } from '@/data/roles';
+
 export const prerender = true;
+
+const lens = roles.find((role) => role.id === 'aiml');
+
+if (!lens) {
+  throw new Error('The default AI/ML recruiter lens is missing.');
+}
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mohamed Hafez | AI/ML Engineer</title>
-  </head>
-  <body>
-    <p>Mohamed Hafez</p>
-    <h1>AI/ML Engineer</h1>
-  </body>
-</html>
+<BaseLayout title={lens.title} description={lens.description} roleId={lens.id}>
+  <section class="foundation-hero" aria-labelledby="foundation-title">
+    <div class="foundation-hero__copy">
+      <p class="utility-label">Default recruiter view · AI/ML Engineer</p>
+      <h1 id="foundation-title">AI systems built with research discipline.</h1>
+      <p class="foundation-hero__lead">
+        {lens.summary} Explore one verified body of work through the recruiter lens
+        that best matches your role.
+      </p>
+      <div class="foundation-actions">
+        <a class="primary-action" href={`mailto:${profile.contacts.email}`}>
+          Email Mohamed
+        </a>
+        <a
+          class="secondary-action"
+          href="https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e"
+        >
+          View thesis record
+        </a>
+      </div>
+    </div>
+
+    <aside class="hero-context" aria-label="Current evidence context">
+      <dl>
+        <div>
+          <dt>Viewing as</dt>
+          <dd>AI/ML Engineer</dd>
+        </div>
+        <div>
+          <dt>Evidence emphasis</dt>
+          <dd>Privacy-aware NLP, grounded RAG, and applied ML systems</dd>
+        </div>
+        <div>
+          <dt>Public record</dt>
+          <dd>
+            <a href="https://hdl.handle.net/10315/43932">
+              York University thesis handle
+            </a>
+          </dd>
+        </div>
+      </dl>
+    </aside>
+  </section>
+</BaseLayout>
