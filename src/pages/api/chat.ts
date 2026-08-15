@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env as cloudflareEnv } from 'cloudflare:workers';
 import { answerRecruiterQuestion } from '@/lib/ai/answer-service';
 import {
   createWorkersAiProvider,
@@ -10,6 +11,7 @@ import { validateTurnstile } from '@/lib/security/turnstile';
 
 export const prerender = false;
 const TEST_SECRET = '1x0000000000000000000000000000000AA';
+const TEST_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX';
 const headers = {
   'content-type': 'application/json; charset=utf-8',
   'cache-control': 'no-store, max-age=0',
@@ -43,7 +45,7 @@ type Env = {
   TURNSTILE_EXPECTED_HOSTNAME?: string;
 };
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   if (
     !request.headers
       .get('content-type')
@@ -60,8 +62,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const requestBody = chatRequestSchema.safeParse(parsed);
   if (!requestBody.success)
     return error(400, 'invalid_request', 'Invalid request.');
-  const env = ((locals as { runtime?: { env?: Env } }).runtime?.env ??
-    {}) as Env;
+  const env = cloudflareEnv as Env;
   const local =
     new URL(request.url).hostname === 'localhost' ||
     new URL(request.url).hostname === '127.0.0.1';
@@ -72,11 +73,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
       'The assistant is temporarily unavailable.',
     );
   const secret = env.TURNSTILE_SECRET_KEY ?? TEST_SECRET;
-  const human = await validateTurnstile({
-    token: requestBody.data.turnstileToken,
-    secret,
-    expectedHostname: env.TURNSTILE_EXPECTED_HOSTNAME,
-  });
+  const usesLocalTestKeys =
+    local &&
+    secret === TEST_SECRET &&
+    requestBody.data.turnstileToken === TEST_TOKEN;
+  const human = usesLocalTestKeys
+    ? true
+    : await validateTurnstile({
+        token: requestBody.data.turnstileToken,
+        secret,
+        expectedHostname: env.TURNSTILE_EXPECTED_HOSTNAME,
+      });
   if (!human)
     return error(
       403,
