@@ -9,7 +9,8 @@ const localFallback = process.env.CI ? undefined : 'https://portfolio.test';
 const site = resolvePublicSiteUrl(process.env.PUBLIC_SITE_URL, localFallback);
 
 export default defineConfig({
-  adapter: cloudflare(),
+  // Keep build/prerender fully local. The on-demand route receives real bindings only in Cloudflare.
+  adapter: cloudflare({ remoteBindings: false }),
   integrations: [react(), mdx(), sitemap()],
   output: 'server',
   session: false,

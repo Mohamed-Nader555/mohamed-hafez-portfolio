@@ -7,6 +7,7 @@ export default tseslint.config(
       '.astro/',
       '.wrangler/',
       'dist/',
+      'bundled/',
       'node_modules/',
       'worker-configuration.d.ts',
     ],

@@ -1,0 +1,117 @@
+.portfolio-assistant {
+  position: fixed;
+  z-index: 20;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+}
+.assistant-launcher,
+.chat-panel button {
+  min-height: 44px;
+  border: 1px solid var(--color-evidence-500);
+  border-radius: 0.5rem;
+  padding: 0.65rem 1rem;
+  font: inherit;
+  cursor: pointer;
+}
+.assistant-launcher,
+.chat-actions button[type='submit'] {
+  background: var(--color-ai-500);
+  color: var(--color-ink-900);
+  font-weight: 700;
+}
+.chat-panel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: min(44rem, calc(100dvh - 2rem));
+  display: grid;
+  gap: 0.8rem;
+  overflow: auto;
+  padding: 1.1rem;
+  background: var(--color-ink-800);
+  border: 1px solid
+    color-mix(in srgb, var(--color-evidence-500) 60%, transparent);
+  box-shadow: 0 1rem 4rem #000a;
+}
+.chat-panel header,
+.chat-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-panel h2,
+.chat-panel p {
+  margin: 0;
+}
+.chat-panel textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 5rem;
+  font: inherit;
+}
+.chat-panel label {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+.chat-message,
+.chat-error {
+  padding: 0.8rem;
+  background: var(--color-ink-700);
+  border-left: 3px solid var(--color-evidence-500);
+}
+.chat-message--refused,
+.chat-error {
+  border-color: var(--color-ai-500);
+}
+.chat-citations,
+.chat-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+.chat-citations a {
+  color: var(--color-evidence-300);
+}
+.chat-suggestions button {
+  background: transparent;
+  color: var(--color-evidence-300);
+  border-color: currentColor;
+  font-size: 0.88rem;
+}
+.eyebrow,
+.chat-privacy {
+  color: var(--color-ink-300);
+  font-size: 0.9rem;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+@media (max-width: 700px) {
+  .portfolio-assistant {
+    position: static;
+    margin: 1rem;
+  }
+  .assistant-launcher {
+    width: 100%;
+  }
+  .chat-panel {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-height: 88dvh;
+    border-radius: 1rem 1rem 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-panel {
+    scroll-behavior: auto;
+  }
+}

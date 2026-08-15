@@ -5,6 +5,7 @@ import ExperienceSection from '@/components/sections/ExperienceSection.astro';
 import FeaturedWork from '@/components/sections/FeaturedWork.astro';
 import Hero from '@/components/sections/Hero.astro';
 import TeachingSection from '@/components/sections/TeachingSection.astro';
+import { PortfolioAssistant } from '@/components/ai/PortfolioAssistant';
 import { roles, screeningFacts } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { resolveLens } from '@/lib/content/resolve-lens';
@@ -20,6 +21,8 @@ const breadthLabels = roles
   .filter((role) => role.id !== roleId)
   .map((role) => role.label);
 const preferredSourceId = `resume-${roleId}`;
+const turnstileSiteKey =
+  import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '1x00000000000000000000AA';
 ---
 
 <BaseLayout
@@ -33,4 +36,14 @@ const preferredSourceId = `resume-${roleId}`;
   <ExperienceSection lens={lens} />
   <TeachingSection lens={lens} />
   <ContactSection />
+  <PortfolioAssistant
+    client:load
+    activeRole={roleId}
+    initialSuggestions={[
+      'How was Northstar built?',
+      'What technologies did Mohamed use in Dostava?',
+      'Where is Mohamed located and when can he start?',
+    ]}
+    turnstileSiteKey={turnstileSiteKey}
+  />
 </BaseLayout>
