@@ -255,7 +255,7 @@ test('base metadata describes the canonical page', async ({ page }) => {
 
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     'href',
-    'http://127.0.0.1:4321/',
+    'https://portfolio.test/',
   );
   await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
     'content',

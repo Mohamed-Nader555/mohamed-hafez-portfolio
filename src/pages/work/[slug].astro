@@ -4,6 +4,7 @@ import { projects } from '@/data';
 import { resolveSources } from '@/lib/content/resolve-sources';
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { createCreativeWorkStructuredData } from '@/lib/seo/structured-data';
 
 export const prerender = true;
 
@@ -45,6 +46,18 @@ const pagePath = `/work/${entry.data.slug}`;
 const publicEvidence = Object.freeze(
   resolvedSources.filter((source) => source.publicHref !== pagePath),
 );
+const project = projects.find(
+  (candidate) => candidate.slug === entry.data.slug,
+);
+if (!project) throw new Error(`Missing project record for ${entry.data.slug}`);
+if (!Astro.site) throw new Error('Astro.site must be configured.');
+const structuredData = [
+  createCreativeWorkStructuredData(
+    project,
+    new URL(pagePath, Astro.site),
+    Astro.site,
+  ),
+];
 ---
 
 <CaseStudyLayout
@@ -54,6 +67,7 @@ const publicEvidence = Object.freeze(
   roles={entry.data.roles}
   technologies={entry.data.technologies}
   sources={publicEvidence}
+  structuredData={structuredData}
 >
   <Content />
 </CaseStudyLayout>

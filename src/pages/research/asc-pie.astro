@@ -6,6 +6,7 @@ import {
   resolveSources,
   resolveSourcesForRoute,
 } from '@/lib/content/resolve-sources';
+import { createThesisStructuredData } from '@/lib/seo/structured-data';
 
 export const prerender = true;
 
@@ -36,12 +37,21 @@ const statusSource = resolveSourcesForRoute(
   statusRecord.sourceIds,
   Astro.url.pathname,
 )[0];
+if (!Astro.site) throw new Error('Astro.site must be configured.');
+const structuredData = [
+  createThesisStructuredData(
+    new URL('/research/asc-pie', Astro.site),
+    Astro.site,
+  ),
+];
 ---
 
 <BaseLayout
   title={`${thesisTitle} — Mohamed Hafez`}
   description={titleRecord.statement}
   roleId="aiml"
+  openGraphType="article"
+  structuredData={structuredData}
 >
   <header class="longform-hero shell-container">
     <p class="utility-label">York University · M.A. research</p>

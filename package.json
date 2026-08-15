@@ -7,6 +7,7 @@
   "scripts": {
     "assets:images": "tsx scripts/optimize-project-images.ts",
     "assets:verify": "tsx scripts/verify-public-assets.ts",
+    "budget:js": "tsx scripts/verify-javascript-budgets.ts",
     "dev": "wrangler types && astro dev",
     "build": "wrangler types && astro check && astro build",
     "check": "wrangler types && astro check",

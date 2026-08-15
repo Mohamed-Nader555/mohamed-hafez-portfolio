@@ -20,3 +20,7 @@ The product direction and responsive design are approved. This initial repositor
 Commit source code, tests, curated public content, the four role-specific public résumés, approved screenshots, database migrations, documentation, and example configuration files.
 
 Never commit API keys, Cloudflare secrets, `.env` or `.dev.vars` files, raw analytics exports, signing keys, private supplementary source files, or copied credential files from older repositories. See `.gitignore` and the architecture specification for the full boundary.
+
+## Canonical production origin
+
+Canonical links, Open Graph URLs, structured data, `robots.txt`, and the sitemap all use the single validated `PUBLIC_SITE_URL` build variable. Cloudflare production builds must set it to the real assigned HTTPS origin before deployment. The repository deliberately does not contain an invented `workers.dev` hostname. Local builds use the explicit `https://portfolio.test` fallback; browser tests set the same deterministic origin.

@@ -1,4 +1,34 @@
 @layer components {
+  .privacy-record {
+    display: grid;
+    max-inline-size: calc(var(--width-reading) + 2 * var(--width-gutter));
+    gap: var(--space-10);
+    padding-block: 0 var(--space-section);
+  }
+
+  .privacy-record section {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .privacy-record h2 {
+    color: var(--color-ink-100);
+    font-family: var(--font-display);
+    font-size: var(--type-section);
+    line-height: var(--leading-tight);
+  }
+
+  .analytics-opt-out-placeholder {
+    padding: var(--space-5);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: color-mix(
+      in srgb,
+      var(--color-evidence-500) 6%,
+      var(--color-ink-900)
+    );
+  }
+
   .longform-hero {
     position: relative;
     padding-block: clamp(var(--space-16), 9vw, 7.5rem) var(--space-section);

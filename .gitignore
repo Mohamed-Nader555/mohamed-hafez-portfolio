@@ -9,6 +9,7 @@ coverage/
 playwright-report/
 test-results/
 lighthouse-results/
+.lighthouseci/
 src/generated/
 worker-configuration.d.ts
 

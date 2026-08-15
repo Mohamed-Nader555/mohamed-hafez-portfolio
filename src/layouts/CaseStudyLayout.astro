@@ -3,6 +3,7 @@ import CaseStudyEvidence from '@/components/case-study/CaseStudyEvidence.astro';
 import { roles } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import type { PublicSource } from '@/lib/content/resolve-sources';
+import type { StructuredDataNode } from '@/lib/seo/structured-data';
 import type { RoleId } from '@/types/content';
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
   roles: readonly RoleId[];
   technologies: readonly string[];
   sources: readonly PublicSource[];
+  structuredData: readonly StructuredDataNode[];
 }
 
 const {
@@ -21,6 +23,7 @@ const {
   roles: studyRoles,
   technologies,
   sources,
+  structuredData,
 } = Astro.props;
 const roleById = new Map(roles.map((role) => [role.id, role.label]));
 const roleId = studyRoles[0] ?? 'aiml';
@@ -30,6 +33,8 @@ const roleId = studyRoles[0] ?? 'aiml';
   title={`${title} — Mohamed Hafez`}
   description={summary}
   roleId={roleId}
+  openGraphType="article"
+  structuredData={structuredData}
 >
   <header class="longform-hero shell-container">
     <nav class="breadcrumbs" aria-label="Breadcrumb">

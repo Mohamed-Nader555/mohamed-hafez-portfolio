@@ -9,8 +9,9 @@ export default defineConfig({
     command: 'npm run dev -- --host 127.0.0.1',
     env: {
       ASTRO_DEV_BACKGROUND: '0',
+      PUBLIC_SITE_URL: 'https://portfolio.test',
     },
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     url: 'http://127.0.0.1:4321/@vite/client',
   },
   projects: [

@@ -1,0 +1,90 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+export const prerender = true;
+---
+
+<BaseLayout
+  title="Privacy — Mohamed Hafez"
+  description="Plain-language privacy details for Mohamed Hafez’s portfolio, including aggregate traffic measurement and the planned first-party event policy."
+  roleId="aiml"
+>
+  <header class="longform-hero shell-container">
+    <p class="utility-label">Privacy</p>
+    <h1>Useful measurement without visitor profiles</h1>
+    <p class="longform-hero__summary">
+      This portfolio is designed to measure whether its public evidence is
+      useful without identifying recruiters or storing the substance of their
+      conversations.
+    </p>
+  </header>
+
+  <article class="privacy-record shell-container">
+    <section aria-labelledby="traffic-measurement-title">
+      <h2 id="traffic-measurement-title">Aggregate traffic measurement</h2>
+      <p>
+        Cloudflare Web Analytics is the launch measurement service for page
+        traffic and Core Web Vitals once Mohamed enables it for the production
+        hostname. It is separate from the first-party custom-event system
+        described below.
+      </p>
+    </section>
+
+    <section aria-labelledby="custom-events-title">
+      <h2 id="custom-events-title">Future first-party custom events</h2>
+      <p>
+        A later analytics phase will add a first-party <code>/api/events</code>
+        endpoint for normalized actions such as lens selection, case-study opening,
+        résumé download, contact/profile clicks, and chat outcomes. That custom-event
+        collection is not active in the current foundation.
+      </p>
+      <p>
+        When enabled, permitted fields will be limited to route, recruiter lens,
+        target or project ID, question category, outcome, public source IDs, a
+        coarse latency bucket, AI model ID, and a random session ID that is
+        hashed on the server. It will not collect names, email addresses, phone
+        numbers, exact IP addresses, full user agents, fingerprints, or
+        cross-site identifiers.
+      </p>
+    </section>
+
+    <section aria-labelledby="chat-privacy-title">
+      <h2 id="chat-privacy-title">Chat content</h2>
+      <p>
+        The design does not store raw chat questions or answers in analytics.
+        Conversation history will stay in browser session storage only for the
+        active session and will not be written to a permanent portfolio
+        transcript.
+      </p>
+    </section>
+
+    <section aria-labelledby="retention-title">
+      <h2 id="retention-title">Retention after custom analytics launches</h2>
+      <p>
+        Once first-party custom events are enabled, raw anonymous-session events
+        will expire after 30 days and daily aggregate counts will expire after
+        180 days.
+      </p>
+    </section>
+
+    <section aria-labelledby="privacy-controls-title">
+      <h2 id="privacy-controls-title">Privacy controls</h2>
+      <p>
+        The future custom-event client will honor Global Privacy Control and Do
+        Not Track by disabling collection. It will also provide a local opt-out
+        that stores only the opt-out choice, never a persistent visitor
+        identifier.
+      </p>
+      <div
+        class="analytics-opt-out-placeholder"
+        data-analytics-opt-out-mount
+        aria-live="polite"
+      >
+        <p>
+          Custom event analytics is not active yet. This clearly marked hook
+          will become the working local opt-out control in the analytics phase.
+        </p>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
