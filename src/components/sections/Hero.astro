@@ -1,4 +1,6 @@
 ---
+import ContactLinks from '@/components/layout/ContactLinks.astro';
+import ResumeLink from '@/components/layout/ResumeLink.astro';
 import { profile } from '@/data';
 import type { ResolvedLens } from '@/lib/content/resolve-lens';
 
@@ -26,12 +28,16 @@ const { lens, breadthLabels } = Astro.props;
       {breadthLabels.join(' · ')}
     </p>
     <div class="lens-actions">
-      <a class="primary-action" href={`mailto:${profile.contacts.email}`}>
-        Email Mohamed
-      </a>
-      <a class="secondary-action" href={lens.resumeHref}>
-        View {lens.label} résumé
-      </a>
+      <ContactLinks
+        ariaLabel="Recruiter contact action"
+        channels={['email']}
+        variant="action"
+      />
+      <ResumeLink
+        href={lens.resumeHref}
+        roleId={lens.roleId}
+        roleLabel={lens.label}
+      />
     </div>
   </div>
 

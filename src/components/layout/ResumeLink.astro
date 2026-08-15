@@ -1,0 +1,37 @@
+---
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  href: string;
+  roleId: RoleId;
+  roleLabel: string;
+  class?: string;
+}
+
+const {
+  href,
+  roleId,
+  roleLabel,
+  class: className = 'secondary-action',
+} = Astro.props;
+const downloadFilename = href.split('/').at(-1);
+
+if (
+  !href.startsWith('/resumes/') ||
+  !downloadFilename?.endsWith('.pdf') ||
+  downloadFilename.includes('..')
+) {
+  throw new Error(`ResumeLink received an invalid public resume href: ${href}`);
+}
+---
+
+<a
+  class={className}
+  href={href}
+  download={downloadFilename}
+  data-analytics-event="resume_downloaded"
+  data-analytics-target={`resume-${roleId}`}
+  data-analytics-lens={roleId}
+>
+  Download {roleLabel} résumé
+</a>

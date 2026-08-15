@@ -118,6 +118,42 @@
     color: var(--color-evidence-300);
   }
 
+  .project-gallery {
+    display: grid;
+    max-inline-size: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+    margin-block: var(--space-10) var(--space-6);
+  }
+
+  .project-screenshot {
+    min-inline-size: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--color-ink-850) 84%, transparent);
+    box-shadow: var(--shadow-surface);
+  }
+
+  .project-screenshot picture,
+  .project-screenshot img {
+    display: block;
+    inline-size: 100%;
+  }
+
+  .project-screenshot img {
+    block-size: auto;
+    aspect-ratio: 1 / 2;
+  }
+
+  .project-screenshot figcaption {
+    padding: var(--space-4);
+    border-block-start: 1px solid var(--border-subtle);
+    color: var(--color-ink-200);
+    font-size: var(--type-sm);
+    line-height: 1.5;
+  }
+
   .architecture-diagram {
     max-inline-size: none;
     margin-block: var(--space-8);
@@ -535,6 +571,10 @@
     }
 
     .architecture-diagram__relationships {
+      grid-template-columns: 1fr;
+    }
+
+    .project-gallery {
       grid-template-columns: 1fr;
     }
   }

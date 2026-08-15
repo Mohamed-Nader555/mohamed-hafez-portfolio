@@ -1,0 +1,91 @@
+---
+import { profile } from '@/data';
+
+type ContactChannel = 'email' | 'phone' | 'linkedin' | 'github';
+
+interface Props {
+  ariaLabel: string;
+  channels?: readonly ContactChannel[];
+  variant?: 'action' | 'grid' | 'compact';
+}
+
+const {
+  ariaLabel,
+  channels = ['email', 'phone', 'linkedin', 'github'],
+  variant = 'grid',
+} = Astro.props;
+const phoneHref = profile.contacts.phone.replace(/[^+\d]/g, '');
+const contacts = {
+  email: {
+    href: `mailto:${profile.contacts.email}`,
+    label: 'Email',
+    detail: profile.contacts.email,
+    ariaLabel: 'Email Mohamed',
+    analyticsEvent: 'contact_clicked',
+    analyticsTarget: 'email',
+    external: false,
+  },
+  phone: {
+    href: `tel:${phoneHref}`,
+    label: 'Phone',
+    detail: profile.contacts.phone,
+    ariaLabel: `Phone Mohamed at ${profile.contacts.phone}`,
+    analyticsEvent: 'contact_clicked',
+    analyticsTarget: 'phone',
+    external: false,
+  },
+  linkedin: {
+    href: profile.contacts.linkedIn,
+    label: 'Professional profile',
+    detail: 'LinkedIn',
+    ariaLabel: 'Open Mohamed Hafez on LinkedIn',
+    analyticsEvent: 'linkedin_clicked',
+    analyticsTarget: 'linkedin',
+    external: true,
+  },
+  github: {
+    href: profile.contacts.github,
+    label: 'Public code profile',
+    detail: `GitHub · ${profile.githubHandle}`,
+    ariaLabel: `Open ${profile.githubHandle} on GitHub`,
+    analyticsEvent: 'github_clicked',
+    analyticsTarget: 'github',
+    external: true,
+  },
+} as const;
+---
+
+<nav
+  class:list={[
+    'contact-links',
+    `contact-links--${variant}`,
+    { 'contact-grid': variant === 'grid' },
+  ]}
+  aria-label={ariaLabel}
+>
+  {
+    channels.map((channel) => {
+      const contact = contacts[channel];
+      return (
+        <a
+          class:list={{ 'primary-action': variant === 'action' }}
+          href={contact.href}
+          aria-label={contact.ariaLabel}
+          data-analytics-event={contact.analyticsEvent}
+          data-analytics-target={contact.analyticsTarget}
+          target={contact.external ? '_blank' : undefined}
+          rel={contact.external ? 'noopener noreferrer' : undefined}
+        >
+          {variant === 'action' ? (
+            'Email Mohamed'
+          ) : (
+            <>
+              <span>{contact.label}</span>
+              <strong>{contact.detail}</strong>
+            </>
+          )}
+        </a>
+      );
+    })
+  }
+</nav>

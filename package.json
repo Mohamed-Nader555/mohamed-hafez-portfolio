@@ -5,6 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "assets:images": "tsx scripts/optimize-project-images.ts",
+    "assets:verify": "tsx scripts/verify-public-assets.ts",
     "dev": "wrangler types && astro dev",
     "build": "wrangler types && astro check && astro build",
     "check": "wrangler types && astro check",
@@ -51,6 +53,7 @@
     "playwright": "^1.62.1",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
+    "sharp": "^0.35.3",
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0",

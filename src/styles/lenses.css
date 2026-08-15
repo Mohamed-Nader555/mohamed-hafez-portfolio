@@ -82,6 +82,10 @@
     margin-block-start: var(--space-8);
   }
 
+  .contact-links--action {
+    display: inline-flex;
+  }
+
   .lens-hero__context {
     position: relative;
     min-inline-size: 0;
@@ -449,6 +453,24 @@
   }
 
   .contact-grid strong {
+    overflow-wrap: anywhere;
+    color: var(--color-evidence-300);
+    font-size: var(--type-sm);
+  }
+
+  .contact-links--compact span,
+  .contact-links--compact strong {
+    display: block;
+  }
+
+  .contact-links--compact span {
+    color: var(--color-ink-300);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    text-transform: uppercase;
+  }
+
+  .contact-links--compact strong {
     overflow-wrap: anywhere;
     color: var(--color-evidence-300);
     font-size: var(--type-sm);

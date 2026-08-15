@@ -22,6 +22,7 @@ publishedAt: 2026-08-14
 ---
 
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+import ProjectGallery from '@/components/case-study/ProjectGallery.astro';
 
 ## Context
 
@@ -48,6 +49,8 @@ The order experience needed both remote service access and local persistence. De
 ## Implementation
 
 The app uses Java with MVVM to separate presentation behavior from its data layers. Retrofit handles remote APIs, Room provides local persistence, Firebase supports the mobile workflow and notifications, and Google Maps supplies delivery location and tracking features.
+
+<ProjectGallery projectId="dostava" />
 
 ## Outcome
 

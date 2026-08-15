@@ -1,7 +1,6 @@
 ---
+import ContactLinks from '@/components/layout/ContactLinks.astro';
 import { profile } from '@/data';
-
-const phoneHref = profile.contacts.phone.replace(/[^+\d]/g, '');
 ---
 
 <section
@@ -14,22 +13,5 @@ const phoneHref = profile.contacts.phone.replace(/[^+\d]/g, '');
     <p>{profile.availability} · {profile.location}</p>
   </div>
 
-  <nav class="contact-grid" aria-label="Direct contact options">
-    <a href={`mailto:${profile.contacts.email}`}>
-      <span>Email</span>
-      <strong>{profile.contacts.email}</strong>
-    </a>
-    <a href={`tel:${phoneHref}`}>
-      <span>Phone</span>
-      <strong>{profile.contacts.phone}</strong>
-    </a>
-    <a href={profile.contacts.linkedIn}>
-      <span>Professional profile</span>
-      <strong>LinkedIn</strong>
-    </a>
-    <a href={profile.contacts.github}>
-      <span>Public code profile</span>
-      <strong>GitHub · {profile.githubHandle}</strong>
-    </a>
-  </nav>
+  <ContactLinks ariaLabel="Direct contact options" />
 </section>
