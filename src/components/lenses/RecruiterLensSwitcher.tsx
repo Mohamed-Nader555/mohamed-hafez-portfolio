@@ -1,4 +1,5 @@
 import { roles } from '@/data/roles';
+import { roleHref } from '@/lib/content/role-query';
 import type { RoleId } from '@/types/content';
 
 type RecruiterLensSwitcherProps = {
@@ -19,9 +20,9 @@ export function RecruiterLensSwitcher({
               aria-current={isActive ? 'page' : undefined}
               aria-label={role.label}
               className={`lens-link${role.id === 'aiml' ? ' lens-link--ai' : ''}`}
+              data-astro-reload=""
               data-lens={role.id}
-              data-astro-prefetch="viewport"
-              href={role.route}
+              href={roleHref(role.id)}
             >
               {role.label}
             </a>

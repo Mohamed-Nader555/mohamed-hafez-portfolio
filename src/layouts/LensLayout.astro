@@ -1,16 +1,10 @@
 ---
 import ContactSection from '@/components/sections/ContactSection.astro';
-import CareerTimeline from '@/components/sections/CareerTimeline.astro';
 import EducationCredentials from '@/components/sections/EducationCredentials.astro';
-import EvidencePanel from '@/components/sections/EvidencePanel.astro';
-import FeaturedWork from '@/components/sections/FeaturedWork.astro';
-import Hero from '@/components/sections/Hero.astro';
-import ProofStrip from '@/components/sections/ProofStrip.astro';
-import RoleSummary from '@/components/sections/RoleSummary.astro';
-import SkillsMatrix from '@/components/sections/SkillsMatrix.astro';
 import TeachingPortfolio from '@/components/sections/TeachingPortfolio.astro';
+import RoleContent from '@/components/lenses/RoleContent.astro';
 import { PortfolioAssistant } from '@/components/ai/PortfolioAssistant';
-import { roles, screeningFacts } from '@/data';
+import { roles } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { resolveLens } from '@/lib/content/resolve-lens';
 import type { RoleId } from '@/types/content';
@@ -21,9 +15,6 @@ interface Props {
 
 const { roleId } = Astro.props;
 const lens = resolveLens(roleId);
-const breadthLabels = roles
-  .filter((role) => role.id !== roleId)
-  .map((role) => role.label);
 const turnstileSiteKey =
   import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '1x00000000000000000000AA';
 ---
@@ -33,13 +24,14 @@ const turnstileSiteKey =
   description={lens.description}
   roleId={lens.roleId}
 >
-  <Hero lens={lens} breadthLabels={breadthLabels} />
-  <ProofStrip />
-  <RoleSummary roleId={roleId} />
-  <EvidencePanel facts={screeningFacts} />
-  <FeaturedWork projects={lens.projects} />
-  <CareerTimeline roleId={roleId} />
-  <SkillsMatrix roleId={roleId} />
+  <RoleContent roleId={roleId} />
+  {
+    roles.map((role) => (
+      <template data-role-template={role.id}>
+        <RoleContent roleId={role.id} />
+      </template>
+    ))
+  }
   <TeachingPortfolio />
   <EducationCredentials />
   <ContactSection />

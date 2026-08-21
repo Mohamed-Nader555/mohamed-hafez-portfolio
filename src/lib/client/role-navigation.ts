@@ -1,0 +1,113 @@
+import type { RoleId } from '@/types/content';
+
+const roleSelector = 'a[data-lens][href*="role="]';
+
+export function installRoleNavigation() {
+  async function renderRole(url: URL, pushHistory: boolean) {
+    document.documentElement.dataset.roleNavigating = 'true';
+
+    try {
+      const requestedRole = url.searchParams.get('role') ?? 'aiml';
+      const template = document.querySelector<HTMLTemplateElement>(
+        `template[data-role-template="${requestedRole}"]`,
+      );
+      const currentContent = document.querySelector<HTMLElement>(
+        '[data-role-content]',
+      );
+      const nextContent = template?.content.firstElementChild?.cloneNode(
+        true,
+      ) as HTMLElement | undefined;
+      if (!currentContent || !nextContent || !template) {
+        throw new Error('The requested role template is unavailable.');
+      }
+
+      const nextRole = nextContent.dataset.role as RoleId;
+      const swapContent = () => {
+        currentContent.replaceWith(nextContent);
+        document.title = nextContent.dataset.roleTitle ?? document.title;
+        document
+          .querySelector('[data-shell]')
+          ?.setAttribute('data-active-role', nextRole);
+        if (pushHistory) history.pushState({ role: nextRole }, '', url);
+        document.dispatchEvent(
+          new CustomEvent<RoleId>('portfolio:role-change', {
+            detail: nextRole,
+          }),
+        );
+        document.dispatchEvent(new Event('portfolio:content-updated'));
+      };
+
+      const reducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches;
+      if (reducedMotion || !currentContent.animate) {
+        swapContent();
+      } else {
+        await currentContent
+          .animate(
+            [
+              { opacity: 1, filter: 'blur(0)', transform: 'scale(1)' },
+              {
+                opacity: 0,
+                filter: 'blur(0.7rem)',
+                transform: 'scale(0.995)',
+              },
+            ],
+            { duration: 90, easing: 'ease-in', fill: 'forwards' },
+          )
+          .finished.catch(() => undefined);
+        swapContent();
+        nextContent.animate(
+          [
+            {
+              opacity: 0,
+              filter: 'blur(0.8rem)',
+              transform: 'scale(1.005)',
+            },
+            { opacity: 1, filter: 'blur(0)', transform: 'scale(1)' },
+          ],
+          {
+            duration: 180,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          },
+        );
+      }
+    } catch {
+      window.location.assign(url);
+    } finally {
+      delete document.documentElement.dataset.roleNavigating;
+    }
+  }
+
+  document.addEventListener(
+    'click',
+    (event) => {
+      if (
+        !(event.target instanceof Element) ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      const link = event.target.closest<HTMLAnchorElement>(roleSelector);
+      if (!link || link.target || link.hasAttribute('download')) return;
+      const url = new URL(link.href, window.location.href);
+      if (url.origin !== window.location.origin || url.pathname !== '/') return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (url.href !== window.location.href) void renderRole(url, true);
+    },
+    true,
+  );
+
+  window.addEventListener('popstate', () => {
+    if (window.location.pathname === '/') {
+      void renderRole(new URL(window.location.href), false);
+    }
+  });
+}

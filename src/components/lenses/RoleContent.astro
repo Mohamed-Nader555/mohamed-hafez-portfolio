@@ -1,0 +1,38 @@
+---
+import EvidencePanel from '@/components/sections/EvidencePanel.astro';
+import FeaturedWork from '@/components/sections/FeaturedWork.astro';
+import Hero from '@/components/sections/Hero.astro';
+import ProofStrip from '@/components/sections/ProofStrip.astro';
+import RoleSummary from '@/components/sections/RoleSummary.astro';
+import CareerTimeline from '@/components/sections/CareerTimeline.astro';
+import SkillsMatrix from '@/components/sections/SkillsMatrix.astro';
+import { roles, screeningFacts } from '@/data';
+import { resolveLens } from '@/lib/content/resolve-lens';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  roleId: RoleId;
+}
+
+const { roleId } = Astro.props;
+const lens = resolveLens(roleId);
+const breadthLabels = roles
+  .filter((role) => role.id !== roleId)
+  .map((role) => role.label);
+---
+
+<div
+  class="role-content"
+  data-role-content
+  data-role={roleId}
+  data-role-title={lens.title}
+  transition:name="role-content"
+>
+  <Hero lens={lens} breadthLabels={breadthLabels} />
+  <ProofStrip />
+  <RoleSummary roleId={roleId} />
+  <EvidencePanel facts={screeningFacts} />
+  <FeaturedWork projects={lens.projects} />
+  <CareerTimeline roleId={roleId} />
+  <SkillsMatrix roleId={roleId} />
+</div>

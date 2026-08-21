@@ -17,6 +17,7 @@ export function PortfolioAssistant({
   initialSuggestions: string[];
   turnstileSiteKey?: string;
 }) {
+  const [selectedRole, setSelectedRole] = useState(activeRole);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState('');
   const [state, setState] = useState('ready');
@@ -36,6 +37,14 @@ export function PortfolioAssistant({
     };
     document.addEventListener('keydown', close);
     return () => document.removeEventListener('keydown', close);
+  }, []);
+  useEffect(() => {
+    const selectRole = (event: Event) => {
+      setSelectedRole((event as CustomEvent<RoleId>).detail);
+    };
+    document.addEventListener('portfolio:role-change', selectRole);
+    return () =>
+      document.removeEventListener('portfolio:role-change', selectRole);
   }, []);
   useEffect(() => () => controller.current?.abort(), []);
   const clear = () => {
@@ -59,7 +68,7 @@ export function PortfolioAssistant({
       const next = await submitChatTurn(
         {
           question: draft.trim(),
-          activeRole,
+          activeRole: selectedRole,
           history: session.history,
           sessionId: session.sessionId,
           turnstileToken,

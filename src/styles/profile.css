@@ -6,12 +6,18 @@
 
   .ambient-background {
     position: fixed;
-    z-index: -2;
+    z-index: 0;
     inset: 0;
     background:
       radial-gradient(
-        32rem circle at var(--pointer-x) var(--pointer-y),
-        rgb(43 221 229 / 12%),
+        35rem circle at var(--pointer-x) var(--pointer-y),
+        rgb(43 221 229 / 22%),
+        transparent 68%
+      ),
+      radial-gradient(
+        30rem circle at calc(var(--pointer-x) + 8rem)
+          calc(var(--pointer-y) - 5rem),
+        rgb(255 60 190 / 14%),
         transparent 70%
       ),
       radial-gradient(
@@ -25,7 +31,17 @@
         transparent 72%
       ),
       var(--color-ink-950);
+    will-change: background;
     pointer-events: none;
+  }
+
+  .site-shell {
+    position: relative;
+    z-index: 1;
+  }
+
+  .role-content {
+    view-transition-name: role-content;
   }
 
   .site-header {

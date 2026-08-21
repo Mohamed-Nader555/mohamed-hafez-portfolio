@@ -61,6 +61,8 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 </html>
 
 <script>
+  import { installRoleNavigation } from '@/lib/client/role-navigation';
+
   function prepareReveals() {
     const elements = document.querySelectorAll(
       '.section-heading, .project-card, .case-study-card, .experience-records article, .depth-grid article, .responsibility-groups article, .career-timeline article, .skills-grid article, .teaching-cards article, .education-grid article, .project-library__grid article, .research-stat-grid article, .research-chart-grid figure',
@@ -92,7 +94,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
   }
 
   document.addEventListener('astro:page-load', prepareReveals);
+  document.addEventListener('portfolio:content-updated', prepareReveals);
   prepareReveals();
+  installRoleNavigation();
 
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let pointerFrame = 0;

@@ -1,7 +1,10 @@
 ---
 import LensLayout from '@/layouts/LensLayout.astro';
+import { roleFromSearchParams } from '@/lib/content/role-query';
 
-export const prerender = true;
+export const prerender = false;
+
+const roleId = roleFromSearchParams(Astro.url.searchParams);
 ---
 
-<LensLayout roleId="aiml" />
+<LensLayout roleId={roleId} />
