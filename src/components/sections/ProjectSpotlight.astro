@@ -1,0 +1,86 @@
+---
+import { projects } from '@/data';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  roleId: RoleId;
+}
+
+const { roleId } = Astro.props;
+const spotlightByRole = {
+  aiml: {
+    projectId: 'asc-pie',
+    href: '/research/asc-pie',
+    outcome:
+      '333,109 examples standardized across five public datasets and 19 PII entity types.',
+    nodes: ['5 sources', '19 PII types', '333K examples'],
+    core: 'NER',
+  },
+  software: {
+    projectId: 'northstar-rag',
+    href: '/work/northstar-rag',
+    outcome:
+      'Grounded retrieval with citations, refusal behaviour, evaluation, testing, and Docker delivery.',
+    nodes: ['Ingest', 'Retrieve', 'Answer'],
+    core: 'RAG',
+  },
+  android: {
+    projectId: 'minds-eye',
+    href: '/work/minds-eye',
+    outcome:
+      'More than 80% delivered across Android, embedded hardware, OCR, recognition, and speech.',
+    nodes: ['Wearable', 'Android', 'Vision + speech'],
+    core: 'CV',
+  },
+  teaching: {
+    projectId: 'teaching-experience',
+    href: '/experience#teaching-and-communication-title',
+    outcome:
+      '200+ hours of instruction alongside university labs, tutorials, workshops, and mentoring.',
+    nodes: ['Explain', 'Practice', 'Feedback'],
+    core: 'LEARN',
+  },
+} as const;
+
+const spotlight = spotlightByRole[roleId];
+const project = projects.find((entry) => entry.id === spotlight.projectId);
+if (!project)
+  throw new Error(`Missing spotlight project: ${spotlight.projectId}`);
+---
+
+<aside
+  class="project-spotlight"
+  data-spotlight-role={roleId}
+  aria-label="Project spotlight"
+>
+  <div class="project-spotlight__visual" aria-hidden="true">
+    <div class="project-spotlight__diagram">
+      <span class="project-spotlight__node project-spotlight__node--first">
+        {spotlight.nodes[0]}
+      </span>
+      <span class="project-spotlight__core">{spotlight.core}</span>
+      <span class="project-spotlight__node project-spotlight__node--second">
+        {spotlight.nodes[1]}
+      </span>
+      <span class="project-spotlight__node project-spotlight__node--third">
+        {spotlight.nodes[2]}
+      </span>
+    </div>
+  </div>
+  <div class="project-spotlight__body">
+    <p class="utility-label">Project spotlight</p>
+    <h2>{project.title}</h2>
+    <p>{spotlight.outcome}</p>
+    <ul aria-label={`${project.title} spotlight technologies`}>
+      {
+        project.technologies
+          .slice(0, 3)
+          .map((technology) => <li>{technology}</li>)
+      }
+    </ul>
+    <a href={spotlight.href} data-astro-prefetch="hover">
+      {roleId === 'teaching' ? 'View experience' : 'View case study'}
+      <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+</aside>

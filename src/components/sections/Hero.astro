@@ -2,6 +2,7 @@
 import ContactLinks from '@/components/layout/ContactLinks.astro';
 import RecruiterLensNav from '@/components/layout/RecruiterLensNav.astro';
 import ResumeLink from '@/components/layout/ResumeLink.astro';
+import ProjectSpotlight from '@/components/sections/ProjectSpotlight.astro';
 import { profile } from '@/data';
 import { careerRoles } from '@/data/career';
 import type { ResolvedLens } from '@/lib/content/resolve-lens';
@@ -53,23 +54,26 @@ const roleContent = careerRoles[lens.roleId];
     </div>
   </div>
 
-  <aside class="lens-hero__context" aria-label="Availability and work status">
-    <p class="context-signal">
-      <span aria-hidden="true"></span>{profile.availability}
-    </p>
-    <dl>
-      <div>
-        <dt>Location</dt>
-        <dd>{profile.location}</dd>
-      </div>
-      <div>
-        <dt>Work authorization</dt>
-        <dd>{profile.workAuthorization}</dd>
-      </div>
-      <div>
-        <dt>Sponsorship</dt>
-        <dd>{profile.sponsorship}</dd>
-      </div>
-    </dl>
-  </aside>
+  <div class="lens-hero__aside">
+    <ProjectSpotlight roleId={lens.roleId} />
+    <aside class="lens-hero__context" aria-label="Availability and work status">
+      <p class="context-signal">
+        <span aria-hidden="true"></span>{profile.availability}
+      </p>
+      <dl>
+        <div>
+          <dt>Location</dt>
+          <dd>{profile.location}</dd>
+        </div>
+        <div>
+          <dt>Work authorization</dt>
+          <dd>{profile.workAuthorization}</dd>
+        </div>
+        <div>
+          <dt>Sponsorship</dt>
+          <dd>{profile.sponsorship}</dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
 </section>

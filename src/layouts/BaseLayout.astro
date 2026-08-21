@@ -113,6 +113,14 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
             '--pointer-y',
             `${event.clientY}px`,
           );
+          document.documentElement.style.setProperty(
+            '--pointer-shift-x',
+            `${(event.clientX / window.innerWidth - 0.5) * 10}px`,
+          );
+          document.documentElement.style.setProperty(
+            '--pointer-shift-y',
+            `${(event.clientY / window.innerHeight - 0.5) * 8}px`,
+          );
         });
       },
       { passive: true },
