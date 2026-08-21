@@ -16,7 +16,7 @@ const records = [
     id: 'asc-pie-degree-awarded',
     title: 'M.A. completion',
     statement:
-      'I completed my M.A. in Information Systems & Technology at York University in 2026.',
+      'I completed my M.A. in Information Systems & Technology at York University, and it was officially awarded in 2026.',
     topics: ['York University', 'M.A.', 'education', '2026'],
     aliases: ['masters degree', 'graduate degree', 'degree status'],
     roleWeights: { aiml: 5, software: 3, android: 1, teaching: 5 },

@@ -12,6 +12,7 @@ import '@/styles/components.css';
 import '@/styles/lenses.css';
 import '@/styles/longform.css';
 import '@/styles/motion.css';
+import '@/styles/profile.css';
 
 interface Props {
   title: string;
@@ -47,9 +48,10 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <ClientRouter />
   </head>
   <body>
-    <div class="site-shell" data-shell>
+    <div class="ambient-background" aria-hidden="true"></div>
+    <div class="site-shell" data-shell data-active-role={roleId}>
       <a class="skip-link" href="#main-content">Skip to main content</a>
-      <Header activeRole={roleId} />
+      <Header />
       <main class="site-main" id="main-content" tabindex="-1">
         <slot />
       </main>
@@ -61,7 +63,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 <script>
   function prepareReveals() {
     const elements = document.querySelectorAll(
-      '.section-heading, .project-card, .case-study-card, .experience-records article, .depth-grid article, .responsibility-groups article',
+      '.section-heading, .project-card, .case-study-card, .experience-records article, .depth-grid article, .responsibility-groups article, .career-timeline article, .skills-grid article, .teaching-cards article, .education-grid article, .project-library__grid article, .research-stat-grid article, .research-chart-grid figure',
     );
     const reducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
@@ -91,4 +93,25 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 
   document.addEventListener('astro:page-load', prepareReveals);
   prepareReveals();
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let pointerFrame = 0;
+    window.addEventListener(
+      'pointermove',
+      (event) => {
+        cancelAnimationFrame(pointerFrame);
+        pointerFrame = requestAnimationFrame(() => {
+          document.documentElement.style.setProperty(
+            '--pointer-x',
+            `${event.clientX}px`,
+          );
+          document.documentElement.style.setProperty(
+            '--pointer-y',
+            `${event.clientY}px`,
+          );
+        });
+      },
+      { passive: true },
+    );
+  }
 </script>

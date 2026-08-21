@@ -9,9 +9,9 @@ it('opens an accessible assistant dialog and closes it with Escape', () => {
       initialSuggestions={['How was Northstar built?']}
     />,
   );
-  fireEvent.click(screen.getByRole('button', { name: /ask about Mohamed/i }));
+  fireEvent.click(screen.getByRole('button', { name: /ask about my work/i }));
   expect(
-    screen.getByRole('dialog', { name: /portfolio evidence assistant/i }),
+    screen.getByRole('dialog', { name: /portfolio assistant/i }),
   ).toBeVisible();
   fireEvent.keyDown(document, { key: 'Escape' });
   expect(screen.queryByRole('dialog')).toBeNull();

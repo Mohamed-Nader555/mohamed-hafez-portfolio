@@ -1,4 +1,12 @@
 import { evidence, projects, screeningFacts, sources } from '@/data';
+import {
+  careerExperience,
+  credentials,
+  education,
+  skillGroups,
+  teachingPortfolio,
+} from '@/data/career';
+import { projectArchive } from '@/data/project-archive';
 import type { EvidenceRecord, RoleId } from '@/types/content';
 import type { KnowledgeCategory, KnowledgeChunk } from './types';
 
@@ -46,6 +54,21 @@ function citationsFor(sourceIds: string[]) {
   });
 }
 
+const allResumeIds = [
+  'resume-aiml',
+  'resume-software',
+  'resume-android',
+  'resume-teaching',
+];
+
+function assistantVoice(text: string) {
+  return text
+    .replace(/\bI’m\b/g, 'Mohamed is')
+    .replace(/\bI have\b/g, 'Mohamed has')
+    .replace(/\bI\b/g, 'Mohamed')
+    .replace(/\bmy\b/gi, 'his');
+}
+
 export function chunkEvidence(): KnowledgeChunk[] {
   const facts = evidence.map((record) => ({
     id: record.id,
@@ -81,7 +104,81 @@ export function chunkEvidence(): KnowledgeChunk[] {
     category: 'screening' as const,
     citations: citationsFor(fact.sourceIds),
   }));
-  return [...facts, ...summaries, ...screening].filter(
-    (chunk) => chunk.citations.length > 0,
-  );
+  const experienceChunks = careerExperience.map((entry) => ({
+    id: `career-${entry.id}`,
+    title: entry.title,
+    text: assistantVoice(
+      `${entry.period}. ${entry.organization}. ${entry.details.join(' ')}`,
+    ),
+    topics: [entry.title, entry.organization, 'experience'],
+    aliases: [entry.id, ...entry.title.split(/\s+/)],
+    roles: Object.entries(entry.weights)
+      .filter(([, weight]) => weight > 0)
+      .map(([role]) => role) as RoleId[],
+    category: 'experience' as const,
+    citations: citationsFor(allResumeIds),
+  }));
+  const skillChunks = skillGroups.map((group) => ({
+    id: `skills-${group.id}`,
+    title: group.label,
+    text: `Mohamed’s ${group.label.toLowerCase()} experience includes ${group.skills}.`,
+    topics: [group.label, ...group.skills.split(' · ')],
+    aliases: [group.id, ...group.skills.split(' · ')],
+    roles: ['aiml', 'software', 'android', 'teaching'] as RoleId[],
+    category: 'skills' as const,
+    citations: citationsFor(allResumeIds),
+  }));
+  const teachingChunks = teachingPortfolio.map((item, index) => ({
+    id: `teaching-portfolio-${index + 1}`,
+    title: item.title,
+    text: assistantVoice(
+      `${item.period}. ${item.organization}. ${item.detail}`,
+    ),
+    topics: [item.title, 'teaching', 'instruction'],
+    aliases: [item.title, item.organization],
+    roles: ['teaching', 'aiml', 'software'] as RoleId[],
+    category: 'teaching' as const,
+    citations: citationsFor(['resume-teaching']),
+  }));
+  const educationChunks = education.map((item, index) => ({
+    id: `education-${index + 1}`,
+    title: item.credential,
+    text: `${item.period}. ${item.institution}. ${item.details.join(' ')}`,
+    topics: [item.credential, item.institution, 'education'],
+    aliases: [item.credential, item.institution],
+    roles: ['aiml', 'software', 'android', 'teaching'] as RoleId[],
+    category: 'experience' as const,
+    citations: citationsFor(allResumeIds),
+  }));
+  const credentialChunk = {
+    id: 'credentials-and-training',
+    title: 'Certificates and training',
+    text: credentials.map(([title, meta]) => `${title}: ${meta}.`).join(' '),
+    topics: ['certificates', 'training', 'CEH', 'AWS', 'Android'],
+    aliases: credentials.flatMap(([title]) => [title]),
+    roles: ['aiml', 'software', 'android', 'teaching'] as RoleId[],
+    category: 'skills' as const,
+    citations: citationsFor(allResumeIds),
+  };
+  const archiveChunks = projectArchive.map((project, index) => ({
+    id: `archive-project-${index + 1}`,
+    title: project.title,
+    text: `${project.summary} Technologies: ${project.technologies.join(', ')}.`,
+    topics: [project.title, project.category, ...project.technologies],
+    aliases: [project.title, ...project.technologies],
+    roles: ['aiml', 'software', 'android', 'teaching'] as RoleId[],
+    category: 'project' as const,
+    citations: citationsFor(allResumeIds),
+  }));
+  return [
+    ...facts,
+    ...summaries,
+    ...screening,
+    ...experienceChunks,
+    ...skillChunks,
+    ...teachingChunks,
+    ...educationChunks,
+    credentialChunk,
+    ...archiveChunks,
+  ].filter((chunk) => chunk.citations.length > 0);
 }

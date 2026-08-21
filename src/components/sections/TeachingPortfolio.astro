@@ -1,0 +1,31 @@
+---
+import { teachingPortfolio } from '@/data/career';
+---
+
+<section
+  class="teaching-portfolio shell-container"
+  aria-labelledby="teaching-portfolio-title"
+>
+  <header class="section-heading section-heading--split">
+    <div>
+      <p class="utility-label">Teaching and mentorship</p>
+      <h2 id="teaching-portfolio-title">How I help people learn</h2>
+    </div>
+    <p>
+      University teaching, private instruction, workshops, and reusable learning
+      materials.
+    </p>
+  </header>
+  <div class="teaching-cards">
+    {
+      teachingPortfolio.map((item) => (
+        <article>
+          <p class="career-timeline__period">{item.period}</p>
+          <h3>{item.title}</h3>
+          <p class="career-timeline__organization">{item.organization}</p>
+          <p>{item.detail}</p>
+        </article>
+      ))
+    }
+  </div>
+</section>

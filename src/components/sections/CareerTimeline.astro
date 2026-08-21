@@ -1,0 +1,46 @@
+---
+import { careerExperience, roleRank } from '@/data/career';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  roleId: RoleId;
+}
+const { roleId } = Astro.props;
+const ordered = roleRank(careerExperience, roleId);
+---
+
+<section class="career-section shell-container" aria-labelledby="career-title">
+  <header class="section-heading section-heading--split">
+    <div>
+      <p class="utility-label">Professional experience</p>
+      <h2 id="career-title">
+        Experience across research, products, and teaching
+      </h2>
+    </div>
+    <p>
+      Every role stays visible; the order changes to match the professional
+      focus you selected.
+    </p>
+  </header>
+  <ol class="career-timeline">
+    {
+      ordered.map((entry) => (
+        <li>
+          <div class="career-timeline__rail" aria-hidden="true">
+            <span />
+          </div>
+          <article>
+            <p class="career-timeline__period">{entry.period}</p>
+            <h3>{entry.title}</h3>
+            <p class="career-timeline__organization">{entry.organization}</p>
+            <ul>
+              {entry.details.map((detail) => (
+                <li>{detail}</li>
+              ))}
+            </ul>
+          </article>
+        </li>
+      ))
+    }
+  </ol>
+</section>

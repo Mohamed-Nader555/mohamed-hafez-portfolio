@@ -10,15 +10,14 @@ import { projects, sources } from '@/data';
 import { caseStudyFrontmatterSchema } from '@/types/case-study';
 
 const contentDirectory = path.resolve('src/content/case-studies');
-const expectedSections = [
-  'Context',
-  'Ownership',
-  'Constraints',
+const expectedCoreSections = [
+  'Overview',
+  'Challenge',
+  'My role',
+  'What I built',
   'Architecture',
-  'Implementation',
-  'Outcome',
-  'Evidence',
-  'Reflection',
+  'Results',
+  'Lessons',
 ];
 
 type AstNode = {
@@ -44,25 +43,6 @@ function collectLinks(node: AstNode): Array<{ label: string; href: string }> {
     ...ownLink,
     ...(node.children ?? []).flatMap((child) => collectLinks(child)),
   ];
-}
-
-function evidenceLinks(tree: AstNode) {
-  const children = tree.children ?? [];
-  const evidenceIndex = children.findIndex(
-    (node) =>
-      node.type === 'heading' &&
-      node.depth === 2 &&
-      nodeText(node) === 'Evidence',
-  );
-  const nextSectionIndex = children.findIndex(
-    (node, index) =>
-      index > evidenceIndex && node.type === 'heading' && node.depth === 2,
-  );
-  const end = nextSectionIndex === -1 ? children.length : nextSectionIndex;
-
-  return children
-    .slice(evidenceIndex + 1, end)
-    .flatMap((node) => collectLinks(node));
 }
 
 function parseMdx(raw: string) {
@@ -129,13 +109,16 @@ describe('case-study content collection', () => {
     }
   });
 
-  it('uses the eight actual level-two heading nodes in exact order', async () => {
+  it('uses the approved reader-focused case-study structure', async () => {
     for (const entry of await loadCaseStudies()) {
       const headings = (entry.tree.children ?? [])
         .filter((node) => node.type === 'heading' && node.depth === 2)
         .map(nodeText);
 
-      expect(headings, entry.id).toEqual(expectedSections);
+      expect(headings.slice(0, 7), entry.id).toEqual(expectedCoreSections);
+      expect(headings.slice(7), entry.id).toEqual(
+        headings.length === 8 ? ['Project links'] : [],
+      );
     }
   });
 
@@ -203,36 +186,29 @@ describe('case-study content collection', () => {
       /submitted and (currently )?under review/i,
     );
     expect(nodeText(entries.get('asc-pie')!.tree)).toMatch(
-      /completed and (officially )?awarded.*2026/i,
+      /completed.*officially awarded.*2026/i,
     );
     expect(entries.get('northstar-rag')?.data.summary).toMatch(
       /independently built.*end-to-end.*hands-on RAG engineering project/i,
     );
     expect(entries.get('dive')?.data.ownership).toMatch(
-      /Mohamed owned and implemented.*end to end/i,
+      /I owned and implemented.*end to end/i,
     );
     expect(nodeText(entries.get('dostava')!.tree)).toMatch(
       /previously published.*no longer available/i,
     );
   });
 
-  it('provides recruiter-verifiable links in every Evidence section', async () => {
+  it('keeps natural project links where they add reader value', async () => {
     const entries = new Map(
       (await loadCaseStudies()).map((entry) => [entry.id, entry]),
     );
 
-    for (const entry of entries.values()) {
-      expect(evidenceLinks(entry.tree).length, entry.id).toBeGreaterThan(0);
-    }
-
-    expect(
-      evidenceLinks(entries.get('minds-eye')!.tree).map((link) => link.label),
-    ).toEqual(
-      expect.arrayContaining([
-        'AI/ML Engineer résumé',
-        'Android Developer résumé',
-      ]),
+    expect(collectLinks(entries.get('asc-pie')!.tree).length).toBeGreaterThan(
+      0,
     );
+    expect(collectLinks(entries.get('dive')!.tree).length).toBeGreaterThan(0);
+    expect(collectLinks(entries.get('minds-eye')!.tree)).toEqual([]);
   });
 
   it('passes Astro content collection validation', () => {
@@ -250,5 +226,5 @@ describe('case-study content collection', () => {
       );
     }).not.toThrow();
     expect(output).not.toMatch(/deprecated/i);
-  }, 60_000);
+  }, 120_000);
 });

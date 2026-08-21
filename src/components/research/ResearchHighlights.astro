@@ -1,0 +1,72 @@
+---
+const benchmarks = [
+  ['RoBERTa-large', 99.1],
+  ['FLAN-T5-base', 98.7],
+  ['ModernBERT-large', 84.6],
+  ['BERT-base-cased', 80.7],
+  ['Llama 3.1 8B', 69.0],
+  ['Qwen 2.5 7B', 40.0],
+] as const;
+const strategies = [
+  ['SPRINT-PP', 83.5],
+  ['Distillation', 83.0],
+  ['Replay', 76.5],
+  ['Baseline', 14.6],
+] as const;
+---
+
+<section
+  class="research-highlights shell-container"
+  aria-labelledby="research-highlights-title"
+>
+  <header class="section-heading">
+    <p class="utility-label">Research at a glance</p>
+    <h2 id="research-highlights-title">
+      A shared corpus, protocol, and reproducible benchmark
+    </h2>
+  </header>
+  <div class="research-stat-grid">
+    <article><span>Total examples</span><strong>333,109</strong></article>
+    <article><span>Entity mentions</span><strong>2,025,878</strong></article>
+    <article><span>Canonical PII types</span><strong>19</strong></article>
+    <article><span>Source datasets</span><strong>5</strong></article>
+  </div>
+  <div class="research-chart-grid">
+    <figure>
+      <figcaption>Supervised fine-tuning · strict F1</figcaption>
+      <div class="bar-chart">
+        {
+          benchmarks.map(([label, value]) => (
+            <div>
+              <>
+                <span>{label}</span>
+                <i style={`--bar-value:${value}%`} />
+                <strong>{value}%</strong>
+              </>
+            </div>
+          ))
+        }
+      </div>
+    </figure>
+    <figure>
+      <figcaption>Continual-learning accuracy by strategy</figcaption>
+      <div class="bar-chart bar-chart--magenta">
+        {
+          strategies.map(([label, value]) => (
+            <div>
+              <>
+                <span>{label}</span>
+                <i style={`--bar-value:${value}%`} />
+                <strong>{value}%</strong>
+              </>
+            </div>
+          ))
+        }
+      </div>
+      <p>
+        SPRINT-PP achieved the strongest tested accuracy while remaining
+        privacy-safe and storing no raw historical PII.
+      </p>
+    </figure>
+  </div>
+</section>

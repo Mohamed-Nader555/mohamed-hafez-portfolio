@@ -1,0 +1,16 @@
+---
+import { proofStats } from '@/data/career';
+---
+
+<section class="proof-strip" aria-label="Career highlights">
+  <div class="shell-container proof-strip__inner">
+    {
+      proofStats.map((stat) => (
+        <div>
+          <strong>{stat.value}</strong>
+          <span>{stat.label}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>

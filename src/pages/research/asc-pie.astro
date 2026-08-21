@@ -1,5 +1,6 @@
 ---
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+import ResearchHighlights from '@/components/research/ResearchHighlights.astro';
 import { getEvidenceForProject } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { resolveSources } from '@/lib/content/resolve-sources';
@@ -61,6 +62,8 @@ const structuredData = [
       </p>
     </div>
   </header>
+
+  <ResearchHighlights />
 
   <section
     class="research-record shell-container"

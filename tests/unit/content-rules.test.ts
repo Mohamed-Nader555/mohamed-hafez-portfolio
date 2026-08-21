@@ -5,14 +5,14 @@ describe('locked public-content rules', () => {
   it('locks Dive ownership to Mohamed without unrelated attribution', () => {
     const dive = projects.find((project) => project.id === 'dive');
 
-    expect(dive?.ownership).toMatch(/Mohamed.*end.to.end/i);
+    expect(dive?.ownership).toMatch(/I owned.*end.to.end/i);
     expect(dive?.ownership).not.toMatch(/presenter|unrelated collaborator/i);
   });
 
   it('keeps research and credential status accurate', () => {
     const text = evidence.map((item) => item.statement).join('\n');
 
-    expect(text).toMatch(/completed and awarded in 2026/i);
+    expect(text).toMatch(/completed.*awarded.*2026/i);
     expect(text).toMatch(/submitted and under review/i);
     expect(text).toMatch(/CEH training/i);
     expect(text).not.toMatch(

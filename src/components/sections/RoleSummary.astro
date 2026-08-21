@@ -1,0 +1,21 @@
+---
+import { careerRoles } from '@/data/career';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  roleId: RoleId;
+}
+const { roleId } = Astro.props;
+const content = careerRoles[roleId];
+---
+
+<section
+  class="profile-summary shell-container"
+  aria-labelledby="profile-summary-title"
+>
+  <p class="utility-label">{content.eyebrow}</p>
+  <div class="profile-summary__body">
+    <h2 id="profile-summary-title">A focused view of my work</h2>
+    <p>{content.summary}</p>
+  </div>
+</section>

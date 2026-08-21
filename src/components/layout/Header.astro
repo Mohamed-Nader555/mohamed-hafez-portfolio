@@ -1,13 +1,5 @@
 ---
-import RecruiterLensNav from '@/components/layout/RecruiterLensNav.astro';
 import { profile } from '@/data/profile';
-import type { RoleId } from '@/types/content';
-
-interface Props {
-  activeRole: RoleId;
-}
-
-const { activeRole } = Astro.props;
 ---
 
 <header class="site-header">
@@ -26,8 +18,10 @@ const { activeRole } = Astro.props;
           <a href="/work" data-astro-prefetch="viewport">Work</a>
           <a href="/research/asc-pie" data-astro-prefetch="viewport">Research</a
           >
-          <a href="/experience" data-astro-prefetch="viewport">Experience</a>
-          <a href="/about" data-astro-prefetch="viewport">About</a>
+          <a href="/#career-title" data-astro-prefetch="viewport">Experience</a>
+          <a href="/#profile-summary-title" data-astro-prefetch="viewport"
+            >About</a
+          >
           <a class="primary-contact" href={`mailto:${profile.contacts.email}`}>
             Contact
           </a>
@@ -40,8 +34,12 @@ const { activeRole } = Astro.props;
             <a href="/research/asc-pie" data-astro-prefetch="viewport"
               >Research</a
             >
-            <a href="/experience" data-astro-prefetch="viewport">Experience</a>
-            <a href="/about" data-astro-prefetch="viewport">About</a>
+            <a href="/#career-title" data-astro-prefetch="viewport"
+              >Experience</a
+            >
+            <a href="/#profile-summary-title" data-astro-prefetch="viewport"
+              >About</a
+            >
             <a
               class="primary-contact"
               href={`mailto:${profile.contacts.email}`}
@@ -51,8 +49,6 @@ const { activeRole } = Astro.props;
           </nav>
         </details>
       </div>
-
-      <RecruiterLensNav activeRole={activeRole} />
     </div>
   </div>
 </header>

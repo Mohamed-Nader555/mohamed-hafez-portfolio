@@ -43,7 +43,7 @@ describe('verified evidence corpus', () => {
       'ASC-PIE: An Evaluation Framework for PII-Aware Named-Entity Recognition',
     );
     expect(byId.get('asc-pie-degree-awarded')).toMatch(
-      /completed and (officially )?awarded in 2026/i,
+      /completed.*awarded.*2026/i,
     );
     expect(byId.get('northstar-independent-delivery')).toMatch(
       /independently built.*end-to-end.*hands-on RAG engineering project/i,
@@ -52,7 +52,7 @@ describe('verified evidence corpus', () => {
       /assessment/i,
     );
     expect(byId.get('dive-end-to-end-ownership')).toMatch(
-      /Mohamed owned and implemented.*end to end/i,
+      /I owned and implemented.*end to end/i,
     );
     expect(byId.get('dive-end-to-end-ownership')).not.toMatch(
       /presenter|collaborator/i,

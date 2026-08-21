@@ -1,7 +1,9 @@
 ---
 import ContactLinks from '@/components/layout/ContactLinks.astro';
+import RecruiterLensNav from '@/components/layout/RecruiterLensNav.astro';
 import ResumeLink from '@/components/layout/ResumeLink.astro';
 import { profile } from '@/data';
+import { careerRoles } from '@/data/career';
 import type { ResolvedLens } from '@/lib/content/resolve-lens';
 
 interface Props {
@@ -10,6 +12,7 @@ interface Props {
 }
 
 const { lens, breadthLabels } = Astro.props;
+const roleContent = careerRoles[lens.roleId];
 ---
 
 <section
@@ -17,14 +20,21 @@ const { lens, breadthLabels } = Astro.props;
   aria-label={`${lens.label} overview`}
 >
   <div class="lens-hero__copy">
-    <p class="utility-label">{lens.label}</p>
+    <RecruiterLensNav activeRole={lens.roleId} />
+    <p class="utility-label lens-hero__role">{lens.label}</p>
     <h1 id="lens-title">
-      <span>{lens.label}</span>
-      <span class="lens-hero__thesis"
-        >I turn ambitious ideas into working systems.</span
-      >
+      <span>I’m Mohamed Hafez.</span>
+      <span class="lens-hero__thesis">{roleContent.hero}</span>
     </h1>
-    <p class="lens-hero__lead">{lens.summary}</p>
+    <p class="lens-hero__lead">
+      <span class="entity-tag" data-entity="ROLE">{roleContent.eyebrow}</span>
+      <span> · </span>
+      <span class="entity-tag" data-entity="LOC">Toronto, Canada</span>
+      <span> · </span>
+      <span class="entity-tag entity-tag--magenta" data-entity="STATUS"
+        >Available immediately</span
+      >
+    </p>
     <p class="lens-hero__breadth">
       <span>I also work across</span>
       {breadthLabels.join(' · ')}

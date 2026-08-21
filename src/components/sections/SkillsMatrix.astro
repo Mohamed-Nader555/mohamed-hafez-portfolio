@@ -1,0 +1,50 @@
+---
+import { careerRoles, skillGroups } from '@/data/career';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  roleId: RoleId;
+}
+const { roleId } = Astro.props;
+const preferred = careerRoles[roleId].skillOrder;
+const ordered = [...skillGroups].sort((a, b) => {
+  const ai = preferred.indexOf(a.id);
+  const bi = preferred.indexOf(b.id);
+  return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
+});
+---
+
+<section class="skills-section shell-container" aria-labelledby="skills-title">
+  <header class="section-heading section-heading--split">
+    <div>
+      <p class="utility-label">Technical breadth</p>
+      <h2 id="skills-title">Skills organized by how I use them</h2>
+    </div>
+    <p>The most relevant groups appear first. Nothing is hidden.</p>
+  </header>
+  <div class="skills-grid">
+    {
+      ordered.slice(0, 8).map((group, index) => (
+        <article class:list={[index < 3 && 'skills-card--primary']}>
+          <h3>{group.label}</h3>
+          <p>{group.skills}</p>
+        </article>
+      ))
+    }
+  </div>
+  <details class="skills-more">
+    <summary>View all skill groups</summary>
+    <div class="skills-grid skills-grid--more">
+      {
+        ordered.slice(8).map((group) => (
+          <article>
+            <>
+              <h3>{group.label}</h3>
+              <p>{group.skills}</p>
+            </>
+          </article>
+        ))
+      }
+    </div>
+  </details>
+</section>

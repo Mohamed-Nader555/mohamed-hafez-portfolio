@@ -1,6 +1,7 @@
 ---
 import CaseStudyCard from '@/components/case-study/CaseStudyCard.astro';
 import { projects } from '@/data';
+import { projectArchive } from '@/data/project-archive';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { resolveSources } from '@/lib/content/resolve-sources';
 import { getCollection } from 'astro:content';
@@ -50,5 +51,45 @@ if (entries.length !== 5 || orderedEntries.length !== 5) {
         <CaseStudyCard entry={entry} index={index} />
       ))
     }
+  </section>
+
+  <section
+    class="project-library shell-container"
+    aria-labelledby="project-library-title"
+  >
+    <header class="section-heading section-heading--split">
+      <div>
+        <p class="utility-label">Additional work</p>
+        <h2 id="project-library-title">Complete project library</h2>
+      </div>
+      <p>
+        Client applications, enterprise systems, research, and applied
+        machine-learning delivery.
+      </p>
+    </header>
+    <div class="project-library__grid">
+      {
+        projectArchive.map((project) => (
+          <article>
+            <p class="utility-label">{project.category}</p>
+            <h3>{project.title}</h3>
+            <p>{project.summary}</p>
+            <ul
+              class="technology-list"
+              aria-label={`${project.title} technologies`}
+            >
+              {project.technologies.map((technology) => (
+                <li>{technology}</li>
+              ))}
+            </ul>
+            {'href' in project && project.href && (
+              <a href={project.href} data-astro-prefetch="viewport">
+                Explore the research <span aria-hidden="true">→</span>
+              </a>
+            )}
+          </article>
+        ))
+      }
+    </div>
   </section>
 </BaseLayout>
