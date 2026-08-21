@@ -5,7 +5,7 @@ const records = [
     id: 'asc-pie-thesis-title',
     title: 'ASC-PIE thesis title',
     statement:
-      'Mohamed’s thesis is “ASC-PIE: An Evaluation Framework for PII-Aware Named-Entity Recognition.”',
+      'My thesis is “ASC-PIE: An Evaluation Framework for PII-Aware Named-Entity Recognition.”',
     topics: ['ASC-PIE', 'thesis', 'PII-aware NER'],
     aliases: ['ASC PIE', 'PII-aware named-entity recognition'],
     roleWeights: { aiml: 5, software: 3, android: 0, teaching: 4 },
@@ -16,7 +16,7 @@ const records = [
     id: 'asc-pie-degree-awarded',
     title: 'M.A. completion',
     statement:
-      'Mohamed’s M.A. in Information Systems & Technology at York University was completed and awarded in 2026.',
+      'I completed my M.A. in Information Systems & Technology at York University in 2026.',
     topics: ['York University', 'M.A.', 'education', '2026'],
     aliases: ['masters degree', 'graduate degree', 'degree status'],
     roleWeights: { aiml: 5, software: 3, android: 1, teaching: 5 },

@@ -5,7 +5,7 @@ const bassRecords = [
     id: 'bass-java-services',
     title: 'BASS Java services',
     statement:
-      'At BASS, Mohamed developed Java and Spring Boot services for enterprise content-management workflows.',
+      'At BASS, I developed Java and Spring Boot services for enterprise content-management workflows.',
     topics: ['BASS', 'Java', 'Spring Boot', 'enterprise systems'],
     aliases: ['enterprise content management', 'ECM'],
     roleWeights: { aiml: 2, software: 5, android: 1, teaching: 3 },
@@ -15,7 +15,7 @@ const bassRecords = [
   {
     id: 'bass-api-delivery',
     title: 'BASS API delivery',
-    statement: 'At BASS, Mohamed worked with REST and SOAP APIs.',
+    statement: 'At BASS, I worked with REST and SOAP APIs.',
     topics: ['BASS', 'REST APIs', 'SOAP APIs'],
     aliases: ['enterprise APIs', 'service integration'],
     roleWeights: { aiml: 1, software: 5, android: 2, teaching: 2 },
@@ -26,7 +26,7 @@ const bassRecords = [
     id: 'bass-document-workflows',
     title: 'Enterprise document workflows',
     statement:
-      'Mohamed supported OpenText Documentum workflows and validation controls in regulated, PII-aware environments at BASS.',
+      'I supported OpenText Documentum workflows and validation controls in regulated, PII-aware environments at BASS.',
     topics: ['BASS', 'OpenText Documentum', 'validation', 'PII'],
     aliases: ['document management', 'regulated workflows'],
     roleWeights: { aiml: 2, software: 5, android: 1, teaching: 3 },

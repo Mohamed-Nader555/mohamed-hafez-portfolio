@@ -1,11 +1,5 @@
 ---
-import {
-  selectPublicSourceForEvidence,
-  type DeepReadonly,
-  type ResolvedLens,
-} from '@/lib/content/resolve-lens';
-import { resolveSourcesForRoute } from '@/lib/content/resolve-sources';
-import type { EvidenceRecord } from '@/types/content';
+import type { ResolvedLens } from '@/lib/content/resolve-lens';
 
 interface Props {
   lens: ResolvedLens;
@@ -13,15 +7,6 @@ interface Props {
 
 const { lens } = Astro.props;
 const { research, teaching } = lens.depthEvidence;
-
-function sourceFor(record: DeepReadonly<EvidenceRecord>) {
-  const routeSafeSources = resolveSourcesForRoute(
-    record.sourceIds,
-    Astro.url.pathname,
-  );
-
-  return selectPublicSourceForEvidence(record, lens.roleId, routeSafeSources);
-}
 ---
 
 <section
@@ -30,7 +15,7 @@ function sourceFor(record: DeepReadonly<EvidenceRecord>) {
 >
   <header class="section-heading section-heading--split">
     <div>
-      <p class="utility-label">Evidence beyond delivery</p>
+      <p class="utility-label">Research and teaching</p>
       <h2 id="depth-title">Research &amp; teaching depth</h2>
     </div>
     <p>
@@ -43,18 +28,12 @@ function sourceFor(record: DeepReadonly<EvidenceRecord>) {
       <p class="depth-grid__label">Research record</p>
       <h3 id="research-depth-title">Privacy-aware systems</h3>
       {
-        research.map((record) => {
-          const source = sourceFor(record);
-          return (
-            <article>
-              <h4>{record.title}</h4>
-              <p>{record.statement}</p>
-              <a class="source-link" href={source.publicHref}>
-                Source · {source.label}
-              </a>
-            </article>
-          );
-        })
+        research.map((record) => (
+          <article>
+            <h4>{record.title}</h4>
+            <p>{record.statement}</p>
+          </article>
+        ))
       }
     </section>
 
@@ -62,18 +41,12 @@ function sourceFor(record: DeepReadonly<EvidenceRecord>) {
       <p class="depth-grid__label">Teaching record</p>
       <h3 id="teaching-depth-title">Technical instruction</h3>
       {
-        teaching.map((record) => {
-          const source = sourceFor(record);
-          return (
-            <article>
-              <h4>{record.title}</h4>
-              <p>{record.statement}</p>
-              <a class="source-link" href={source.publicHref}>
-                Source · {source.label}
-              </a>
-            </article>
-          );
-        })
+        teaching.map((record) => (
+          <article>
+            <h4>{record.title}</h4>
+            <p>{record.statement}</p>
+          </article>
+        ))
       }
     </section>
   </div>

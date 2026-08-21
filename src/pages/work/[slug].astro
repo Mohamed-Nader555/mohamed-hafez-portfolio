@@ -1,7 +1,6 @@
 ---
 import CaseStudyLayout from '@/layouts/CaseStudyLayout.astro';
 import { projects } from '@/data';
-import { resolveSources } from '@/lib/content/resolve-sources';
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { createCreativeWorkStructuredData } from '@/lib/seo/structured-data';
@@ -41,11 +40,7 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const resolvedSources = resolveSources(entry.data.sourceIds);
 const pagePath = `/work/${entry.data.slug}`;
-const publicEvidence = Object.freeze(
-  resolvedSources.filter((source) => source.publicHref !== pagePath),
-);
 const project = projects.find(
   (candidate) => candidate.slug === entry.data.slug,
 );
@@ -66,7 +61,6 @@ const structuredData = [
   ownership={entry.data.ownership}
   roles={entry.data.roles}
   technologies={entry.data.technologies}
-  sources={publicEvidence}
   structuredData={structuredData}
 >
   <Content />

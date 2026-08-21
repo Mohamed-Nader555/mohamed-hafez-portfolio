@@ -1,8 +1,6 @@
 ---
-import CaseStudyEvidence from '@/components/case-study/CaseStudyEvidence.astro';
 import { roles } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import type { PublicSource } from '@/lib/content/resolve-sources';
 import type { StructuredDataNode } from '@/lib/seo/structured-data';
 import type { RoleId } from '@/types/content';
 
@@ -12,7 +10,6 @@ interface Props {
   ownership: string;
   roles: readonly RoleId[];
   technologies: readonly string[];
-  sources: readonly PublicSource[];
   structuredData: readonly StructuredDataNode[];
 }
 
@@ -22,7 +19,6 @@ const {
   ownership,
   roles: studyRoles,
   technologies,
-  sources,
   structuredData,
 } = Astro.props;
 const roleById = new Map(roles.map((role) => [role.id, role.label]));
@@ -38,12 +34,12 @@ const roleId = studyRoles[0] ?? 'aiml';
 >
   <header class="longform-hero shell-container">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
-      <a href="/work">Work</a>
+      <a href="/work" data-astro-prefetch="viewport">Work</a>
       <span aria-hidden="true">/</span>
       <span aria-current="page">{title}</span>
     </nav>
     <p class="utility-label">
-      Detailed case study · {
+      Project case study · {
         studyRoles.map((role) => roleById.get(role)).join(' · ')
       }
     </p>
@@ -51,7 +47,7 @@ const roleId = studyRoles[0] ?? 'aiml';
     <p class="longform-hero__summary">{summary}</p>
     <div class="case-study-brief">
       <div>
-        <p class="utility-label">Ownership</p>
+        <p class="utility-label">My role</p>
         <p>{ownership}</p>
       </div>
       <div>
@@ -66,8 +62,4 @@ const roleId = studyRoles[0] ?? 'aiml';
   <article class="case-study-prose shell-container">
     <slot />
   </article>
-
-  <div class="shell-container longform-evidence-wrap">
-    <CaseStudyEvidence sources={sources} />
-  </div>
 </BaseLayout>

@@ -15,7 +15,7 @@ const records = [
   {
     id: 'minds-eye-majority-delivery',
     title: 'Mind’s Eye ownership',
-    statement: 'Mohamed delivered more than 80% of the Mind’s Eye system.',
+    statement: 'I delivered more than 80% of the Mind’s Eye system.',
     topics: ['Mind’s Eye', 'ownership', 'delivery'],
     aliases: ['project contribution', 'implementation ownership'],
     roleWeights: { aiml: 4, software: 3, android: 5, teaching: 2 },
@@ -31,7 +31,7 @@ const records = [
     id: 'minds-eye-currency-recognition',
     title: 'Currency recognition',
     statement:
-      'Mohamed built the Egyptian-currency recognition capability from scratch.',
+      'I built the Egyptian-currency recognition capability from scratch.',
     topics: ['Mind’s Eye', 'computer vision', 'currency recognition'],
     aliases: ['Egyptian currency', 'banknote recognition'],
     roleWeights: { aiml: 5, software: 2, android: 5, teaching: 3 },

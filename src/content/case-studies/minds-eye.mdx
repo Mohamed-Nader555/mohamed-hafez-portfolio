@@ -6,7 +6,7 @@ roles:
   - aiml
   - android
   - teaching
-ownership: Mohamed delivered more than 80% of the system and built its Egyptian-currency recognition capability from scratch.
+ownership: I delivered more than 80% of the system and built its Egyptian-currency recognition capability from scratch.
 technologies:
   - Android
   - Java
@@ -26,17 +26,21 @@ publishedAt: 2026-08-14
 
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
 
-## Context
+## Overview
 
 Mind’s Eye is an assistive smart-glasses system that helps turn visual information into spoken output. The project combines a wearable device, an Android client, and recognition services rather than treating computer vision as a stand-alone model demo.
 
-## Ownership
+## Challenge
 
-Mohamed delivered more than 80% of the system. He also built the Egyptian-currency recognition capability from scratch and integrated it into the broader assistive workflow.
+The solution had to coordinate wearable hardware, a mobile client, camera-derived inputs, recognition services, and speech output. Each boundary needed a clear data path so the user received one useful result instead of disconnected component outputs.
 
-## Constraints
+## My role
 
-The solution had to coordinate wearable hardware, a mobile client, camera-derived inputs, external recognition services, and speech output. Each boundary needed a clear data path so the user received a usable result rather than disconnected component outputs.
+I delivered more than 80% of the system. I also built the Egyptian-currency recognition capability from scratch and integrated it into the broader assistive workflow.
+
+## What I built
+
+I built the Android client in Java, connected the Arduino-based wearable input to REST recognition flows with Retrofit, and integrated the custom currency-recognition capability with OCR-to-speech behavior.
 
 ## Architecture
 
@@ -46,19 +50,10 @@ The solution had to coordinate wearable hardware, a mobile client, camera-derive
 
 OpenCV supports the computer-vision work, while Tesseract OCR extracts text for spoken playback.
 
-## Implementation
-
-The Android client uses Java and Retrofit to communicate with REST APIs. It connects the Arduino-based wearable input to recognition flows, including the custom Egyptian-currency capability and OCR-to-speech behavior.
-
-## Outcome
+## Results
 
 The delivered system brought mobile, embedded, cloud, computer-vision, and speech components into one assistive workflow. No user-count or recognition-accuracy metric is claimed without a verified source.
 
-## Evidence
-
-- [AI/ML Engineer résumé](/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf)
-- [Android Developer résumé](/resumes/Mohamed-Hafez-Android-Developer.pdf)
-
-## Reflection
+## Lessons
 
 Mind’s Eye showed the value of treating integration as a first-class engineering problem. A recognition feature becomes useful only when device input, service communication, and accessible output work together.

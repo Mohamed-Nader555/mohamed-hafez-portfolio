@@ -1,7 +1,29 @@
 @layer motion {
-  .site-shell {
-    animation: shell-enter var(--motion-duration-slow) var(--motion-ease-out)
-      both;
+  .site-header,
+  .lens-hero__copy > *,
+  .lens-hero__context {
+    animation: content-enter 560ms var(--motion-ease-out) both;
+  }
+
+  .lens-hero__copy > :nth-child(1) {
+    animation-delay: 40ms;
+  }
+
+  .lens-hero__copy > :nth-child(2) {
+    animation-delay: 100ms;
+  }
+
+  .lens-hero__copy > :nth-child(3) {
+    animation-delay: 160ms;
+  }
+
+  .lens-hero__copy > :nth-child(4),
+  .lens-hero__context {
+    animation-delay: 220ms;
+  }
+
+  .lens-hero__copy > :nth-child(5) {
+    animation-delay: 280ms;
   }
 
   .lens-link,
@@ -15,19 +37,76 @@
       transform var(--motion-duration-base) var(--motion-ease-out);
   }
 
+  .project-card,
+  .case-study-card,
+  .experience-records article,
+  .depth-grid article,
+  .responsibility-groups article {
+    transition:
+      transform var(--motion-duration-base) var(--motion-ease-out),
+      border-color var(--motion-duration-base) ease,
+      box-shadow var(--motion-duration-base) ease;
+  }
+
+  .project-card:hover,
+  .case-study-card:hover,
+  .experience-records article:hover,
+  .depth-grid article:hover,
+  .responsibility-groups article:hover {
+    transform: translateY(-0.25rem);
+    border-color: color-mix(in srgb, var(--color-accent-cyan) 52%, transparent);
+    box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 22%);
+  }
+
+  .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity 520ms var(--motion-ease-out),
+      transform 520ms var(--motion-ease-out);
+  }
+
+  .reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  ::view-transition-old(root) {
+    animation: page-out 140ms ease both;
+  }
+
+  ::view-transition-new(root) {
+    animation: page-in 260ms var(--motion-ease-out) both;
+  }
+
   .lens-link:hover,
   .primary-action:hover,
   .secondary-action:hover {
     transform: translateY(-1px);
   }
 
-  @keyframes shell-enter {
+  @keyframes content-enter {
     from {
-      transform: translateY(0.75rem);
+      opacity: 0;
+      transform: translateY(0.8rem);
     }
 
     to {
+      opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes page-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes page-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.35rem);
     }
   }
 
@@ -47,15 +126,17 @@
       transition-duration: 0s !important;
     }
 
-    .site-shell {
-      animation-name: none;
-      opacity: 1;
-      transform: none;
-    }
-
     .lens-link:hover,
     .primary-action:hover,
-    .secondary-action:hover {
+    .secondary-action:hover,
+    .project-card:hover,
+    .case-study-card:hover,
+    .experience-records article:hover,
+    .depth-grid article:hover,
+    .responsibility-groups article:hover,
+    .reveal-on-scroll,
+    .reveal-on-scroll.is-visible {
+      opacity: 1;
       transform: none;
     }
   }

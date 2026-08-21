@@ -5,7 +5,7 @@ summary: An independently built, end-to-end hands-on RAG engineering project for
 roles:
   - aiml
   - software
-ownership: Mohamed independently built the complete ingestion, retrieval, generation, evaluation, testing, and deployment workflow.
+ownership: I independently built the complete ingestion, retrieval, generation, evaluation, testing, and deployment workflow.
 technologies:
   - Python
   - FastAPI
@@ -25,17 +25,21 @@ publishedAt: 2026-08-14
 
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
 
-## Context
+## Overview
 
 Northstar answers questions over a small internal-document corpus while keeping each answer tied to retrieved evidence. The goal was to demonstrate the complete engineering path from document ingestion to an API response a reader can verify.
 
-## Ownership
+## Challenge
 
-Mohamed independently built the project end to end: ingestion, chunking, embeddings, vector storage, retrieval filters, grounded generation, citations, refusal behavior, evaluation, automated tests, and Docker packaging.
+The service must refuse questions the indexed documents do not support. It also needs citations that identify the source document, page, and chunk instead of returning unsupported prose.
 
-## Constraints
+## My role
 
-The service must not answer when the indexed documents do not support a question. It also needs citations that identify the source document, page, and chunk rather than returning unsupported prose.
+I independently built the project end to end: ingestion, chunking, embeddings, vector storage, retrieval filters, grounded generation, citations, refusal behavior, evaluation, automated tests, and Docker packaging.
+
+## What I built
+
+I exposed health and question-answering endpoints with FastAPI and Uvicorn, extracted PDFs with PyMuPDF, created chunks with LangChain text splitters, generated local embeddings with `all-MiniLM-L6-v2`, and persisted vectors in Chroma. Docker and Docker Compose package the API and its data volumes.
 
 ## Architecture
 
@@ -45,19 +49,10 @@ The service must not answer when the indexed documents do not support a question
 
 The default pipeline uses 700-character chunks with 100-character overlap, retrieves the nearest candidates, and rejects chunks beyond a configurable cosine-distance threshold.
 
-## Implementation
-
-FastAPI and Uvicorn expose health and question-answering endpoints. PyMuPDF extracts PDFs, LangChain text splitters create chunks, `all-MiniLM-L6-v2` generates local embeddings, and Chroma persists vectors. A strict generation prompt receives only surviving chunks. Docker and Docker Compose package the API and persistent data volumes.
-
-## Outcome
+## Results
 
 The delivered system demonstrates grounded retrieval, source-level citations, deterministic refusal when evidence is insufficient, pytest coverage, and a RAGAS pipeline for faithfulness, answer relevancy, context precision, and context recall.
 
-## Evidence
-
-- [AI/ML Engineer résumé](/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf)
-- [Software Engineer résumé](/resumes/Mohamed-Hafez-Software-Engineer.pdf)
-
-## Reflection
+## Lessons
 
 The key engineering lesson was to make “I do not have enough evidence” part of the architecture. Retrieval thresholds, citations, and evaluation are product behavior, not optional additions after generation works.

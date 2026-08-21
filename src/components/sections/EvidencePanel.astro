@@ -1,14 +1,11 @@
 ---
-import { sources } from '@/data';
 import type { ScreeningFact } from '@/types/content';
 
 interface Props {
   facts: readonly ScreeningFact[];
-  preferredSourceId: string;
 }
 
-const { facts, preferredSourceId } = Astro.props;
-const sourceById = new Map(sources.map((source) => [source.id, source]));
+const { facts } = Astro.props;
 const priorityFacts = [
   'availability',
   'location',
@@ -17,19 +14,6 @@ const priorityFacts = [
 ]
   .map((id) => facts.find((fact) => fact.id === id))
   .filter((fact): fact is ScreeningFact => Boolean(fact));
-
-function resolveSource(fact: ScreeningFact) {
-  const sourceId = fact.sourceIds.includes(preferredSourceId)
-    ? preferredSourceId
-    : fact.sourceIds[0];
-  const source = sourceById.get(sourceId);
-
-  if (!source?.isPublic || !source.publicHref) {
-    throw new Error(`Screening fact ${fact.id} lacks a public source.`);
-  }
-
-  return source;
-}
 ---
 
 <section
@@ -37,26 +21,19 @@ function resolveSource(fact: ScreeningFact) {
   aria-labelledby="evidence-title"
 >
   <header class="section-heading">
-    <p class="utility-label">Recruiter screening</p>
-    <h2 id="evidence-title">60-second evidence</h2>
-    <p>Core hiring details, each tied to an approved public record.</p>
+    <p class="utility-label">Current status</p>
+    <h2 id="evidence-title">At a glance</h2>
+    <p>Where I’m based, when I can start, and how I’m authorized to work.</p>
   </header>
 
   <div class="evidence-grid">
     {
-      priorityFacts.map((fact) => {
-        const source = resolveSource(fact);
-
-        return (
-          <article class="evidence-fact">
-            <p class="evidence-fact__label">{fact.label}</p>
-            <p class="evidence-fact__statement">{fact.statement}</p>
-            <a class="source-link" href={source.publicHref}>
-              Source · {source.label}
-            </a>
-          </article>
-        );
-      })
+      priorityFacts.map((fact) => (
+        <article class="evidence-fact">
+          <p class="evidence-fact__label">{fact.label}</p>
+          <p class="evidence-fact__statement">{fact.statement}</p>
+        </article>
+      ))
     }
   </div>
 </section>

@@ -6,7 +6,7 @@ export function ChatLauncher({ onOpen }: { onOpen(): void }) {
       onClick={onOpen}
       aria-haspopup="dialog"
     >
-      Ask about Mohamed’s evidence
+      Ask about my work
     </button>
   );
 }

@@ -5,7 +5,7 @@ summary: An on-demand courier Android application with order workflows, remote a
 roles:
   - software
   - android
-ownership: Mohamed delivered the Android application and its documented mobile architecture and service integrations.
+ownership: I delivered the Android application and its mobile architecture and service integrations.
 technologies:
   - Java
   - MVVM
@@ -24,17 +24,21 @@ publishedAt: 2026-08-14
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
 import ProjectGallery from '@/components/case-study/ProjectGallery.astro';
 
-## Context
+## Overview
 
 Dostava is an on-demand courier Android application built around customer order and delivery workflows, notifications, and location-aware tracking.
 
-## Ownership
+## Challenge
 
-Mohamed delivered the Android application using its documented Java and MVVM architecture and integrated the remote, local, notification, and mapping services used by the product workflows.
+The order experience needed both remote service access and local persistence. Delivery workflows also had to coordinate app state with notifications and map-based location behavior.
 
-## Constraints
+## My role
 
-The order experience needed both remote service access and local persistence. Delivery workflows also had to coordinate application state with notifications and map-based location behavior.
+I delivered the Android application using Java and MVVM and integrated the remote, local, notification, and mapping services used by the product workflows.
+
+## What I built
+
+I used Java with MVVM to separate presentation behavior from the data layers. Retrofit handles remote APIs, Room provides local persistence, Firebase supports notifications and mobile workflows, and Google Maps supplies delivery location and tracking features.
 
 ## Architecture
 
@@ -46,21 +50,12 @@ The order experience needed both remote service access and local persistence. De
 
 `delivery workflows → Firebase notifications + Google Maps tracking`
 
-## Implementation
-
-The app uses Java with MVVM to separate presentation behavior from its data layers. Retrofit handles remote APIs, Room provides local persistence, Firebase supports the mobile workflow and notifications, and Google Maps supplies delivery location and tracking features.
-
 <ProjectGallery projectId="dostava" />
 
-## Outcome
+## Results
 
 Dostava was previously published under a client-owned Google Play listing. It is no longer available because the client did not continue maintenance or request updates, so this portfolio does not present a current store-download action.
 
-## Evidence
-
-- [Android Developer résumé](/resumes/Mohamed-Hafez-Android-Developer.pdf)
-- [Software Engineer résumé](/resumes/Mohamed-Hafez-Software-Engineer.pdf)
-
-## Reflection
+## Lessons
 
 Dostava reinforced the importance of separating remote and local data responsibilities in a workflow-heavy mobile product. That separation makes order state easier to reason about when network, notification, and map events meet.

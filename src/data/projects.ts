@@ -6,9 +6,9 @@ const projectsData = [
     slug: 'asc-pie',
     title: 'ASC-PIE',
     summary:
-      'PII-aware named-entity recognition corpus and evaluation framework developed as Mohamed’s M.A. thesis.',
+      'I developed this PII-aware named-entity recognition corpus and evaluation framework for my M.A. thesis.',
     ownership:
-      'Mohamed designed and built the research pipeline, corpus standardization, and evaluation framework.',
+      'I designed and built the research pipeline, corpus standardization, and evaluation framework.',
     roles: ['aiml', 'software', 'teaching'],
     roleWeights: { aiml: 5, software: 3, android: 0, teaching: 4 },
     technologies: [
@@ -33,7 +33,7 @@ const projectsData = [
     summary:
       'An independently built, end-to-end hands-on RAG engineering project for grounded retrieval and citation-backed answers.',
     ownership:
-      'Mohamed independently built the RAG system end to end, including retrieval, citations, refusal behavior, evaluation, testing, and Docker deployment.',
+      'I independently built the RAG system end to end, including retrieval, citations, refusal behavior, evaluation, testing, and Docker deployment.',
     roles: ['aiml', 'software'],
     roleWeights: { aiml: 5, software: 5, android: 1, teaching: 2 },
     technologies: [
@@ -56,7 +56,7 @@ const projectsData = [
     summary:
       'Assistive smart-glasses system integrating mobile, embedded, and cloud components for recognition and OCR-driven text-to-speech.',
     ownership:
-      'Mohamed delivered more than 80% of the wearable assistive system and built Egyptian currency recognition from scratch.',
+      'I delivered more than 80% of the wearable assistive system and built Egyptian currency recognition from scratch.',
     roles: ['aiml', 'android', 'teaching'],
     roleWeights: { aiml: 4, software: 2, android: 5, teaching: 3 },
     technologies: [
@@ -82,7 +82,7 @@ const projectsData = [
     summary:
       'Mobile and ML-assisted recreational scuba dive-planning project with safety-profile classification and recommendations.',
     ownership:
-      'Mohamed owned and implemented the project end to end, including the Android client, ML safety classification, API integration, and planning features.',
+      'I owned and implemented the project end to end, including the Android client, ML safety classification, API integration, and planning features.',
     roles: ['aiml', 'software', 'android'],
     roleWeights: { aiml: 3, software: 4, android: 5, teaching: 1 },
     technologies: [
@@ -108,7 +108,7 @@ const projectsData = [
     summary:
       'On-demand courier Android application with order workflows, tracking, notifications, offline-first data, and maps.',
     ownership:
-      'Mohamed delivered the Android application using the documented mobile architecture and service integrations.',
+      'I delivered the Android application using the documented mobile architecture and service integrations.',
     roles: ['software', 'android'],
     roleWeights: { aiml: 1, software: 4, android: 5, teaching: 1 },
     technologies: [
@@ -130,7 +130,7 @@ const projectsData = [
     summary:
       'Enterprise content-management engineering involving Java services, APIs, document workflows, validation, and support.',
     ownership:
-      'Mohamed developed and supported documented services, validation controls, and enterprise document workflows.',
+      'I developed and supported services, validation controls, and enterprise document workflows.',
     roles: ['software', 'teaching'],
     roleWeights: { aiml: 2, software: 5, android: 1, teaching: 3 },
     technologies: [
@@ -157,7 +157,7 @@ const projectsData = [
     summary:
       'Football-talent platform enabling players to present their skills so club agents can scout and sign them.',
     ownership:
-      'Mohamed built the Android application as part of his client-project delivery work.',
+      'I built the Android application as part of my client-project delivery work.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 2, android: 4, teaching: 1 },
     technologies: ['Java', 'Android'],
@@ -172,7 +172,7 @@ const projectsData = [
     summary:
       'Teaching-assistant and instructor experience across computer science, software development, and AI/ML topics.',
     ownership:
-      'Mohamed planned and delivered tutorials, labs, office hours, workshops, and technical learning materials.',
+      'I planned and delivered tutorials, labs, office hours, workshops, and technical learning materials.',
     roles: ['teaching'],
     roleWeights: { aiml: 2, software: 2, android: 1, teaching: 5 },
     technologies: [

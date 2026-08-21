@@ -17,19 +17,21 @@ const { lens, breadthLabels } = Astro.props;
   aria-label={`${lens.label} overview`}
 >
   <div class="lens-hero__copy">
-    <p class="utility-label">Recruiter lens · {lens.label}</p>
+    <p class="utility-label">{lens.label}</p>
     <h1 id="lens-title">
       <span>{lens.label}</span>
-      <span class="lens-hero__thesis">Evidence made easy to inspect.</span>
+      <span class="lens-hero__thesis"
+        >I turn ambitious ideas into working systems.</span
+      >
     </h1>
     <p class="lens-hero__lead">{lens.summary}</p>
     <p class="lens-hero__breadth">
-      <span>Also evidenced across</span>
+      <span>I also work across</span>
       {breadthLabels.join(' · ')}
     </p>
     <div class="lens-actions">
       <ContactLinks
-        ariaLabel="Recruiter contact action"
+        ariaLabel="Contact me"
         channels={['email']}
         variant="action"
       />
@@ -41,7 +43,7 @@ const { lens, breadthLabels } = Astro.props;
     </div>
   </div>
 
-  <aside class="lens-hero__context" aria-label="Recruiter screening summary">
+  <aside class="lens-hero__context" aria-label="Availability and work status">
     <p class="context-signal">
       <span aria-hidden="true"></span>{profile.availability}
     </p>

@@ -28,20 +28,20 @@ export function ChatPanel({
       className="chat-panel"
       role="dialog"
       aria-modal="true"
-      aria-label="Portfolio evidence assistant"
+      aria-label="Portfolio assistant"
     >
       <header>
         <div>
-          <p className="eyebrow">Evidence assistant</p>
-          <h2>Ask a recruiter question</h2>
+          <p className="eyebrow">Portfolio assistant</p>
+          <h2>Ask about Mohamed’s work</h2>
         </div>
         <button type="button" onClick={close} aria-label="Close assistant">
           Close
         </button>
       </header>
       <p className="chat-privacy">
-        Answers use approved public evidence only. Chat stays in this browser
-        session.
+        Answers are grounded in the projects, résumés, research, and experience
+        published here. Chat stays in this browser session.
       </p>
       <div className="chat-conversation">
         {response && <ChatMessage response={response} />}
@@ -75,7 +75,7 @@ export function ChatPanel({
             Clear conversation
           </button>
           <button type="submit" disabled={state === 'submitting'}>
-            {state === 'submitting' ? 'Checking evidence…' : 'Ask question'}
+            {state === 'submitting' ? 'Finding an answer…' : 'Ask question'}
           </button>
         </div>
       </form>

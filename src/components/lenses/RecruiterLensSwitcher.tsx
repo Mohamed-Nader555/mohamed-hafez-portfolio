@@ -20,6 +20,7 @@ export function RecruiterLensSwitcher({
               aria-label={role.label}
               className={`lens-link${role.id === 'aiml' ? ' lens-link--ai' : ''}`}
               data-lens={role.id}
+              data-astro-prefetch="viewport"
               href={role.route}
             >
               {role.label}

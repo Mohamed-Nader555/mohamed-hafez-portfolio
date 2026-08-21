@@ -1,5 +1,4 @@
 ---
-import { sources } from '@/data';
 import type { ResolvedLens } from '@/lib/content/resolve-lens';
 
 interface Props {
@@ -7,7 +6,6 @@ interface Props {
 }
 
 const { lens } = Astro.props;
-const sourceById = new Map(sources.map((source) => [source.id, source]));
 const experienceRecords = lens.evidence
   .filter(
     (record) =>
@@ -20,18 +18,6 @@ const capabilities = [
     lens.projects.slice(0, 4).flatMap((project) => project.technologies),
   ),
 ].slice(0, 10);
-
-function sourceFor(sourceIds: readonly string[]) {
-  const source = sourceIds
-    .map((id) => sourceById.get(id))
-    .find((candidate) => candidate?.isPublic && candidate.publicHref);
-
-  if (!source?.publicHref) {
-    throw new Error('Experience evidence lacks a public source.');
-  }
-
-  return source;
-}
 ---
 
 <section
@@ -39,26 +25,19 @@ function sourceFor(sourceIds: readonly string[]) {
   aria-labelledby="experience-title"
 >
   <header class="section-heading">
-    <p class="utility-label">Delivery record</p>
-    <h2 id="experience-title">Experience &amp; capabilities</h2>
+    <p class="utility-label">Professional experience</p>
+    <h2 id="experience-title">What I’ve worked on</h2>
   </header>
 
   <div class="experience-layout">
     <div class="experience-records">
       {
-        experienceRecords.map((record) => {
-          const source = sourceFor(record.sourceIds);
-
-          return (
-            <article>
-              <h3>{record.title}</h3>
-              <p>{record.statement}</p>
-              <a class="source-link" href={source.publicHref}>
-                Source · {source.label}
-              </a>
-            </article>
-          );
-        })
+        experienceRecords.map((record) => (
+          <article>
+            <h3>{record.title}</h3>
+            <p>{record.statement}</p>
+          </article>
+        ))
       }
     </div>
 

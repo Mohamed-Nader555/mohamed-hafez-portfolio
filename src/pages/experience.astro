@@ -1,7 +1,6 @@
 ---
 import { evidence } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { resolveSources } from '@/lib/content/resolve-sources';
 
 export const prerender = true;
 
@@ -35,27 +34,22 @@ const resolvedGroups = groups.map((group) => ({
   records: group.ids.map((id) => {
     const record = evidenceById.get(id);
     if (!record) throw new Error(`Missing experience evidence: ${id}`);
-    const source = resolveSources(record.sourceIds).find(
-      (candidate) => candidate.publicHref !== '/experience',
-    );
-    if (!source)
-      throw new Error(`Experience evidence has no non-circular source: ${id}`);
-    return { record, source };
+    return record;
   }),
 }));
 ---
 
 <BaseLayout
   title="Professional responsibility — Mohamed Hafez"
-  description="Responsibility-led evidence across enterprise systems, client products, mobile delivery, and technical teaching."
+  description="My professional experience across enterprise systems, client products, mobile delivery, and technical teaching."
   roleId="software"
 >
   <header class="longform-hero shell-container">
     <p class="utility-label">Professional experience</p>
     <h1>Responsibility across systems, products, and classrooms</h1>
     <p class="longform-hero__summary">
-      A responsibility-led view of what Mohamed developed, integrated,
-      supported, and taught—organized by outcome rather than chronology.
+      A responsibility-led view of what I’ve developed, integrated, supported,
+      and taught—organized by the kind of work rather than chronology.
     </p>
   </header>
 
@@ -75,13 +69,10 @@ const resolvedGroups = groups.map((group) => ({
             </h2>
           </header>
           <div>
-            {group.records.map(({ record, source }) => (
+            {group.records.map((record) => (
               <article>
                 <h3>{record.title}</h3>
                 <p>{record.statement}</p>
-                <a class="source-link" href={source.publicHref}>
-                  Source · {source.label}
-                </a>
               </article>
             ))}
           </div>

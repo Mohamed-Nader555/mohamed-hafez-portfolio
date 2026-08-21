@@ -89,10 +89,7 @@ export function PortfolioAssistant({
     ? response.followUps
     : initialSuggestions;
   return (
-    <aside
-      className="portfolio-assistant"
-      aria-label="Portfolio evidence assistant"
-    >
+    <aside className="portfolio-assistant" aria-label="Portfolio assistant">
       <ChatLauncher onOpen={() => setOpen(true)} />
       {open && (
         <ChatPanel
@@ -111,9 +108,9 @@ export function PortfolioAssistant({
         {state === 'answered'
           ? 'Evidence answer ready.'
           : state === 'refused'
-            ? 'The question was not supported by public evidence.'
+            ? 'That question is outside the portfolio assistant’s scope.'
             : state === 'fallback'
-              ? 'Verified evidence fallback ready.'
+              ? 'Grounded portfolio answer ready.'
               : ''}
       </p>
     </aside>

@@ -6,7 +6,7 @@ roles:
   - aiml
   - software
   - android
-ownership: Mohamed owned and implemented the project end to end, from the Android client and service integrations to the safety-classification workflow.
+ownership: I owned and implemented the project end to end, from the Android client and service integrations to the safety-classification workflow.
 technologies:
   - Android
   - Java
@@ -28,17 +28,21 @@ publishedAt: 2026-08-14
 import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
 import ProjectGallery from '@/components/case-study/ProjectGallery.astro';
 
-## Context
+## Overview
 
 Dive is a recreational scuba-planning client project that combines trip-planning features with a machine-learning safety profile and recommendations.
 
-## Ownership
+## Challenge
 
-Mohamed owned and implemented the project end to end. His work covered the Android application, Python safety-classification component, API integration, Firebase services, maps and location features, and the delivered planning experience.
+The app brings together diver inputs, planning data, safety classification, cloud data, and location services. Those capabilities needed to remain one coherent mobile workflow rather than separate technical demonstrations.
 
-## Constraints
+## My role
 
-The application brings together diver inputs, planning data, safety classification, cloud data, and location services. Those capabilities needed to remain one coherent mobile workflow rather than separate technical demonstrations.
+I owned and implemented the project end to end. My work covered the Android application, Python safety-classification component, API integration, Firebase services, maps and location features, and the delivered planning experience.
+
+## What I built
+
+I built the Android client with Java, Retrofit, and Gson; used Firebase for authentication, realtime data, and storage; integrated Google Maps, Location, and Places; and connected the Python classifier that supplies the safety-profile behavior.
 
 ## Architecture
 
@@ -53,21 +57,16 @@ The application brings together diver inputs, planning data, safety classificati
 
 `Android Java client → Google Maps / Location / Places`
 
-## Implementation
-
-The Android client uses Java, Retrofit, and Gson for service communication. Firebase provides authentication, realtime data, and storage. Google Maps, Location, and Places support planning context, while the Python classifier supplies the safety-profile behavior.
-
 <ProjectGallery projectId="dive" />
 
-## Outcome
+## Results
 
 The delivered client project combines dive planning, safety classification, recommendations, account and data services, and location-aware mobile features in one application.
 
-## Evidence
-
-- [Dive Simulation repository](https://github.com/Mohamed-Nader555/Diving-Simulation-App)
-- AI/ML Engineer and Android Developer résumés referenced by the portfolio’s role lenses
-
-## Reflection
+## Lessons
 
 Owning the full project made the boundaries between model behavior, service contracts, and mobile experience visible. The useful result was the integrated planner, not any one library in isolation.
+
+## Project links
+
+- [Dive Simulation repository](https://github.com/Mohamed-Nader555/Diving-Simulation-App)

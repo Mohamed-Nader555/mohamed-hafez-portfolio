@@ -7,7 +7,7 @@ const roleLenses = [
     route: '/',
     title: 'Mohamed Hafez — AI/ML Engineer',
     description:
-      'AI/ML engineering evidence covering privacy-aware NLP research and grounded RAG delivery.',
+      'I build privacy-aware NLP research and grounded RAG systems, with a focus on evaluation, reliability, and production delivery.',
     summary:
       'AI/ML engineer focused on privacy-aware NLP, applied machine learning, and grounded RAG systems.',
     resumeHref: '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',
@@ -24,7 +24,7 @@ const roleLenses = [
     route: '/software',
     title: 'Mohamed Hafez — Software Engineer',
     description:
-      'Software engineering evidence covering RAG services, enterprise systems, APIs, and client delivery.',
+      'I develop reliable services, enterprise workflows, APIs, and client products from architecture through delivery.',
     summary:
       'Software engineer with backend, enterprise-system, API, and product-delivery experience.',
     resumeHref: '/resumes/Mohamed-Hafez-Software-Engineer.pdf',
@@ -41,7 +41,7 @@ const roleLenses = [
     route: '/android',
     title: 'Mohamed Hafez — Android Developer',
     description:
-      'Android engineering evidence spanning assistive technology, client applications, integrations, and delivery.',
+      'I build Android products that connect thoughtful mobile architecture with APIs, data, maps, ML, and accessible experiences.',
     summary:
       'Android developer with end-to-end client delivery and integrated mobile experiences.',
     resumeHref: '/resumes/Mohamed-Hafez-Android-Developer.pdf',
@@ -58,7 +58,7 @@ const roleLenses = [
     route: '/teaching',
     title: 'Mohamed Hafez — TA / Instructor',
     description:
-      'Teaching and technical-communication evidence supported by research and hands-on engineering breadth.',
+      'I teach technical concepts through practical examples, clear explanations, and experience across research and engineering.',
     summary:
       'Technical instructor and teaching assistant with research and engineering experience.',
     resumeHref: '/resumes/Mohamed-Hafez-TA-Instructor.pdf',

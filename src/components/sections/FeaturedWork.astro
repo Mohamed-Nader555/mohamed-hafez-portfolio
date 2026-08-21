@@ -34,10 +34,10 @@ function resolveProjectSource(project: DeepReadonly<ProjectRecord>) {
 >
   <header class="section-heading section-heading--split">
     <div>
-      <p class="utility-label">Role-ranked portfolio</p>
-      <h2 id="featured-title">Featured work</h2>
+      <p class="utility-label">Selected projects</p>
+      <h2 id="featured-title">Work I’m proud of</h2>
     </div>
-    <p>Ordered by verified relevance to the active recruiter lens.</p>
+    <p>Projects are ordered for the professional focus you selected.</p>
   </header>
 
   <div class="project-grid">
@@ -52,9 +52,7 @@ function resolveProjectSource(project: DeepReadonly<ProjectRecord>) {
             </div>
             <div class="project-card__body">
               <p class="project-card__type">
-                {project.detailLevel === 'detailed'
-                  ? 'Detailed case study'
-                  : 'Supporting evidence'}
+                {project.detailLevel === 'detailed' ? 'Case study' : 'Project'}
               </p>
               <h3>{project.title}</h3>
               <p>{project.summary}</p>
@@ -70,9 +68,10 @@ function resolveProjectSource(project: DeepReadonly<ProjectRecord>) {
               <a
                 class="project-card__link"
                 href={source.publicHref}
-                aria-label={`View ${project.title} evidence`}
+                data-astro-prefetch="viewport"
+                aria-label={`View ${project.title} project`}
               >
-                Inspect evidence <span aria-hidden="true">↗</span>
+                View project <span aria-hidden="true">↗</span>
               </a>
             </div>
           </article>

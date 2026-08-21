@@ -4,6 +4,7 @@ import Header from '@/components/layout/Header.astro';
 import Seo from '@/components/layout/Seo.astro';
 import type { StructuredDataNode } from '@/lib/seo/structured-data';
 import type { RoleId } from '@/types/content';
+import { ClientRouter } from 'astro:transitions';
 import '@/styles/tokens.css';
 import '@/styles/reset.css';
 import '@/styles/global.css';
@@ -43,6 +44,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
       openGraphType={openGraphType}
       structuredData={structuredData}
     />
+    <ClientRouter />
   </head>
   <body>
     <div class="site-shell" data-shell>
@@ -55,3 +57,38 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     </div>
   </body>
 </html>
+
+<script>
+  function prepareReveals() {
+    const elements = document.querySelectorAll(
+      '.section-heading, .project-card, .case-study-card, .experience-records article, .depth-grid article, .responsibility-groups article',
+    );
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    if (reducedMotion || !('IntersectionObserver' in window)) {
+      elements.forEach((element) => element.classList.add('is-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    );
+
+    elements.forEach((element) => {
+      element.classList.add('reveal-on-scroll');
+      observer.observe(element);
+    });
+  }
+
+  document.addEventListener('astro:page-load', prepareReveals);
+  prepareReveals();
+</script>

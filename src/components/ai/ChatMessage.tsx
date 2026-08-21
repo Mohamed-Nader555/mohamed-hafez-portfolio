@@ -5,7 +5,7 @@ export function ChatMessage({ response }: { response: ChatResponse }) {
     <article className={`chat-message chat-message--${response.answerStatus}`}>
       <p>{response.answer}</p>
       {response.answerStatus === 'fallback' && (
-        <strong>Verified evidence fallback</strong>
+        <strong>Grounded portfolio answer</strong>
       )}
       {response.citations.length > 0 && (
         <CitationList citations={response.citations} />

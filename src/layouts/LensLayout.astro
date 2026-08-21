@@ -20,7 +20,6 @@ const lens = resolveLens(roleId);
 const breadthLabels = roles
   .filter((role) => role.id !== roleId)
   .map((role) => role.label);
-const preferredSourceId = `resume-${roleId}`;
 const turnstileSiteKey =
   import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '1x00000000000000000000AA';
 ---
@@ -31,7 +30,7 @@ const turnstileSiteKey =
   roleId={lens.roleId}
 >
   <Hero lens={lens} breadthLabels={breadthLabels} />
-  <EvidencePanel facts={screeningFacts} preferredSourceId={preferredSourceId} />
+  <EvidencePanel facts={screeningFacts} />
   <FeaturedWork projects={lens.projects} />
   <ExperienceSection lens={lens} />
   <TeachingSection lens={lens} />

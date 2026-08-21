@@ -5,7 +5,7 @@ const records = [
     id: 'dive-end-to-end-ownership',
     title: 'Dive project ownership',
     statement:
-      'Mohamed owned and implemented the Dive Simulation & Safety Profile Planner project end to end.',
+      'I owned and implemented the Dive Simulation & Safety Profile Planner project end to end.',
     topics: ['Dive', 'ownership', 'client project'],
     aliases: ['Dive Simulation', 'Safety Profile Planner'],
     roleWeights: { aiml: 3, software: 4, android: 5, teaching: 1 },
