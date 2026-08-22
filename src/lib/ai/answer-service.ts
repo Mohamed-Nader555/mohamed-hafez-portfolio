@@ -19,13 +19,8 @@ const refusal = (requestId: string): ChatResponse => ({
 
 function parsed(raw: unknown): unknown {
   if (typeof raw === 'string') return JSON.parse(raw);
-  if (
-    raw &&
-    typeof raw === 'object' &&
-    'response' in raw &&
-    typeof raw.response === 'string'
-  )
-    return JSON.parse(raw.response);
+  if (raw && typeof raw === 'object' && 'response' in raw)
+    return parsed(raw.response);
   return raw;
 }
 
@@ -81,7 +76,11 @@ export async function answerRecruiterQuestion(
         modelId: deps.modelId,
       },
     };
-  } catch {
+  } catch (error) {
+    console.error(
+      'Workers AI synthesis failed; serving verified evidence fallback.',
+      error instanceof Error ? error.message : 'Unknown synthesis error',
+    );
     return buildEvidenceFallback(retrieval, input.requestId);
   }
 }

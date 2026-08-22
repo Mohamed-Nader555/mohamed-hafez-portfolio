@@ -3,12 +3,36 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
   within,
 } from '@testing-library/react';
-import { afterEach, expect, it } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+
+const mocks = vi.hoisted(() => ({
+  requestTurnstileToken: vi.fn(),
+  submitChatTurn: vi.fn(),
+}));
+
+vi.mock('@/components/ai/turnstile-client', () => ({
+  requestTurnstileToken: mocks.requestTurnstileToken,
+}));
+vi.mock('@/components/ai/chat-client', () => ({
+  ChatClientError: class ChatClientError extends Error {
+    code = 'test_error';
+  },
+  submitChatTurn: mocks.submitChatTurn,
+}));
 import { PortfolioAssistant } from '@/components/ai/PortfolioAssistant';
 
-afterEach(cleanup);
+beforeEach(() => {
+  sessionStorage.clear();
+  mocks.requestTurnstileToken.mockResolvedValue('verified-token');
+  mocks.submitChatTurn.mockReset();
+});
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
 
 it('opens an accessible assistant dialog and closes it with Escape', () => {
   render(
@@ -62,4 +86,26 @@ it('presents a grounded AI console with role context and usable prompts', () => 
   expect(
     within(dialog).getByRole('textbox', { name: /your question/i }),
   ).toHaveValue('How was Northstar built?');
+});
+
+it('clears the composer as soon as a question is submitted', async () => {
+  mocks.submitChatTurn.mockReturnValue(new Promise(() => {}));
+  render(
+    <PortfolioAssistant
+      activeRole="aiml"
+      initialSuggestions={['How was Northstar built?']}
+    />,
+  );
+  fireEvent.click(
+    screen.getByRole('button', {
+      name: /open Mohamed AI portfolio assistant/i,
+    }),
+  );
+  const textbox = screen.getByRole('textbox', { name: /your question/i });
+  fireEvent.change(textbox, {
+    target: { value: 'What technologies did Mohamed use in Dostava?' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /send question/i }));
+
+  await waitFor(() => expect(textbox).toHaveValue(''));
 });

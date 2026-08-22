@@ -5,6 +5,18 @@ type WorkersAi = {
   run(model: string, input: Record<string, unknown>): Promise<unknown>;
 };
 
+const answerSchema = {
+  type: 'object',
+  properties: {
+    answer: { type: 'string' },
+    answerStatus: { type: 'string', enum: ['answered', 'refused'] },
+    citationIds: { type: 'array', items: { type: 'string' } },
+    followUps: { type: 'array', items: { type: 'string' } },
+  },
+  required: ['answer', 'answerStatus', 'citationIds', 'followUps'],
+  additionalProperties: false,
+};
+
 export function createWorkersAiProvider(
   ai: WorkersAi,
   model = DEFAULT_WORKERS_AI_MODEL,
@@ -15,7 +27,10 @@ export function createWorkersAiProvider(
         messages,
         max_tokens: maxTokens,
         temperature,
-        response_format: { type: 'json_object' },
+        response_format: {
+          type: 'json_schema',
+          json_schema: answerSchema,
+        },
       }),
   };
 }

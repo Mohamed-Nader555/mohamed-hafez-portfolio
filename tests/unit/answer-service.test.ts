@@ -33,3 +33,30 @@ it('returns verified evidence fallback when the provider fails', async () => {
   expect(result.answerStatus).toBe('fallback');
   expect(result.citations.length).toBeGreaterThan(0);
 });
+
+it('accepts a structured Workers AI response envelope', async () => {
+  const result = await answerRecruiterQuestion(
+    {
+      provider: {
+        generate: vi.fn().mockResolvedValue({
+          response: {
+            answer:
+              'Northstar combines retrieval, grounded generation, and strict scope controls.',
+            answerStatus: 'answered',
+            citationIds: ['case-study-northstar'],
+            followUps: ['How is unsupported content handled?'],
+          },
+        }),
+      },
+    },
+    {
+      question: 'How was Northstar built?',
+      history: [],
+      activeRole: 'aiml',
+      requestId: 'request-3',
+    },
+  );
+
+  expect(result.answerStatus).toBe('answered');
+  expect(result.answer).toMatch(/retrieval/i);
+});

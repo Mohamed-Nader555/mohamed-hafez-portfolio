@@ -67,6 +67,7 @@ export function PortfolioAssistant({
     setState('submitting');
     setLastQuestion(question);
     setResponse(undefined);
+    setDraft('');
     try {
       const session = store.load();
       const turnstileToken = await requestTurnstileToken(turnstileSiteKey);
@@ -88,8 +89,8 @@ export function PortfolioAssistant({
       });
       setResponse(next);
       setState(next.answerStatus);
-      setDraft('');
     } catch (error) {
+      setDraft(question);
       setState(
         error instanceof ChatClientError && error.code === 'rate_limited'
           ? 'rate-limited'
