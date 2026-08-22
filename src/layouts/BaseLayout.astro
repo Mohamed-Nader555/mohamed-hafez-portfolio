@@ -93,9 +93,43 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     });
   }
 
+  let persistentRoleFrame = 0;
+  function updatePersistentRoleSwitcher() {
+    cancelAnimationFrame(persistentRoleFrame);
+    persistentRoleFrame = requestAnimationFrame(() => {
+      const switcher = document.querySelector<HTMLElement>(
+        '[data-persistent-role-switcher]',
+      );
+      const heroNavigation = document.querySelector<HTMLElement>(
+        '[data-role-content] .lens-hero .recruiter-lens-nav',
+      );
+      if (!switcher || !heroNavigation) return;
+
+      const headerBottom =
+        document.querySelector('.site-header')?.getBoundingClientRect()
+          .bottom ?? 0;
+      const visible =
+        heroNavigation.getBoundingClientRect().bottom <= headerBottom;
+      switcher.classList.toggle('is-visible', visible);
+      switcher.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      switcher.inert = !visible;
+    });
+  }
+
   document.addEventListener('astro:page-load', prepareReveals);
   document.addEventListener('portfolio:content-updated', prepareReveals);
+  document.addEventListener(
+    'portfolio:content-updated',
+    updatePersistentRoleSwitcher,
+  );
+  window.addEventListener('scroll', updatePersistentRoleSwitcher, {
+    passive: true,
+  });
+  window.addEventListener('resize', updatePersistentRoleSwitcher, {
+    passive: true,
+  });
   prepareReveals();
+  updatePersistentRoleSwitcher();
   installRoleNavigation();
 
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

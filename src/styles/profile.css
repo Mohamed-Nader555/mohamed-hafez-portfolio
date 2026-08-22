@@ -56,6 +56,76 @@
     backdrop-filter: blur(1.25rem) saturate(130%);
   }
 
+  .persistent-role-switcher {
+    position: fixed;
+    z-index: 19;
+    inset-block-start: 4.85rem;
+    inset-inline-start: 50%;
+    inline-size: min(calc(100% - 2rem), 49rem);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -0.75rem);
+    transition:
+      opacity 180ms ease,
+      transform 220ms var(--motion-ease-out),
+      visibility 180ms;
+    visibility: hidden;
+  }
+
+  .persistent-role-switcher.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+    visibility: visible;
+  }
+
+  .persistent-role-switcher .recruiter-lens-nav {
+    display: block;
+    inline-size: 100%;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: rgb(7 16 34 / 88%);
+    box-shadow:
+      0 1rem 3rem rgb(0 0 0 / 28%),
+      inset 0 1px 0 rgb(255 255 255 / 5%);
+    backdrop-filter: blur(1.25rem) saturate(135%);
+  }
+
+  .persistent-role-switcher .lens-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-1);
+    padding: var(--space-1);
+  }
+
+  .persistent-role-switcher .lens-list::before,
+  .persistent-role-switcher .lens-link::before {
+    display: none;
+  }
+
+  .persistent-role-switcher .lens-link {
+    min-block-size: 2.55rem;
+    justify-content: center;
+    padding: var(--space-2) var(--space-3);
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 0.65rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .persistent-role-switcher .lens-link[aria-current='page'] {
+    background: linear-gradient(
+      110deg,
+      var(--color-evidence-500),
+      color-mix(in srgb, var(--color-evidence-500) 72%, white)
+    );
+    color: var(--color-ink-950);
+    box-shadow: 0 0 1.5rem rgb(43 221 229 / 16%);
+  }
+
   .site-header .shell-container {
     max-inline-size: none;
   }
@@ -821,6 +891,24 @@
   }
 
   @media (max-width: 40rem) {
+    .persistent-role-switcher {
+      inset-block-start: 4.65rem;
+      inline-size: calc(100% - 1rem);
+    }
+    .persistent-role-switcher .recruiter-lens-nav {
+      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      scrollbar-width: none;
+    }
+    .persistent-role-switcher .lens-list {
+      display: flex;
+      inline-size: max-content;
+      min-inline-size: 100%;
+    }
+    .persistent-role-switcher .lens-link {
+      min-inline-size: 9.5rem;
+      padding-inline: var(--space-4);
+    }
     .lens-hero h1 {
       font-size: clamp(3rem, 16vw, 4.6rem);
     }

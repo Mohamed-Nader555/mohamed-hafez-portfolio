@@ -28,6 +28,15 @@ export function installRoleNavigation() {
         document
           .querySelector('[data-shell]')
           ?.setAttribute('data-active-role', nextRole);
+        document
+          .querySelectorAll<HTMLAnchorElement>('[data-lens]')
+          .forEach((link) => {
+            if (link.dataset.lens === nextRole) {
+              link.setAttribute('aria-current', 'page');
+            } else {
+              link.removeAttribute('aria-current');
+            }
+          });
         if (pushHistory) history.pushState({ role: nextRole }, '', url);
         document.dispatchEvent(
           new CustomEvent<RoleId>('portfolio:role-change', {

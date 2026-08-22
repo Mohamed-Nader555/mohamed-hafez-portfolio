@@ -1,6 +1,7 @@
 ---
 import ContactSection from '@/components/sections/ContactSection.astro';
 import EducationCredentials from '@/components/sections/EducationCredentials.astro';
+import PersistentRoleSwitcher from '@/components/layout/PersistentRoleSwitcher.astro';
 import TeachingPortfolio from '@/components/sections/TeachingPortfolio.astro';
 import RoleContent from '@/components/lenses/RoleContent.astro';
 import { PortfolioAssistant } from '@/components/ai/PortfolioAssistant';
@@ -25,6 +26,7 @@ const turnstileSiteKey =
   roleId={lens.roleId}
 >
   <RoleContent roleId={roleId} />
+  <PersistentRoleSwitcher activeRole={roleId} />
   {
     roles.map((role) => (
       <template data-role-template={role.id}>

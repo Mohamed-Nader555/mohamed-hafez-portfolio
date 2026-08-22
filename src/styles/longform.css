@@ -98,7 +98,7 @@
 
   .case-study-prose {
     display: grid;
-    max-inline-size: calc(var(--width-reading) + 2 * var(--width-gutter));
+    max-inline-size: none;
     gap: 0;
     padding-block: var(--space-section);
   }
@@ -121,7 +121,7 @@
 
   .case-study-prose p,
   .case-study-prose li {
-    max-inline-size: var(--width-reading);
+    max-inline-size: 64rem;
   }
 
   .case-study-prose p + p,

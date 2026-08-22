@@ -1,0 +1,19 @@
+---
+import RecruiterLensNav from '@/components/layout/RecruiterLensNav.astro';
+import type { RoleId } from '@/types/content';
+
+interface Props {
+  activeRole: RoleId;
+}
+
+const { activeRole } = Astro.props;
+---
+
+<div
+  class="persistent-role-switcher"
+  data-persistent-role-switcher
+  aria-hidden="true"
+  inert
+>
+  <RecruiterLensNav activeRole={activeRole} />
+</div>
