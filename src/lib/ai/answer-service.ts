@@ -24,6 +24,33 @@ function parsed(raw: unknown): unknown {
   return raw;
 }
 
+function normalizeModelAnswer(raw: unknown, allowed: Set<string>): unknown {
+  const value = parsed(raw);
+  if (!value || typeof value !== 'object') return value;
+  const record = value as Record<string, unknown>;
+  const citationIds = Array.isArray(record.citationIds)
+    ? [
+        ...new Set(
+          record.citationIds.filter(
+            (id): id is string => typeof id === 'string' && allowed.has(id),
+          ),
+        ),
+      ].slice(0, 8)
+    : [];
+  const safeCitationIds =
+    record.answerStatus === 'refused'
+      ? []
+      : citationIds.length
+        ? citationIds
+        : [...allowed].slice(0, 3);
+  const followUps = Array.isArray(record.followUps)
+    ? record.followUps
+        .filter((item): item is string => typeof item === 'string')
+        .slice(0, 3)
+    : [];
+  return { ...record, citationIds: safeCitationIds, followUps };
+}
+
 export async function answerRecruiterQuestion(
   deps: { provider: AiProvider; modelId?: string },
   input: AnswerInput,
@@ -45,7 +72,10 @@ export async function answerRecruiterQuestion(
         chunk.citations.map((citation) => citation.sourceId),
       ),
     );
-    const answer = validateModelAnswer(parsed(raw), allowed);
+    const answer = validateModelAnswer(
+      normalizeModelAnswer(raw, allowed),
+      allowed,
+    );
     if (answer.answerStatus === 'refused') return refusal(input.requestId);
     const citations = retrieval.chunks
       .flatMap((chunk) => chunk.citations)

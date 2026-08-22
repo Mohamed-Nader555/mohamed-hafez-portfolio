@@ -60,3 +60,32 @@ it('accepts a structured Workers AI response envelope', async () => {
   expect(result.answerStatus).toBe('answered');
   expect(result.answer).toMatch(/retrieval/i);
 });
+
+it('normalizes excessive model citations to verified retrieved sources', async () => {
+  const result = await answerRecruiterQuestion(
+    {
+      provider: {
+        generate: vi.fn().mockResolvedValue({
+          response: {
+            answer:
+              'Dostava uses Java with MVVM, Retrofit, Room, Firebase, and Google Maps.',
+            answerStatus: 'answered',
+            citationIds: Array.from({ length: 12 }, () => 'case-study-dostava'),
+            followUps: [],
+          },
+        }),
+      },
+    },
+    {
+      question: 'What technologies did Mohamed use in Dostava?',
+      history: [],
+      activeRole: 'android',
+      requestId: 'request-4',
+    },
+  );
+
+  expect(result.answerStatus).toBe('answered');
+  expect(result.citations.map((citation) => citation.sourceId)).toContain(
+    'case-study-dostava',
+  );
+});

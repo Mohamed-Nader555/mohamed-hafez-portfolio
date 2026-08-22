@@ -10,8 +10,8 @@ const answerSchema = {
   properties: {
     answer: { type: 'string' },
     answerStatus: { type: 'string', enum: ['answered', 'refused'] },
-    citationIds: { type: 'array', items: { type: 'string' } },
-    followUps: { type: 'array', items: { type: 'string' } },
+    citationIds: { type: 'array', items: { type: 'string' }, maxItems: 8 },
+    followUps: { type: 'array', items: { type: 'string' }, maxItems: 3 },
   },
   required: ['answer', 'answerStatus', 'citationIds', 'followUps'],
   additionalProperties: false,

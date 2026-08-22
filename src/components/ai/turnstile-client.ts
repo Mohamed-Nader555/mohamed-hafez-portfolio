@@ -4,6 +4,7 @@ declare global {
   interface Window {
     turnstile?: {
       execute(widgetId: string): void;
+      remove(widgetId: string): void;
       reset(widgetId?: string): void;
       render(
         target: HTMLElement,
@@ -49,8 +50,8 @@ export async function requestTurnstileToken(siteKey: string): Promise<string> {
     target.style.zIndex = '2147483647';
     document.body.append(target);
     const finish = (value?: string) => {
+      turnstile.remove(widgetId);
       target.remove();
-      turnstile.reset(widgetId);
       if (value) resolve(value);
       else reject(new Error('Turnstile verification failed.'));
     };

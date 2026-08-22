@@ -10,6 +10,7 @@ it('labels AI verification tokens with the stable portfolio chat action', async 
       }
     | undefined;
   let targetWasHidden = true;
+  const remove = vi.fn();
 
   window.turnstile = {
     render: (_target, options) => {
@@ -19,6 +20,7 @@ it('labels AI verification tokens with the stable portfolio chat action', async 
       return 'portfolio-chat-widget';
     },
     execute: () => renderOptions?.callback('verified-token'),
+    remove,
     reset: vi.fn(),
   };
 
@@ -28,4 +30,5 @@ it('labels AI verification tokens with the stable portfolio chat action', async 
   expect(renderOptions?.action).toBe('portfolio_chat');
   expect(renderOptions?.appearance).toBe('interaction-only');
   expect(targetWasHidden).toBe(false);
+  expect(remove).toHaveBeenCalledWith('portfolio-chat-widget');
 });
