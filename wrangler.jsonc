@@ -5,7 +5,8 @@
   "ai": { "binding": "AI" },
   "vars": {
     "AI_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast",
-    "PUBLIC_TURNSTILE_SITEKEY": "1x00000000000000000000AA",
+    "PUBLIC_TURNSTILE_SITEKEY": "0x4AAAAAAEYpXcGcmRdA3lPr",
+    "TURNSTILE_EXPECTED_HOSTNAME": "mohamed-hafez-portfolio.mohamed-m-nader555.workers.dev",
   },
   "ratelimits": [
     {

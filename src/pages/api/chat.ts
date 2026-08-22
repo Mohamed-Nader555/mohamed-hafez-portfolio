@@ -7,7 +7,10 @@ import {
 } from '@/lib/ai/workers-ai-provider';
 import { chatRequestSchema } from '@/lib/ai/types';
 import { allowChatRequest } from '@/lib/security/chat-rate-limit';
-import { validateTurnstile } from '@/lib/security/turnstile';
+import {
+  PORTFOLIO_CHAT_TURNSTILE_ACTION,
+  validateTurnstile,
+} from '@/lib/security/turnstile';
 
 export const prerender = false;
 const TEST_SECRET = '1x0000000000000000000000000000000AA';
@@ -83,6 +86,7 @@ export const POST: APIRoute = async ({ request }) => {
         token: requestBody.data.turnstileToken,
         secret,
         expectedHostname: env.TURNSTILE_EXPECTED_HOSTNAME,
+        expectedAction: PORTFOLIO_CHAT_TURNSTILE_ACTION,
       });
   if (!human)
     return error(

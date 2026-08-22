@@ -8,6 +8,7 @@ import { PortfolioAssistant } from '@/components/ai/PortfolioAssistant';
 import { roles } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { resolveLens } from '@/lib/content/resolve-lens';
+import { PORTFOLIO_TURNSTILE_SITEKEY } from '@/lib/security/turnstile';
 import type { RoleId } from '@/types/content';
 
 interface Props {
@@ -17,7 +18,7 @@ interface Props {
 const { roleId } = Astro.props;
 const lens = resolveLens(roleId);
 const turnstileSiteKey =
-  import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '1x00000000000000000000AA';
+  import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? PORTFOLIO_TURNSTILE_SITEKEY;
 ---
 
 <BaseLayout

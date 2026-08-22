@@ -1,3 +1,5 @@
+import { PORTFOLIO_CHAT_TURNSTILE_ACTION } from '@/lib/security/turnstile';
+
 declare global {
   interface Window {
     turnstile?: {
@@ -8,6 +10,8 @@ declare global {
         options: {
           sitekey: string;
           execution: 'execute';
+          action: string;
+          appearance: 'interaction-only';
           callback(token: string): void;
           'error-callback'(): void;
           'expired-callback'(): void;
@@ -39,7 +43,10 @@ export async function requestTurnstileToken(siteKey: string): Promise<string> {
   if (!turnstile) throw new Error('Turnstile unavailable.');
   return new Promise((resolve, reject) => {
     const target = document.createElement('div');
-    target.hidden = true;
+    target.style.position = 'fixed';
+    target.style.right = '1rem';
+    target.style.bottom = '1rem';
+    target.style.zIndex = '2147483647';
     document.body.append(target);
     const finish = (value?: string) => {
       target.remove();
@@ -50,6 +57,8 @@ export async function requestTurnstileToken(siteKey: string): Promise<string> {
     const widgetId = turnstile.render(target, {
       sitekey: siteKey,
       execution: 'execute',
+      action: PORTFOLIO_CHAT_TURNSTILE_ACTION,
+      appearance: 'interaction-only',
       callback: (token) => finish(token),
       'error-callback': () => finish(),
       'expired-callback': () => finish(),

@@ -1,6 +1,7 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 import { setTestCloudflareEnv } from '../fixtures/cloudflare-workers';
 vi.mock('@/lib/security/turnstile', () => ({
+  PORTFOLIO_CHAT_TURNSTILE_ACTION: 'portfolio_chat',
   validateTurnstile: vi.fn().mockResolvedValue(true),
 }));
 import { POST } from '@/pages/api/chat';

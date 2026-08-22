@@ -1,8 +1,16 @@
-type TurnstileResult = { success: boolean; hostname?: string };
+export const PORTFOLIO_CHAT_TURNSTILE_ACTION = 'portfolio_chat';
+export const PORTFOLIO_TURNSTILE_SITEKEY = '0x4AAAAAAEYpXcGcmRdA3lPr';
+
+type TurnstileResult = {
+  success: boolean;
+  hostname?: string;
+  action?: string;
+};
 export async function validateTurnstile(input: {
   token: string;
   secret: string;
   expectedHostname?: string;
+  expectedAction: string;
   fetcher?: typeof fetch;
 }): Promise<boolean> {
   const controller = new AbortController();
@@ -22,7 +30,9 @@ export async function validateTurnstile(input: {
     );
     const result = (await response.json()) as TurnstileResult;
     return (
+      response.ok &&
       result.success &&
+      result.action === input.expectedAction &&
       (!input.expectedHostname || result.hostname === input.expectedHostname)
     );
   } catch {
