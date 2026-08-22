@@ -10,6 +10,8 @@
     position: fixed;
     z-index: 0;
     inset: 0;
+    isolation: isolate;
+    overflow: hidden;
     background:
       radial-gradient(
         35rem circle at var(--pointer-x) var(--pointer-y),
@@ -35,6 +37,76 @@
       var(--color-ink-950);
     will-change: background;
     pointer-events: none;
+  }
+
+  .ambient-background::before,
+  .ambient-background::after {
+    position: absolute;
+    content: '';
+    pointer-events: none;
+  }
+
+  .ambient-background::before {
+    inset: -58vmax;
+    background: conic-gradient(
+      from 145deg at 50% 48%,
+      transparent 0 8%,
+      rgb(85 223 253 / 16%) 15%,
+      transparent 25% 37%,
+      rgb(255 79 216 / 13%) 45%,
+      transparent 55% 68%,
+      rgb(85 223 253 / 11%) 76%,
+      transparent 87% 100%
+    );
+    filter: blur(5.5rem) saturate(125%);
+    mask-image: radial-gradient(
+      ellipse at 50% 44%,
+      transparent 0 18%,
+      rgb(0 0 0 / 62%) 48%,
+      #000 76%
+    );
+    opacity: 0.78;
+    transform-origin: 50% 50%;
+    animation: site-neural-aurora 42s linear infinite;
+  }
+
+  .ambient-background::after {
+    inset: -8%;
+    background:
+      repeating-radial-gradient(
+        circle at 86% 17%,
+        transparent 0 4.75rem,
+        rgb(85 223 253 / 5%) 4.8rem 4.86rem,
+        transparent 4.92rem 8.7rem
+      ),
+      linear-gradient(
+        118deg,
+        transparent 0 27%,
+        rgb(85 223 253 / 4%) 27.05% 27.12%,
+        transparent 27.18% 66%,
+        rgb(255 79 216 / 3.5%) 66.05% 66.12%,
+        transparent 66.18%
+      ),
+      linear-gradient(
+        32deg,
+        transparent 0 48%,
+        rgb(255 255 255 / 2.5%) 48.05% 48.1%,
+        transparent 48.15%
+      );
+    background-size:
+      100% 100%,
+      58rem 58rem,
+      72rem 72rem;
+    mask-image: linear-gradient(
+      105deg,
+      rgb(0 0 0 / 20%),
+      #000 36% 72%,
+      rgb(0 0 0 / 30%)
+    );
+    opacity: 0.68;
+    transform: translate3d(var(--pointer-shift-x), var(--pointer-shift-y), 0)
+      scale(1.04);
+    animation: site-neural-drift 18s var(--motion-ease-out) infinite alternate;
   }
 
   .site-shell {
@@ -957,6 +1029,23 @@
   .ambient-background {
     transition: background 90ms linear;
   }
+
+  @keyframes site-neural-aurora {
+    to {
+      transform: rotate(360deg) scale(1.04);
+    }
+  }
+
+  @keyframes site-neural-drift {
+    to {
+      transform: translate3d(
+          calc(var(--pointer-shift-x) * -0.65),
+          calc(var(--pointer-shift-y) * -0.65),
+          0
+        )
+        scale(1.08);
+    }
+  }
   .lens-hero__copy {
     view-transition-name: role-content;
   }
@@ -989,5 +1078,21 @@
     .ambient-background {
       transition: none;
     }
+
+    .ambient-background::before,
+    .ambient-background::after {
+      animation: none;
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .ambient-background::before {
+    inset: -78vmax;
+    opacity: 0.58;
+  }
+
+  .ambient-background::after {
+    opacity: 0.48;
   }
 }
