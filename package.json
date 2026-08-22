@@ -1,7 +1,7 @@
 {
   "name": "portfolio-implementation",
   "version": "1.0.0",
-  "description": "Official portfolio for Mohamed Hafez: an evidence-led recruiter experience spanning AI/ML engineering, software engineering, Android development, and technical teaching.",
+  "description": "Official role-aware portfolio for Mohamed Hafez across AI/ML, software engineering, Android development, and technical teaching.",
   "private": true,
   "type": "module",
   "scripts": {
@@ -22,8 +22,15 @@
     "deploy:dry": "wrangler deploy --dry-run --outdir bundled",
     "deploy": "wrangler deploy"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "portfolio",
+    "astro",
+    "cloudflare-workers",
+    "rag",
+    "ai-ml",
+    "android"
+  ],
+  "author": "Mohamed Hafez",
   "license": "ISC",
   "dependencies": {
     "@astrojs/cloudflare": "^14.2.1",
