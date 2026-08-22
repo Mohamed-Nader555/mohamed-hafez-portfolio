@@ -5,10 +5,13 @@ test('assistant opens, keeps keyboard focus, and closes with Escape', async ({
 }) => {
   await page.goto('/');
   await page.waitForTimeout(1000);
-  await page.getByRole('button', { name: /ask about Mohamed/i }).click();
+  await page
+    .getByRole('button', { name: /open Mohamed AI portfolio assistant/i })
+    .click();
   await expect(
-    page.getByRole('dialog', { name: /portfolio evidence assistant/i }),
+    page.getByRole('dialog', { name: /Mohamed AI portfolio assistant/i }),
   ).toBeVisible();
+  await expect(page.getByText(/AI & ML context/i)).toBeVisible();
   await expect(
     page.getByRole('textbox', { name: /your question/i }),
   ).toBeFocused();

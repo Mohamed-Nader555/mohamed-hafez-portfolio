@@ -22,6 +22,7 @@ export function PortfolioAssistant({
   const [draft, setDraft] = useState('');
   const [state, setState] = useState('ready');
   const [response, setResponse] = useState<ChatResponse>();
+  const [lastQuestion, setLastQuestion] = useState('');
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const controller = useRef<AbortController | undefined>(undefined);
   const store =
@@ -52,22 +53,26 @@ export function PortfolioAssistant({
     store?.clear();
     setDraft('');
     setResponse(undefined);
+    setLastQuestion('');
     setState('ready');
   };
   const submit = async (event: { preventDefault(): void }) => {
     event.preventDefault();
-    if (!store || !draft.trim() || state === 'submitting') return;
+    const question = draft.trim();
+    if (!store || !question || state === 'submitting') return;
     controller.current?.abort();
     const abort = new AbortController();
     controller.current = abort;
     const timeout = window.setTimeout(() => abort.abort(), 20_000);
     setState('submitting');
+    setLastQuestion(question);
+    setResponse(undefined);
     try {
       const session = store.load();
       const turnstileToken = await requestTurnstileToken(turnstileSiteKey);
       const next = await submitChatTurn(
         {
-          question: draft.trim(),
+          question,
           activeRole: selectedRole,
           history: session.history,
           sessionId: session.sessionId,
@@ -75,7 +80,7 @@ export function PortfolioAssistant({
         },
         abort.signal,
       );
-      store.append({ role: 'user', content: draft.trim() });
+      store.append({ role: 'user', content: question });
       store.append({
         role: 'assistant',
         content: next.answer,
@@ -111,6 +116,8 @@ export function PortfolioAssistant({
           response={response}
           state={state}
           suggestions={suggestions}
+          selectedRole={selectedRole}
+          lastQuestion={lastQuestion}
         />
       )}
       <p className="sr-only" aria-live="polite">
