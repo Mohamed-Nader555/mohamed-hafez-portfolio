@@ -591,9 +591,6 @@
     line-height: 1.7;
   }
 
-  .evidence-section {
-    padding-block: var(--space-section);
-  }
   .featured-section .project-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
