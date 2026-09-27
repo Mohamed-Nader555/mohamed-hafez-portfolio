@@ -1,59 +1,202 @@
 ---
 slug: minds-eye
-title: Mind's Eye
-summary: An assistive smart-glasses system combining Android, embedded hardware, computer vision, OCR, APIs, and text-to-speech.
-roles:
-  - aiml
-  - android
-  - teaching
-ownership: I delivered more than 80% of the system and built its Egyptian-currency recognition capability from scratch.
-technologies:
-  - Android
-  - Java
-  - Arduino
-  - OpenCV
-  - Tesseract OCR
-  - Retrofit
-  - REST APIs
-sourceIds:
-  - resume-aiml
-  - resume-android
-  - resume-software
-  - case-study-minds-eye
-featured: true
-publishedAt: 2026-08-14
+publishedAt: 2026-09-27
+passport:
+  context: B.Sc. graduation capstone, five-person team
+  period: '2022'
+  platform: Android + wearable
+stats:
+  - value: A+
+    label: capstone grade
+  - value: 80%+
+    label: of the system delivered by me
+  - value: '2'
+    label: assistive modes
+  - value: '7'
+    label: recognition features
+features:
+  - title: Glasses-mounted capture
+    detail: An ESP32-CAM on the glasses captures a photo from its onboard button or the phone's gallery, then sends it to the app over Bluetooth.
+  - title: Spoken interface throughout
+    detail: TalkBack support and text-to-speech mean every mode, state, and result is spoken, not just shown on screen.
+  - title: Mode chosen in the app
+    detail: Visually Impaired or Alzheimer mode is selected from the Android app itself, never on the glasses.
+  - title: Cloud vision integration
+    detail: Google Cloud Vision and Azure Computer Vision cover captioning, landmark and object labels, face attributes, and text reading.
+  - title: Familiar-face enrollment
+    detail: A single enrolled photo, stored via Firebase, is enough for Alzheimer mode to recognise that person again later.
+decisions:
+  - choice: cloud vision services for general recognition
+    over: training our own general-purpose vision model
+    because: a five-person capstone timeline couldn't match commercial vision quality for captioning, labels, and OCR, so I put our own model-training effort where it mattered most — Egyptian currency
+  - choice: choosing the assistive mode inside the Android app
+    over: a hardware mode button or command protocol on the glasses
+    because: the glasses only needed to capture and transmit images; keeping mode logic in the app kept the wearable simple and reduced the ways it could fail
+  - choice: Bluetooth to the phone with recognition running server-side
+    over: processing images directly on the ESP32-CAM
+    because: an ESP32-S class microcontroller doesn't have the headroom to run vision models itself, so the phone and my Python service had to do that work
+challenges:
+  - problem: Every cloud vision and currency-recognition call added server cost and round-trip latency.
+    solution: I kept each interaction to a single request from the app to my Python service, and left cost and latency named as the priority for future optimization rather than overstating what was already fast enough.
+  - problem: There's no screen, so every mode, action, and result has to reach the user some other way.
+    solution: TalkBack and text-to-speech cover every app state, so a result is always spoken, never only displayed.
+  - problem: A Bluetooth link between glasses and phone is less reliable than a wired connection.
+    solution: I added retry and error handling around the wearable capture path so a dropped connection didn't strand the user mid-interaction.
+stack:
+  - layer: Wearable
+    items:
+      - name: ESP32-CAM
+        kind: tool
+        purpose: ESP32-S camera module with an OV2640 camera and microSD, mounted on the glasses
+      - name: Arduino framework
+        kind: framework
+        purpose: Firmware for the ESP32-CAM
+      - name: Bluetooth
+        kind: tool
+        purpose: Link from the glasses to the phone
+  - layer: Android app
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+      - name: Retrofit
+        kind: framework
+        purpose: HTTP client to the Python service
+      - name: TextToSpeech
+        kind: framework
+        purpose: Spoken output for every result
+      - name: TalkBack
+        kind: tool
+        purpose: Screen-reader accessibility support
+  - layer: Recognition services
+    items:
+      - name: Python (Flask)
+        kind: language
+        purpose: Currency- and face-recognition service, hosted on Heroku
+      - name: OpenCV
+        kind: ml
+        purpose: Image preprocessing
+      - name: face_recognition / dlib
+        kind: ml
+        purpose: Familiar-face recognition in Alzheimer mode
+      - name: Tesseract OCR
+        kind: ml
+        purpose: Text reading
+      - name: Google Cloud Vision
+        kind: ml
+        purpose: Captioning, labels, objects, OCR
+      - name: Azure Computer Vision
+        kind: ml
+        purpose: Face attributes and additional vision coverage
+  - layer: Cloud & tooling
+    items:
+      - name: Firebase
+        kind: data
+        purpose: User accounts and enrolled familiar faces
+      - name: Heroku
+        kind: tool
+        purpose: Hosts the Python recognition service
+      - name: Android Studio
+        kind: tool
+      - name: PyCharm
+        kind: tool
+      - name: Google Colab
+        kind: tool
+        purpose: Training the currency-recognition model
 ---
 
-import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ModeSwitch from '@/components/case-study/ModeSwitch.astro';
+import DeepDive from '@/components/case-study/DeepDive.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
 
-## Overview
+## The problem
 
-Mind’s Eye is an assistive smart-glasses system that helps turn visual information into spoken output. The project combines a wearable device, an Android client, and recognition services rather than treating computer vision as a stand-alone model demo.
+A blind person can't juggle five separate apps on a touchscreen to find out what's in front of them. Someone living with Alzheimer's may not recognise the people they love. Both problems share a shape: the information exists, but the usual interface, a screen you have to look at and tap, is exactly the wrong one. We put one camera on a pair of glasses and made everything answer out loud instead.
 
-## Challenge
+## Who it was for
 
-The solution had to coordinate wearable hardware, a mobile client, camera-derived inputs, recognition services, and speech output. Each boundary needed a clear data path so the user received one useful result instead of disconnected component outputs.
+The app runs in two modes, chosen in the app rather than on the hardware. Visually Impaired mode covers image captioning, landmark and object labels, face attributes, text reading, and currency recognition. Alzheimer mode does one thing on purpose: it recognises a familiar person from a single enrolled photo and says who they are.
+
+<ModeSwitch
+  modes={[
+    {
+      id: 'visually-impaired',
+      label: 'Visually Impaired mode',
+      features: [
+        { title: 'Image captioning', detail: 'Describes a scene aloud when nothing more specific applies.' },
+        { title: 'Landmark labels', detail: 'Names recognizable landmarks in view.' },
+        { title: 'Object detection', detail: 'Identifies everyday objects in front of the camera.' },
+        { title: 'Face detection', detail: 'Reports estimated gender, emotion, and age range for faces in frame — attributes, not identification.' },
+        { title: 'Text reader', detail: 'Reads printed text aloud from signs, labels, and documents.' },
+        { title: 'Currency recognition', detail: "Identifies an Egyptian banknote's denomination (see the deep dive below)." },
+      ],
+    },
+    {
+      id: 'alzheimer',
+      label: 'Alzheimer mode',
+      features: [
+        { title: 'Familiar-face recognition', detail: 'Recognises a person from a single enrolled photo and says who they are.' },
+      ],
+    },
+  ]}
+/>
 
 ## My role
 
-I delivered more than 80% of the system. I also built the Egyptian-currency recognition capability from scratch and integrated it into the broader assistive workflow.
+I delivered more than 80% of this five-person capstone: the Android app, the cloud integrations, the ESP32-CAM firmware and Bluetooth link, the Python service, the interface contracts between all three, error handling, and deployment. I also built the Egyptian-currency recognition feature from scratch. The team graded the project A+.
 
 ## What I built
 
-I built the Android client in Java, connected the Arduino-based wearable input to REST recognition flows with Retrofit, and integrated the custom currency-recognition capability with OCR-to-speech behavior.
+Capture starts on the glasses and ends as speech in the user's ear, whichever mode is active.
 
-## Architecture
+<FeatureGrid items={frontmatter.features} />
 
-<ArchitectureDiagram slug="minds-eye" title="Mind's Eye" />
+<DeepDive id="currency-recognition" title="Egyptian banknotes, from scratch">
+  General vision services are good at saying "money" and bad at saying which
+  note. That gap is exactly what Egyptian currency recognition needed to
+  close, so I trained a denomination-recognition model myself rather than
+  relying on a general-purpose API for it. A captured image goes through
+  preprocessing and into that model, served from my Python service, and the
+  structured result comes back through OCR-assisted and spoken confirmation
+  so the user hears a denomination, not a guess. I'm not naming the model's
+  architecture, dataset size, or an accuracy figure here — none of that was
+  preserved in a form I'd stand behind — and it doesn't run on-device or
+  offline; recognition always goes through the service. What it can't do yet:
+  total a handful of mixed cash. It classifies one note at a time.
+</DeepDive>
 
-`Arduino wearable → Android Java client → REST recognition services → OCR / vision result → text-to-speech`
+## How it works
 
-OpenCV supports the computer-vision work, while Tesseract OCR extracts text for spoken playback.
+The glasses hand a captured image to the Android app over Bluetooth, and the app routes it either to my Python service for currency and face recognition or to the cloud vision services for everything else, then speaks whatever comes back.
 
-## Results
+<ArchitectureFlow slug="minds-eye" title="Mind's Eye" />
 
-The delivered system brought mobile, embedded, cloud, computer-vision, and speech components into one assistive workflow. No user-count or recognition-accuracy metric is claimed without a verified source.
+## Decisions that mattered
 
-## Lessons
+<DecisionCards items={frontmatter.decisions} />
 
-Mind’s Eye showed the value of treating integration as a first-class engineering problem. A recognition feature becomes useful only when device input, service communication, and accessible output work together.
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+Mind's Eye shipped as a working, gradeable system: a wearable capture path, two selectable modes, seven recognition features between them, and a currency-recognition model I trained and served myself. The five-person team earned an A+ on the capstone, and I delivered more than 80% of what made it work end to end.
+
+## What I learned
+
+> Integration is the engineering problem.
+
+No single piece of Mind's Eye was exotic on its own — a microcontroller, a phone app, a couple of cloud APIs, one model I trained myself. What made it hard was getting all of them to agree on a contract: what an image capture looks like, what a recognition result looks like, and what happens when any one link in that chain is slow or drops out.
+
+## What I'd do next
+
+The team's own future-work notes point at two real gaps. The currency model classifies one note's denomination at a time and can't yet total a handful of mixed cash, and server cost and latency for the cloud vision calls need real optimization before this could run at a larger scale. Both are software problems, not hardware ones, and both are the kind I'd tackle first.

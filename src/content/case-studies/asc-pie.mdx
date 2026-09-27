@@ -1,63 +1,219 @@
 ---
 slug: asc-pie
-title: ASC-PIE
-summary: I developed this PII-aware named-entity recognition evaluation framework for my completed M.A. thesis at York University.
-roles:
-  - aiml
-  - software
-  - teaching
-ownership: I designed and built the research pipeline, corpus standardization, and evaluation framework.
-technologies:
-  - Python
-  - PyTorch
-  - Hugging Face Transformers
-  - scikit-learn
-  - seqeval
-sourceIds:
-  - official-yorkspace
-  - official-thesis-handle
-  - github-thesis-experiments
-  - case-study-asc-pie
-featured: true
-publishedAt: 2026-08-14
+publishedAt: 2026-09-27
+passport:
+  context: M.A. thesis, York University (CERAS Lab)
+  period: Sep 2024 – Apr 2026
+stats:
+  - value: "333,109"
+    label: examples in the corpus
+  - value: "19"
+    label: canonical PII types
+  - value: "99.1%"
+    label: best strict F1
+    note: RoBERTa-large, held-out subset
+  - value: "+0.577"
+    label: F1 gained from corpus design
+    note: same backbone, public-only vs full ASC-PIE
+features:
+  - title: Four public corpora, unified
+    detail: AI4Privacy, Gretel, CoNLL++, and PII-DD are remapped onto one schema, then extended with my own synthetic augmentation for rare PII types.
+  - title: A shared 19-type schema
+    detail: Every corpus is normalized to the same 19 canonical PII types, from NAME and EMAIL through SIN, PASSPORT, and ORGANIZATION.
+  - title: Synchronized exports for every model family
+    detail: The same fixed splits are exported as IOB2 tags, key-value text, and JSON, so encoder, encoder-decoder, and decoder-only models train and evaluate on matched data.
+  - title: One evaluator for every model family
+    detail: IOB2 tags, key-value text, and JSON are all normalized to the same (type, text) pairs before scoring, so strict F1, normalized F1, and validity mean the same thing regardless of model family.
+  - title: Reproducible experiment artifacts
+    detail: Dataset manifests, configurations, per-type reports, and prediction traces make every result traceable back to the run that produced it.
+decisions:
+  - choice: a realistic long-tail label distribution
+    over: an artificially balanced benchmark
+    because: production PII inventories are lopsided too. NAME appears in 445K spans and COUNTRY in only 914, and smoothing that away would have hidden exactly the categories that are hardest to extract.
+  - choice: strict entity-text matching as the primary metric
+    because: a partial or fuzzy match still leaves a PII span unresolved for a downstream redaction or auditing pipeline.
+  - choice: fixed, disjoint train, validation, and test splits
+    because: every model family, and every later continual-learning stage, needed to be compared on the same unseen data.
+challenges:
+  - problem: The four public corpora used different labels, tag sets, and annotation conventions for what was often the same underlying PII.
+    solution: I built a deterministic schema-mapping step that remaps every corpus's labels onto the shared 19-type schema, repairs IOB2 tag inconsistencies, deduplicates, and routes anything outside the schema to O.
+  - problem: Generative models sometimes returned text that could not be parsed back into (type, text) pairs at all.
+    solution: I normalized every model family's output to the same canonical representation before scoring, and made validity, whether an output is even structurally usable, a first-class metric alongside F1.
+  - problem: Rare, highly structured PII types such as PASSPORT and TAXNUM had very little public support.
+    solution: I added a synthetic augmentation component, Luhn-valid credit card numbers, controlled templates, and Fake Name Generator records, to strengthen the training signal for exactly the categories the public corpora under-cover.
+stack:
+  - layer: Core ML stack
+    items:
+      - name: Python
+        kind: language
+        purpose: Pipeline and experiment implementation language
+      - name: PyTorch
+        kind: ml
+        purpose: Model training
+      - name: Hugging Face Transformers
+        kind: ml
+        purpose: Encoder, encoder-decoder, and decoder-only model implementations
+      - name: Hugging Face Datasets
+        kind: data
+        purpose: Corpus loading and export formats
+      - name: scikit-learn
+        kind: ml
+        purpose: Classical baselines and evaluation utilities
+  - layer: Tooling & evaluation
+    items:
+      - name: seqeval
+        kind: tool
+        purpose: Entity-level F1 scoring
+      - name: Jupyter / Colab
+        kind: tool
+        purpose: Corpus notebooks and experiment runs
+links:
+  - label: YorkSpace thesis record
+    sourceId: official-yorkspace
+  - label: Thesis permanent handle
+    sourceId: official-thesis-handle
+  - label: Thesis-Experiments repository
+    sourceId: github-thesis-experiments
 ---
 
-import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import DeepDive from '@/components/case-study/DeepDive.astro';
+import FormatExplorer from '@/components/case-study/FormatExplorer.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+import CompareTable from '@/components/case-study/CompareTable.astro';
 
-## Overview
+## The problem
 
-Privacy-oriented named-entity recognition datasets use different sources, annotation schemes, and PII categories. ASC-PIE provides a shared evaluation framework for studying those differences without treating each dataset as an isolated experiment.
+People paste personal details into prompts, emails, chat logs, and support tickets constantly, and organizations are expected to find that PII before it causes harm. Regulations such as GDPR, PIPEDA, and CCPA all assume a system can locate personally identifying information reliably.
 
-## Challenge
+The trouble was never a shortage of PII datasets. It was that public PII datasets each spoke a different language: different label sets, different formats, different annotation conventions. Comparing an encoder model trained on one corpus against a generative model trained on another told you almost nothing about which approach actually extracts PII better, because the comparison itself was not fair.
 
-Privacy datasets combine real and synthetic text and do not begin with one common label system. Meaningful comparisons require explicit preprocessing and label mapping before model results can be evaluated consistently.
+## Who it was for
+
+Anyone choosing a model for PII extraction: a privacy team weighing a fast token classifier against a flexible generative one, or a researcher asking whether prompting can replace fine-tuning. I built ASC-PIE around four research questions: how model families compare under one protocol, how in-context prompting compares with fine-tuning, how badly a model forgets when its label space grows, and how much corpus design itself changes the outcome.
 
 ## My role
 
-I designed and built the research pipeline, corpus-standardization workflow, experiments, and evaluation framework. The work became my M.A. thesis, **“ASC-PIE: An Evaluation Framework for PII-Aware Named-Entity Recognition.”**
+I designed and built the ASC-PIE research pipeline for my M.A. thesis at York University's CERAS Lab, supervised by Prof. Marin Litoiu: the corpus itself, the shared 19-type schema, the evaluation framework that scores every model family the same way, and the reproducible artifacts behind every result on this page. My thesis is completed, and the degree was officially awarded in 2026, conferred on 24 Jul 2026.
 
 ## What I built
 
-I built individual preprocessing workflows for each source dataset, mapped their labels into a shared representation, and created a reproducible training and evaluation workflow using Python, PyTorch, Hugging Face Transformers and Datasets, scikit-learn, and seqeval.
+<FeatureGrid items={frontmatter.features} />
 
-## Architecture
+Underneath the schema sits a chip cloud of the 19 canonical PII types, grouped the way a privacy reviewer would read them: identity documents (NAME, GENDER, SIN, TAXNUM, NATIONALID, PASSPORT, DRIVER-LICENCE), contact details (EMAIL, PHONENUM), financial data (CREDITCARD), geography (LOCATION, CITY, STATE, COUNTRY, ZIPCODE), and context (DATE, TIME, JOBTITLE, ORGANIZATION).
 
-<ArchitectureDiagram slug="asc-pie" title="ASC-PIE" />
+<DeepDive id="one-ruler-for-every-model-family" title="One ruler for every model family">
+  An encoder tags each token IOB2-style. An encoder-decoder writes a
+  key-value string. A decoder-only model returns JSON. Comparing them fairly
+  meant refusing to score any of those formats directly.
 
-`privacy datasets → preprocessing → shared PII labels → model training → NER evaluation`
+  Every prediction, whatever format it started in, is normalized to the same
+  canonical representation, (type, text) pairs, before it is scored. A
+  generative model that writes malformed output does not get credit by
+  default: validity, whether an output is even structurally usable, is
+  scored as a first-class metric alongside strict and normalized F1. Try the
+  same sentence in each format below.
 
-The experiment repository keeps dataset preparation, combined Hugging Face datasets, model training artifacts, and evaluation dependencies in one reproducible workflow.
+  <FormatExplorer />
+</DeepDive>
 
-## Results
+<DeepDive id="the-toolkit-underneath" title="The toolkit underneath">
+  Each public corpus needed its own notebook to remap labels onto the shared
+  schema, plus shared label maps so the remapping stayed consistent across
+  all of them. The synthetic-identifier utilities, Luhn-valid credit card
+  generation, controlled templates, and Fake Name Generator records, live in
+  the same toolkit. That code sits in a pending repository, Anon-Datasets,
+  which I plan to publish once it is cleaned up.
+</DeepDive>
 
-I completed the thesis and York University officially awarded my M.A. in Information Systems & Technology in 2026. The related SPRINT-PP research paper is **submitted and under review**; I do not present it as published or accepted.
+## How it works
 
-## Lessons
+Every corpus is remapped to one schema, split once, exported in synchronized formats, and scored by one evaluator, regardless of which model family reads it.
 
-Comparable model evaluation starts with transparent data and label decisions. A shared schema makes differences between datasets visible instead of hiding them inside separate preprocessing notebooks.
+<ArchitectureFlow slug="asc-pie" title="ASC-PIE" />
 
-## Project links
+## Decisions that mattered
 
-- [YorkSpace thesis record](https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e)
-- [Permanent thesis handle](https://hdl.handle.net/10315/43932)
-- [Public thesis experiments repository](https://github.com/Mohamed-Nader555/Thesis-Experiments)
+<DecisionCards items={frontmatter.decisions} />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+RoBERTa-large came out on top of the model-family comparison, with FLAN-T5-base close behind as the strongest generative alternative. The decoder-only models, Llama3.1-8B and Qwen2.5-7B, were mainly limited by recall rather than precision, and BART-base struggled with both validity and F1.
+
+<CompareTable
+  caption="Strict F1 and validity by model, on a held-out subset."
+  columns={["Model", "Family", "Validity", "Strict F1"]}
+  rows={[
+    ["RoBERTa-large", "Encoder", "100.0%", "99.1%"],
+    ["FLAN-T5-base", "Encoder-decoder", "100.0%", "98.7%"],
+    ["ModernBERT-large", "Encoder", "100.0%", "84.6%"],
+    ["BERT-large-cased", "Encoder", "100.0%", "80.7%"],
+    ["Llama3.1-8B", "Decoder-only", "81.4%", "69.0%"],
+    ["Qwen2.5-7B", "Decoder-only", "54.3%", "40.0%"],
+    ["BART-base", "Encoder-decoder", "56.1%", "34.8%"],
+  ]}
+/>
+
+For the decoder-only models, in-context prompting beat fine-tuning outright. The best 3-shot key-value prompt outperformed the fine-tuned baseline for both models tested, and it did so far faster than the equivalent JSON prompt: about 1.76 s/query for key-value versus about 26.8 s/query for JSON on the same model.
+
+<CompareTable
+  caption="Fine-tuned strict F1 versus the best 3-shot key-value in-context result, same model."
+  columns={["Model", "Fine-tuned strict F1", "Best 3-shot key-value strict F1"]}
+  rows={[
+    ["Qwen2.5-7B", "40.0%", "77.8%"],
+    ["Llama3.1-8B", "69.0%", "72.5%"],
+  ]}
+/>
+
+The largest single result, though, came from the corpus itself rather than the model. Training the same RoBERTa-large backbone on the public corpora alone reached 41.5% strict F1, limited mainly by recall. Training it on the full ASC-PIE corpus, public corpora plus my own synthetic augmentation, reached 99.2% strict F1 under the identical protocol.
+
+<CompareTable
+  caption="RoBERTa-large trained on public corpora only versus the full ASC-PIE corpus, same backbone and evaluation protocol."
+  columns={["Training corpus", "Precision", "Recall", "Strict F1"]}
+  rows={[
+    ["Public corpora only", "64.0%", "30.7%", "41.5%"],
+    ["Full ASC-PIE", "98.9%", "99.5%", "99.2%"],
+  ]}
+/>
+
+That is a gain of +0.577 strict F1 on the same backbone and the same evaluation protocol, and the gain was uneven in a telling way: the largest jumps landed on categories such as JOBTITLE, EMAIL, and SIN, where public-only training had almost nothing to work with, while already near-ceiling structured types such as CREDITCARD barely moved.
+
+<CompareTable
+  caption="Selected per-type strict F1, public corpora only versus full ASC-PIE."
+  columns={["PII type", "Public-only", "Full ASC-PIE"]}
+  rows={[
+    ["JOBTITLE", "0.0%", "99.8%"],
+    ["EMAIL", "7.9%", "99.4%"],
+    ["SIN", "22.4%", "99.8%"],
+    ["NAME", "27.2%", "98.2%"],
+    ["COUNTRY", "80.0%", "100.0%"],
+    ["CREDITCARD", "97.9%", "99.1%"],
+  ]}
+/>
+
+The same corpus and evaluator also underpin a paper, *ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction*, accepted to IEEE CASCON 2026, which walks through the continual-learning half of this work in full on its own page.
+
+## What I learned
+
+> Corpus design moved results more than changing the model did.
+
+Two RoBERTa-large runs, identical architecture and identical protocol, landed 0.577 strict F1 apart because one saw a properly unified, augmented corpus and the other did not. That is a larger swing than moving between any two of the model families compared here, and it is the reason ASC-PIE treats corpus construction as a first-class contribution rather than a preprocessing footnote.
+
+## What I'd do next
+
+The thesis's own future directions apply here directly: extending ASC-PIE to multilingual and cross-lingual settings under the same unified schema, broadening the model-family study with additional open-weight backbones, and running stronger drift tests to see how the schema and corpus hold up outside this thesis's own splits.
+
+## Links
+
+The thesis is catalogued on [YorkSpace](https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e) and reachable through its [permanent handle](https://hdl.handle.net/10315/43932). The corpus tooling, training scripts, and evaluation harness behind every number on this page are public in the [Thesis-Experiments repository](https://github.com/Mohamed-Nader555/Thesis-Experiments).

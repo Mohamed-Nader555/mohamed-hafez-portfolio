@@ -1,0 +1,158 @@
+---
+slug: sprint-pp
+publishedAt: 2026-09-27
+passport:
+  context: M.A. thesis research, York University (CERAS Lab), supervised by Prof. Marin Litoiu
+stats:
+  - value: "83.5%"
+    label: ACC, best of four strategies
+    note: SPRINT-PP, shared RoBERTa-large backbone
+  - value: "0"
+    label: raw historical examples stored
+  - value: "25.6%"
+    label: less training time than distillation
+  - value: "14.6%"
+    label: naive sequential fine-tuning ACC
+features:
+  - title: A three-stage class-incremental protocol
+    detail: Each stage adds new PII types on top of the ones already learned, while the train, validation, and test splits stay fixed and disjoint throughout.
+  - title: Two evaluation views
+    detail: A stage-restricted view scores each stage in isolation to show what was learned; a cumulative view scores old and new labels together to show what stayed usable.
+  - title: Four compared update strategies
+    detail: Baseline sequential fine-tuning, replay, distillation, and SPRINT-PP all share the same encoder backbone, data splits, and stage design, so only the update mechanism differs.
+stack:
+  - layer: Model & training
+    items:
+      - name: Python
+        kind: language
+        purpose: Training and evaluation scripts
+      - name: PyTorch
+        kind: ml
+        purpose: Model training and the custom training objective
+      - name: RoBERTa-large
+        kind: ml
+        purpose: Shared backbone across all four compared strategies
+      - name: Hugging Face Transformers
+        kind: ml
+        purpose: Model and tokenizer implementation
+links:
+  - label: ASC-PIE research record
+    sourceId: research-page-asc-pie
+  - label: YorkSpace thesis record
+    sourceId: official-yorkspace
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import DeepDive from '@/components/case-study/DeepDive.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+import CompareTable from '@/components/case-study/CompareTable.astro';
+import StageMatrix from '@/components/case-study/StageMatrix.astro';
+
+*Paper: "ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction" — accepted to IEEE CASCON 2026 (Toronto, 10–12 Nov 2026); the method is also part of my M.A. thesis. No author list yet.*
+
+## The problem
+
+PII requirements do not stay fixed. A system built to find one set of categories today may need to find more next year, as a regulator adds a category or a product adds a new field. The obvious fix is to keep fine-tuning the same model on the new types.
+
+I ran that obvious fix as a baseline, staged over three rounds of new PII types on the same RoBERTa-large backbone. Each stage was learned well on its own, F1 above 96.3% on the fresh types every time, but the previous stage's F1 collapsed to 0% the moment the next stage began. The model was not accumulating knowledge; it was replacing it.
+
+The reason is what the underlying research calls the poisoned-gradient problem: later-stage text still contains old entities, now relabelled O, and training on those tokens actively teaches the model to stop recognizing what it already knew. The obvious mitigation, replay, fixes this by storing old labelled examples so the model keeps seeing them, but those examples are personal data, and storing them is exactly the retention a privacy-aware system should avoid.
+
+## My role
+
+I designed the three-stage protocol, implemented all four compared update strategies, developed the SPRINT-PP method itself, and ran every experiment behind this page as part of my M.A. thesis at York University's CERAS Lab, supervised by Prof. Marin Litoiu.
+
+## What I built
+
+I built the staged benchmark itself, not just the mitigation. Every stage adds new PII types on top of what came before, and I score each strategy two ways: a stage-restricted view that shows what a strategy learned, and a cumulative view that shows what it managed to keep usable once later stages arrived. Separating those two views is what makes it possible to see forgetting and new-type learning as two different numbers instead of one blurred score.
+
+<FeatureGrid items={frontmatter.features} />
+
+<DeepDive id="how-sprint-pp-remembers-without-storing" title="How SPRINT-PP remembers without storing">
+  SPRINT-PP is inspired by the MiB idea from class-incremental segmentation
+  (Cermelli et al., CVPR 2020), adapted here to token-level PII extraction.
+  Four pieces work together:
+
+  1. **Triage.** The frozen model from the previous stage scores every
+  token the new stage has relabelled O. Anything it is confident used to be
+  an entity gets flagged as a suspected old entity.
+  2. **Selective correction.** Only those flagged tokens receive soft-label
+  guidance from the old model, a targeted correction rather than one applied
+  everywhere the way distillation applies it.
+  3. **Prototype memory.** One centroid per old PII type is kept, not raw
+  text, so the model has something to stay close to without retaining an
+  example anyone could read.
+  4. **Head anchoring.** The classifier rows for old labels are stabilized
+  directly, so the update does not quietly overwrite them.
+</DeepDive>
+
+## How it works
+
+Each new stage's data is triaged against the frozen previous model, corrected selectively instead of broadly replayed, and anchored so the classifier keeps its old rows.
+
+<ArchitectureFlow slug="sprint-pp" title="SPRINT-PP" />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+SPRINT-PP finished ahead of every other strategy on ACC and BWT, and it did so while never storing a raw historical example. Only replay stores raw examples, and replay still forgot more than either privacy-safe alternative.
+
+<CompareTable
+  caption="Continual-learning summary across four update strategies, shared RoBERTa-large backbone."
+  columns={["Strategy", "ACC ↑", "BWT ↑", "Forgetting ↓", "Intransigence ↓", "Stores raw PII?"]}
+  rows={[
+    ["SPRINT-PP", "83.5%", "−0.2075", "0.2075", "0.0156", "No"],
+    ["Distillation", "83.0%", "−0.2111", "0.2111", "0.0193", "No"],
+    ["Replay", "76.5%", "−0.2726", "0.2726", "0.0278", "Yes"],
+    ["Baseline", "14.6%", "−0.6506", "0.6506", "0.0202", "No"],
+  ]}
+/>
+
+SPRINT-PP was also 25.6% faster to train than distillation, on the same backbone and the same staged protocol.
+
+<StageMatrix
+  strategies={["Baseline", "Replay", "Distillation", "SPRINT-PP"]}
+  stageLabels={["Stage 0", "Stage 1", "Stage 2"]}
+  matrices={{
+    Baseline: [[0.963, 0, 0], [0, 0.982, 0], [0, 0, 0.994]],
+    Replay: [[0.9668, 0, 0], [0.9481, 0.9666, 0], [0.8726, 0.9879, 0.9833]],
+    Distillation: [[0.9668, 0, 0], [0.9661, 0.9793, 0], [0.9635, 0.9802, 0.9962]],
+    'SPRINT-PP': [[0.9668, 0, 0], [0.9694, 0.9907, 0], [0.9694, 0.9896, 0.9956]],
+  }}
+  title="Stage-restricted F1: each stage evaluated on its own"
+/>
+
+Read down the diagonal and every strategy looks fine: each stage is learned well in isolation. Read the lower-left corner and the difference shows up: the baseline's early stages read 0.000 once later stages arrive, while SPRINT-PP keeps stage 0 above 0.96 all the way through stage 2.
+
+<StageMatrix
+  strategies={["Replay", "Distillation", "SPRINT-PP"]}
+  stageLabels={["Stage 0", "Stage 1", "Stage 2"]}
+  matrices={{
+    Replay: [[0.9668, 0, 0], [0.8315, 0.9521, 0], [0.6286, 0.7450, 0.9215]],
+    Distillation: [[0.9668, 0, 0], [0.8542, 0.9688, 0], [0.7023, 0.8111, 0.9751]],
+    'SPRINT-PP': [[0.9668, 0, 0], [0.8600, 0.9737, 0], [0.7086, 0.8168, 0.9797]],
+  }}
+  title="Cumulative F1: old and new labels scored together"
+/>
+
+The baseline is left out of the cumulative view above: only its final row is available from the underlying research, and I would rather show three strategies in full than estimate a fourth.
+
+The honest limits: this is one backbone, three stages, English-only, and the privacy protection is operational, no raw replay, not a formal privacy guarantee.
+
+## What I learned
+
+> How a method treats data is part of its result.
+
+Replay looks strong on paper if you only read the ACC column and ignore what it has to keep to get there. SPRINT-PP and distillation both stay ahead of it while storing nothing raw, which is the comparison that actually matters once the categories being learned are personal data in the first place. A continual-learning method for PII cannot be judged on accuracy alone; what it stores to reach that accuracy is part of the result, not a footnote to it.
+
+## What I'd do next
+
+The underlying research's own future work applies directly here: evaluating SPRINT-PP and other privacy-safe mitigation strategies under stronger domain drift, noisier supervision, and partially overlapping annotation policies, and testing it against other backbones and longer stage sequences than the three used in this thesis. Extending the comparison to more than three stages would also show whether the gap between SPRINT-PP and distillation holds, narrows, or widens as the label space keeps growing.
+
+## Links
+
+The continual-learning results here build directly on the corpus and shared evaluator described on the [ASC-PIE research record](/research/asc-pie), and the underlying thesis is catalogued on [YorkSpace](https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e). The IEEE Xplore record will be added once the CASCON 2026 proceedings are published.

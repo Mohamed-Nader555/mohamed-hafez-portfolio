@@ -1,58 +1,154 @@
 ---
 slug: northstar-rag
-title: Northstar RAG System
-summary: An independently built, end-to-end hands-on RAG engineering project for grounded retrieval, citation-backed answers, strict refusals, evaluation, testing, and Docker delivery.
-roles:
-  - aiml
-  - software
-ownership: I independently built the complete ingestion, retrieval, generation, evaluation, testing, and deployment workflow.
-technologies:
-  - Python
-  - FastAPI
-  - LangChain text splitters
-  - sentence-transformers
-  - Chroma
-  - RAGAS
-  - pytest
-  - Docker
-sourceIds:
-  - resume-aiml
-  - resume-software
-  - case-study-northstar
-featured: true
-publishedAt: 2026-08-14
+publishedAt: 2026-09-27
+passport:
+  context: Independent RAG engineering project
+  platform: Backend API service
+stats:
+  - value: '9'
+    label: internal documents
+    note: 4 PDF · 2 TXT · 3 Markdown
+  - value: '700'
+    label: characters per chunk
+    note: 100-character overlap
+  - value: '3'
+    label: source formats ingested
+features:
+  - title: Multi-format ingestion
+    detail: PDF, plain-text, and Markdown sources are all normalized into the same chunk and metadata structure before anything reaches the vector store.
+  - title: Recursive chunking
+    detail: 700-character chunks with a 100-character overlap keep enough surrounding context without losing the sentence that actually answers a question.
+  - title: Local embeddings
+    detail: A local sentence-transformer embeds every chunk, so retrieval never depends on a per-query call to an external embeddings API.
+  - title: Distance-filtered retrieval
+    detail: A persistent Chroma store returns candidate chunks, and only the ones under a fixed distance threshold are allowed to reach the generator.
+  - title: Source-numbered, grounded answers
+    detail: Every generated answer cites the numbered chunks it drew from, so a reader can check the claim against the source document itself.
+  - title: Full provenance per chunk
+    detail: Each retrieved chunk carries its document name, page, section when available, chunk id, and retrieval distance.
+decisions:
+  - choice: a hard distance threshold that refuses before generation runs
+    over: always calling the model and hoping the citations look plausible
+    because: an internal assistant that guesses confidently is more dangerous than one that admits it doesn't have enough evidence
+  - choice: local embeddings and a persistent Chroma store
+    over: a hosted embeddings API called on every query
+    because: it keeps the retrieval path free of a recurring cloud dependency, an extra network failure point, and a per-query cost
+  - choice: 700-character recursive chunks with a 100-character overlap
+    over: chunking by whole page or paragraph
+    because: smaller, overlapping chunks kept individual policies retrievable without losing the sentence that actually answers the question
+challenges:
+  - problem: A fluent, wrong answer is worse than no answer at all for a question about company policy.
+    solution: I moved the refusal decision before generation. If nothing in the corpus clears the distance threshold, the system returns a fixed "I don't have enough evidence for that" response instead of ever calling the language model.
+  - problem: Three source formats (PDF, plain text, Markdown) each carry different structural metadata.
+    solution: I built format-specific extraction, including PyMuPDF for PDFs, that all converge on the same chunk record, attaching page and section metadata only where the source format actually supports it.
+  - problem: A citation is only useful if someone can verify it against the original document.
+    solution: Every chunk in a response payload carries its document, page, section, chunk id, and distance, so an answer can be checked, not just trusted.
+stack:
+  - layer: API & ingestion
+    items:
+      - name: Python
+        kind: language
+        purpose: Service language
+      - name: FastAPI
+        kind: framework
+        purpose: Query and retrieval API with Pydantic contracts
+      - name: PyMuPDF
+        kind: tool
+        purpose: PDF text extraction
+      - name: LangChain
+        kind: framework
+        purpose: Recursive character chunking
+      - name: Uvicorn
+        kind: tool
+        purpose: ASGI server
+  - layer: Retrieval & generation
+    items:
+      - name: sentence-transformers
+        kind: ml
+        purpose: Local embedding model
+      - name: Chroma
+        kind: data
+        purpose: Persistent, distance-filtered vector store
+      - name: OpenAI-compatible LLM client
+        kind: framework
+        purpose: Swappable grounded-generation backend
+  - layer: Evaluation & deployment
+    items:
+      - name: RAGAS
+        kind: tool
+        purpose: Retrieval and generation evaluation harness (dataset is roadmap work)
+      - name: pytest
+        kind: tool
+        purpose: API and retrieval tests, run with httpx
+      - name: Docker Compose
+        kind: tool
+        purpose: Local multi-service deployment
 ---
 
-import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import DeepDive from '@/components/case-study/DeepDive.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
 
-## Overview
+## The problem
 
-Northstar answers questions over a small internal-document corpus while keeping each answer tied to retrieved evidence. The goal was to demonstrate the complete engineering path from document ingestion to an API response a reader can verify.
+Plain LLM chat over company documents is good at sounding sure of itself. Ask it something the source material never actually covers, and it will still produce a confident, fluent paragraph, one that reads exactly like a correct answer and often isn't. For internal tooling, that failure mode is worse than no answer at all: an employee who trusts a fabricated travel-expense rule or a fabricated escalation step has no way to know it was invented. I wanted to know what it took to build an assistant that would rather say "I don't have enough evidence" than make something up.
 
-## Challenge
+## Who it was for
 
-The service must refuse questions the indexed documents do not support. It also needs citations that identify the source document, page, and chunk instead of returning unsupported prose.
+I framed Northstar around a fictional mid-sized company, Northstar Technologies, and built its knowledge base out of nine internal documents spanning three formats on purpose: an employee handbook, an IT security policy, a remote-work policy, and a travel and expense policy as PDFs; a benefits and leave guide and a customer-support escalation procedure as plain text; and a data classification and retention standard, an engineering on-call runbook, and a platform architecture overview as Markdown. Mixing formats meant ingestion had to handle all three cleanly, not just the easy case.
 
 ## My role
 
-I independently built the project end to end: ingestion, chunking, embeddings, vector storage, retrieval filters, grounded generation, citations, refusal behavior, evaluation, automated tests, and Docker packaging.
+I built Northstar independently, end to end, as a hands-on RAG engineering project — not a course assignment or a graded exercise. I designed the corpus, the chunking and retrieval pipeline, the refusal policy, the grounded-generation prompts, the evaluation harness, and the test suite myself, and packaged the whole thing to run locally with Docker Compose.
 
 ## What I built
 
-I exposed health and question-answering endpoints with FastAPI and Uvicorn, extracted PDFs with PyMuPDF, created chunks with LangChain text splitters, generated local embeddings with `all-MiniLM-L6-v2`, and persisted vectors in Chroma. Docker and Docker Compose package the API and its data volumes.
+The system extracts text from every document format, splits it into recursive chunks, embeds those chunks locally, and stores them in a persistent vector database that a FastAPI service queries at request time.
 
-## Architecture
+<FeatureGrid items={frontmatter.features} />
 
-<ArchitectureDiagram slug="northstar-rag" title="Northstar RAG System" />
+## How it works
 
-`PDF / TXT / Markdown → clean text → recursive chunks → local embeddings → persistent Chroma → filtered retrieval → grounded prompt → answer + citations`
+A query is embedded with the same local model used for ingestion, matched against the Chroma store, and only allowed to proceed to generation if at least one candidate chunk falls under a fixed distance threshold. When one does, the prompt includes the matching chunks as numbered sources so the model can cite them directly; when none does, the request never reaches the language model at all.
 
-The default pipeline uses 700-character chunks with 100-character overlap, retrieves the nearest candidates, and rejects chunks beyond a configurable cosine-distance threshold.
+<ArchitectureFlow slug="northstar-rag" title="Northstar RAG System" />
 
-## Results
+<DeepDive id="refusal-before-generation" title="Refusal happens before generation">
+  The easiest way to make a RAG system look reliable is to have it refuse
+  gracefully when it should. I implemented that as a gate, not an
+  afterthought: retrieval runs first, its results are scored against a
+  distance threshold, and only chunks that clear that bar are allowed to
+  reach the generation step at all. If nothing clears it, the API returns a
+  fixed refusal message and the language model is never called. That ordering
+  matters — it means the model can't paper over a retrieval miss with a
+  fluent guess, because it never gets the chance to try.
+</DeepDive>
 
-The delivered system demonstrates grounded retrieval, source-level citations, deterministic refusal when evidence is insufficient, pytest coverage, and a RAGAS pipeline for faithfulness, answer relevancy, context precision, and context recall.
+## Decisions that mattered
 
-## Lessons
+<DecisionCards items={frontmatter.decisions} />
 
-The key engineering lesson was to make “I do not have enough evidence” part of the architecture. Retrieval thresholds, citations, and evaluation are product behavior, not optional additions after generation works.
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+Northstar works today as a functional baseline: it ingests the nine-document corpus, answers questions with numbered citations back to the source chunks, and refuses cleanly when the corpus doesn't cover a question. I have not run a full RAGAS evaluation against it yet — building the evaluation question set is still roadmap work, and I'd rather say that plainly than imply scores exist that don't.
+
+## What I learned
+
+> Grounding is a system property.
+
+It isn't a prompt trick or a model choice. It comes from where the refusal check sits in the pipeline, how provenance is attached to every chunk, and whether "I don't know" is ever actually allowed to win. Get that structure right and the model choice becomes a much smaller decision.
+
+## What I'd do next
+
+The clearest next steps are the ones I already know are missing: hybrid BM25 plus dense retrieval so exact terms aren't only found by embedding similarity, a cross-encoder re-ranker on top of the initial retrieval pass, a PII filter that reuses the models from my [ASC-PIE](/work/asc-pie) work, and a completed RAGAS evaluation set so "it works" becomes a measured claim instead of a description. This site's own assistant, Ask Mohamed.AI, follows the same refuse-before-generate principle Northstar is built around — see [This Portfolio](/work/this-portfolio) for how that version works in production.
