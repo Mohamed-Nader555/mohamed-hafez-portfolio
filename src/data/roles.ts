@@ -11,7 +11,7 @@ const roleLenses = [
     summary:
       'AI/ML engineer focused on privacy-aware NLP, applied machine learning, and grounded RAG systems.',
     resumeHref: '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',
-    featuredProjectIds: ['asc-pie', 'northstar-rag', 'minds-eye', 'dive'],
+    featuredProjectIds: ['asc-pie', 'sprint-pp', 'northstar-rag', 'minds-eye'],
     depthEvidenceIds: {
       research: ['asc-pie-evaluation-framework', 'sprint-pp-status'],
       teaching: ['teaching-ai-ml', 'teaching-delivery'],
@@ -28,7 +28,12 @@ const roleLenses = [
     summary:
       'Software engineer with backend, enterprise-system, API, and product-delivery experience.',
     resumeHref: '/resumes/Mohamed-Hafez-Software-Engineer.pdf',
-    featuredProjectIds: ['northstar-rag', 'bass', 'dive', 'dostava'],
+    featuredProjectIds: [
+      'northstar-rag',
+      'documentum-workflows',
+      'this-portfolio',
+      'dive',
+    ],
     depthEvidenceIds: {
       research: ['asc-pie-dataset-pipeline', 'asc-pie-label-standardization'],
       teaching: ['teaching-computing-topics', 'teaching-delivery'],
@@ -45,7 +50,7 @@ const roleLenses = [
     summary:
       'Android developer with end-to-end client delivery and integrated mobile experiences.',
     resumeHref: '/resumes/Mohamed-Hafez-Android-Developer.pdf',
-    featuredProjectIds: ['minds-eye', 'dive', 'dostava', 'mercato'],
+    featuredProjectIds: ['minds-eye', 'dive', 'dostava', 'food-planner'],
     depthEvidenceIds: {
       research: ['asc-pie-degree-awarded', 'asc-pie-evaluation-framework'],
       teaching: ['teaching-computing-topics', 'teaching-delivery'],
@@ -65,8 +70,8 @@ const roleLenses = [
     featuredProjectIds: [
       'teaching-experience',
       'asc-pie',
-      'northstar-rag',
       'minds-eye',
+      'online-tic-tac-toe',
     ],
     depthEvidenceIds: {
       research: ['asc-pie-thesis-title', 'sprint-pp-status'],

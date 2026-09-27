@@ -1,7 +1,18 @@
 import { z } from 'zod';
 
+import { statusKeySchema } from '@/data/project-status';
+
 export const roleIdSchema = z.enum(['aiml', 'software', 'android', 'teaching']);
 export type RoleId = z.infer<typeof roleIdSchema>;
+
+export const projectGroupSchema = z.enum([
+  'research',
+  'ml',
+  'android',
+  'backend',
+  'early',
+]);
+export type ProjectGroup = z.infer<typeof projectGroupSchema>;
 
 const publicHrefSchema = z.url().or(z.string().startsWith('/'));
 const sourceIdsSchema = z.array(z.string().min(1)).min(1);
@@ -46,13 +57,17 @@ export const projectRecordSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   slug: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),
+  hook: z.string().min(20).max(140),
+  category: z.string().min(1),
+  group: projectGroupSchema.optional(),
+  status: statusKeySchema.optional(),
   summary: z.string().min(1),
   ownership: z.string().min(1),
   roles: z.array(roleIdSchema).min(1),
   roleWeights: roleWeightsSchema,
-  technologies: z.array(z.string().min(1)).min(1),
+  technologies: z.array(z.string().min(1)).min(1).max(6),
   sourceIds: sourceIdsSchema,
-  detailLevel: z.enum(['detailed', 'supporting']),
+  detailLevel: z.enum(['flagship', 'story', 'brief', 'card', 'supporting']),
   public: z.literal(true),
 });
 export type ProjectRecord = z.infer<typeof projectRecordSchema>;

@@ -71,16 +71,6 @@ const records = [
     sourceIds: ['github-thesis-experiments', 'case-study-asc-pie'],
     public: true,
   },
-  {
-    id: 'sprint-pp-status',
-    title: 'SPRINT-PP research status',
-    statement: 'SPRINT-PP is a research paper submitted and under review.',
-    topics: ['SPRINT-PP', 'research', 'privacy'],
-    aliases: ['SPRINT PP', 'paper status', 'publication status'],
-    roleWeights: { aiml: 5, software: 2, android: 0, teaching: 3 },
-    sourceIds: ['resume-aiml', 'resume-teaching'],
-    public: true,
-  },
 ] as const satisfies readonly EvidenceRecord[];
 
 export const researchEvidence = evidenceRecordSchema.array().parse(records);

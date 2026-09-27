@@ -6,7 +6,6 @@ import {
   skillGroups,
   teachingPortfolio,
 } from '@/data/career';
-import { projectArchive } from '@/data/project-archive';
 import type { EvidenceRecord, RoleId } from '@/types/content';
 import type { KnowledgeCategory, KnowledgeChunk } from './types';
 
@@ -15,14 +14,46 @@ const sourceById = new Map(
     .filter((source) => source.isPublic && source.publicHref)
     .map((source) => [source.id, source]),
 );
+
+// Longest/most-specific prefixes are listed first so a shared stem (e.g.
+// "shop-on-the-go" vs a hypothetical "shop-on-the-go-team") never resolves
+// to the wrong project. Every flagship/story/brief project id from
+// `projects.ts` has an entry; card projects that also get grounding are
+// included too.
 const projectByEvidencePrefix: Record<string, string> = {
   'asc-pie': 'asc-pie',
+  'sprint-pp': 'sprint-pp',
   northstar: 'northstar-rag',
   'minds-eye': 'minds-eye',
   dive: 'dive',
   dostava: 'dostava',
-  bass: 'bass',
+  'applied-ml-portfolio': 'applied-ml-portfolio',
+  'cti-intrusion-detection': 'cti-intrusion-detection',
+  'search-for-eats': 'search-for-eats',
   mercato: 'mercato',
+  'food-planner': 'food-planner',
+  'weather-checker': 'weather-checker',
+  'shop-on-the-go': 'shop-on-the-go',
+  'documentum-workflows': 'documentum-workflows',
+  'pdf-utilities': 'pdf-utilities',
+  'rest-pocs': 'rest-pocs',
+  'this-portfolio': 'this-portfolio',
+  'your-life-is-my-life': 'your-life-is-my-life',
+  'death-ninja': 'death-ninja',
+  'cloud-backend': 'cloud-backend',
+  'restaurant-management': 'restaurant-management',
+  'online-tic-tac-toe': 'online-tic-tac-toe',
+  'gulf-arab-chat': 'gulf-arab-chat',
+  'tourist-guide': 'tourist-guide',
+  sams: 'sams',
+  'donation-app': 'donation-app',
+  'my-card': 'my-card',
+  'top-notch': 'top-notch',
+  'face-recognition-pipeline': 'face-recognition-pipeline',
+  'healthcare-desktop': 'healthcare-desktop',
+  'priority-request-manager': 'priority-request-manager',
+  'school-management-system': 'school-management-system',
+  'myapps-demo': 'myapps-demo',
 };
 
 function categoryFor(record: EvidenceRecord): KnowledgeCategory {
@@ -33,6 +64,9 @@ function categoryFor(record: EvidenceRecord): KnowledgeCategory {
   if (
     record.id.startsWith('experience') ||
     record.id.startsWith('bass') ||
+    record.id.startsWith('documentum-workflows') ||
+    record.id.startsWith('pdf-utilities') ||
+    record.id.startsWith('rest-pocs') ||
     record.id.startsWith('mercato')
   )
     return 'experience';
@@ -160,16 +194,6 @@ export function chunkEvidence(): KnowledgeChunk[] {
     category: 'skills' as const,
     citations: citationsFor(allResumeIds),
   };
-  const archiveChunks = projectArchive.map((project, index) => ({
-    id: `archive-project-${index + 1}`,
-    title: project.title,
-    text: `${project.summary} Technologies: ${project.technologies.join(', ')}.`,
-    topics: [project.title, project.category, ...project.technologies],
-    aliases: [project.title, ...project.technologies],
-    roles: ['aiml', 'software', 'android', 'teaching'] as RoleId[],
-    category: 'project' as const,
-    citations: citationsFor(allResumeIds),
-  }));
   return [
     ...facts,
     ...summaries,
@@ -179,6 +203,5 @@ export function chunkEvidence(): KnowledgeChunk[] {
     ...teachingChunks,
     ...educationChunks,
     credentialChunk,
-    ...archiveChunks,
   ].filter((chunk) => chunk.citations.length > 0);
 }
