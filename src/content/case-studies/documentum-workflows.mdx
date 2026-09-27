@@ -78,7 +78,7 @@ I implemented and supported the workflows, DQL validation controls, and health q
 
 <FeatureGrid items={frontmatter.features} />
 
-Underneath the feature list, the day-to-day work was mostly about correctness: making sure a document that should be in "under review" was never quietly stuck, and that a document past its retention window was actually archived rather than just labelled that way. Documentum Composer defined the workflow and lifecycle shapes, but the meaningful engineering was in the DQL that verified those shapes held up once real documents, real reviewers, and real deadlines were involved.
+Underneath the feature list, the day-to-day work was mostly about correctness: making sure a document that should be in "under review" was never quietly stuck, and that a document past its retention window was actually archived rather than just labelled that way. Documentum Composer defined the workflow and lifecycle shapes, but the meaningful engineering was in the DQL that checked those shapes actually held up once real documents, real reviewers, and real deadlines were involved.
 
 A lot of the value here never showed up as a feature a reviewer would notice directly. It showed up as the absence of a problem: a document that reached the right person on time, a retention window that closed itself instead of needing a reminder, an audit question that had a query-backed answer instead of a search through email.
 
