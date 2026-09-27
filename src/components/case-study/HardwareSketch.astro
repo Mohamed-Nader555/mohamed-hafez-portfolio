@@ -1,0 +1,57 @@
+---
+// Inline SVG sketch: glasses + ESP32-CAM -> Bluetooth -> phone -> cloud.
+// No vendor product photos, per brief §5.4.
+---
+
+<figure class="hardware-sketch" aria-label="Mind's Eye hardware: glasses with an ESP32-CAM, connected over Bluetooth to a phone, which reaches cloud services">
+  <svg viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+    <g stroke="var(--color-evidence-500)" stroke-width="3" fill="none">
+      <path d="M40 80 h60 a20 20 0 0 1 20 20 a20 20 0 0 1 -20 20 h-60 a20 20 0 0 1 -20 -20 a20 20 0 0 1 20 -20 z" />
+      <path d="M160 80 h60 a20 20 0 0 1 20 20 a20 20 0 0 1 -20 20 h-60 a20 20 0 0 1 -20 -20 a20 20 0 0 1 20 -20 z" />
+      <path d="M120 100 h40" />
+      <circle cx="150" cy="100" r="8" fill="var(--color-ai-500)" stroke="none" />
+    </g>
+    <text x="130" y="70" text-anchor="middle" fill="var(--color-ink-200)" font-size="11" font-family="var(--font-utility)">ESP32-CAM</text>
+
+    <g stroke="var(--color-ink-300)" stroke-dasharray="4 4" stroke-width="2">
+      <path d="M240 100 h60" />
+    </g>
+    <text x="270" y="90" text-anchor="middle" fill="var(--color-ink-300)" font-size="10" font-family="var(--font-utility)">Bluetooth</text>
+
+    <g stroke="var(--color-evidence-500)" stroke-width="3" fill="none">
+      <rect x="310" y="55" width="60" height="90" rx="10" />
+      <line x1="330" y1="130" x2="350" y2="130" />
+    </g>
+    <text x="340" y="45" text-anchor="middle" fill="var(--color-ink-200)" font-size="11" font-family="var(--font-utility)">Android app</text>
+
+    <g stroke="var(--color-ink-300)" stroke-width="2">
+      <path d="M375 100 h60" />
+    </g>
+
+    <g stroke="var(--color-ai-500)" stroke-width="3" fill="none">
+      <ellipse cx="500" cy="70" rx="45" ry="22" />
+      <ellipse cx="540" cy="90" rx="35" ry="18" />
+      <ellipse cx="470" cy="95" rx="30" ry="16" />
+    </g>
+    <text x="500" y="130" text-anchor="middle" fill="var(--color-ink-200)" font-size="11" font-family="var(--font-utility)">Cloud + Python service</text>
+  </svg>
+  <figcaption class="visually-hidden">
+    Glasses fitted with an ESP32-CAM send captures over Bluetooth to the Android app, which sends them on to a Python service and cloud vision services and speaks the result back.
+  </figcaption>
+</figure>
+
+<style>
+  .hardware-sketch {
+    margin: var(--space-5) 0;
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--color-ink-900) 70%, transparent);
+  }
+
+  .hardware-sketch svg {
+    display: block;
+    inline-size: 100%;
+    height: auto;
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+interface Props {
+  strategies: readonly string[];
+  stageLabels: readonly string[];
+  /** matrices[strategy][row][col] = F1 value (0-1) for that stage pair. */
+  matrices: Readonly<Record<string, readonly (readonly number[])[]>>;
+  title: string;
+}
+
+const { strategies, stageLabels, matrices, title } = Astro.props;
+
+function colorFor(value: number) {
+  // Sequential single-hue scale on the cyan token, per §5.4.
+  const alpha = 0.12 + value * 0.75;
+  return `color-mix(in srgb, var(--color-evidence-500) ${Math.round(alpha * 100)}%, var(--color-ink-900))`;
+}
+---
+
+<div class="stage-matrix">
+  <p class="utility-label">{title}</p>
+  {
+    strategies.map((strategy, index) => (
+      <details class="stage-matrix__strategy" open={index === 0}>
+        <summary>{strategy}</summary>
+        <table>
+          <caption class="visually-hidden">
+            {strategy} stage-restricted F1
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col" />
+              {stageLabels.map((label) => (
+                <th scope="col">{label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {matrices[strategy]?.map((row, rowIndex) => (
+              <tr>
+                <th scope="row">{stageLabels[rowIndex]}</th>
+                {row.map((value) => (
+                  <td style={`background:${colorFor(value)}`}>
+                    {value.toFixed(2)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .stage-matrix {
+    margin: var(--space-5) 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .stage-matrix__strategy {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .stage-matrix__strategy summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    color: var(--color-ink-100);
+    padding: var(--space-1) 0;
+  }
+
+  .stage-matrix table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--space-3);
+  }
+
+  .stage-matrix th,
+  .stage-matrix td {
+    padding: var(--space-2);
+    text-align: center;
+    font-size: var(--type-xs);
+    color: var(--color-ink-100);
+    border: 1px solid color-mix(in srgb, var(--color-ink-950) 60%, transparent);
+  }
+
+  .stage-matrix th[scope='row'] {
+    text-align: left;
+    color: var(--color-ink-300);
+  }
+</style>

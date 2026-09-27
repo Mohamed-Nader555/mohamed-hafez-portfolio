@@ -1,65 +1,248 @@
 ---
+import ProjectPassport from '@/components/case-study/ProjectPassport.astro';
+import RelatedProjects from '@/components/case-study/RelatedProjects.astro';
+import StatTiles from '@/components/case-study/StatTiles.astro';
+import StatusBadge from '@/components/case-study/StatusBadge.astro';
 import { roles } from '@/data';
+import { PROJECT_STATUS, type StatusKey } from '@/data/project-status';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { computeReadingTime } from '@/lib/content/reading-time';
+import { resolveSources } from '@/lib/content/resolve-sources';
 import type { StructuredDataNode } from '@/lib/seo/structured-data';
-import type { RoleId } from '@/types/content';
+import type { ProjectRecord } from '@/types/content';
+
+interface HeadingEntry {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface StatTile {
+  value: string;
+  label: string;
+  note?: string;
+}
+
+interface LinkEntry {
+  label: string;
+  sourceId: string;
+}
 
 interface Props {
-  title: string;
-  summary: string;
-  ownership: string;
-  roles: readonly RoleId[];
-  technologies: readonly string[];
+  project: ProjectRecord;
+  passport: { context: string; period?: string; platform?: string };
+  stats?: readonly StatTile[];
+  links?: readonly LinkEntry[];
+  rawBody: string;
+  headings: readonly HeadingEntry[];
   structuredData: readonly StructuredDataNode[];
 }
 
-const {
-  title,
-  summary,
-  ownership,
-  roles: studyRoles,
-  technologies,
-  structuredData,
-} = Astro.props;
+const { project, passport, stats, links, rawBody, headings, structuredData } =
+  Astro.props;
+
 const roleById = new Map(roles.map((role) => [role.id, role.label]));
-const roleId = studyRoles[0] ?? 'aiml';
+const roleLabels = project.roles.map((role) => roleById.get(role)).join(' · ');
+const readingTime = computeReadingTime(rawBody);
+const toc = headings.filter((heading) => heading.depth === 2);
+const status = project.status as StatusKey | undefined;
+const linkSources = links ? resolveSources(links.map((link) => link.sourceId)) : [];
+const linksWithLabels = links?.map((link, index) => ({
+  label: link.label,
+  href: linkSources[index]?.publicHref,
+}));
 ---
 
 <BaseLayout
-  title={`${title} — Mohamed Hafez`}
-  description={summary}
-  roleId={roleId}
+  title={`${project.title} — Mohamed Hafez`}
+  description={project.summary}
+  roleId={project.roles[0] ?? 'aiml'}
   openGraphType="article"
   structuredData={structuredData}
 >
-  <header class="longform-hero shell-container">
+  <header class="longform-hero case-study-hero shell-container">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
-      <a href="/work" data-astro-prefetch="viewport">Work</a>
+      <a href="/work" data-astro-prefetch="viewport">Projects</a>
       <span aria-hidden="true">/</span>
-      <span aria-current="page">{title}</span>
+      <span aria-current="page">{project.title}</span>
     </nav>
-    <p class="utility-label">
-      Project case study · {
-        studyRoles.map((role) => roleById.get(role)).join(' · ')
-      }
+    <p class="utility-label case-study-hero__kicker">
+      {project.category} · <span>{readingTime} min read</span>
     </p>
-    <h1>{title}</h1>
-    <p class="longform-hero__summary">{summary}</p>
-    <div class="case-study-brief">
-      <div>
-        <p class="utility-label">My role</p>
-        <p>{ownership}</p>
-      </div>
-      <div>
-        <p class="utility-label">Technologies</p>
-        <ul class="technology-list" aria-label={`${title} technologies`}>
-          {technologies.map((technology) => <li>{technology}</li>)}
-        </ul>
-      </div>
+    <h1 transition:name={`project-title-${project.slug}`}>{project.title}</h1>
+    <p class="case-study-hero__hook">{project.hook}</p>
+    <p class="longform-hero__summary">{project.summary}</p>
+
+    <ProjectPassport
+      role={project.ownership}
+      context={passport.context}
+      period={passport.period}
+      status={status ? PROJECT_STATUS[status].badge : project.category}
+      platform={passport.platform}
+    />
+
+    {status && <StatusBadge status={status} showLonger={false} />}
+    {stats && stats.length > 0 && <StatTiles items={stats} />}
+
+    <div class="case-study-hero__stack-row">
+      <ul class="technology-list" aria-label={`${project.title} technologies`}>
+        {project.technologies.map((technology) => <li>{technology}</li>)}
+      </ul>
+      {
+        linksWithLabels && linksWithLabels.length > 0 && (
+          <ul class="case-study-hero__links">
+            {linksWithLabels
+              .filter((link) => link.href)
+              .map((link) => (
+                <li>
+                  <a href={link.href} rel="noopener">
+                    {link.label} <span aria-hidden="true">&#8599;</span>
+                  </a>
+                </li>
+              ))}
+          </ul>
+        )
+      }
     </div>
+    <p class="visually-hidden">Roles: {roleLabels}.</p>
   </header>
 
-  <article class="case-study-prose shell-container">
-    <slot />
-  </article>
+  <div class="case-study-body shell-container">
+    {
+      toc.length > 0 && (
+        <nav class="case-study-toc" aria-label="On this page">
+          <p class="utility-label">On this page</p>
+          <ol>
+            {toc.map((heading) => (
+              <li>
+                <a href={`#${heading.slug}`} data-toc-link data-toc-target={heading.slug}>
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    <article class="case-study-prose">
+      <slot />
+      <RelatedProjects slug={project.slug} />
+    </article>
+  </div>
 </BaseLayout>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+  if (links.length > 0 && 'IntersectionObserver' in window) {
+    const targets = Array.from(links)
+      .map((link) => document.getElementById(link.dataset.tocTarget ?? ''))
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    const linkByTarget = new Map(
+      Array.from(links).map((link) => [link.dataset.tocTarget, link]),
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const link = linkByTarget.get(entry.target.id);
+          if (!link) continue;
+          if (entry.isIntersecting) {
+            links.forEach((item) => item.removeAttribute('aria-current'));
+            link.setAttribute('aria-current', 'true');
+          }
+        }
+      },
+      { rootMargin: '-20% 0px -70% 0px' },
+    );
+
+    targets.forEach((target) => observer.observe(target));
+  }
+</script>
+
+<style>
+  .case-study-hero__kicker span {
+    color: var(--color-ink-300);
+  }
+
+  .case-study-hero__hook {
+    font-family: var(--font-display);
+    font-size: var(--type-lead);
+    color: var(--color-ink-100);
+    max-inline-size: 44rem;
+    margin: var(--space-2) 0;
+  }
+
+  .case-study-hero__stack-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .case-study-hero__links {
+    display: flex;
+    gap: var(--space-3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .case-study-hero__links a {
+    color: var(--color-evidence-300);
+    text-decoration: none;
+    font-size: var(--type-sm);
+  }
+
+  .case-study-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .case-study-toc {
+    order: 2;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .case-study-toc ol {
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .case-study-toc a {
+    display: block;
+    padding: 0.2rem 0;
+    font-size: var(--type-sm);
+    color: var(--color-ink-300);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    padding-left: var(--space-2);
+  }
+
+  .case-study-toc a[aria-current='true'] {
+    color: var(--color-evidence-300);
+    border-left-color: var(--color-evidence-500);
+  }
+
+  @media (min-width: 64rem) {
+    .case-study-body {
+      grid-template-columns: 16rem 1fr;
+    }
+
+    .case-study-toc {
+      order: 1;
+      position: sticky;
+      top: 6rem;
+      align-self: start;
+    }
+  }
+</style>

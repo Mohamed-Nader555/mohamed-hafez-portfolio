@@ -1,0 +1,59 @@
+---
+import type { ProjectRecord } from '@/types/content';
+
+interface Props {
+  project: ProjectRecord;
+}
+
+const { project } = Astro.props;
+const isBrief = project.detailLevel === 'brief';
+---
+
+<article class="story-card" data-focus={project.roles.join(' ')} data-tech={project.technologies.join('|')}>
+  <p class="utility-label">
+    {project.category}
+    {isBrief && <span class="story-card__short-read">Short read</span>}
+  </p>
+  <h4 transition:name={`project-title-${project.slug}`}>
+    <a href={`/work/${project.slug}`} data-astro-prefetch="hover">{project.title}</a>
+  </h4>
+  <p>{project.hook}</p>
+  <ul class="technology-list" aria-label={`${project.title} technologies`}>
+    {project.technologies.slice(0, 5).map((technology) => <li>{technology}</li>)}
+  </ul>
+</article>
+
+<style>
+  .story-card {
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--color-ink-900) 68%, transparent);
+  }
+
+  .story-card__short-read {
+    margin-left: var(--space-2);
+    color: var(--color-ink-300);
+  }
+
+  .story-card h4 {
+    margin: var(--space-1) 0;
+    font-size: var(--type-body);
+  }
+
+  .story-card h4 a {
+    color: var(--color-ink-100);
+    text-decoration: none;
+  }
+
+  .story-card h4 a:hover,
+  .story-card h4 a:focus-visible {
+    color: var(--color-evidence-300);
+  }
+
+  .story-card p {
+    margin: 0 0 var(--space-3);
+    font-size: var(--type-sm);
+    color: var(--color-ink-200);
+  }
+</style>

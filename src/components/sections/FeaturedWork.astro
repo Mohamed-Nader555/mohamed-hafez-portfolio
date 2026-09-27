@@ -55,7 +55,9 @@ function resolveProjectSource(project: DeepReadonly<ProjectRecord>) {
             </div>
             <div class="project-card__body">
               <p class="project-card__type">
-                {project.detailLevel === 'detailed' ? 'Case study' : 'Project'}
+                {['flagship', 'story', 'brief'].includes(project.detailLevel)
+                  ? 'Case study'
+                  : 'Project'}
               </p>
               <h3>{project.title}</h3>
               <p>{project.summary}</p>

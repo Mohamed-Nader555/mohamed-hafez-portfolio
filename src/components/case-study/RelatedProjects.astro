@@ -1,0 +1,140 @@
+---
+import { projects } from '@/data/projects';
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+
+const pageProjects = projects.filter((project) =>
+  ['flagship', 'story', 'brief'].includes(project.detailLevel),
+);
+const currentIndex = pageProjects.findIndex((project) => project.slug === slug);
+const current = pageProjects[currentIndex];
+
+if (!current) {
+  throw new Error(`RelatedProjects: unknown case-study slug ${slug}`);
+}
+
+function sharedScore(candidate: (typeof pageProjects)[number]) {
+  const sharedRoles = candidate.roles.filter((role) =>
+    current.roles.includes(role),
+  ).length;
+  const sharedTech = candidate.technologies.filter((tech) =>
+    current.technologies.includes(tech),
+  ).length;
+  return sharedRoles * 10 + sharedTech;
+}
+
+const related = pageProjects
+  .filter((project) => project.slug !== slug)
+  .map((project, index) => ({
+    project,
+    score: sharedScore(project),
+    order: index,
+  }))
+  .sort((a, b) => b.score - a.score || a.order - b.order)
+  .slice(0, 3)
+  .map((entry) => entry.project);
+
+const previous = pageProjects[currentIndex - 1];
+const next = pageProjects[currentIndex + 1];
+---
+
+<nav class="related-projects" aria-label="Related projects">
+  <h2>Related projects</h2>
+  <ul class="related-projects__grid">
+    {
+      related.map((project) => (
+        <li>
+          <a href={`/work/${project.slug}`} data-astro-prefetch="hover">
+            <p class="utility-label">{project.category}</p>
+            <h3>{project.title}</h3>
+            <p>{project.hook}</p>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <div class="related-projects__adjacent">
+    {
+      previous ? (
+        <a href={`/work/${previous.slug}`} data-astro-prefetch="hover">
+          <span aria-hidden="true">&larr;</span> Previous: {previous.title}
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      next && (
+        <a href={`/work/${next.slug}`} data-astro-prefetch="hover">
+          Next: {next.title} <span aria-hidden="true">&rarr;</span>
+        </a>
+      )
+    }
+  </div>
+</nav>
+
+<style>
+  .related-projects {
+    margin: var(--space-10) 0 0;
+  }
+
+  .related-projects h2 {
+    font-family: var(--font-display);
+    font-size: var(--type-lead);
+    margin: 0 0 var(--space-4);
+  }
+
+  .related-projects__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: 0 0 var(--space-6);
+    padding: 0;
+    list-style: none;
+  }
+
+  .related-projects__grid a {
+    display: block;
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+  }
+
+  .related-projects__grid h3 {
+    margin: var(--space-1) 0;
+    color: var(--color-ink-100);
+    font-size: var(--type-body);
+  }
+
+  .related-projects__grid p {
+    margin: 0;
+    font-size: var(--type-sm);
+    color: var(--color-ink-200);
+  }
+
+  .related-projects__adjacent {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    font-size: var(--type-sm);
+    flex-wrap: wrap;
+  }
+
+  .related-projects__adjacent a {
+    color: var(--color-evidence-300);
+    text-decoration: none;
+  }
+
+  @media (max-width: 56rem) {
+    .related-projects__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

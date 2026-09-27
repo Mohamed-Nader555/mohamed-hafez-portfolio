@@ -1,0 +1,114 @@
+---
+interface Props {
+  caption: string;
+  columns: readonly string[];
+  rows: readonly (readonly string[])[];
+}
+
+const { caption, columns, rows } = Astro.props;
+---
+
+<table class="compare-table">
+  <caption>{caption}</caption>
+  <thead>
+    <tr>
+      {columns.map((column) => <th scope="col">{column}</th>)}
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map((row) => (
+        <tr>
+          {row.map((cell, index) =>
+            index === 0 ? (
+              <th scope="row" data-label={columns[0]}>
+                {cell}
+              </th>
+            ) : (
+              <td data-label={columns[index]}>{cell}</td>
+            ),
+          )}
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+<style>
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-5) 0;
+    font-size: var(--type-sm);
+  }
+
+  .compare-table caption {
+    text-align: left;
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-utility);
+    text-transform: uppercase;
+    color: var(--color-evidence-300);
+    margin-bottom: var(--space-2);
+  }
+
+  .compare-table th,
+  .compare-table td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--color-ink-200);
+  }
+
+  .compare-table thead th {
+    color: var(--color-ink-100);
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  .compare-table tbody th {
+    color: var(--color-ink-100);
+  }
+
+  @media (max-width: 45rem) {
+    .compare-table thead {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .compare-table,
+    .compare-table tbody,
+    .compare-table tr,
+    .compare-table th,
+    .compare-table td {
+      display: block;
+      width: 100%;
+    }
+
+    .compare-table tr {
+      margin-bottom: var(--space-3);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--space-2) var(--space-3);
+    }
+
+    .compare-table th,
+    .compare-table td {
+      border-bottom: none;
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .compare-table td::before,
+    .compare-table th[data-label]::before {
+      content: attr(data-label);
+      font-family: var(--font-utility);
+      font-size: var(--type-xs);
+      color: var(--color-ink-300);
+    }
+  }
+</style>

@@ -1,0 +1,79 @@
+---
+interface Feature {
+  title: string;
+  detail: string;
+}
+
+interface Props {
+  items: readonly Feature[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="feature-grid">
+  {
+    items.map((item, index) => (
+      <li>
+        <span class="feature-grid__index" aria-hidden="true">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <h3>{item.title}</h3>
+        <p>{item.detail}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-5) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .feature-grid li {
+    position: relative;
+    padding: var(--space-4) var(--space-5) var(--space-5);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--color-ink-900) 70%, transparent);
+  }
+
+  .feature-grid__index {
+    display: block;
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    color: var(--color-evidence-500);
+    margin-bottom: var(--space-2);
+  }
+
+  .feature-grid h3 {
+    margin: 0 0 var(--space-1);
+    font-size: var(--type-body);
+    font-family: var(--font-display);
+    color: var(--color-ink-100);
+  }
+
+  .feature-grid p {
+    margin: 0;
+    font-size: var(--type-sm);
+    color: var(--color-ink-200);
+    line-height: var(--leading-body);
+  }
+
+  @media (max-width: 56rem) {
+    .feature-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .feature-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

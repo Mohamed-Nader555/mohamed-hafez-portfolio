@@ -1,0 +1,264 @@
+---
+// The thesis defence deck's own illustrative sentence (source rank 2).
+// No model, no live inference: this is a static, hand-built example of how
+// the same prediction looks in three output formats, per brief §5.4.
+const sentence = 'John Smith emailed john.smith@example.com from Toronto on 12 May 2024.';
+const spans = [
+  { text: 'John Smith', type: 'NAME' },
+  { text: 'john.smith@example.com', type: 'EMAIL' },
+  { text: 'Toronto', type: 'CITY' },
+  { text: '12 May 2024', type: 'DATE' },
+] as const;
+
+const iob2 = [
+  ['John', 'B-NAME'],
+  ['Smith', 'I-NAME'],
+  ['emailed', 'O'],
+  ['john.smith@example.com', 'B-EMAIL'],
+  ['from', 'O'],
+  ['Toronto', 'B-CITY'],
+  ['on', 'O'],
+  ['12', 'B-DATE'],
+  ['May', 'I-DATE'],
+  ['2024', 'I-DATE'],
+] as const;
+
+const keyValue =
+  'NAME: John Smith; EMAIL: john.smith@example.com; CITY: Toronto; DATE: 12 May 2024;';
+
+const json = JSON.stringify(
+  [
+    { type: 'NAME', text: 'John Smith' },
+    { type: 'EMAIL', text: 'john.smith@example.com' },
+    { type: 'CITY', text: 'Toronto' },
+    { type: 'DATE', text: '12 May 2024' },
+  ],
+  null,
+  2,
+);
+
+const canonical = spans;
+---
+
+<div class="format-explorer">
+  <p class="format-explorer__sentence" aria-label={sentence}>
+    {
+      (() => {
+        let rest = sentence;
+        const parts: { text: string; type?: string }[] = [];
+        for (const span of spans) {
+          const index = rest.indexOf(span.text);
+          if (index === -1) continue;
+          if (index > 0) parts.push({ text: rest.slice(0, index) });
+          parts.push({ text: span.text, type: span.type });
+          rest = rest.slice(index + span.text.length);
+        }
+        if (rest) parts.push({ text: rest });
+        return parts.map((part) =>
+          part.type ? (
+            <mark data-type={part.type}>
+              {part.text}
+              <span class="format-explorer__type-label">{part.type}</span>
+            </mark>
+          ) : (
+            <>{part.text}</>
+          ),
+        );
+      })()
+    }
+  </p>
+
+  <div class="format-explorer__tabs">
+    <input type="radio" name="format-explorer-tab" id="format-tab-iob2" checked />
+    <label for="format-tab-iob2">As an encoder sees it (IOB2)</label>
+    <input type="radio" name="format-explorer-tab" id="format-tab-keyvalue" />
+    <label for="format-tab-keyvalue">As an encoder-decoder writes it</label>
+    <input type="radio" name="format-explorer-tab" id="format-tab-json" />
+    <label for="format-tab-json">As a decoder-only model returns it (JSON)</label>
+    <input type="radio" name="format-explorer-tab" id="format-tab-canonical" />
+    <label for="format-tab-canonical">Canonical (type, text) pairs</label>
+
+    <div class="format-explorer__panel" id="panel-iob2">
+      <ul class="format-explorer__tokens">
+        {
+          iob2.map(([token, tag]) => (
+            <li>
+              <code>{token}</code>
+              <small>{tag}</small>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="format-explorer__panel" id="panel-keyvalue">
+      <pre>{keyValue}</pre>
+    </div>
+    <div class="format-explorer__panel" id="panel-json">
+      <pre>{json}</pre>
+    </div>
+    <div class="format-explorer__panel" id="panel-canonical">
+      <table>
+        <caption class="visually-hidden">Canonical (type, text) pairs</caption>
+        <thead>
+          <tr><th scope="col">Type</th><th scope="col">Text</th></tr>
+        </thead>
+        <tbody>
+          {
+            canonical.map((pair) => (
+              <tr>
+                <td>{pair.type}</td>
+                <td>{pair.text}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+  .format-explorer {
+    margin: var(--space-5) 0;
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--color-ink-900) 72%, transparent);
+  }
+
+  .format-explorer__sentence {
+    font-size: var(--type-body);
+    line-height: 2.4;
+    color: var(--color-ink-200);
+    margin: 0 0 var(--space-4);
+  }
+
+  .format-explorer__sentence mark {
+    background: color-mix(in srgb, var(--color-evidence-500) 22%, transparent);
+    color: var(--color-ink-100);
+    border-radius: 0.25rem;
+    padding: 0.05rem 0.3rem;
+    position: relative;
+  }
+
+  .format-explorer__sentence mark[data-type='EMAIL'] {
+    background: color-mix(in srgb, var(--color-ai-500) 22%, transparent);
+  }
+  .format-explorer__sentence mark[data-type='CITY'] {
+    background: color-mix(in srgb, var(--color-verified-500) 22%, transparent);
+  }
+  .format-explorer__sentence mark[data-type='DATE'] {
+    background: color-mix(in srgb, var(--color-ink-300) 30%, transparent);
+  }
+
+  .format-explorer__type-label {
+    display: inline-block;
+    margin-inline-start: 0.3rem;
+    font-family: var(--font-utility);
+    font-size: 0.6rem;
+    letter-spacing: var(--tracking-utility);
+    text-transform: uppercase;
+    color: var(--color-ink-300);
+    vertical-align: super;
+  }
+
+  .format-explorer__tabs input[type='radio'] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .format-explorer__tabs label {
+    display: inline-block;
+    padding: var(--space-2) var(--space-3);
+    margin-inline-end: var(--space-2);
+    margin-bottom: var(--space-2);
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    font-size: var(--type-xs);
+    color: var(--color-ink-200);
+    cursor: pointer;
+  }
+
+  .format-explorer__panel {
+    display: none;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  #format-tab-iob2:checked ~ label[for='format-tab-iob2'],
+  #format-tab-keyvalue:checked ~ label[for='format-tab-keyvalue'],
+  #format-tab-json:checked ~ label[for='format-tab-json'],
+  #format-tab-canonical:checked ~ label[for='format-tab-canonical'] {
+    background: color-mix(in srgb, var(--color-evidence-500) 20%, transparent);
+    border-color: var(--color-evidence-500);
+    color: var(--color-ink-100);
+  }
+
+  #format-tab-iob2:checked ~ #panel-iob2,
+  #format-tab-keyvalue:checked ~ #panel-keyvalue,
+  #format-tab-json:checked ~ #panel-json,
+  #format-tab-canonical:checked ~ #panel-canonical {
+    display: block;
+  }
+
+  .format-explorer__tokens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .format-explorer__tokens li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-ink-950) 60%, transparent);
+  }
+
+  .format-explorer__tokens code {
+    font-size: var(--type-sm);
+    color: var(--color-ink-100);
+  }
+
+  .format-explorer__tokens small {
+    font-family: var(--font-utility);
+    font-size: 0.6rem;
+    color: var(--color-evidence-300);
+  }
+
+  .format-explorer pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: var(--type-sm);
+    color: var(--color-ink-100);
+    margin: 0;
+  }
+
+  .format-explorer table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .format-explorer th,
+  .format-explorer td {
+    text-align: left;
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: var(--type-sm);
+    color: var(--color-ink-200);
+  }
+
+  /* Without CSS support the radio/label mechanism has no effect, so every
+     panel shows stacked in document order — degrades gracefully. */
+  @supports not (display: block) {
+    .format-explorer__panel {
+      display: block;
+    }
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+import { architectures, type ArchitectureSlug } from '@/data/architectures';
+
+interface Props {
+  slug: ArchitectureSlug;
+  title: string;
+}
+
+const { slug, title } = Astro.props;
+const architecture = architectures[slug];
+
+if (!architecture) {
+  throw new Error(`Missing architecture definition for ${slug}`);
+}
+
+const nodeById = new Map(
+  architecture.nodes.map((node) => [node.id, node] as const),
+);
+
+if (nodeById.size !== architecture.nodes.length) {
+  throw new Error(`Duplicate architecture node for ${slug}`);
+}
+
+const relationships = architecture.edges.map((edge) => {
+  const from = nodeById.get(edge.from);
+  const to = nodeById.get(edge.to);
+
+  if (!from || !to) {
+    throw new Error(
+      `Architecture edge ${edge.from} -> ${edge.to} references a missing node for ${slug}`,
+    );
+  }
+
+  return { edge, from, to };
+});
+
+const relationshipText = relationships
+  .map(({ edge, from, to }) =>
+    edge.label
+      ? `${from.label} to ${to.label} (${edge.label})`
+      : `${from.label} to ${to.label}`,
+  )
+  .join('; ');
+
+const pipeline = architecture.pipeline ?? architecture.nodes.map((node) => node.label);
+---
+
+<figure
+  class="architecture-flow"
+  aria-label={`${title} architecture`}
+  aria-describedby={`${slug}-architecture-summary`}
+>
+  <ol class="architecture-flow__pipeline" aria-hidden="true">
+    {
+      pipeline.map((stage) => (
+        <li>
+          <code>{stage}</code>
+        </li>
+      ))
+    }
+  </ol>
+  <ol class="architecture-flow__nodes" aria-hidden="true">
+    {
+      architecture.nodes.map((node, index) => (
+        <li data-node-id={node.id}>
+          <span class="architecture-flow__node-index">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <strong>{node.label}</strong>
+          <small>{node.detail}</small>
+        </li>
+      ))
+    }
+  </ol>
+  <ul class="architecture-flow__edges" aria-hidden="true">
+    {
+      relationships.map(({ edge, from, to }) => (
+        <li data-edge-from={edge.from} data-edge-to={edge.to}>
+          <span>{from.label}</span>
+          <span class="architecture-flow__arrow" aria-hidden="true">
+            {edge.label ? `→ (${edge.label}) →` : '→'}
+          </span>
+          <span>{to.label}</span>
+        </li>
+      ))
+    }
+  </ul>
+  <figcaption id={`${slug}-architecture-summary`}>
+    {architecture.summary}
+    <span class="visually-hidden"> Relationships: {relationshipText}.</span>
+  </figcaption>
+</figure>
