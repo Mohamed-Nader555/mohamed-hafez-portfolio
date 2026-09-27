@@ -12,7 +12,10 @@ import { caseStudyFrontmatterSchema } from '@/types/case-study';
 const contentDirectory = path.resolve('src/content/case-studies');
 
 // Brief §5.3: exact order, never reordered. tiers a heading is required for.
-const SECTION_VOCABULARY: { heading: string; requiredFor: readonly string[] }[] = [
+const SECTION_VOCABULARY: {
+  heading: string;
+  requiredFor: readonly string[];
+}[] = [
   { heading: 'The problem', requiredFor: ['flagship', 'story', 'brief'] },
   { heading: 'Who it was for', requiredFor: [] },
   { heading: 'My role', requiredFor: ['flagship', 'story'] },
@@ -118,7 +121,9 @@ async function loadCaseStudies() {
 const pageProjects = projects.filter((project) =>
   ['flagship', 'story', 'brief'].includes(project.detailLevel),
 );
-const projectBySlug = new Map(pageProjects.map((project) => [project.slug, project]));
+const projectBySlug = new Map(
+  pageProjects.map((project) => [project.slug, project]),
+);
 
 describe('case-study content collection', () => {
   it('maps exactly one entry to each flagship/story/brief project through one canonical slug', async () => {
@@ -153,13 +158,16 @@ describe('case-study content collection', () => {
 
       // Every heading must be from the approved vocabulary.
       for (const heading of headings) {
-        expect(SECTION_ORDER, `${entry.id}: unknown heading "${heading}"`).toContain(
-          heading,
-        );
+        expect(
+          SECTION_ORDER,
+          `${entry.id}: unknown heading "${heading}"`,
+        ).toContain(heading);
       }
 
       // Headings never reorder relative to the master vocabulary.
-      const orderIndexes = headings.map((heading) => SECTION_ORDER.indexOf(heading));
+      const orderIndexes = headings.map((heading) =>
+        SECTION_ORDER.indexOf(heading),
+      );
       const sortedIndexes = [...orderIndexes].sort((a, b) => a - b);
       expect(orderIndexes, `${entry.id}: headings out of order`).toEqual(
         sortedIndexes,
@@ -168,9 +176,10 @@ describe('case-study content collection', () => {
       // Required-for-tier headings are present.
       for (const section of SECTION_VOCABULARY) {
         if (section.requiredFor.includes(project.detailLevel)) {
-          expect(headings, `${entry.id}: missing required "${section.heading}"`).toContain(
-            section.heading,
-          );
+          expect(
+            headings,
+            `${entry.id}: missing required "${section.heading}"`,
+          ).toContain(section.heading);
         }
       }
 
@@ -241,12 +250,15 @@ describe('case-study content collection', () => {
       );
 
       expect(
-        registeredLinkSourceIds.every((sourceId) => !suppressedSourceIds.has(sourceId)),
+        registeredLinkSourceIds.every(
+          (sourceId) => !suppressedSourceIds.has(sourceId),
+        ),
         entry.id,
       ).toBe(true);
-      expect(registeredLinkSourceIds, `${entry.id}: self-citation`).not.toContain(
-        ownSourceId,
-      );
+      expect(
+        registeredLinkSourceIds,
+        `${entry.id}: self-citation`,
+      ).not.toContain(ownSourceId);
 
       // Every internal (relative) link must point at a real, known route
       // (another case study or the /work index); external links used in
@@ -254,7 +266,9 @@ describe('case-study content collection', () => {
       for (const link of collectLinks(entry.tree)) {
         if (link.href.startsWith('/')) {
           if (link.href.startsWith('/work/')) {
-            const targetSlug = link.href.replace('/work/', '').replace(/\/$/, '');
+            const targetSlug = link.href
+              .replace('/work/', '')
+              .replace(/\/$/, '');
             expect(
               targetSlug === '' || projectBySlug.has(targetSlug),
               `${entry.id}: links to unknown project ${link.href}`,
@@ -264,7 +278,10 @@ describe('case-study content collection', () => {
         }
 
         const source = sourceByHref.get(link.href);
-        expect(source, `${entry.id}: unregistered external link ${link.href}`).toBeDefined();
+        expect(
+          source,
+          `${entry.id}: unregistered external link ${link.href}`,
+        ).toBeDefined();
       }
     }
   });
@@ -305,7 +322,9 @@ describe('case-study content collection', () => {
       (await loadCaseStudies()).map((entry) => [entry.id, entry]),
     );
 
-    expect(collectLinks(entries.get('asc-pie')!.tree).length).toBeGreaterThan(0);
+    expect(collectLinks(entries.get('asc-pie')!.tree).length).toBeGreaterThan(
+      0,
+    );
     expect(collectLinks(entries.get('dive')!.tree).length).toBeGreaterThan(0);
     // D11 / §7.3: no link to Northstar's own (unready) repository — internal
     // cross-links to other case studies (ASC-PIE, This Portfolio) are fine

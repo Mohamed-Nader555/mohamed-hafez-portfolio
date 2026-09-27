@@ -42,7 +42,8 @@ const relationshipText = relationships
   )
   .join('; ');
 
-const pipeline = architecture.pipeline ?? architecture.nodes.map((node) => node.label);
+const pipeline =
+  architecture.pipeline ?? architecture.nodes.map((node) => node.label);
 ---
 
 <figure

@@ -4,14 +4,14 @@ publishedAt: 2026-09-27
 passport:
   context: M.A. thesis research, York University (CERAS Lab), supervised by Prof. Marin Litoiu
 stats:
-  - value: "83.5%"
+  - value: '83.5%'
     label: ACC, best of four strategies
     note: SPRINT-PP, shared RoBERTa-large backbone
-  - value: "0"
+  - value: '0'
     label: raw historical examples stored
-  - value: "25.6%"
+  - value: '25.6%'
     label: less training time than distillation
-  - value: "14.6%"
+  - value: '14.6%'
     label: naive sequential fine-tuning ACC
 features:
   - title: A three-stage class-incremental protocol
@@ -49,7 +49,7 @@ import StackLayers from '@/components/case-study/StackLayers.astro';
 import CompareTable from '@/components/case-study/CompareTable.astro';
 import StageMatrix from '@/components/case-study/StageMatrix.astro';
 
-*Paper: "ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction" — accepted to IEEE CASCON 2026 (Toronto, 10–12 Nov 2026); the method is also part of my M.A. thesis. No author list yet.*
+_Paper: "ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction" — accepted to IEEE CASCON 2026 (Toronto, 10–12 Nov 2026); the method is also part of my M.A. thesis. No author list yet._
 
 ## The problem
 
@@ -74,18 +74,18 @@ I built the staged benchmark itself, not just the mitigation. Every stage adds n
   (Cermelli et al., CVPR 2020), adapted here to token-level PII extraction.
   Four pieces work together:
 
-  1. **Triage.** The frozen model from the previous stage scores every
-  token the new stage has relabelled O. Anything it is confident used to be
-  an entity gets flagged as a suspected old entity.
-  2. **Selective correction.** Only those flagged tokens receive soft-label
-  guidance from the old model, a targeted correction rather than one applied
-  everywhere the way distillation applies it.
-  3. **Prototype memory.** One centroid per old PII type is kept, not raw
-  text, so the model has something to stay close to without retaining an
-  example anyone could read.
-  4. **Head anchoring.** The classifier rows for old labels are stabilized
-  directly, so the update does not quietly overwrite them.
-</DeepDive>
+1. **Triage.** The frozen model from the previous stage scores every
+   token the new stage has relabelled O. Anything it is confident used to be
+   an entity gets flagged as a suspected old entity.
+2. **Selective correction.** Only those flagged tokens receive soft-label
+   guidance from the old model, a targeted correction rather than one applied
+   everywhere the way distillation applies it.
+3. **Prototype memory.** One centroid per old PII type is kept, not raw
+   text, so the model has something to stay close to without retaining an
+   example anyone could read.
+4. **Head anchoring.** The classifier rows for old labels are stabilized
+   directly, so the update does not quietly overwrite them.
+   </DeepDive>
 
 ## How it works
 
@@ -103,25 +103,48 @@ SPRINT-PP finished ahead of every other strategy on ACC and BWT, and it did so w
 
 <CompareTable
   caption="Continual-learning summary across four update strategies, shared RoBERTa-large backbone."
-  columns={["Strategy", "ACC ↑", "BWT ↑", "Forgetting ↓", "Intransigence ↓", "Stores raw PII?"]}
+  columns={[
+    'Strategy',
+    'ACC ↑',
+    'BWT ↑',
+    'Forgetting ↓',
+    'Intransigence ↓',
+    'Stores raw PII?',
+  ]}
   rows={[
-    ["SPRINT-PP", "83.5%", "−0.2075", "0.2075", "0.0156", "No"],
-    ["Distillation", "83.0%", "−0.2111", "0.2111", "0.0193", "No"],
-    ["Replay", "76.5%", "−0.2726", "0.2726", "0.0278", "Yes"],
-    ["Baseline", "14.6%", "−0.6506", "0.6506", "0.0202", "No"],
+    ['SPRINT-PP', '83.5%', '−0.2075', '0.2075', '0.0156', 'No'],
+    ['Distillation', '83.0%', '−0.2111', '0.2111', '0.0193', 'No'],
+    ['Replay', '76.5%', '−0.2726', '0.2726', '0.0278', 'Yes'],
+    ['Baseline', '14.6%', '−0.6506', '0.6506', '0.0202', 'No'],
   ]}
 />
 
 SPRINT-PP was also 25.6% faster to train than distillation, on the same backbone and the same staged protocol.
 
 <StageMatrix
-  strategies={["Baseline", "Replay", "Distillation", "SPRINT-PP"]}
-  stageLabels={["Stage 0", "Stage 1", "Stage 2"]}
+  strategies={['Baseline', 'Replay', 'Distillation', 'SPRINT-PP']}
+  stageLabels={['Stage 0', 'Stage 1', 'Stage 2']}
   matrices={{
-    Baseline: [[0.963, 0, 0], [0, 0.982, 0], [0, 0, 0.994]],
-    Replay: [[0.9668, 0, 0], [0.9481, 0.9666, 0], [0.8726, 0.9879, 0.9833]],
-    Distillation: [[0.9668, 0, 0], [0.9661, 0.9793, 0], [0.9635, 0.9802, 0.9962]],
-    'SPRINT-PP': [[0.9668, 0, 0], [0.9694, 0.9907, 0], [0.9694, 0.9896, 0.9956]],
+    Baseline: [
+      [0.963, 0, 0],
+      [0, 0.982, 0],
+      [0, 0, 0.994],
+    ],
+    Replay: [
+      [0.9668, 0, 0],
+      [0.9481, 0.9666, 0],
+      [0.8726, 0.9879, 0.9833],
+    ],
+    Distillation: [
+      [0.9668, 0, 0],
+      [0.9661, 0.9793, 0],
+      [0.9635, 0.9802, 0.9962],
+    ],
+    'SPRINT-PP': [
+      [0.9668, 0, 0],
+      [0.9694, 0.9907, 0],
+      [0.9694, 0.9896, 0.9956],
+    ],
   }}
   title="Stage-restricted F1: each stage evaluated on its own"
 />
@@ -129,12 +152,24 @@ SPRINT-PP was also 25.6% faster to train than distillation, on the same backbone
 Read down the diagonal and every strategy looks fine: each stage is learned well in isolation. Read the lower-left corner and the difference shows up: the baseline's early stages read 0.000 once later stages arrive, while SPRINT-PP keeps stage 0 above 0.96 all the way through stage 2.
 
 <StageMatrix
-  strategies={["Replay", "Distillation", "SPRINT-PP"]}
-  stageLabels={["Stage 0", "Stage 1", "Stage 2"]}
+  strategies={['Replay', 'Distillation', 'SPRINT-PP']}
+  stageLabels={['Stage 0', 'Stage 1', 'Stage 2']}
   matrices={{
-    Replay: [[0.9668, 0, 0], [0.8315, 0.9521, 0], [0.6286, 0.7450, 0.9215]],
-    Distillation: [[0.9668, 0, 0], [0.8542, 0.9688, 0], [0.7023, 0.8111, 0.9751]],
-    'SPRINT-PP': [[0.9668, 0, 0], [0.8600, 0.9737, 0], [0.7086, 0.8168, 0.9797]],
+    Replay: [
+      [0.9668, 0, 0],
+      [0.8315, 0.9521, 0],
+      [0.6286, 0.745, 0.9215],
+    ],
+    Distillation: [
+      [0.9668, 0, 0],
+      [0.8542, 0.9688, 0],
+      [0.7023, 0.8111, 0.9751],
+    ],
+    'SPRINT-PP': [
+      [0.9668, 0, 0],
+      [0.86, 0.9737, 0],
+      [0.7086, 0.8168, 0.9797],
+    ],
   }}
   title="Cumulative F1: old and new labels scored together"
 />

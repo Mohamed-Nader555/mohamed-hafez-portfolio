@@ -5,14 +5,14 @@ passport:
   context: M.A. thesis, York University (CERAS Lab)
   period: Sep 2024 – Apr 2026
 stats:
-  - value: "333,109"
+  - value: '333,109'
     label: examples in the corpus
-  - value: "19"
+  - value: '19'
     label: canonical PII types
-  - value: "99.1%"
+  - value: '99.1%'
     label: best strict F1
     note: RoBERTa-large, held-out subset
-  - value: "+0.577"
+  - value: '+0.577'
     label: F1 gained from corpus design
     note: same backbone, public-only vs full ASC-PIE
 features:
@@ -110,23 +110,23 @@ Underneath the schema sits a chip cloud of the 19 canonical PII types, grouped t
   key-value string. A decoder-only model returns JSON. Comparing them fairly
   meant refusing to score any of those formats directly.
 
-  Every prediction, whatever format it started in, is normalized to the same
-  canonical representation, (type, text) pairs, before it is scored. A
-  generative model that writes malformed output does not get credit by
-  default: validity, whether an output is even structurally usable, is
-  scored as a first-class metric alongside strict and normalized F1. Try the
-  same sentence in each format below.
+Every prediction, whatever format it started in, is normalized to the same
+canonical representation, (type, text) pairs, before it is scored. A
+generative model that writes malformed output does not get credit by
+default: validity, whether an output is even structurally usable, is
+scored as a first-class metric alongside strict and normalized F1. Try the
+same sentence in each format below.
 
   <FormatExplorer />
 </DeepDive>
 
 <DeepDive id="the-toolkit-underneath" title="The toolkit underneath">
   Each public corpus needed its own notebook to remap labels onto the shared
-  schema, plus shared label maps so the remapping stayed consistent across
-  all of them. The synthetic-identifier utilities, Luhn-valid credit card
-  generation, controlled templates, and Fake Name Generator records, live in
-  the same toolkit. That code sits in a pending repository, Anon-Datasets,
-  which I plan to publish once it is cleaned up.
+  schema, plus shared label maps so the remapping stayed consistent across all
+  of them. The synthetic-identifier utilities, Luhn-valid credit card
+  generation, controlled templates, and Fake Name Generator records, live in the
+  same toolkit. That code sits in a pending repository, Anon-Datasets, which I
+  plan to publish once it is cleaned up.
 </DeepDive>
 
 ## How it works
@@ -153,15 +153,15 @@ RoBERTa-large came out on top of the model-family comparison, with FLAN-T5-base 
 
 <CompareTable
   caption="Strict F1 and validity by model, on a held-out subset."
-  columns={["Model", "Family", "Validity", "Strict F1"]}
+  columns={['Model', 'Family', 'Validity', 'Strict F1']}
   rows={[
-    ["RoBERTa-large", "Encoder", "100.0%", "99.1%"],
-    ["FLAN-T5-base", "Encoder-decoder", "100.0%", "98.7%"],
-    ["ModernBERT-large", "Encoder", "100.0%", "84.6%"],
-    ["BERT-large-cased", "Encoder", "100.0%", "80.7%"],
-    ["Llama3.1-8B", "Decoder-only", "81.4%", "69.0%"],
-    ["Qwen2.5-7B", "Decoder-only", "54.3%", "40.0%"],
-    ["BART-base", "Encoder-decoder", "56.1%", "34.8%"],
+    ['RoBERTa-large', 'Encoder', '100.0%', '99.1%'],
+    ['FLAN-T5-base', 'Encoder-decoder', '100.0%', '98.7%'],
+    ['ModernBERT-large', 'Encoder', '100.0%', '84.6%'],
+    ['BERT-large-cased', 'Encoder', '100.0%', '80.7%'],
+    ['Llama3.1-8B', 'Decoder-only', '81.4%', '69.0%'],
+    ['Qwen2.5-7B', 'Decoder-only', '54.3%', '40.0%'],
+    ['BART-base', 'Encoder-decoder', '56.1%', '34.8%'],
   ]}
 />
 
@@ -169,10 +169,10 @@ For the decoder-only models, in-context prompting beat fine-tuning outright. The
 
 <CompareTable
   caption="Fine-tuned strict F1 versus the best 3-shot key-value in-context result, same model."
-  columns={["Model", "Fine-tuned strict F1", "Best 3-shot key-value strict F1"]}
+  columns={['Model', 'Fine-tuned strict F1', 'Best 3-shot key-value strict F1']}
   rows={[
-    ["Qwen2.5-7B", "40.0%", "77.8%"],
-    ["Llama3.1-8B", "69.0%", "72.5%"],
+    ['Qwen2.5-7B', '40.0%', '77.8%'],
+    ['Llama3.1-8B', '69.0%', '72.5%'],
   ]}
 />
 
@@ -180,10 +180,10 @@ The largest single result, though, came from the corpus itself rather than the m
 
 <CompareTable
   caption="RoBERTa-large trained on public corpora only versus the full ASC-PIE corpus, same backbone and evaluation protocol."
-  columns={["Training corpus", "Precision", "Recall", "Strict F1"]}
+  columns={['Training corpus', 'Precision', 'Recall', 'Strict F1']}
   rows={[
-    ["Public corpora only", "64.0%", "30.7%", "41.5%"],
-    ["Full ASC-PIE", "98.9%", "99.5%", "99.2%"],
+    ['Public corpora only', '64.0%', '30.7%', '41.5%'],
+    ['Full ASC-PIE', '98.9%', '99.5%', '99.2%'],
   ]}
 />
 
@@ -191,18 +191,18 @@ That is a gain of +0.577 strict F1 on the same backbone and the same evaluation 
 
 <CompareTable
   caption="Selected per-type strict F1, public corpora only versus full ASC-PIE."
-  columns={["PII type", "Public-only", "Full ASC-PIE"]}
+  columns={['PII type', 'Public-only', 'Full ASC-PIE']}
   rows={[
-    ["JOBTITLE", "0.0%", "99.8%"],
-    ["EMAIL", "7.9%", "99.4%"],
-    ["SIN", "22.4%", "99.8%"],
-    ["NAME", "27.2%", "98.2%"],
-    ["COUNTRY", "80.0%", "100.0%"],
-    ["CREDITCARD", "97.9%", "99.1%"],
+    ['JOBTITLE', '0.0%', '99.8%'],
+    ['EMAIL', '7.9%', '99.4%'],
+    ['SIN', '22.4%', '99.8%'],
+    ['NAME', '27.2%', '98.2%'],
+    ['COUNTRY', '80.0%', '100.0%'],
+    ['CREDITCARD', '97.9%', '99.1%'],
   ]}
 />
 
-The same corpus and evaluator also underpin a paper, *ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction*, accepted to IEEE CASCON 2026, which walks through the continual-learning half of this work in full on its own page.
+The same corpus and evaluator also underpin a paper, _ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction_, accepted to IEEE CASCON 2026, which walks through the continual-learning half of this work in full on its own page.
 
 ## What I learned
 

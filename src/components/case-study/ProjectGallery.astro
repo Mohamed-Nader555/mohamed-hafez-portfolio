@@ -9,15 +9,17 @@ const { projectId } = Astro.props;
 const images = projectImages[projectId] ?? [];
 ---
 
-<section class="project-gallery" aria-label={`${projectId} feature screenshots`}>
-  <p class="project-gallery__hint" aria-hidden="true">Scroll to see more &rarr;</p>
+<section
+  class="project-gallery"
+  aria-label={`${projectId} feature screenshots`}
+>
+  <p class="project-gallery__hint" aria-hidden="true">
+    Scroll to see more &rarr;
+  </p>
   <div class="project-gallery__row">
     {
       images.map((image) => (
-        <figure
-          class="project-screenshot"
-          data-orientation={image.orientation}
-        >
+        <figure class="project-screenshot" data-orientation={image.orientation}>
           <picture>
             <source
               type="image/avif"

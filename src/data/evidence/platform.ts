@@ -9,7 +9,11 @@ const records = [
     topics: ['portfolio', 'Astro', 'this site'],
     aliases: ['This Portfolio'],
     roleWeights: { aiml: 3, software: 5, android: 0, teaching: 1 },
-    sourceIds: ['resume-software', 'case-study-this-portfolio', 'github-portfolio'],
+    sourceIds: [
+      'resume-software',
+      'case-study-this-portfolio',
+      'github-portfolio',
+    ],
     public: true,
   },
   {

@@ -148,19 +148,23 @@ The app is a planning and education aid, not a safety device. It doesn't replace
   decision tree, and a small neural network — and compared them on train and
   test accuracy before picking one.
 
-  The decision tree won, with 100% training accuracy and 99.5% test
-  accuracy. I'm stating that pairing on purpose: those are offline scores on
-  the project's own dataset, not a guarantee of dive safety, and I don't
-  present them as one. When the model says a plan isn't safe, the app doesn't
-  just stop there — the recommendation loop reduces depth and bottom time and
-  asks the model again, until it lands on a plan the model accepts.
+The decision tree won, with 100% training accuracy and 99.5% test
+accuracy. I'm stating that pairing on purpose: those are offline scores on
+the project's own dataset, not a guarantee of dive safety, and I don't
+present them as one. When the model says a plan isn't safe, the app doesn't
+just stop there — the recommendation loop reduces depth and bottom time and
+asks the model again, until it lands on a plan the model accepts.
+
 </DeepDive>
 
 ## How it works
 
 The Android client posts a dive plan to a hosted model API, which returns a safe or not-safe result; a not-safe result feeds the recommendation loop, which narrows the plan and asks again, while the same client also talks to the eRDPML calculator, Firebase, and map and weather services directly.
 
-<ArchitectureFlow slug="dive" title="Dive Simulation & Safety Profile Planner" />
+<ArchitectureFlow
+  slug="dive"
+  title="Dive Simulation & Safety Profile Planner"
+/>
 
 ## Decisions that mattered
 

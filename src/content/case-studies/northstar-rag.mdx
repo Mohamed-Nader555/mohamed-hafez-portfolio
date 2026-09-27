@@ -116,15 +116,18 @@ A query is embedded with the same local model used for ingestion, matched agains
 
 <ArchitectureFlow slug="northstar-rag" title="Northstar RAG System" />
 
-<DeepDive id="refusal-before-generation" title="Refusal happens before generation">
+<DeepDive
+  id="refusal-before-generation"
+  title="Refusal happens before generation"
+>
   The easiest way to make a RAG system look reliable is to have it refuse
-  gracefully when it should. I implemented that as a gate, not an
-  afterthought: retrieval runs first, its results are scored against a
-  distance threshold, and only chunks that clear that bar are allowed to
-  reach the generation step at all. If nothing clears it, the API returns a
-  fixed refusal message and the language model is never called. That ordering
-  matters — it means the model can't paper over a retrieval miss with a
-  fluent guess, because it never gets the chance to try.
+  gracefully when it should. I implemented that as a gate, not an afterthought:
+  retrieval runs first, its results are scored against a distance threshold, and
+  only chunks that clear that bar are allowed to reach the generation step at
+  all. If nothing clears it, the API returns a fixed refusal message and the
+  language model is never called. That ordering matters — it means the model
+  can't paper over a retrieval miss with a fluent guess, because it never gets
+  the chance to try.
 </DeepDive>
 
 ## Decisions that mattered

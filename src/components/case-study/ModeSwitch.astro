@@ -83,8 +83,10 @@ const [first, second] = modes;
     }
   }
 
-  .mode-switch:has(#mode-visually-impaired:checked) .mode-switch__panel[data-panel='alzheimer'],
-  .mode-switch:has(#mode-alzheimer:checked) .mode-switch__panel[data-panel='visually-impaired'] {
+  .mode-switch:has(#mode-visually-impaired:checked)
+    .mode-switch__panel[data-panel='alzheimer'],
+  .mode-switch:has(#mode-alzheimer:checked)
+    .mode-switch__panel[data-panel='visually-impaired'] {
     display: none;
   }
 

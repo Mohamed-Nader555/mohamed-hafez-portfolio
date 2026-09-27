@@ -127,19 +127,43 @@ The app runs in two modes, chosen in the app rather than on the hardware. Visual
       id: 'visually-impaired',
       label: 'Visually Impaired mode',
       features: [
-        { title: 'Image captioning', detail: 'Describes a scene aloud when nothing more specific applies.' },
-        { title: 'Landmark labels', detail: 'Names recognizable landmarks in view.' },
-        { title: 'Object detection', detail: 'Identifies everyday objects in front of the camera.' },
-        { title: 'Face detection', detail: 'Reports estimated gender, emotion, and age range for faces in frame — attributes, not identification.' },
-        { title: 'Text reader', detail: 'Reads printed text aloud from signs, labels, and documents.' },
-        { title: 'Currency recognition', detail: "Identifies an Egyptian banknote's denomination (see the deep dive below)." },
+        {
+          title: 'Image captioning',
+          detail: 'Describes a scene aloud when nothing more specific applies.',
+        },
+        {
+          title: 'Landmark labels',
+          detail: 'Names recognizable landmarks in view.',
+        },
+        {
+          title: 'Object detection',
+          detail: 'Identifies everyday objects in front of the camera.',
+        },
+        {
+          title: 'Face detection',
+          detail:
+            'Reports estimated gender, emotion, and age range for faces in frame — attributes, not identification.',
+        },
+        {
+          title: 'Text reader',
+          detail: 'Reads printed text aloud from signs, labels, and documents.',
+        },
+        {
+          title: 'Currency recognition',
+          detail:
+            "Identifies an Egyptian banknote's denomination (see the deep dive below).",
+        },
       ],
     },
     {
       id: 'alzheimer',
       label: 'Alzheimer mode',
       features: [
-        { title: 'Familiar-face recognition', detail: 'Recognises a person from a single enrolled photo and says who they are.' },
+        {
+          title: 'Familiar-face recognition',
+          detail:
+            'Recognises a person from a single enrolled photo and says who they are.',
+        },
       ],
     },
   ]}
@@ -157,16 +181,16 @@ Capture starts on the glasses and ends as speech in the user's ear, whichever mo
 
 <DeepDive id="currency-recognition" title="Egyptian banknotes, from scratch">
   General vision services are good at saying "money" and bad at saying which
-  note. That gap is exactly what Egyptian currency recognition needed to
-  close, so I trained a denomination-recognition model myself rather than
-  relying on a general-purpose API for it. A captured image goes through
-  preprocessing and into that model, served from my Python service, and the
-  structured result comes back through OCR-assisted and spoken confirmation
-  so the user hears a denomination, not a guess. I'm not naming the model's
-  architecture, dataset size, or an accuracy figure here — none of that was
-  preserved in a form I'd stand behind — and it doesn't run on-device or
-  offline; recognition always goes through the service. What it can't do yet:
-  total a handful of mixed cash. It classifies one note at a time.
+  note. That gap is exactly what Egyptian currency recognition needed to close,
+  so I trained a denomination-recognition model myself rather than relying on a
+  general-purpose API for it. A captured image goes through preprocessing and
+  into that model, served from my Python service, and the structured result
+  comes back through OCR-assisted and spoken confirmation so the user hears a
+  denomination, not a guess. I'm not naming the model's architecture, dataset
+  size, or an accuracy figure here — none of that was preserved in a form I'd
+  stand behind — and it doesn't run on-device or offline; recognition always
+  goes through the service. What it can't do yet: total a handful of mixed cash.
+  It classifies one note at a time.
 </DeepDive>
 
 ## How it works

@@ -46,7 +46,9 @@ const roleLabels = project.roles.map((role) => roleById.get(role)).join(' · ');
 const readingTime = computeReadingTime(rawBody);
 const toc = headings.filter((heading) => heading.depth === 2);
 const status = project.status as StatusKey | undefined;
-const linkSources = links ? resolveSources(links.map((link) => link.sourceId)) : [];
+const linkSources = links
+  ? resolveSources(links.map((link) => link.sourceId))
+  : [];
 const linksWithLabels = links?.map((link, index) => ({
   label: link.label,
   href: linkSources[index]?.publicHref,
@@ -115,7 +117,11 @@ const linksWithLabels = links?.map((link, index) => ({
           <ol>
             {toc.map((heading) => (
               <li>
-                <a href={`#${heading.slug}`} data-toc-link data-toc-target={heading.slug}>
+                <a
+                  href={`#${heading.slug}`}
+                  data-toc-link
+                  data-toc-target={heading.slug}
+                >
                   {heading.text}
                 </a>
               </li>

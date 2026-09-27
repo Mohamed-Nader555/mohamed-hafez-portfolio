@@ -9,17 +9,27 @@ const { project } = Astro.props;
 const isBrief = project.detailLevel === 'brief';
 ---
 
-<article class="story-card" data-focus={project.roles.join(' ')} data-tech={project.technologies.join('|')}>
+<article
+  class="story-card"
+  data-focus={project.roles.join(' ')}
+  data-tech={project.technologies.join('|')}
+>
   <p class="utility-label">
     {project.category}
     {isBrief && <span class="story-card__short-read">Short read</span>}
   </p>
   <h4 transition:name={`project-title-${project.slug}`}>
-    <a href={`/work/${project.slug}`} data-astro-prefetch="hover">{project.title}</a>
+    <a href={`/work/${project.slug}`} data-astro-prefetch="hover"
+      >{project.title}</a
+    >
   </h4>
   <p>{project.hook}</p>
   <ul class="technology-list" aria-label={`${project.title} technologies`}>
-    {project.technologies.slice(0, 5).map((technology) => <li>{technology}</li>)}
+    {
+      project.technologies
+        .slice(0, 5)
+        .map((technology) => <li>{technology}</li>)
+    }
   </ul>
 </article>
 

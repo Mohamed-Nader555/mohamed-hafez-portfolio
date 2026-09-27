@@ -33,7 +33,13 @@ const records = [
     title: 'Dive safety classification',
     statement:
       'Dive compared four classifiers hosted on PythonAnywhere — SVC, Logistic Regression, Decision Tree, and an ANN — for a safe/not-safe check, using inputs of max depth, bottom time, O₂ percentage, first-or-second dive of the day, surface interval, and an auto-calculated PPO₂. The Decision Tree was selected, with 100% training accuracy and 99.5% test accuracy; these are offline scores on the project’s own dataset, not a safety guarantee.',
-    topics: ['Dive', 'Python', 'scikit-learn', 'classification', 'PythonAnywhere'],
+    topics: [
+      'Dive',
+      'Python',
+      'scikit-learn',
+      'classification',
+      'PythonAnywhere',
+    ],
     aliases: ['Dive machine learning', 'safety classifier', 'decision tree'],
     roleWeights: { aiml: 5, software: 3, android: 3, teaching: 1 },
     sourceIds: ['resume-aiml', 'github-dive', 'case-study-dive'],

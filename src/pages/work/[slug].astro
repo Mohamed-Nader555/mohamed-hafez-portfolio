@@ -20,8 +20,12 @@ export const getStaticPaths = (async () => {
     [...publishedSlugs].some((slug) => !canonicalSlugs.has(slug)) ||
     [...canonicalSlugs].some((slug) => !publishedSlugs.has(slug))
   ) {
-    const missing = [...canonicalSlugs].filter((slug) => !publishedSlugs.has(slug));
-    const extra = [...publishedSlugs].filter((slug) => !canonicalSlugs.has(slug));
+    const missing = [...canonicalSlugs].filter(
+      (slug) => !publishedSlugs.has(slug),
+    );
+    const extra = [...publishedSlugs].filter(
+      (slug) => !canonicalSlugs.has(slug),
+    );
     throw new Error(
       `Case-study routes must match every flagship/story/brief project exactly. Missing: ${missing.join(', ') || 'none'}. Extra: ${extra.join(', ') || 'none'}.`,
     );
@@ -40,11 +44,17 @@ interface Props {
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 const pagePath = `/work/${entry.data.slug}`;
-const project = projects.find((candidate) => candidate.slug === entry.data.slug);
+const project = projects.find(
+  (candidate) => candidate.slug === entry.data.slug,
+);
 if (!project) throw new Error(`Missing project record for ${entry.data.slug}`);
 if (!Astro.site) throw new Error('Astro.site must be configured.');
 const structuredData = [
-  createCreativeWorkStructuredData(project, new URL(pagePath, Astro.site), Astro.site),
+  createCreativeWorkStructuredData(
+    project,
+    new URL(pagePath, Astro.site),
+    Astro.site,
+  ),
 ];
 ---
 

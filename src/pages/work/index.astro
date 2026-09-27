@@ -11,8 +11,12 @@ export const prerender = true;
 const pageProjects = projects.filter((project) =>
   ['flagship', 'story', 'brief'].includes(project.detailLevel),
 );
-const flagshipProjects = pageProjects.filter((project) => project.detailLevel === 'flagship');
-const cardProjects = projects.filter((project) => project.detailLevel === 'card');
+const flagshipProjects = pageProjects.filter(
+  (project) => project.detailLevel === 'flagship',
+);
+const cardProjects = projects.filter(
+  (project) => project.detailLevel === 'card',
+);
 
 const focusAreaCount = roles.length;
 const earliestYear = Math.min(
@@ -79,7 +83,9 @@ const focusChips = [
       they work, and what came out of them.
     </p>
     <p class="work-index__counter" aria-hidden="true">
-      {pageProjects.length} project stories · {focusAreaCount} focus areas ·{' '}
+      {pageProjects.length} project stories · {focusAreaCount} focus areas ·{
+        ' '
+      }
       {earliestYear} &rarr; {currentYear}
     </p>
     <p class="work-index__scope-note">
@@ -88,26 +94,45 @@ const focusChips = [
     </p>
   </header>
 
-  <section class="work-index__filter shell-container" aria-label="Filter by focus">
-    <div class="work-index__chips" role="group" aria-label="Filter projects by focus">
+  <section
+    class="work-index__filter shell-container"
+    aria-label="Filter by focus"
+  >
+    <div
+      class="work-index__chips"
+      role="group"
+      aria-label="Filter projects by focus"
+    >
       {
         focusChips.map((chip) => (
-          <button type="button" data-focus-chip={chip.id} aria-pressed={chip.id === 'all'}>
+          <button
+            type="button"
+            data-focus-chip={chip.id}
+            aria-pressed={chip.id === 'all'}
+          >
             {chip.label}
           </button>
         ))
       }
     </div>
     <p class="work-index__tech-pill" data-tech-pill hidden>
-      <span data-tech-pill-label />
-      <button type="button" data-tech-pill-clear aria-label="Clear technology filter">
+      <span data-tech-pill-label></span>
+      <button
+        type="button"
+        data-tech-pill-clear
+        aria-label="Clear technology filter"
+      >
         ×
       </button>
     </p>
-    <p class="visually-hidden" role="status" aria-live="polite" data-focus-live></p>
+    <p class="visually-hidden" role="status" aria-live="polite" data-focus-live>
+    </p>
   </section>
 
-  <section class="work-index__flagships shell-container" aria-label="Flagship projects">
+  <section
+    class="work-index__flagships shell-container"
+    aria-label="Flagship projects"
+  >
     {
       flagshipProjects.map((project) => (
         <FlagshipCard project={project} keyFacts={keyFactsBySlug[project.id]} />
@@ -119,7 +144,10 @@ const focusChips = [
     storyGroups.map(
       (groupEntry) =>
         groupEntry.items.length > 0 && (
-          <section class="work-index__group shell-container" aria-labelledby={`group-${groupEntry.group}`}>
+          <section
+            class="work-index__group shell-container"
+            aria-labelledby={`group-${groupEntry.group}`}
+          >
             <h2 id={`group-${groupEntry.group}`}>{groupEntry.label}</h2>
             <div class="work-index__group-grid">
               {groupEntry.items.map((project) => (
@@ -131,11 +159,16 @@ const focusChips = [
     )
   }
 
-  <section class="project-library shell-container" aria-labelledby="project-library-title">
+  <section
+    class="project-library shell-container"
+    aria-labelledby="project-library-title"
+  >
     <header class="section-heading section-heading--split">
       <div>
         <p class="utility-label">Library</p>
-        <h2 id="project-library-title">Smaller builds and teaching materials</h2>
+        <h2 id="project-library-title">
+          Smaller builds and teaching materials
+        </h2>
       </div>
     </header>
     <div class="project-library__grid">
@@ -145,7 +178,10 @@ const focusChips = [
             <p class="utility-label">{project.category}</p>
             <h3>{project.title}</h3>
             <p>{project.hook}</p>
-            <ul class="technology-list" aria-label={`${project.title} technologies`}>
+            <ul
+              class="technology-list"
+              aria-label={`${project.title} technologies`}
+            >
               {project.technologies.map((technology) => (
                 <li>{technology}</li>
               ))}
@@ -165,7 +201,10 @@ const focusChips = [
     </div>
   </section>
 
-  <section class="work-index__closing shell-container" aria-labelledby="work-closing-title">
+  <section
+    class="work-index__closing shell-container"
+    aria-labelledby="work-closing-title"
+  >
     <h2 id="work-closing-title">Want the short version?</h2>
     <ul class="work-index__resume-links">
       {
@@ -178,7 +217,9 @@ const focusChips = [
     </ul>
     <p>
       Or reach me directly at{' '}
-      <a href="mailto:mohamed.m.nader555@gmail.com">mohamed.m.nader555@gmail.com</a>.
+      <a href="mailto:mohamed.m.nader555@gmail.com"
+        >mohamed.m.nader555@gmail.com</a
+      >.
     </p>
   </section>
 </BaseLayout>

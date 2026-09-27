@@ -38,10 +38,22 @@ const { project, keyFacts } = Astro.props;
       )
     }
     <ul class="technology-list" aria-label={`${project.title} technologies`}>
-      {project.technologies.slice(0, 5).map((technology) => <li>{technology}</li>)}
+      {
+        project.technologies
+          .slice(0, 5)
+          .map((technology) => <li>{technology}</li>)
+      }
     </ul>
-    {project.status && <StatusBadge status={project.status as StatusKey} showLonger={false} />}
-    <a href={`/work/${project.slug}`} data-astro-prefetch="viewport" class="flagship-card__cta">
+    {
+      project.status && (
+        <StatusBadge status={project.status as StatusKey} showLonger={false} />
+      )
+    }
+    <a
+      href={`/work/${project.slug}`}
+      data-astro-prefetch="viewport"
+      class="flagship-card__cta"
+    >
       Read the story <span aria-hidden="true">→</span>
     </a>
   </div>

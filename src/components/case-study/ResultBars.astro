@@ -13,8 +13,17 @@ interface Props {
   magenta?: boolean;
 }
 
-const { title, items, suffix = '%', groupLabels, magenta = false } = Astro.props;
-const maxValue = Math.max(...items.flatMap((item) => [item.value, item.groupValue ?? 0]), 1);
+const {
+  title,
+  items,
+  suffix = '%',
+  groupLabels,
+  magenta = false,
+} = Astro.props;
+const maxValue = Math.max(
+  ...items.flatMap((item) => [item.value, item.groupValue ?? 0]),
+  1,
+);
 ---
 
 <figure class={`result-bars ${magenta ? 'result-bars--magenta' : ''}`}>

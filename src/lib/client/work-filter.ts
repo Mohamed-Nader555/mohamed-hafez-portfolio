@@ -7,16 +7,22 @@ const FOCUS_LABELS: Record<string, string> = {
 };
 
 function init() {
-  const chips = document.querySelectorAll<HTMLButtonElement>('[data-focus-chip]');
+  const chips =
+    document.querySelectorAll<HTMLButtonElement>('[data-focus-chip]');
   const cards = document.querySelectorAll<HTMLElement>('[data-focus]');
   const liveRegion = document.querySelector<HTMLElement>('[data-focus-live]');
   const techPill = document.querySelector<HTMLElement>('[data-tech-pill]');
-  const techPillLabel = document.querySelector<HTMLElement>('[data-tech-pill-label]');
-  const techPillClear = document.querySelector<HTMLButtonElement>('[data-tech-pill-clear]');
+  const techPillLabel = document.querySelector<HTMLElement>(
+    '[data-tech-pill-label]',
+  );
+  const techPillClear = document.querySelector<HTMLButtonElement>(
+    '[data-tech-pill-clear]',
+  );
   if (chips.length === 0 || cards.length === 0) return;
 
   function announce(count: number) {
-    if (liveRegion) liveRegion.textContent = `${count} project${count === 1 ? '' : 's'} shown.`;
+    if (liveRegion)
+      liveRegion.textContent = `${count} project${count === 1 ? '' : 's'} shown.`;
   }
 
   function applyFilter(focus: string, tech: string | null) {
@@ -51,7 +57,11 @@ function init() {
     if (tech) params.set('tech', tech);
     else params.delete('tech');
     const query = params.toString();
-    window.history.replaceState(null, '', query ? `?${query}` : window.location.pathname);
+    window.history.replaceState(
+      null,
+      '',
+      query ? `?${query}` : window.location.pathname,
+    );
   }
 
   function updateTechPill(tech: string | null) {

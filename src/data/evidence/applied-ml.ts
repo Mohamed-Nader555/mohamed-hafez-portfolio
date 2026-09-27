@@ -9,7 +9,11 @@ const records = [
     topics: ['applied machine learning', 'DotPy', 'delivery'],
     aliases: ['Applied Machine Learning Portfolio'],
     roleWeights: { aiml: 5, software: 2, android: 0, teaching: 2 },
-    sourceIds: ['resume-aiml', 'public-experience', 'case-study-applied-ml-portfolio'],
+    sourceIds: [
+      'resume-aiml',
+      'public-experience',
+      'case-study-applied-ml-portfolio',
+    ],
     public: true,
   },
   {
@@ -17,7 +21,14 @@ const records = [
     title: 'Applied ML delivery lifecycle',
     statement:
       'Each applied ML project moved through scoping, data preparation, feature engineering, model selection, evaluation, and delivery as a notebook, API, or Docker package, with documentation and handover.',
-    topics: ['Python', 'pandas', 'scikit-learn', 'TensorFlow', 'PyTorch', 'Docker'],
+    topics: [
+      'Python',
+      'pandas',
+      'scikit-learn',
+      'TensorFlow',
+      'PyTorch',
+      'Docker',
+    ],
     aliases: ['ML delivery pipeline'],
     roleWeights: { aiml: 5, software: 2, android: 0, teaching: 1 },
     sourceIds: ['resume-aiml', 'case-study-applied-ml-portfolio'],

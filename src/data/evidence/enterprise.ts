@@ -10,7 +10,11 @@ const records = [
     topics: ['Documentum', 'workflows', 'enterprise', 'banking'],
     aliases: ['Documentum Workflow & Lifecycle Optimization'],
     roleWeights: { aiml: 2, software: 5, android: 1, teaching: 3 },
-    sourceIds: ['resume-software', 'public-experience', 'case-study-documentum-workflows'],
+    sourceIds: [
+      'resume-software',
+      'public-experience',
+      'case-study-documentum-workflows',
+    ],
     public: true,
   },
   {
@@ -33,13 +37,18 @@ const records = [
     topics: ['PDF', 'iText', 'document processing'],
     aliases: ['PDF Document Processing Utilities'],
     roleWeights: { aiml: 1, software: 5, android: 0, teaching: 1 },
-    sourceIds: ['resume-software', 'public-experience', 'case-study-pdf-utilities'],
+    sourceIds: [
+      'resume-software',
+      'public-experience',
+      'case-study-pdf-utilities',
+    ],
     public: true,
   },
   {
     id: 'pdf-utilities-stack',
     title: 'PDF utilities stack',
-    statement: 'These utilities used Java, iText, Apache Tomcat, Maven, and log4j.',
+    statement:
+      'These utilities used Java, iText, Apache Tomcat, Maven, and log4j.',
     topics: ['PDF', 'iText', 'Tomcat', 'Maven'],
     aliases: [],
     roleWeights: { aiml: 0, software: 5, android: 0, teaching: 0 },

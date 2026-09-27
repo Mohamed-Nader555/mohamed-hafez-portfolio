@@ -16,7 +16,12 @@ export const VERIFIED_TECH: Readonly<Record<string, readonly string[]>> = {
     'seqeval',
   ],
   // §7.2 — thesis deck (source rank 2)
-  'sprint-pp': ['Python', 'PyTorch', 'RoBERTa-large', 'Hugging Face Transformers'],
+  'sprint-pp': [
+    'Python',
+    'PyTorch',
+    'RoBERTa-large',
+    'Hugging Face Transformers',
+  ],
   // §7.3 — Northstar repo README (source rank 8)
   'northstar-rag': [
     'Python',
@@ -102,9 +107,20 @@ export const VERIFIED_TECH: Readonly<Record<string, readonly string[]>> = {
     'Seaborn',
   ],
   // §7.9 — repo + CS §4.7 (source rank 8, 9); Room deliberately excluded
-  'search-for-eats': ['Android (Java)', 'Google Maps Platform', 'Firebase', 'Retrofit'],
+  'search-for-eats': [
+    'Android (Java)',
+    'Google Maps Platform',
+    'Firebase',
+    'Retrofit',
+  ],
   // §7.10 — CS §4.8 repo-verified features (source rank 9)
-  mercato: ['Android (Java)', 'ExoPlayer', 'Firebase', 'FCM', 'Google Play Billing'],
+  mercato: [
+    'Android (Java)',
+    'ExoPlayer',
+    'Firebase',
+    'FCM',
+    'Google Play Billing',
+  ],
   // §7.11 — repo README, MPP #34 (source rank 7, 8)
   'food-planner': [
     'Android (Java)',

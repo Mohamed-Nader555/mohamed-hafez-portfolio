@@ -18,7 +18,11 @@ const records = [
     statement:
       'Mind’s Eye was a five-person B.Sc. capstone graded A+. I delivered more than 80% of the system: the Android app, cloud integrations, ESP32-CAM firmware and Bluetooth link, the Python service, interface contracts, error handling, and deployment.',
     topics: ['Mind’s Eye', 'ownership', 'delivery', 'capstone'],
-    aliases: ['project contribution', 'implementation ownership', 'five-person team'],
+    aliases: [
+      'project contribution',
+      'implementation ownership',
+      'five-person team',
+    ],
     roleWeights: { aiml: 4, software: 3, android: 5, teaching: 2 },
     sourceIds: [
       'resume-aiml',

@@ -20,7 +20,11 @@ const records = [
     topics: ['Tic-Tac-Toe', 'JavaFX', 'Minimax', 'sockets'],
     aliases: ['Online & Offline Tic-Tac-Toe'],
     roleWeights: { aiml: 0, software: 3, android: 0, teaching: 2 },
-    sourceIds: ['resume-software', 'resume-teaching', 'case-study-online-tic-tac-toe'],
+    sourceIds: [
+      'resume-software',
+      'resume-teaching',
+      'case-study-online-tic-tac-toe',
+    ],
     public: true,
   },
   {

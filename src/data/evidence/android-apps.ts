@@ -154,7 +154,8 @@ const records = [
   {
     id: 'gulf-arab-chat-stack',
     title: 'Gulf Arab Chat stack',
-    statement: 'Gulf Arab Chat is built in Java with Firebase and Google Maps / Location.',
+    statement:
+      'Gulf Arab Chat is built in Java with Firebase and Google Maps / Location.',
     topics: ['Gulf Arab Chat', 'Java', 'Firebase'],
     aliases: [],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 0 },
@@ -176,7 +177,8 @@ const records = [
   {
     id: 'tourist-guide-stack',
     title: 'Tourist Guide stack',
-    statement: 'Tourist Guide is built in Java with Firebase and Google Maps / Location.',
+    statement:
+      'Tourist Guide is built in Java with Firebase and Google Maps / Location.',
     topics: ['Tourist Guide', 'Java', 'Firebase'],
     aliases: [],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 0 },
@@ -198,7 +200,8 @@ const records = [
   {
     id: 'sams-stack',
     title: 'SAMS stack',
-    statement: 'SAMS is built in Java with Firebase Authentication and Firebase Realtime Database.',
+    statement:
+      'SAMS is built in Java with Firebase Authentication and Firebase Realtime Database.',
     topics: ['SAMS', 'Java', 'Firebase'],
     aliases: [],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 1 },
@@ -265,7 +268,8 @@ const records = [
   {
     id: 'top-notch-stack',
     title: 'Top Notch stack',
-    statement: 'Top Notch is built in Java with Firebase; its recipe API client is a prose-only detail.',
+    statement:
+      'Top Notch is built in Java with Firebase; its recipe API client is a prose-only detail.',
     topics: ['Top Notch', 'Java', 'Firebase'],
     aliases: [],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 0 },

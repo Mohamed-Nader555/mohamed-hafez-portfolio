@@ -29,8 +29,16 @@ const imageById = new Map(images.map((image) => [image.id, image]));
               {String(index + 1).padStart(2, '0')}
             </span>
             <picture>
-              <source type="image/avif" srcset={image.avifSrcset} sizes="16rem" />
-              <source type="image/webp" srcset={image.webpSrcset} sizes="16rem" />
+              <source
+                type="image/avif"
+                srcset={image.avifSrcset}
+                sizes="16rem"
+              />
+              <source
+                type="image/webp"
+                srcset={image.webpSrcset}
+                sizes="16rem"
+              />
               <img
                 src={image.fallbackSrc}
                 alt={image.alt}

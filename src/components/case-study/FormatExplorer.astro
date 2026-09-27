@@ -2,7 +2,8 @@
 // The thesis defence deck's own illustrative sentence (source rank 2).
 // No model, no live inference: this is a static, hand-built example of how
 // the same prediction looks in three output formats, per brief §5.4.
-const sentence = 'John Smith emailed john.smith@example.com from Toronto on 12 May 2024.';
+const sentence =
+  'John Smith emailed john.smith@example.com from Toronto on 12 May 2024.';
 const spans = [
   { text: 'John Smith', type: 'NAME' },
   { text: 'john.smith@example.com', type: 'EMAIL' },
@@ -69,12 +70,19 @@ const canonical = spans;
   </p>
 
   <div class="format-explorer__tabs">
-    <input type="radio" name="format-explorer-tab" id="format-tab-iob2" checked />
+    <input
+      type="radio"
+      name="format-explorer-tab"
+      id="format-tab-iob2"
+      checked
+    />
     <label for="format-tab-iob2">As an encoder sees it (IOB2)</label>
     <input type="radio" name="format-explorer-tab" id="format-tab-keyvalue" />
     <label for="format-tab-keyvalue">As an encoder-decoder writes it</label>
     <input type="radio" name="format-explorer-tab" id="format-tab-json" />
-    <label for="format-tab-json">As a decoder-only model returns it (JSON)</label>
+    <label for="format-tab-json"
+      >As a decoder-only model returns it (JSON)</label
+    >
     <input type="radio" name="format-explorer-tab" id="format-tab-canonical" />
     <label for="format-tab-canonical">Canonical (type, text) pairs</label>
 

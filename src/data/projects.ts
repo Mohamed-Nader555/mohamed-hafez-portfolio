@@ -243,10 +243,16 @@ const projectsData = [
     status: 'client-delivered',
     summary:
       'I built Search for Eats, a restaurant-finder Android app with map and list discovery, category filters, and offline recent results.',
-    ownership: 'I built the Android application end to end as client-delivery work.',
+    ownership:
+      'I built the Android application end to end as client-delivery work.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 2, android: 4, teaching: 1 },
-    technologies: ['Android (Java)', 'Google Maps Platform', 'Firebase', 'Retrofit'],
+    technologies: [
+      'Android (Java)',
+      'Google Maps Platform',
+      'Firebase',
+      'Retrofit',
+    ],
     sourceIds: ['resume-android', 'case-study-search-for-eats'],
     detailLevel: 'story',
     public: true,
@@ -261,10 +267,17 @@ const projectsData = [
     status: 'client-delivered',
     summary:
       'I customised and extended a short-video app foundation into Mercato Star Finder, a football-talent platform where players present their skills so club agents can scout and sign them.',
-    ownership: 'I built the Android application as part of my client-project delivery work.',
+    ownership:
+      'I built the Android application as part of my client-project delivery work.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 2, android: 4, teaching: 1 },
-    technologies: ['Android (Java)', 'ExoPlayer', 'Firebase', 'FCM', 'Google Play Billing'],
+    technologies: [
+      'Android (Java)',
+      'ExoPlayer',
+      'Firebase',
+      'FCM',
+      'Google Play Billing',
+    ],
     sourceIds: ['resume-android', 'case-study-mercato'],
     detailLevel: 'story',
     public: true,
@@ -279,7 +292,8 @@ const projectsData = [
     status: 'play-iti',
     summary:
       'I built Healthy Habit / Food Planner, a recipe and meal-planning Android app with weekly plans, reminders, and offline access, published to Google Play as part of my ITI training.',
-    ownership: 'I built the Android application end to end during the ITI Android track.',
+    ownership:
+      'I built the Android application end to end during the ITI Android track.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 2, android: 4, teaching: 1 },
     technologies: [
@@ -308,7 +322,14 @@ const projectsData = [
       'I built the Android application end to end during the ITI Android Mobile Development track.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 2, android: 4, teaching: 1 },
-    technologies: ['Android (Kotlin)', 'MVVM', 'Coroutines', 'Retrofit', 'Room', 'Google Maps'],
+    technologies: [
+      'Android (Kotlin)',
+      'MVVM',
+      'Coroutines',
+      'Retrofit',
+      'Room',
+      'Google Maps',
+    ],
     sourceIds: ['resume-android', 'case-study-weather-checker'],
     detailLevel: 'story',
     public: true,
@@ -385,7 +406,11 @@ const projectsData = [
     roles: ['software'],
     roleWeights: { aiml: 1, software: 5, android: 0, teaching: 1 },
     technologies: ['Java', 'iText', 'Apache Tomcat', 'Maven', 'log4j'],
-    sourceIds: ['resume-software', 'public-experience', 'case-study-pdf-utilities'],
+    sourceIds: [
+      'resume-software',
+      'public-experience',
+      'case-study-pdf-utilities',
+    ],
     detailLevel: 'story',
     public: true,
   },
@@ -399,10 +424,18 @@ const projectsData = [
     status: 'enterprise-bass',
     summary:
       'At BASS, I built internal REST endpoints and client proofs of concept that bridged SOAP-based enterprise systems and clean, documented JSON contracts.',
-    ownership: 'I built the service layer, REST contracts, and client demos for internal and prototype use.',
+    ownership:
+      'I built the service layer, REST contracts, and client demos for internal and prototype use.',
     roles: ['software'],
     roleWeights: { aiml: 1, software: 5, android: 0, teaching: 1 },
-    technologies: ['Java', 'Spring Boot', 'REST', 'SOAP', 'Python', 'JSON Schema'],
+    technologies: [
+      'Java',
+      'Spring Boot',
+      'REST',
+      'SOAP',
+      'Python',
+      'JSON Schema',
+    ],
     sourceIds: ['resume-software', 'public-experience', 'case-study-rest-pocs'],
     detailLevel: 'story',
     public: true,
@@ -429,7 +462,11 @@ const projectsData = [
       'Zod',
       'Playwright',
     ],
-    sourceIds: ['resume-software', 'case-study-this-portfolio', 'github-portfolio'],
+    sourceIds: [
+      'resume-software',
+      'case-study-this-portfolio',
+      'github-portfolio',
+    ],
     detailLevel: 'story',
     public: true,
   },
@@ -444,7 +481,8 @@ const projectsData = [
     status: 'play-previously',
     summary:
       'I built Your Life Is My Life, a calm, private Android app for personal check-ins and a trusted circle of contacts, using non-clinical wellbeing language throughout.',
-    ownership: 'I built the Android application end to end as client-delivery work.',
+    ownership:
+      'I built the Android application end to end as client-delivery work.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 0 },
     technologies: [
@@ -486,7 +524,8 @@ const projectsData = [
     status: 'prototype',
     summary:
       'I built CloudBackend, an e-commerce API prototype that keeps HTTP handling thin and puts business rules in a dedicated service layer.',
-    ownership: 'I built the API end to end: authentication, product and cart endpoints, and manual test request files.',
+    ownership:
+      'I built the API end to end: authentication, product and cart endpoints, and manual test request files.',
     roles: ['software'],
     roleWeights: { aiml: 0, software: 4, android: 0, teaching: 0 },
     technologies: ['Node.js', 'Express', 'MongoDB', 'Mongoose', 'JWT'],
@@ -502,7 +541,8 @@ const projectsData = [
     category: 'Software · Desktop',
     group: 'early',
     status: 'freelance-java',
-    summary: 'I built a Java desktop app that runs a restaurant’s whole day: role dashboards, orders, billing, and reports.',
+    summary:
+      'I built a Java desktop app that runs a restaurant’s whole day: role dashboards, orders, billing, and reports.',
     ownership: 'I built it end to end as freelance Java work.',
     roles: ['software'],
     roleWeights: { aiml: 0, software: 4, android: 0, teaching: 1 },
@@ -525,7 +565,11 @@ const projectsData = [
     roles: ['software', 'teaching'],
     roleWeights: { aiml: 0, software: 3, android: 0, teaching: 2 },
     technologies: ['Java', 'JavaFX', 'Sockets', 'Minimax'],
-    sourceIds: ['resume-software', 'resume-teaching', 'case-study-online-tic-tac-toe'],
+    sourceIds: [
+      'resume-software',
+      'resume-teaching',
+      'case-study-online-tic-tac-toe',
+    ],
     detailLevel: 'brief',
     public: true,
   },
@@ -539,7 +583,8 @@ const projectsData = [
     status: 'android-app',
     summary:
       'I built Gulf Arab Chat, a multilingual Android social app with chat, calls, live streams, and nearby discovery in English, Arabic, and French.',
-    ownership: 'I built it end to end, integrating third-party UI and media modules.',
+    ownership:
+      'I built it end to end, integrating third-party UI and media modules.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 0 },
     technologies: ['Android (Java)', 'Firebase', 'Google Maps / Location'],
@@ -555,7 +600,8 @@ const projectsData = [
     category: 'Android · Travel',
     group: 'android',
     status: 'android-app',
-    summary: 'I built Tourist Guide, an Android app for a trip: local advice, maps, hotels, restaurants, taxis, and a translator.',
+    summary:
+      'I built Tourist Guide, an Android app for a trip: local advice, maps, hotels, restaurants, taxis, and a translator.',
     ownership: 'I built it end to end.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 0 },
@@ -577,7 +623,11 @@ const projectsData = [
     ownership: 'I built it end to end.',
     roles: ['android', 'teaching'],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 2 },
-    technologies: ['Android (Java)', 'Firebase Auth', 'Firebase Realtime Database'],
+    technologies: [
+      'Android (Java)',
+      'Firebase Auth',
+      'Firebase Realtime Database',
+    ],
     sourceIds: ['resume-android', 'case-study-sams'],
     detailLevel: 'brief',
     public: true,
@@ -613,7 +663,8 @@ const projectsData = [
     category: 'Android · Utility',
     group: 'android',
     status: 'android-app',
-    summary: 'I built My Card, a guided Android greeting-card builder that walks someone from occasion to a finished, ordered design.',
+    summary:
+      'I built My Card, a guided Android greeting-card builder that walks someone from occasion to a finished, ordered design.',
     ownership: 'I built it end to end.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 0 },
@@ -630,7 +681,8 @@ const projectsData = [
     category: 'Android · Community',
     group: 'android',
     status: 'android-app',
-    summary: 'I built Top Notch, a recipe-community Android app with search, member recipes, a cooking diary, calendar, and timer.',
+    summary:
+      'I built Top Notch, a recipe-community Android app with search, member recipes, a cooking diary, calendar, and timer.',
     ownership: 'I built it end to end.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 1, android: 4, teaching: 0 },
@@ -722,7 +774,8 @@ const projectsData = [
     status: 'android-app',
     summary:
       'I built MyApps, a learning demo where one Android app organizes access to common web services through an in-app WebView.',
-    ownership: 'I built it end to end as a learning demo, not a password manager or single sign-on system.',
+    ownership:
+      'I built it end to end as a learning demo, not a password manager or single sign-on system.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 1, android: 3, teaching: 0 },
     technologies: ['Android (Java)', 'WebView'],
