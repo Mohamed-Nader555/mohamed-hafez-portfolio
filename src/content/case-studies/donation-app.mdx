@@ -1,0 +1,56 @@
+---
+slug: donation-app
+publishedAt: 2026-09-27
+passport:
+  context: Personal project, built end to end
+  platform: Android
+features:
+  - title: Signup and profiles
+    detail: User signup and profiles anchor donation posts and requests to an account.
+  - title: Donation posts
+    detail: Donation posts support multiple images per item.
+  - title: Requests
+    detail: Requests are made against existing donation posts.
+  - title: Admin review
+    detail: Admin dashboards track donations, requests, and messages through waiting, accepted, and declined states.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+  - layer: Data & auth
+    items:
+      - name: Firebase Auth
+        kind: data
+        purpose: Account sign-in
+      - name: Firebase Realtime Database
+        kind: data
+        purpose: Posts, requests, and message data
+      - name: Firebase Storage
+        kind: data
+        purpose: Donation images
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Matching what someone has to give with what someone else needs, and keeping every request accountable as it moves through review, is more of a workflow problem than a listing problem. A simple post-and-browse feed doesn't answer who approved a request or where it currently stands.
+
+## What I built
+
+I built a donation management Android app end to end: user signup and profiles, donation posts with multiple images, requests against those posts, and messages to admins. Admin dashboards track donations, requests, and messages through waiting, accepted, and declined states, so nothing sits in limbo without a visible status. It's a self-built project I designed and tested myself; it isn't tied to any real charity, beneficiary, or donor network, and no real donations moved through it.
+
+## Tech stack
+
+The Android client is written in Java, using Firebase Auth for accounts, Firebase Realtime Database for posts and requests, and Firebase Storage for donation images.
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Donation products need moderation and transparent status before real-world use.
+
+Designing the waiting, accepted, and declined states taught me that a donation app's hardest problem isn't the listing screen, it's making sure every request is accounted for.

@@ -1,0 +1,55 @@
+---
+slug: sams
+publishedAt: 2026-09-27
+passport:
+  context: Personal project, built end to end
+  platform: Android
+features:
+  - title: Student and professor dashboards
+    detail: Registration and role dashboards are separate for students and professors.
+  - title: Courses and groups
+    detail: Courses and groups organize students under the right professor.
+  - title: Attendance and grades
+    detail: Attendance tracking sits alongside grade entry and viewing.
+  - title: Course content and clubs
+    detail: Electronic course content and a clubs section round out the student experience.
+  - title: Secure account flows
+    detail: OTP and email account flows, plus an AES helper, handle some of the app's data protection.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+  - layer: Data & auth
+    items:
+      - name: Firebase Auth
+        kind: data
+        purpose: Student and professor sign-in
+      - name: Firebase Realtime Database
+        kind: data
+        purpose: Courses, attendance, and grade data
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A course-management app for a school needs two very different views of the same data: what a student needs to see and do is not what a professor needs, without duplicating the underlying logic twice.
+
+## What I built
+
+I built SAMS end to end as a personal project: separate registration and dashboards for students and professors, courses and groups, attendance tracking, grade entry and viewing, electronic course content, and a clubs section. Account flows include OTP and email verification and password changes, and an AES helper handles some of the app's data protection. It's a self-contained build I designed and tested myself, not software deployed at any real school or institution, though its screens and data model are built as if it were.
+
+## Tech stack
+
+The Android client is written in Java, using Firebase Auth for accounts and Firebase Realtime Database for course, attendance, and grade data.
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Role-based apps should centralize permissions instead of repeating checks on every screen.
+
+Building separate student and professor dashboards on the same underlying data model showed me how quickly permission checks sprawl across screens if they aren't centralized early.

@@ -1,0 +1,50 @@
+---
+slug: my-card
+publishedAt: 2026-09-27
+passport:
+  context: Personal project, built end to end
+  platform: Android
+features:
+  - title: Occasion categories
+    detail: Happy and sad occasion categories give a starting point for a card.
+  - title: Ready-made or custom
+    detail: A card can follow a ready-made design or a fully custom path.
+  - title: Design choices
+    detail: Colour, decoration, and image pickers build up the card's look.
+  - title: Preview and order
+    detail: A final preview precedes order details, which flow into an admin view.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+  - layer: Data
+    items:
+      - name: Firebase
+        kind: data
+        purpose: Accounts and order data
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A greeting-card app has to carry a lot of state, occasion, template choice, colours, decorations, images, through several screens without losing any of it, right up to a final order.
+
+## What I built
+
+I built My Card end to end: happy and sad occasion categories, a choice between ready-made designs or a fully custom path, and colour, decoration, and image pickers that build up the card's look. A final preview comes before ordering, and order details flow into an admin view. The app includes an order and payment-completion screen, but no payment gateway is wired up behind it, so it's a UI flow that shows what a finished order would look like, rather than a working transaction.
+
+## Tech stack
+
+The Android client is written in Java on top of Firebase for accounts and order data.
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Customization needs a durable state model, so choices survive navigation and can be reproduced in an order.
+
+Carrying occasion, template, colour, and image choices across several screens without losing anything taught me to model that state once and reuse it, rather than re-deriving it on every screen.
