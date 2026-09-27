@@ -1,0 +1,64 @@
+---
+slug: your-life-is-my-life
+publishedAt: 2026-09-27
+passport:
+  context: Client project
+  platform: Android
+features:
+  - title: Secure sign-in and recovery
+    detail: Sign-in and account recovery keep a personal space private and accessible only to its owner.
+  - title: Personal check-ins
+    detail: A user records how they're doing at their own pace, kept as private notes on the device.
+  - title: Knowledge content
+    detail: Wellbeing knowledge content sits alongside the check-ins, available whenever a user wants it.
+  - title: Trusted circle
+    detail: A user can add trusted people to a circle, with location and map views so that circle can see where the user is if needed.
+  - title: Notifications
+    detail: Notifications connect a user's check-ins to their trusted circle, so being out of touch doesn't go unnoticed.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+  - layer: Data & location
+    items:
+      - name: Firebase Auth
+        kind: data
+        purpose: Sign-in and account recovery
+      - name: Google Maps / Location
+        kind: framework
+        purpose: Trusted-circle location and map views
+  - layer: UI
+    items:
+      - name: Material Design
+        kind: framework
+        purpose: Calm, accessible interface components
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A calm, private space to check in with yourself doesn't have to be complicated, but it does have to be trustworthy: sign-in has to be secure, personal notes have to stay personal, and the people a user chooses to let in need a straightforward way to stay connected. The client wanted an app built around that everyday sense of wellbeing, not a clinical tool.
+
+## Who it was for
+
+Users who wanted a private space for daily check-ins, plus a small trusted circle of people they chose to keep in the loop.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+Personal check-ins and private notes stay on the device, separate from the trusted-circle features that share location and notifications with the people a user has chosen to add. Knowledge content sits alongside the check-ins as something to read at a user's own pace, rather than content pushed on a schedule. The app was previously published under a client-owned Google Play listing; it is no longer available, as the client stopped maintaining it.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> A calm interface is a design decision, not a default.
+
+Building check-ins and a trusted circle into the same app meant keeping two very different needs, private reflection and shared visibility, from stepping on each other. The interface had to stay calm and accessible for both, which meant treating restraint in the UI as deliberate work rather than something to add later.

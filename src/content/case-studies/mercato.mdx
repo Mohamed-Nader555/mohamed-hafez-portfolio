@@ -1,0 +1,86 @@
+---
+slug: mercato
+publishedAt: 2026-09-27
+passport:
+  context: Client project
+  platform: Android
+features:
+  - title: Record, trim, and filter
+    detail: A player records a short clip, trims it to the moment that matters, and applies filters before sharing it.
+  - title: Upload and cached playback
+    detail: Clips upload to storage and play back from a feed, with caching so a clip doesn't have to re-download every time it's watched.
+  - title: Verification badges
+    detail: Verified profiles carry a badge, so a club agent can tell a checked account from an unverified one at a glance.
+  - title: Subscription plans
+    detail: Accounts can subscribe on a 1-, 3-, 6-, or 12-month plan, depending on how long a player wants visibility.
+  - title: Push notifications
+    detail: Push notifications tell a player when their clip gets attention, so they don't have to keep the app open to find out.
+  - title: Facebook and Google sign-in
+    detail: Sign-in uses Facebook and Google rather than a separate account system to create.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+      - name: ExoPlayer
+        kind: framework
+        purpose: Cached video playback in the feed
+  - layer: Data & messaging
+    items:
+      - name: Firebase
+        kind: data
+        purpose: Clip storage and feed data
+      - name: FCM
+        kind: tool
+        purpose: Push notifications
+  - layer: Monetisation
+    items:
+      - name: Google Play Billing
+        kind: tool
+        purpose: Subscription plan purchases
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Getting noticed by a football academy usually depends on who happens to be watching a particular match, not on how a player actually performs on the ball. A written trial request or a résumé line can't show a first touch or a finish the way thirty seconds of footage can. A client wanted a way for players outside the traditional academy pipeline to put their skills in front of the people who scout for clubs.
+
+The gap isn't a lack of talented players; it's a lack of a channel between them and the agents who could scout them. A club agent can't attend every local match in every region, and a player without an academy connection has no obvious way to reach one. Short-form video closes that distance without either side needing to be in the same city.
+
+## Who it was for
+
+Players trying to get scouted outside the academy system, and the club agents looking for talent they wouldn't otherwise see. For a player, the app is a way to put a first touch or a finish in front of someone who can act on it. For an agent, it's a way to browse verified footage instead of relying on word of mouth or a scouting trip that may not turn anything up.
+
+## My role
+
+I customised and extended a short-video app foundation into a football-talent product. That meant adapting the recording and feed experience to a sports-scouting purpose, adding the verification, subscription, and notification layers a two-sided platform needs, and delivering the result as a working Android application for the client. Most of the product decisions were about what to add on top of that foundation rather than what to build from a blank screen: verification, subscription tiers, and the notification loop between a clip and the agent watching it.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+The core loop is short and deliberate: record a clip, trim it to the useful part, apply a filter if it helps, and upload it to a feed an agent can browse. Verification badges give agents a way to trust a profile before they spend time watching its clips, and the subscription plans give players a reason to keep a profile current rather than uploading once and disappearing. None of this works as one-sided software; the notification layer exists specifically so an agent's interest reaches a player quickly enough to matter.
+
+## How it works
+
+Clips move from capture through editing and upload into a feed that other accounts play back, with accounts, subscriptions, and push notifications feeding into that same feed.
+
+<ArchitectureFlow slug="mercato" title="Mercato Star Finder" />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+Mercato Star Finder was delivered to the client as a working Android application; it was not published to a public store listing.
+
+## What I learned
+
+> Two-sided platforms need real value for both sides, not just the side that's easiest to build for.
+
+It's tempting to focus on the player-facing recording experience, because that's the flashier half of the product. But a football-talent platform only works if the agent side is just as considered: verification, subscriptions, and notifications aren't features bolted onto the recording tool; they're the reason an agent trusts what they're watching enough to act on it.

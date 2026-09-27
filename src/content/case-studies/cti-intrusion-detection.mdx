@@ -1,0 +1,112 @@
+---
+slug: cti-intrusion-detection
+publishedAt: 2026-09-27
+passport:
+  context: Course project, network security
+  period: '2025'
+stats:
+  - value: '~63'
+    label: features retained
+    note: pruned from a larger set by removing pairs correlated above 0.95
+  - value: '80/20'
+    label: train / test split
+    note: stratified across benign and attack traffic
+  - value: '1.00'
+    label: best ROC-AUC (RF & GB)
+    note: a near-perfect score flagged as possible leakage or overfitting, not a result to trust as-is
+  - value: '0.67'
+    label: logistic regression ROC-AUC
+    note: the weaker linear baseline the ensembles are compared against
+features:
+  - title: Dataset consolidation
+    detail: Combined the benign and DoS/DDoS flow captures into one labelled dataset.
+  - title: Cleanup
+    detail: Dropped identifier and metadata columns and any zero-variance features.
+  - title: Correlation pruning
+    detail: Removed features correlated above 0.95, keeping a smaller set of informative columns.
+  - title: Model comparison
+    detail: Trained and compared Logistic Regression, Random Forest, Gradient Boosting, and a Keras ANN on the same stratified split.
+  - title: Diagnostics
+    detail: Read confusion matrices and ROC curves instead of trusting a single accuracy number.
+stack:
+  - layer: Language & data
+    items:
+      - name: Python
+        kind: language
+        purpose: Pipeline and notebook language
+      - name: pandas
+        kind: data
+        purpose: Flow-record consolidation and cleanup
+  - layer: Modeling
+    items:
+      - name: scikit-learn
+        kind: ml
+        purpose: Logistic Regression, Random Forest, and Gradient Boosting
+      - name: TensorFlow/Keras
+        kind: ml
+        purpose: The feed-forward ANN classifier
+  - layer: Diagnostics
+    items:
+      - name: Matplotlib
+        kind: tool
+        purpose: Confusion-matrix and ROC plots
+      - name: Seaborn
+        kind: tool
+        purpose: Correlation and distribution plots
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+import ResultBars from '@/components/case-study/ResultBars.astro';
+
+## The problem
+
+This was a course project where I built a pipeline to tell benign network traffic apart from denial-of-service and distributed denial-of-service attacks, using flow-level data. Flow records carry identifiers, timestamps, and many measurements that describe the same underlying behaviour in different units, so a model trained on the raw columns can look accurate for the wrong reasons. The pipeline had to consolidate several capture files into one dataset, strip out what wasn't a real predictive signal, and compare more than one kind of model before trusting any score it produced.
+
+## My role
+
+I built the dataset-consolidation notebook that merged the benign and attack flow captures, wrote the cleanup and correlation-pruning steps, trained the model families, and produced the confusion-matrix and ROC diagnostics the project's conclusions rest on. The evaluation choices — which features to prune, how to split the data, and which diagnostics to trust over a single headline score — were also mine to make and defend.
+
+## What I built
+
+The pipeline moves in one direction: raw flow files in, a labelled dataset out, then a shrinking and more trustworthy feature set, then several models trained on the same split so their scores are comparable. Nothing downstream is allowed to see a row that a later stage will still reshape, which is what keeps the final comparison honest.
+
+<FeatureGrid items={frontmatter.features} />
+
+## How it works
+
+Each stage only does one job — combine, clean, prune, split, model, or diagnose — so a change in one step doesn't quietly change what an earlier step already decided.
+
+<ArchitectureFlow slug="cti-intrusion-detection" title="Network Intrusion Detection Pipeline" />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+On the held-out test split, Logistic Regression reached a ROC-AUC of about 0.67 — a reasonable linear baseline, and no more. Random Forest and Gradient Boosting both reached close to 1.00, and the Keras ANN reached about 0.99.
+
+<ResultBars
+  title="ROC-AUC by model family"
+  items={[
+    { label: 'Logistic Regression', value: 0.67 },
+    { label: 'Random Forest', value: 1.0 },
+    { label: 'Gradient Boosting', value: 1.0 },
+    { label: 'ANN', value: 0.99 },
+  ]}
+  suffix=""
+/>
+
+Scores that close to a perfect 1.00, on flow data built from a handful of capture files, are not a result to celebrate. They read as a possible sign of leakage or overfitting: some feature may still be encoding the label indirectly, or the benign and attack traffic may simply be too separable in this particular capture window to say how the model would behave on new traffic. The project's own conclusion was to treat the near-perfect tree-ensemble scores as a flag, and to follow them with time-based or cross-capture validation — testing on a different time period or a different capture source — before drawing any conclusion about real-world performance.
+
+## What I learned
+
+> Extremely high offline scores should trigger stronger validation, not immediate confidence.
+
+Separating dataset construction from modelling also made the pipeline easier to audit and rerun: when a score looked suspicious, I could tell whether the problem sat in the data or in the model, instead of guessing.
+
+## What I'd do next
+
+The next step is the one the diagnostics already called for: rerun the split by time or by capture source instead of a random shuffle, and see whether the tree-ensemble scores survive.
