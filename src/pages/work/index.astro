@@ -1,95 +1,333 @@
 ---
-import CaseStudyCard from '@/components/case-study/CaseStudyCard.astro';
-import { projects } from '@/data';
-import { projectArchive } from '@/data/project-archive';
+import FlagshipCard from '@/components/case-study/FlagshipCard.astro';
+import StoryCard from '@/components/case-study/StoryCard.astro';
+import { careerExperience, teachingPortfolio } from '@/data/career';
+import { projects } from '@/data/projects';
+import { roles } from '@/data/roles';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { resolveSources } from '@/lib/content/resolve-sources';
-import { getCollection } from 'astro:content';
 
 export const prerender = true;
 
-const entries = await getCollection('caseStudies');
-const detailedProjects = projects.filter(
-  (project) => project.detailLevel === 'detailed',
+const pageProjects = projects.filter((project) =>
+  ['flagship', 'story', 'brief'].includes(project.detailLevel),
 );
-const entryBySlug = new Map(entries.map((entry) => [entry.data.slug, entry]));
-const orderedEntries = detailedProjects.map((project) => {
-  const entry = entryBySlug.get(project.slug);
-  if (!entry) throw new Error(`Missing case-study entry for ${project.slug}`);
-  resolveSources(entry.data.sourceIds);
-  return entry;
-});
+const flagshipProjects = pageProjects.filter((project) => project.detailLevel === 'flagship');
+const cardProjects = projects.filter((project) => project.detailLevel === 'card');
 
-if (entries.length !== 5 || orderedEntries.length !== 5) {
-  throw new Error(
-    'The work index must publish exactly five detailed case studies.',
-  );
-}
+const focusAreaCount = roles.length;
+const earliestYear = Math.min(
+  ...careerExperience.flatMap((entry) => {
+    const match = entry.period.match(/\d{4}/g);
+    return match ? match.map(Number) : [];
+  }),
+);
+const currentYear = new Date().getFullYear();
+
+const keyFactsBySlug: Record<string, { value: string; label: string }[]> = {
+  'asc-pie': [
+    { value: '333,109', label: 'examples' },
+    { value: '99.1%', label: 'best strict F1' },
+  ],
+  'sprint-pp': [
+    { value: '83.5%', label: 'accuracy' },
+    { value: '0', label: 'raw examples stored' },
+  ],
+  'northstar-rag': [{ value: '9', label: 'corpus documents' }],
+  'minds-eye': [
+    { value: 'A+', label: 'capstone grade' },
+    { value: '80%+', label: 'delivered by me' },
+  ],
+  dive: [{ value: '4', label: 'models compared' }],
+  dostava: [{ value: '8', label: 'order categories' }],
+};
+
+const groupOrder = ['ml', 'android', 'backend', 'early'] as const;
+const groupLabels: Record<(typeof groupOrder)[number], string> = {
+  ml: 'Machine learning',
+  android: 'Android products',
+  backend: 'Backend, enterprise & web',
+  early: 'Early builds',
+};
+
+const storyGroups = groupOrder.map((group) => ({
+  group,
+  label: groupLabels[group],
+  items: pageProjects.filter(
+    (project) => project.detailLevel !== 'flagship' && project.group === group,
+  ),
+}));
+
+const focusChips = [
+  { id: 'all', label: 'All' },
+  { id: 'aiml', label: 'AI & ML' },
+  { id: 'software', label: 'Software' },
+  { id: 'android', label: 'Android' },
+  { id: 'teaching', label: 'Teaching' },
+] as const;
 ---
 
 <BaseLayout
-  title="Selected work — Mohamed Hafez"
-  description="Five engineering and research case studies covering AI/ML, software systems, and Android product delivery."
+  title="Projects — Mohamed Hafez"
+  description="Projects and case studies across AI/ML, software, Android, and teaching."
   roleId="aiml"
 >
   <header class="longform-hero longform-hero--index shell-container">
     <p class="utility-label">Projects and case studies</p>
-    <h1>Selected work</h1>
+    <h1>Things I've built</h1>
     <p class="longform-hero__summary">
-      Five engineering projects spanning AI/ML, research, software, and Android
-      delivery. Each case study explains the problem, my role, architecture,
-      implementation, results, and lessons.
+      I write up the projects I can tell in full — the problem, my role, how
+      they work, and what came out of them.
+    </p>
+    <p class="work-index__counter" aria-hidden="true">
+      {pageProjects.length} project stories · {focusAreaCount} focus areas ·{' '}
+      {earliestYear} &rarr; {currentYear}
+    </p>
+    <p class="work-index__scope-note">
+      These are the projects I can tell in full, out of nearly 50 across 40
+      public repositories.
     </p>
   </header>
 
-  <section
-    class="work-index shell-container"
-    aria-label="Detailed case studies"
-  >
+  <section class="work-index__filter shell-container" aria-label="Filter by focus">
+    <div class="work-index__chips" role="group" aria-label="Filter projects by focus">
+      {
+        focusChips.map((chip) => (
+          <button type="button" data-focus-chip={chip.id} aria-pressed={chip.id === 'all'}>
+            {chip.label}
+          </button>
+        ))
+      }
+    </div>
+    <p class="work-index__tech-pill" data-tech-pill hidden>
+      <span data-tech-pill-label />
+      <button type="button" data-tech-pill-clear aria-label="Clear technology filter">
+        ×
+      </button>
+    </p>
+    <p class="visually-hidden" role="status" aria-live="polite" data-focus-live></p>
+  </section>
+
+  <section class="work-index__flagships shell-container" aria-label="Flagship projects">
     {
-      orderedEntries.map((entry, index) => (
-        <CaseStudyCard entry={entry} index={index} />
+      flagshipProjects.map((project) => (
+        <FlagshipCard project={project} keyFacts={keyFactsBySlug[project.id]} />
       ))
     }
   </section>
 
-  <section
-    class="project-library shell-container"
-    aria-labelledby="project-library-title"
-  >
+  {
+    storyGroups.map(
+      (groupEntry) =>
+        groupEntry.items.length > 0 && (
+          <section class="work-index__group shell-container" aria-labelledby={`group-${groupEntry.group}`}>
+            <h2 id={`group-${groupEntry.group}`}>{groupEntry.label}</h2>
+            <div class="work-index__group-grid">
+              {groupEntry.items.map((project) => (
+                <StoryCard project={project} />
+              ))}
+            </div>
+          </section>
+        ),
+    )
+  }
+
+  <section class="project-library shell-container" aria-labelledby="project-library-title">
     <header class="section-heading section-heading--split">
       <div>
-        <p class="utility-label">Additional work</p>
-        <h2 id="project-library-title">Complete project library</h2>
+        <p class="utility-label">Library</p>
+        <h2 id="project-library-title">Smaller builds and teaching materials</h2>
       </div>
-      <p>
-        Client applications, enterprise systems, research, and applied
-        machine-learning delivery.
-      </p>
     </header>
     <div class="project-library__grid">
       {
-        projectArchive.map((project) => (
-          <article>
+        cardProjects.map((project) => (
+          <article data-focus={project.roles.join(' ')}>
             <p class="utility-label">{project.category}</p>
             <h3>{project.title}</h3>
-            <p>{project.summary}</p>
-            <ul
-              class="technology-list"
-              aria-label={`${project.title} technologies`}
-            >
+            <p>{project.hook}</p>
+            <ul class="technology-list" aria-label={`${project.title} technologies`}>
               {project.technologies.map((technology) => (
                 <li>{technology}</li>
               ))}
             </ul>
-            {'href' in project && project.href && (
-              <a href={project.href} data-astro-prefetch="viewport">
-                Explore the research <span aria-hidden="true">→</span>
-              </a>
-            )}
+          </article>
+        ))
+      }
+      {
+        teachingPortfolio.map((item) => (
+          <article data-focus="teaching">
+            <p class="utility-label">Teaching · {item.period}</p>
+            <h3>{item.title}</h3>
+            <p>{item.detail}</p>
           </article>
         ))
       }
     </div>
   </section>
+
+  <section class="work-index__closing shell-container" aria-labelledby="work-closing-title">
+    <h2 id="work-closing-title">Want the short version?</h2>
+    <ul class="work-index__resume-links">
+      {
+        roles.map((role) => (
+          <li>
+            <a href={role.resumeHref}>{role.label} résumé</a>
+          </li>
+        ))
+      }
+    </ul>
+    <p>
+      Or reach me directly at{' '}
+      <a href="mailto:mohamed.m.nader555@gmail.com">mohamed.m.nader555@gmail.com</a>.
+    </p>
+  </section>
 </BaseLayout>
+
+<script>
+  import '@/lib/client/work-filter';
+</script>
+
+<style>
+  .work-index__counter {
+    font-family: var(--font-utility);
+    font-size: var(--type-sm);
+    color: var(--color-evidence-300);
+    margin-top: var(--space-3);
+  }
+
+  .work-index__scope-note {
+    font-size: var(--type-sm);
+    color: var(--color-ink-300);
+    max-inline-size: 40rem;
+  }
+
+  .work-index__filter {
+    margin: var(--space-6) 0;
+  }
+
+  .work-index__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .work-index__chips button {
+    padding: 0.35rem var(--space-4);
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: transparent;
+    color: var(--color-ink-200);
+    font-size: var(--type-sm);
+    cursor: pointer;
+  }
+
+  .work-index__chips button[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--color-evidence-500) 20%, transparent);
+    border-color: var(--color-evidence-500);
+    color: var(--color-ink-100);
+  }
+
+  .work-index__tech-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding: 0.2rem var(--space-3);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-ai-500) 18%, transparent);
+    color: var(--color-ai-300);
+    font-size: var(--type-xs);
+  }
+
+  .work-index__tech-pill button {
+    border: none;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: var(--type-sm);
+    line-height: 1;
+  }
+
+  .work-index__flagships {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+    margin: var(--space-8) 0;
+  }
+
+  .work-index__group {
+    margin: var(--space-8) 0;
+  }
+
+  .work-index__group h2 {
+    font-family: var(--font-display);
+    font-size: var(--type-lead);
+    margin-bottom: var(--space-4);
+  }
+
+  .work-index__group-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .project-library__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .project-library__grid article {
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  .project-library__grid h3 {
+    font-size: var(--type-sm);
+    margin: var(--space-1) 0;
+  }
+
+  .project-library__grid p {
+    font-size: var(--type-xs);
+    color: var(--color-ink-300);
+  }
+
+  .work-index__closing {
+    margin: var(--space-10) 0;
+    padding: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .work-index__resume-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+    margin: var(--space-3) 0;
+  }
+
+  .work-index__resume-links a {
+    color: var(--color-evidence-300);
+    text-decoration: none;
+  }
+
+  @media (max-width: 56rem) {
+    .work-index__flagships,
+    .work-index__group-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .project-library__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .project-library__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

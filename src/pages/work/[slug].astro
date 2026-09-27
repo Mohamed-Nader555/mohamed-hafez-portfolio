@@ -9,22 +9,21 @@ export const prerender = true;
 
 export const getStaticPaths = (async () => {
   const entries = await getCollection('caseStudies');
-  const detailedProjects = projects.filter(
-    (project) => project.detailLevel === 'detailed',
+  const pageProjects = projects.filter((project) =>
+    ['flagship', 'story', 'brief'].includes(project.detailLevel),
   );
   const publishedSlugs = new Set(entries.map((entry) => entry.data.slug));
-  const canonicalSlugs = new Set(
-    detailedProjects.map((project) => project.slug),
-  );
+  const canonicalSlugs = new Set(pageProjects.map((project) => project.slug));
 
   if (
-    entries.length !== 5 ||
-    canonicalSlugs.size !== 5 ||
+    entries.length !== pageProjects.length ||
     [...publishedSlugs].some((slug) => !canonicalSlugs.has(slug)) ||
     [...canonicalSlugs].some((slug) => !publishedSlugs.has(slug))
   ) {
+    const missing = [...canonicalSlugs].filter((slug) => !publishedSlugs.has(slug));
+    const extra = [...publishedSlugs].filter((slug) => !canonicalSlugs.has(slug));
     throw new Error(
-      'Case-study routes must match the five canonical detailed projects.',
+      `Case-study routes must match every flagship/story/brief project exactly. Missing: ${missing.join(', ') || 'none'}. Extra: ${extra.join(', ') || 'none'}.`,
     );
   }
 
@@ -39,28 +38,23 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const pagePath = `/work/${entry.data.slug}`;
-const project = projects.find(
-  (candidate) => candidate.slug === entry.data.slug,
-);
+const project = projects.find((candidate) => candidate.slug === entry.data.slug);
 if (!project) throw new Error(`Missing project record for ${entry.data.slug}`);
 if (!Astro.site) throw new Error('Astro.site must be configured.');
 const structuredData = [
-  createCreativeWorkStructuredData(
-    project,
-    new URL(pagePath, Astro.site),
-    Astro.site,
-  ),
+  createCreativeWorkStructuredData(project, new URL(pagePath, Astro.site), Astro.site),
 ];
 ---
 
 <CaseStudyLayout
-  title={entry.data.title}
-  summary={entry.data.summary}
-  ownership={entry.data.ownership}
-  roles={entry.data.roles}
-  technologies={entry.data.technologies}
+  project={project}
+  passport={entry.data.passport}
+  stats={entry.data.stats}
+  links={entry.data.links}
+  rawBody={entry.body ?? ''}
+  headings={headings}
   structuredData={structuredData}
 >
   <Content />
