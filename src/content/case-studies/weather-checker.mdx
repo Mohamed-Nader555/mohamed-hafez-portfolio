@@ -62,9 +62,11 @@ import StackLayers from '@/components/case-study/StackLayers.astro';
 
 A weather app breaks in the moments it matters most: no location permission, no signal, or a forecast request that just times out. Treating those as crash conditions instead of normal product states means the app fails exactly when someone actually needs to check the forecast before heading out.
 
+Most weather apps assume the happy path: permission granted, signal available, request succeeds. In practice, a phone in a basement, a user who declined location access, or a request that simply takes too long are all routine, not edge cases. An app built during a training track is still a real app someone will open on a real phone, so those states needed real screens rather than being left to whatever the underlying library happened to do.
+
 ## Who it was for
 
-Anyone checking the forecast for more than one place, who still needs the app to behave sensibly when permission or connectivity isn't available.
+Anyone checking the forecast for more than one place, who still needs the app to behave sensibly when permission or connectivity isn't available. That covers a user who wants to compare a home location against a place they're travelling to, and one who has simply declined location permission and still expects the app to be useful.
 
 ## My role
 
@@ -76,11 +78,15 @@ I built the Android application end to end during the ITI Android Mobile Develop
 
 Favourite places and map picking both feed the same forecast pipeline, so switching locations never means a different code path for a saved place versus a newly picked one. Weather alarms sit on top of that same forecast data rather than a separate polling system. The parts that mattered most in practice were the states that show up when something isn't available: no permission, no network, or a forecast that failed to load, each with its own screen instead of a silent failure.
 
+Units and language are stored as preferences rather than fixed at build time, so switching from metric to imperial, or between languages, doesn't require reinstalling or resetting anything else the user has already set up, including their favourite places and alarms.
+
 ## How it works
 
 A ViewModel sits between the screens and a repository that separates forecast networking from cached and preferred state, with alarms and map picking alongside it.
 
 <ArchitectureFlow slug="weather-checker" title="Weather Checker" />
+
+Keeping the repository as the single boundary between the ViewModel and the outside world means the ViewModel never has to know whether a forecast came from the network or from the Room cache. That boundary is also what made it possible to substitute a fake data source in tests without touching the ViewModel code at all.
 
 ## Decisions that mattered
 

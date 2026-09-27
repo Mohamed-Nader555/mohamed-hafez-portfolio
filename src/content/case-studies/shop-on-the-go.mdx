@@ -70,13 +70,15 @@ import StackLayers from '@/components/case-study/StackLayers.astro';
 
 A mobile storefront looks simple from the outside: browse, add to cart, check out. Underneath, a cart has to agree with the catalogue, a coupon has to apply correctly, and a total has to come out right regardless of which currency a shopper is thinking in. Any one of those getting slightly out of sync at checkout is the kind of bug a shopper actually notices.
 
+None of those problems show up in a demo where someone adds one item and checks out immediately. They show up once a shopper has favourited things, applied a coupon, changed their mind about the currency, and come back to the cart later, which is closer to how people actually shop.
+
 ## Who it was for
 
-Shoppers browsing a mobile storefront by brand or category who expect favourites, a cart, and a checkout total that all stay correct as they move between screens.
+Shoppers browsing a mobile storefront by brand or category who expect favourites, a cart, and a checkout total that all stay correct as they move between screens, whether that's a single session or a cart they return to later.
 
 ## My role
 
-Built with my ITI team; I also built my own individual implementation of the same storefront end to end.
+Built with my ITI team; I also built my own individual implementation of the same storefront end to end, covering the same authentication, catalogue, cart, and checkout scope on my own.
 
 ## What I built
 
@@ -100,7 +102,7 @@ StateFlow-driven view models sit above a repository that fans out to the remote 
 
 ## Outcome
 
-Shop on the Go exists as two related builds from the same ITI cohort: the team implementation and my own individual implementation of the same storefront, covering the same authentication, catalogue, cart, and checkout flows.
+Shop on the Go exists as two related builds from the same ITI cohort: the team implementation and my own individual implementation of the same storefront, covering the same authentication, catalogue, cart, and checkout flows. Building the same scope twice, once with a team and once alone, meant living with the same domain problems, currency, coupons, and state consistency, from two different implementation angles.
 
 ## What I learned
 
