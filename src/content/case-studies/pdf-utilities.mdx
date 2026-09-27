@@ -1,0 +1,96 @@
+---
+slug: pdf-utilities
+publishedAt: 2026-09-27
+passport:
+  context: 'Enterprise consulting, BASS'
+  period: 'Aug 2023 – Sep 2024'
+features:
+  - title: Document generation
+    detail: Structured letters and notices are generated as PDFs from templates and data, instead of being assembled by hand.
+  - title: Assembly and merging
+    detail: Scans, generated pages, and existing PDFs are merged and reordered into a single package for a case or a client.
+  - title: Transformation and stamping
+    detail: Pages are transformed, split, or stamped as a workflow requires, so the output package is consistent regardless of how the inputs arrived.
+  - title: Failure logging
+    detail: Every generation and assembly step is logged, so a failed job can be diagnosed from the log instead of being reproduced by guesswork.
+challenges:
+  - problem: Inputs arrived in inconsistent shapes, scans, generated letters, and existing PDFs, and had to come out as one coherent, ordered package.
+    solution: I built the assembly step to treat every input as a normalized page stream first, so ordering and merging didn't depend on where a page came from.
+  - problem: A failed batch job with no log context is expensive to diagnose, because nobody can tell which document or step actually failed.
+    solution: I added log4j logging at each generation and assembly step, so a failure pointed at the specific document and stage instead of the whole batch.
+stack:
+  - layer: Document processing
+    items:
+      - name: iText
+        kind: framework
+        purpose: PDF generation, assembly, and transformation
+  - layer: Application
+    items:
+      - name: Java
+        kind: language
+        purpose: Utility and service implementation
+  - layer: Hosting
+    items:
+      - name: Apache Tomcat
+        kind: tool
+        purpose: Hosted processing service
+  - layer: Build and diagnostics
+    items:
+      - name: Maven
+        kind: tool
+        purpose: Build and dependency management
+      - name: log4j
+        kind: tool
+        purpose: Failure diagnostics and logging
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A single case at a bank can arrive as dozens of scans, generated letters, and existing PDFs, each in its own format and order. Someone still has to turn that pile into one clean, ordered, traceable package before it can go to a reviewer or a file. Doing that by hand doesn't scale, and it leaves no record of what happened to which document. At BASS, I built the utilities that did this automatically for banking clients in regulated environments.
+
+## Who it was for
+
+The utilities served internal teams handling case files and correspondence for banking clients in regulated environments, where a case package has to be complete, ordered, and explainable before it moves on.
+
+## My role
+
+I built the iText-based generation, assembly, and transformation utilities, with logging for failure diagnostics, for banking clients in regulated environments. That covered the generation templates, the assembly logic that merged inputs of different origins into one stream, and the logging that made the whole pipeline observable when a batch job failed.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+None of these utilities read or redact the content of a document; they generate, merge, reorder, and package it. Whatever a document said going in is what it says coming out, just assembled into one package instead of scattered across inputs. The generation side produced structured letters and notices directly from templates and data, while the assembly side took whatever mix of scans, generated pages, and existing PDFs a case required and produced one ordered output.
+
+## How it works
+
+Inputs pass through iText modules for generation, assembly, and transformation, then through a Tomcat-hosted service that produces the final document package, with logging running alongside every step.
+
+<ArchitectureFlow slug="pdf-utilities" title="PDF Document Processing Utilities" />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+The utilities ran as a standing part of the client's document-handling process, turning batches of scans and letters into ordered, traceable packages without a person manually assembling each one, and giving the team a log trail when something went wrong. What used to be an afternoon of manually collating a case file became a batch job someone could trust and, when it failed, actually diagnose.
+
+## What I learned
+
+> A batch job is only as trustworthy as the log it leaves behind when it fails.
+
+Building the logging alongside the generation code, rather than after a production failure asked for it, made the utilities far easier to operate once they were live. It also changed how I write any batch process since: the log format is part of the design, not an afterthought bolted on once something breaks in production.
+
+## What I'd do next
+
+I'd add a validation pass that checks a package's completeness against the case type before it's marked finished, so a missing document surfaces at assembly time rather than at review time.

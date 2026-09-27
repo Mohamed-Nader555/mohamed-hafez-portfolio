@@ -1,0 +1,120 @@
+---
+slug: this-portfolio
+publishedAt: 2026-09-27
+passport:
+  context: 'Personal project, live'
+features:
+  - title: Four-focus role switcher
+    detail: A visitor picks AI/ML, software, Android, or teaching, and the same content reorders around that focus instead of showing one generic profile.
+  - title: Typed, validated content
+    detail: Every project, role, and case study is defined as a typed, Zod-validated record, so a bad or missing field fails the build instead of shipping.
+  - title: Pre-rendered pages
+    detail: Pages are pre-rendered at build time, so the site works fully before any client-side script runs.
+  - title: A grounded assistant
+    detail: An in-page assistant answers questions about the work by retrieving from curated, validated facts, then refuses rather than guessing when nothing supports an answer.
+decisions:
+  - choice: a zero-budget-first Cloudflare stack
+    over: a paid hosting and inference setup
+    because: the assistant and the site both had to be sustainable to run indefinitely on a personal budget, not just cheap to demo once.
+  - choice: keeping the static site fully useful if the assistant fails
+    over: building the assistant as a required layer over the content
+    because: an AI feature that visitors depend on to read the portfolio at all is a fragile design; the pages have to stand on their own.
+  - choice: no raw-transcript analytics
+    over: logging full visitor questions and answers
+    because: understanding how the assistant is used shouldn't require storing what people typed.
+stack:
+  - layer: Site
+    items:
+      - name: Astro
+        kind: framework
+        purpose: Pre-rendered pages and content architecture
+      - name: TypeScript
+        kind: language
+        purpose: Site and content typing
+      - name: Zod
+        kind: framework
+        purpose: Runtime content validation
+      - name: React
+        kind: framework
+        purpose: Interactive islands
+      - name: MDX
+        kind: framework
+        purpose: Case-study content
+  - layer: Assistant runtime
+    items:
+      - name: Cloudflare Workers
+        kind: tool
+        purpose: Assistant request handling
+      - name: Workers AI
+        kind: ml
+        purpose: Answer generation (Llama 3.1 8B)
+      - name: Turnstile
+        kind: tool
+        purpose: Bot and abuse protection
+  - layer: Quality
+    items:
+      - name: Vitest
+        kind: tool
+        purpose: Unit tests
+      - name: Playwright
+        kind: tool
+        purpose: End-to-end tests
+links:
+  - label: Repository
+    sourceId: github-portfolio
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A background that spans AI/ML, software, Android, and teaching can read as unfocused if it's presented as one flat list. A hiring manager scanning for machine-learning work and a hiring manager scanning for Android work shouldn't have to dig through the same undivided page to find what they need. I wanted a site that could be four different portfolios depending on who was reading it, without maintaining four separate sites.
+
+## Who it was for
+
+Anyone evaluating my work from a specific angle: a hiring manager, a collaborator, or a student comparing notes on a project. The role switcher exists so each of them can land on the version of the site organized around what they actually came to look at.
+
+## My role
+
+I designed and built the site end to end: the content architecture, the role switcher, the case-study system, and the grounded assistant.
+
+## What I built
+
+This site: a four-focus portfolio built on typed, validated content, with a small assistant that answers questions about the work instead of just displaying it.
+
+<FeatureGrid items={frontmatter.features} />
+
+The assistant is deliberately conservative. A question comes in behind Turnstile and two rate limiters, then goes through lexical retrieval over curated, validated facts. If retrieval doesn't turn up anything that supports an answer, the pipeline refuses before it ever reaches generation. When it does have support, Workers AI (Llama 3.1 8B) writes the answer, its citations are checked against what was actually retrieved, and if that check fails the assistant falls back to an extractive answer built directly from the retrieved text instead of a generated one. Conversation history stays in the browser session only.
+
+Analytics on how the assistant is used is not live today; the pipeline is built to support it later without storing raw transcripts, but nothing is currently collecting or reporting that data.
+
+## How it works
+
+The static site pre-renders from the same curated data the assistant retrieves from, so the two halves of the project share one source of facts but run on independent paths.
+
+<ArchitectureFlow slug="this-portfolio" title="This Portfolio" />
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+The site runs today as the live, evolving thing you're reading: a pre-rendered portfolio that stays fully readable without JavaScript, plus an assistant layer that answers from curated facts and says "I don't have enough to answer that" rather than filling the gap.
+
+## What I learned
+
+> An assistant is only as trustworthy as its willingness to refuse.
+
+Building the refusal path before the generation path changed how I thought about the whole feature: the interesting engineering problem wasn't getting a model to answer, it was building a system that knew when it shouldn't.
+
+## What I'd do next
+
+The retrieval layer works on the curated facts that exist today; the natural next step is broadening what's curated rather than changing how retrieval or refusal work. I'd also like to add the usage analytics the pipeline was designed for, on aggregate counts rather than raw transcripts, once I'm confident the privacy trade-offs are right.

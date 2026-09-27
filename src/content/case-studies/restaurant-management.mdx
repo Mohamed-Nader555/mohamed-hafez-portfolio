@@ -1,0 +1,54 @@
+---
+slug: restaurant-management
+publishedAt: 2026-09-27
+passport:
+  context: 'Freelance Java work'
+features:
+  - title: Role dashboards
+    detail: Separate dashboards for the roles that run a restaurant's day, from the floor to the back office.
+  - title: Meals, orders, and billing
+    detail: Full CRUD over the menu, order entry, and billing in one flow.
+  - title: Offers and rewards
+    detail: Promotional offers and a rewards scheme sit alongside the standard billing path.
+  - title: Reports
+    detail: Reporting screens summarize the data the app already persists.
+stack:
+  - layer: Application
+    items:
+      - name: Java
+        kind: language
+        purpose: Application language
+      - name: Swing
+        kind: framework
+        purpose: Desktop user interface
+  - layer: Testing
+    items:
+      - name: JUnit
+        kind: tool
+        purpose: Unit tests
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A small restaurant needed one desktop app to run its whole day, menus, orders, billing, offers, and reporting, instead of separate spreadsheets and paper tickets that had to be reconciled by hand at the end of a shift.
+
+## What I built
+
+I built it end to end as freelance Java work: a Swing desktop application with role-based dashboards, full CRUD over meals and orders, a billing flow that applies offers and rewards, reporting screens, and binary file persistence for the restaurant's data.
+
+<FeatureGrid items={frontmatter.features} />
+
+This was also the project that made me care about proper data storage. Binary file persistence works, but every schema change meant touching the files that read and wrote it directly, with no query language to fall back on.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> A file you have to parse by hand is a database you haven't built yet.
+
+Feeling the limits of binary file persistence on a real, changing app is a large part of why I reach for an actual database and an ORM or query layer on everything I've built since.
