@@ -53,11 +53,11 @@ describe('resolveSources', () => {
   it('rejects circular evidence sources after normalizing the rendered route', () => {
     expect(() =>
       resolveSourcesForRoute(
-        ['case-study-asc-pie'],
+        ['research-page-asc-pie'],
         'https://portfolio.test/research/asc-pie/?view=full#status',
       ),
     ).toThrow(
-      'Circular evidence source case-study-asc-pie resolves to the current route: /research/asc-pie',
+      'Circular evidence source research-page-asc-pie resolves to the current route: /research/asc-pie',
     );
   });
 });

@@ -14,7 +14,8 @@ describe('verified evidence corpus', () => {
   it('locks sensitive wording and project status', () => {
     const text = evidence.map((item) => item.statement).join('\n');
 
-    expect(text).toMatch(/submitted and (currently )?under review/i);
+    expect(text).toMatch(/accepted to (IEEE )?CASCON 2026/i);
+    expect(text).not.toMatch(/submitted and (currently )?under review/i);
     expect(text).toMatch(/CEH training/i);
     expect(text).not.toMatch(
       /CEH certified|published SPRINT-PP|accepted SPRINT-PP/i,
@@ -23,17 +24,26 @@ describe('verified evidence corpus', () => {
     const sprintStatus = evidence.find(
       (item) => item.id === 'sprint-pp-status',
     );
-    expect(sprintStatus?.sourceIds).toEqual(['resume-aiml', 'resume-teaching']);
-    expect(sprintStatus?.sourceIds).not.toContain('case-study-asc-pie');
+    expect(sprintStatus?.sourceIds).toEqual([
+      'case-study-sprint-pp',
+      'official-yorkspace',
+    ]);
+    expect(sprintStatus?.sourceIds).not.toContain('resume-aiml');
   });
 
   it('keeps historical app availability accurate', () => {
     const app = evidence.find(
       (item) => item.id === 'android-historical-play-store',
     );
+    const dostavaApp = evidence.find(
+      (item) => item.id === 'dostava-historical-play-store',
+    );
 
     expect(app?.statement).toMatch(/previously published/i);
-    expect(app?.statement).toMatch(/no longer available/i);
+    expect(app?.statement).toMatch(/three under client-owned listings/i);
+    expect(app?.statement).toMatch(/ITI training/i);
+    expect(dostavaApp?.statement).toMatch(/previously published/i);
+    expect(dostavaApp?.statement).toMatch(/no longer available/i);
   });
 
   it('encodes every locked attribution and status rule', () => {
