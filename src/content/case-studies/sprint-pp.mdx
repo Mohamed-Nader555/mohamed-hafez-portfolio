@@ -70,22 +70,15 @@ I built the staged benchmark itself, not just the mitigation. Every stage adds n
 <FeatureGrid items={frontmatter.features} />
 
 <DeepDive id="how-sprint-pp-remembers-without-storing" title="How SPRINT-PP remembers without storing">
-  SPRINT-PP is inspired by the MiB idea from class-incremental segmentation
-  (Cermelli et al., CVPR 2020), adapted here to token-level PII extraction.
-  Four pieces work together:
 
-1. **Triage.** The frozen model from the previous stage scores every
-   token the new stage has relabelled O. Anything it is confident used to be
-   an entity gets flagged as a suspected old entity.
-2. **Selective correction.** Only those flagged tokens receive soft-label
-   guidance from the old model, a targeted correction rather than one applied
-   everywhere the way distillation applies it.
-3. **Prototype memory.** One centroid per old PII type is kept, not raw
-   text, so the model has something to stay close to without retaining an
-   example anyone could read.
-4. **Head anchoring.** The classifier rows for old labels are stabilized
-   directly, so the update does not quietly overwrite them.
-   </DeepDive>
+SPRINT-PP is inspired by the MiB idea from class-incremental segmentation (Cermelli et al., CVPR 2020), adapted here to token-level PII extraction. Four pieces work together:
+
+1. **Triage.** The frozen model from the previous stage scores every token the new stage has relabelled O. Anything it is confident used to be an entity gets flagged as a suspected old entity.
+2. **Selective correction.** Only those flagged tokens receive soft-label guidance from the old model, a targeted correction rather than one applied everywhere the way distillation applies it.
+3. **Prototype memory.** One centroid per old PII type is kept, not raw text, so the model has something to stay close to without retaining an example anyone could read.
+4. **Head anchoring.** The classifier rows for old labels are stabilized directly, so the update does not quietly overwrite them.
+
+</DeepDive>
 
 ## How it works
 

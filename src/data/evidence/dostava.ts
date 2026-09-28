@@ -45,6 +45,17 @@ const records = [
     public: true,
   },
   {
+    id: 'dostava-no-download-metrics',
+    title: 'Dostava usage metrics',
+    statement:
+      'No download count, install count, or other usage metric for Dostava has been published.',
+    topics: ['Dostava', 'downloads', 'metrics', 'usage'],
+    aliases: ['download count', 'install count', 'number of users'],
+    roleWeights: { aiml: 0, software: 2, android: 3, teaching: 0 },
+    sourceIds: ['resume-android', 'case-study-dostava'],
+    public: true,
+  },
+  {
     id: 'dostava-historical-play-store',
     title: 'Dostava release status',
     statement:
