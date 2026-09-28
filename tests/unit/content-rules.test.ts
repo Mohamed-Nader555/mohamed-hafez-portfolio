@@ -13,7 +13,8 @@ describe('locked public-content rules', () => {
     const text = evidence.map((item) => item.statement).join('\n');
 
     expect(text).toMatch(/completed.*awarded.*2026/i);
-    expect(text).toMatch(/submitted and under review/i);
+    expect(text).toMatch(/accepted to (IEEE )?CASCON 2026/i);
+    expect(text).not.toMatch(/submitted and under review/i);
     expect(text).toMatch(/CEH training/i);
     expect(text).not.toMatch(
       /published SPRINT-PP|accepted SPRINT-PP|CEH certified/i,
@@ -27,11 +28,14 @@ describe('locked public-content rules', () => {
     const historicalApps = evidence.find(
       (item) => item.id === 'android-historical-play-store',
     );
+    const dostavaApp = evidence.find(
+      (item) => item.id === 'dostava-historical-play-store',
+    );
 
-    expect(northstar?.summary).toMatch(/independently built.*end-to-end.*RAG/i);
+    expect(northstar?.summary).toMatch(/independently built.*end.to.end.*RAG/i);
     expect(northstar?.summary).not.toMatch(/assessment/i);
     expect(historicalApps?.statement).toMatch(/previously published/i);
-    expect(historicalApps?.statement).toMatch(/no longer available/i);
+    expect(dostavaApp?.statement).toMatch(/no longer available/i);
   });
 
   it('exposes the approved Canadian recruiter screening answers', () => {

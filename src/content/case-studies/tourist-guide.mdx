@@ -1,0 +1,55 @@
+---
+slug: tourist-guide
+publishedAt: 2026-09-27
+passport:
+  context: Personal project, built end to end
+  platform: Android
+features:
+  - title: Advice and posts
+    detail: Tourism advice and posts include image viewers for browsing photos.
+  - title: Maps and address confirmation
+    detail: A map view helps confirm addresses and get oriented.
+  - title: Taxi assistance
+    detail: A dedicated flow helps a traveller arrange a taxi.
+  - title: Translation
+    detail: In-app translation and a translator directory help when a language barrier comes up.
+  - title: Admin listings
+    detail: Admins manage hotel, restaurant, and special-service listings that travellers browse.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+  - layer: Location & data
+    items:
+      - name: Google Maps / Location
+        kind: framework
+        purpose: Maps and address confirmation
+      - name: Firebase
+        kind: data
+        purpose: Accounts and listing data
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A trip needs local advice, a map, somewhere to stay, somewhere to eat, a way to get around, and sometimes a translator, usually spread across five different apps instead of one.
+
+## What I built
+
+I built Tourist Guide end to end, with separate user and admin roles. Travellers can browse tourism advice and posts with image viewers, confirm addresses on a map, request taxi assistance, and reach a translator or browse a translator directory when a language barrier comes up. Admins manage hotel, restaurant, and special-service listings that travellers browse inside the app. The app surfaces this information rather than booking it: it doesn't connect to any real hotel, taxi, or reservation backend.
+
+## Tech stack
+
+The Android client is written in Java, backed by Firebase and Google Maps / Location for address confirmation and mapping.
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> A broad travel app needs a clear service taxonomy, or more features make navigation worse.
+
+Splitting advice, maps, hotels, restaurants, and translation into distinct sections, rather than one flat menu, was the difference between a genuinely useful trip companion and a pile of unrelated screens.

@@ -13,6 +13,18 @@
 
 This is a description of the **code as it exists at the snapshot**, not a promise that every earlier plan is complete. The production URL and Cloudflare dashboard state were not rechecked while writing this document. Check `git status`, the current branch, and the deployed build before making changes. The local checkout is a Git worktree on `agent/portfolio-implementation`; at this snapshot `origin/main` pointed to the same commit. This file itself is a new handoff artifact, not part of that snapshot commit until committed.
 
+## Update — 2026-09-27, `feat/project-stories` branch (not yet merged to `main`)
+
+The project portfolio was rebuilt per `docs/PROJECTS_REWRITE_BRIEF.md` (private, git-ignored). This section records the facts in this document that changed; the rest of this file still describes the `main`-branch state at the `50b3f39` snapshot above until the branch merges.
+
+- **SPRINT-PP status changed**: the paper (titled "ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction") is now **accepted to IEEE CASCON 2026** (Toronto, 10–12 Nov 2026), confirmed directly by Mohamed on 2026-09-27. This **replaces** the "submitted and under review" wording in the "Factual/attribution rules" table above and throughout the codebase (evidence records, the AI assistant's system prompt, structured data, and all locked tests). No author list is public yet; the IEEE Xplore link will be added once the proceedings publish (after Nov 2026) — do not call it "published" until then.
+- **Android app count changed from 9 to 16**: the site's proof-strip value, the Android role summary, and the freelance-Android experience bullet in `career.ts` now all say 16 Android applications delivered. The public résumé PDFs (`public/resumes/`) were **not** regenerated and still say 9 — flag this to Mohamed.
+- **Dostava's stack corrected**: it is **Firebase-only** (Java · Firebase Realtime Database · Firebase Auth (Facebook + Google) · Firebase Storage · Firebase Analytics · AndroidX Lifecycle · AdMob), not the Retrofit/Room/Google-Maps stack the public résumé PDFs describe. The résumé PDFs were **not** regenerated and still claim the wrong stack — flag this to Mohamed too.
+- **Case-study pages expanded from 5 to 28**, plus a 5-project card library and a teaching shelf, replacing the old `project-archive.ts` twelve-item library entirely. `src/data/projects.ts` is now the single 34-entry catalogue (28 page-tier + 5 cards + `teaching-experience`); the `bass` project record was removed (its evidence stays under the BASS experience entry on `/experience`).
+- The case-study MDX frontmatter schema changed shape: it no longer duplicates `title`/`summary`/`ownership`/`roles`/`technologies` (those now come from `projects.ts` by slug) and instead owns page-only fields (`passport`, `stats`, `features`, `decisions`, `challenges`, `stack`, `pipeline`, `screens`, `links`), validated against new `VERIFIED_TECH`/`ALLOWED_NUMBERS` allowlists in `src/data/`.
+- `ResearchHighlights.astro`'s chart data corrected `BERT-base-cased` to `BERT-large-cased` and added the previously-omitted `BART-base` model.
+- See `docs/content-review/RECONSTRUCTED_CLAIMS.md` and `docs/content-review/FINAL_REPORT.md` (both git-ignored, ask Mohamed for a copy if you need them) for the full decision log and verification output from this rewrite.
+
 ## 1. Product identity and non-negotiable decisions
 
 - The site is Mohamed Hafez's **personal engineering portfolio**, not a site that addresses only recruiters. It presents one person through four professional focuses: **AI/ML Engineer**, **Software Engineer**, **Android Developer**, and **TA / Instructor**. AI/ML is the default focus.

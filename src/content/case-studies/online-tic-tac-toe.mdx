@@ -1,0 +1,59 @@
+---
+slug: online-tic-tac-toe
+publishedAt: 2026-09-27
+passport:
+  context: 'Freelance Java work'
+features:
+  - title: Offline play
+    detail: Play against a friend on the same board, or against a Minimax AI with adjustable difficulty.
+  - title: Online play
+    detail: A user list and invitation flow let two players find each other and start a game over the network.
+  - title: Authentication and scores
+    detail: Accounts and a running score record follow a player across sessions.
+  - title: Recording and replay
+    detail: Games are recorded move by move so a finished match can be replayed afterward.
+stack:
+  - layer: Client
+    items:
+      - name: Java
+        kind: language
+        purpose: Client and server language
+      - name: JavaFX
+        kind: framework
+        purpose: Desktop client interface
+  - layer: Networking
+    items:
+      - name: Sockets
+        kind: tool
+        purpose: Client-server communication
+  - layer: Opponent AI
+    items:
+      - name: Minimax
+        kind: ml
+        purpose: Offline AI opponent with difficulty levels
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Tic-tac-toe is trivial to play on one screen and surprisingly fiddly to get right over a network: both players' boards have to agree after every move, invitations and disconnects need handling, and an offline mode still needs an opponent worth playing against.
+
+## What I built
+
+I built it end to end: a JavaFX client and server that support offline play against a friend or a Minimax AI with adjustable difficulty, and online play with a user list, invitations, authentication, and scores. Finished games are recorded move by move so they can be replayed afterward.
+
+<FeatureGrid items={frontmatter.features} />
+
+The server has to be the source of truth once a game is online: a move only counts once the server accepts it and pushes the resulting board back to both clients, which is what keeps the two sides from disagreeing about the state of the board.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Even a simple game becomes a real distributed-systems problem the moment two players stop sharing a screen.
+
+Building the online mode taught me more about client-server state agreement than the game itself was complicated enough to need, which is exactly why it was worth building.

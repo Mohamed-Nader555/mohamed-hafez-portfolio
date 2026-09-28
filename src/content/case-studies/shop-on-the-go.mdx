@@ -1,0 +1,111 @@
+---
+slug: shop-on-the-go
+publishedAt: 2026-09-27
+passport:
+  context: ITI Android Mobile Development track; built with my ITI team, plus a separate individual implementation
+  period: 'Mar – Jul 2023 (ITI cohort)'
+  platform: Android
+features:
+  - title: Authentication and onboarding
+    detail: A user signs in and moves through onboarding before reaching the storefront itself.
+  - title: Catalogue by brand and category
+    detail: Products browse by brand and by category, so a shopper can start from whichever they already have in mind.
+  - title: Search and filter
+    detail: Search narrows the catalogue directly, alongside the brand and category browsing paths.
+  - title: Favourites and recently viewed
+    detail: Favourites and recently viewed items are tracked separately, so returning to a product doesn't depend on finding it again through search.
+  - title: Cart and coupons
+    detail: A cart holds line items and applies coupons before checkout, rather than as a separate discount step.
+  - title: Draft-order checkout
+    detail: Checkout builds a draft order first, so a cart's contents are confirmed before anything is finalised.
+  - title: Multi-currency
+    detail: A shopper can check out in the currency they think in, not only the currency the catalogue happens to be priced in.
+challenges:
+  - problem: Multi-currency totals and coupon math done with floating-point values produce rounding errors that show up as the wrong total at checkout.
+    solution: I treated money as exact values throughout the cart and checkout logic instead of floats, so totals stayed correct once coupons and currency conversion were both involved.
+  - problem: Cart contents, the selected currency, favourites, and the draft order could each drift out of sync if screens read and wrote their own copies of that state.
+    solution: I gave each of those domains one source of truth in the repository layer, so every screen reads and writes through the same state instead of keeping a local copy.
+stack:
+  - layer: App
+    items:
+      - name: Android (Kotlin)
+        kind: language
+        purpose: Client application language
+      - name: MVVM
+        kind: framework
+        purpose: Separates views from presentation state
+  - layer: Data
+    items:
+      - name: Coroutines/Flow
+        kind: framework
+        purpose: Asynchronous, observable data streams
+      - name: Retrofit
+        kind: framework
+        purpose: Networking client for the commerce API
+      - name: Room
+        kind: data
+        purpose: Local catalogue and cart cache
+      - name: Firebase Auth
+        kind: data
+        purpose: Sign-in
+  - layer: Tooling
+    items:
+      - name: DataStore
+        kind: data
+        purpose: User preferences
+      - name: JUnit
+        kind: tool
+        purpose: Unit testing
+      - name: Material components
+        kind: framework
+        purpose: UI components and layout
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A mobile storefront looks simple from the outside: browse, add to cart, check out. Underneath, a cart has to agree with the catalogue, a coupon has to apply correctly, and a total has to come out right regardless of which currency a shopper is thinking in. Any one of those getting slightly out of sync at checkout is the kind of bug a shopper actually notices.
+
+None of those problems show up in a demo where someone adds one item and checks out immediately. They show up once a shopper has favourited things, applied a coupon, changed their mind about the currency, and come back to the cart later, which is closer to how people actually shop.
+
+## Who it was for
+
+Shoppers browsing a mobile storefront by brand or category who expect favourites, a cart, and a checkout total that all stay correct as they move between screens, whether that's a single session or a cart they return to later.
+
+## My role
+
+Built with my ITI team; I also built my own individual implementation of the same storefront end to end, covering the same authentication, catalogue, cart, and checkout scope on my own.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+The catalogue and checkout talk to a Shopify-style commerce API, but the app's own state, cart contents, favourites, recently viewed, and the draft order, is kept in a repository layer separate from that remote catalogue data. Coupons apply against the cart before the draft order is created, and multi-currency checkout converts the total rather than re-pricing individual line items, so what a shopper sees in the cart matches what they're charged.
+
+## How it works
+
+StateFlow-driven view models sit above a repository that fans out to the remote commerce API, a local Room cache, and DataStore preferences, so the cart, favourites, and currency logic all read from the same source of truth.
+
+<ArchitectureFlow slug="shop-on-the-go" title="Shop on the Go" />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+Shop on the Go exists as two related builds from the same ITI cohort: the team implementation and my own individual implementation of the same storefront, covering the same authentication, catalogue, cart, and checkout flows. Building the same scope twice, once with a team and once alone, meant living with the same domain problems, currency, coupons, and state consistency, from two different implementation angles.
+
+## What I learned
+
+> Money is not a float, and neither is anything that has to add up the same way twice.
+
+Once cart totals, coupons, and currency conversion were all touching the same numbers, floating-point arithmetic stopped being a minor detail and became the thing most likely to produce a checkout total a shopper would notice was wrong. Giving each piece of state, cart, currency, favourites, and the draft order, one source of truth mattered just as much: it's what kept those numbers agreeing with each other across screens.

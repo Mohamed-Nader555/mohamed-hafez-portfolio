@@ -1,0 +1,54 @@
+---
+slug: death-ninja
+publishedAt: 2026-09-27
+passport:
+  context: Client project
+  platform: Android
+features:
+  - title: Platforming levels
+    detail: Levels track coins collected and lives remaining as the ninja jumps across platforms and hazards.
+  - title: Boss fight
+    detail: The final level ends in a boss encounter, "Try to beat the monster."
+  - title: Character choice
+    detail: Players choose between two playable characters, Ninja Boy and Ninja Girl, before starting.
+  - title: Performance tuning
+    detail: Rendering and touch-input latency were optimised to stay smooth on lower-end Android phones.
+stack:
+  - layer: Game
+    items:
+      - name: Unity
+        kind: framework
+        purpose: Game engine, rendering, and level logic
+      - name: Android
+        kind: tool
+        purpose: Target platform
+      - name: Google Play Console
+        kind: tool
+        purpose: App signing and staged rollout
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+import ProjectGallery from '@/components/case-study/ProjectGallery.astro';
+
+## The problem
+
+A ninja platformer only works if it stays smooth. The client needed a game that ran without lag or dropped frames on everyday Android phones, not just the newest devices, since a laggy jump kills a platformer in its first level.
+
+## What I built
+
+I built The Death Ninja in Unity: a side-scrolling platformer with multiple levels, coin and life counters, a boss fight, and a choice between two playable characters, Ninja Boy and Ninja Girl, each ending in their own win screen. The main menu leads into levels where the ninja hops across platforms and hazards, collecting coins and losing lives, before a final boss encounter. I optimised rendering and touch-input latency so movement stayed responsive on lower-end hardware, triaged crashes and ANRs reported after release, and handled Android App Bundle signing and a staged rollout through Google Play Console. The client published the finished game to Google Play under their own store listing; that listing is no longer available, because the client stopped maintaining it.
+
+<ProjectGallery projectId="death-ninja" />
+
+## Tech stack
+
+The game is built entirely in Unity, targeting Android, with releases signed and rolled out through Google Play Console.
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Smooth input on cheap hardware matters more to players than any single feature.
+
+Optimising for lower-end Android devices taught me that responsiveness is a feature in itself, not a polish pass layered on top of the game design after the fact.

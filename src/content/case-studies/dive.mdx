@@ -1,72 +1,226 @@
 ---
 slug: dive
-title: Dive Simulation & Safety Profile Planner
-summary: A client-owned Android and machine-learning project for recreational scuba planning, safety-profile classification, and recommendations.
-roles:
-  - aiml
-  - software
-  - android
-ownership: I owned and implemented the project end to end, from the Android client and service integrations to the safety-classification workflow.
-technologies:
-  - Android
-  - Java
-  - Python
-  - scikit-learn
-  - Retrofit
-  - Firebase
-  - Google Maps
-  - Google Cloud Platform
-sourceIds:
-  - resume-aiml
-  - resume-android
-  - github-dive
-  - case-study-dive
-featured: true
-publishedAt: 2026-08-14
+publishedAt: 2026-09-27
+passport:
+  context: Client project, recreational diving
+  period: Delivered June 2024
+  platform: Android
+stats:
+  - value: '4'
+    label: models compared
+  - value: 99.5%
+    label: best offline test accuracy
+    note: Decision Tree; offline test set; not a safety guarantee
+  - value: '2'
+    label: planning tools
+    note: AI Simulation + eRDPML
+features:
+  - title: AI Simulation
+    detail: Enters a planned dive and asks the trained model whether it's safe, based on max depth, bottom time, O₂ percentage, dive order, and surface interval.
+  - title: eRDPML
+    detail: The RDP tables as a calculator — pressure group for first and repetitive dives, with a no-decompression-limit warning.
+  - title: MOD calculator
+    detail: Maximum operating depth, worked out from FO₂ and PPO₂.
+  - title: Logbook
+    detail: Records location, instructor, and date for every dive.
+  - title: Accident report form
+    detail: A structured form for a responder arriving at an unresponsive diver.
+  - title: Weather
+    detail: Live conditions, a map-picked location, and a 7-day forecast.
+  - title: Emergency
+    detail: The local emergency number (123), nearest hospitals, the DAN hotline, and safety tips in one place.
+  - title: Egyptian dive-site guide
+    detail: A guide to dive sites along the Egyptian coast.
+  - title: Google sign-in
+    detail: Sign-in with email verification before any dive data is saved.
+decisions:
+  - choice: an ML safety check plus a deterministic RDP calculator
+    over: relying on either the model or the dive tables alone
+    because: the two approaches catch different mistakes, and showing both keeps the model's judgment checkable against the same tables divers already trust
+  - choice: POST requests for user and dive data
+    over: GET requests with data in the URL
+    because: dive plans and personal details don't belong in a URL or a server log
+  - choice: AES-encrypted passwords and explicit database access rules
+    over: relying on the platform's defaults alone
+    because: an app that stores health-adjacent data needed a deliberate answer for how credentials and records were protected
+challenges:
+  - problem: The app depends on many external services — weather, maps, hospitals, the model API — each with its own way of failing.
+    solution: I built error handling and fallbacks around every external call so one slow or unavailable service didn't take down the rest of the planner.
+  - problem: A safety-adjacent app needed a tone that was useful without ever sounding like a guarantee.
+    solution: I paired every model result with the deterministic RDP calculation and wrote the surrounding language to describe a planning aid, not a verdict.
+  - problem: When someone files an accident report, other nearby users need to know quickly.
+    solution: I built a broadcast that notifies other users when an accident is reported, so the report doesn't just get logged, it alerts people who might be close enough to help.
+stack:
+  - layer: Android app
+    items:
+      - name: Android (Java/XML)
+        kind: language
+        purpose: Client application language and layouts
+      - name: Retrofit
+        kind: framework
+        purpose: HTTP client to the model API
+      - name: Gson
+        kind: framework
+        purpose: JSON serialization
+      - name: Lottie
+        kind: tool
+        purpose: Loading and result animations
+      - name: Glide
+        kind: tool
+        purpose: Image loading
+  - layer: Data, auth & location
+    items:
+      - name: Firebase
+        kind: data
+        purpose: Auth and Realtime Database for users, logbook, and accident reports
+      - name: Google Maps Platform
+        kind: tool
+        purpose: Map picking and nearest-hospital locations
+      - name: OpenWeather
+        kind: tool
+        purpose: Live and 7-day forecasts
+      - name: Google Cloud Platform
+        kind: tool
+        purpose: Cloud hosting
+  - layer: Model service
+    items:
+      - name: Python
+        kind: language
+        purpose: Model API language
+      - name: scikit-learn
+        kind: ml
+        purpose: Trains and compares the four safety classifiers
+      - name: PythonAnywhere
+        kind: tool
+        purpose: Hosts the model API
+      - name: OpenCSV
+        kind: tool
+        purpose: Dataset preparation
+      - name: Google Colab
+        kind: tool
+        purpose: Model training and comparison
+  - layer: Testing & tooling
+    items:
+      - name: JUnit
+        kind: tool
+        purpose: Unit tests
+      - name: Espresso
+        kind: tool
+        purpose: UI tests
+      - name: PyCharm
+        kind: tool
+screens:
+  - imageId: sim-input
+    step: Check
+    caption: 'Enter a planned dive — max depth, bottom time, and gas mix — and ask the model.'
+  - imageId: unsafe-result
+    step: Flag it
+    caption: 'A flagged plan surfaces "Recommend a Safe One!" with one tap.'
+  - imageId: safer-plan
+    step: Recommend
+    caption: 'From 45 m / 10 min, the app searched shallower and shorter until the model accepted a plan: 37 m / 2 min.'
+links:
+  - label: Repository
+    sourceId: github-dive
 ---
 
-import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import DeepDive from '@/components/case-study/DeepDive.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+import ResultBars from '@/components/case-study/ResultBars.astro';
+import ScreenFlow from '@/components/case-study/ScreenFlow.astro';
 import ProjectGallery from '@/components/case-study/ProjectGallery.astro';
 
-## Overview
+## The problem
 
-Dive is a recreational scuba-planning client project that combines trip-planning features with a machine-learning safety profile and recommendations.
+Decompression illness comes from ascending without the stops a diver's body needs, and the rules that prevent it live in dive tables that are easy to misread under water. Everything else a diver needs — a logbook, the weather, the nearest hospital — is scattered across separate apps and paper. A client asked me for one planner that put all of it in a diver's pocket.
 
-## Challenge
+## Who it was for
 
-The app brings together diver inputs, planning data, safety classification, cloud data, and location services. Those capabilities needed to remain one coherent mobile workflow rather than separate technical demonstrations.
+Recreational divers, on a single trip or a regular schedule, who wanted one place to plan a dive, check it, log it, and reach help if something went wrong.
 
 ## My role
 
-I owned and implemented the project end to end. My work covered the Android application, Python safety-classification component, API integration, Firebase services, maps and location features, and the delivered planning experience.
+I owned and implemented the Dive Simulation & Safety Profile Planner end to end: requirements, dive-domain research, collecting and preparing the training data (partly through web scraping), training and comparing the safety-classification models, the recommendation logic, the Android app, Firebase, API integration, hosting, testing, and delivery.
 
 ## What I built
 
-I built the Android client with Java, Retrofit, and Gson; used Firebase for authentication, realtime data, and storage; integrated Google Maps, Location, and Places; and connected the Python classifier that supplies the safety-profile behavior.
+The app is a planning and education aid, not a safety device. It doesn't replace a dive computer, formal training, or a diver's own judgement — it's a second check that sits alongside those things, built to help someone think through a plan before they're in the water.
 
-## Architecture
+<FeatureGrid items={frontmatter.features} />
 
-<ArchitectureDiagram
+<DeepDive id="four-models-one-caveat" title="Four models, one honest caveat">
+  A dive plan comes down to six inputs: max depth, bottom time, O₂
+  percentage, whether it's the first or second dive of the day, the surface
+  interval, and PPO₂, calculated automatically from the others. I trained
+  four classifiers on that input set — an SVC, logistic regression, a
+  decision tree, and a small neural network — and compared them on train and
+  test accuracy before picking one.
+
+The decision tree won, with 100% training accuracy and 99.5% test
+accuracy. I'm stating that pairing on purpose: those are offline scores on
+the project's own dataset, not a guarantee of dive safety, and I don't
+present them as one. When the model says a plan isn't safe, the app doesn't
+just stop there — the recommendation loop reduces depth and bottom time and
+asks the model again, until it lands on a plan the model accepts.
+
+</DeepDive>
+
+<ScreenFlow projectId="dive" steps={frontmatter.screens} />
+
+<ProjectGallery projectId="dive" />
+
+## How it works
+
+The Android client posts a dive plan to a hosted model API, which returns a safe or not-safe result; a not-safe result feeds the recommendation loop, which narrows the plan and asks again, while the same client also talks to the eRDPML calculator, Firebase, and map and weather services directly.
+
+<ArchitectureFlow
   slug="dive"
   title="Dive Simulation & Safety Profile Planner"
 />
 
-`Android Java client → Retrofit API → Python / scikit-learn safety classifier`
+## Decisions that mattered
 
-`Android Java client → Firebase Authentication / Realtime Database / Storage`
+<DecisionCards items={frontmatter.decisions} />
 
-`Android Java client → Google Maps / Location / Places`
+## Hard problems I solved
 
-<ProjectGallery projectId="dive" />
+<ChallengeCards items={frontmatter.challenges} />
 
-## Results
+## Tech stack
 
-The delivered client project combines dive planning, safety classification, recommendations, account and data services, and location-aware mobile features in one application.
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
 
-## Lessons
+## Outcome
 
-Owning the full project made the boundaries between model behavior, service contracts, and mobile experience visible. The useful result was the integrated planner, not any one library in isolation.
+I delivered the planner to the client in June 2024. It has not been published to Google Play. What exists is a working app that plans a dive, checks it against a trained model and a deterministic RDP calculator, logs it, and connects a diver to weather, maps, and emergency information in one place — again, a planning and education aid, not a replacement for a dive computer, training, or professional judgement.
 
-## Project links
+<ResultBars
+  title="Train vs. test accuracy, by model"
+  items={[
+    { label: 'SVC', value: 97, groupValue: 96.5 },
+    { label: 'Logistic Regression', value: 95.1, groupValue: 97.8 },
+    { label: 'ANN', value: 97, groupValue: 94.3 },
+    { label: 'Decision Tree', value: 100, groupValue: 99.5 },
+  ]}
+  groupLabels={['Train', 'Test']}
+/>
 
-- [Dive Simulation repository](https://github.com/Mohamed-Nader555/Diving-Simulation-App)
+The decision tree's 99.5% test accuracy is an offline score on the project's own dataset. It says the model generalized well to data it hadn't trained on; it doesn't say a dive plan is safe, and the app was never designed to make that claim on its own.
+
+## What I learned
+
+> Combining deterministic domain calculations with a model made the planner more explainable than either one alone.
+
+A diver can see the same RDP numbers dive tables have always shown, and see the model's check sitting next to them, instead of trusting a single black-box verdict. That pairing did more for the app's credibility than any one model's accuracy did.
+
+## What I'd do next
+
+The project's own future work points toward technical-diving calculators, such as trimix, and toward gathering more dive records directly from dive centres so the underlying dataset reflects a wider range of real dives.
+
+## Links
+
+- [Repository](https://github.com/Mohamed-Nader555/Diving-Simulation-App) — the Android client is public. It isn't polished for a general audience, since it was built for a specific client, but it's the real, delivered implementation described above.

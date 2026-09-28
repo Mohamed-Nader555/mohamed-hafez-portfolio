@@ -1,0 +1,60 @@
+---
+interface Decision {
+  choice: string;
+  over?: string;
+  because: string;
+}
+
+interface Props {
+  items: readonly Decision[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="decision-cards">
+  {
+    items.map((item) => (
+      <li>
+        <p class="decision-cards__statement">
+          I chose <strong>{item.choice}</strong>
+          {item.over && (
+            <>
+              {' '}
+              over <strong>{item.over}</strong>
+            </>
+          )}{' '}
+          because {item.because}
+        </p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .decision-cards {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-5) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .decision-cards li {
+    padding: var(--space-4) var(--space-5);
+    border-left: 0.2rem solid var(--color-evidence-500);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    background: color-mix(in srgb, var(--color-ink-900) 70%, transparent);
+  }
+
+  .decision-cards__statement {
+    margin: 0;
+    font-size: var(--type-sm);
+    line-height: var(--leading-body);
+    color: var(--color-ink-200);
+  }
+
+  .decision-cards__statement strong {
+    color: var(--color-ink-100);
+  }
+</style>

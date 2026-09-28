@@ -1,0 +1,118 @@
+---
+slug: rest-pocs
+publishedAt: 2026-09-27
+passport:
+  context: 'Enterprise consulting, BASS'
+  period: 'Aug 2023 – Sep 2024'
+features:
+  - title: SOAP-to-REST bridging
+    detail: A service layer sits in front of existing SOAP-based enterprise systems and exposes a clean REST endpoint, so a new client never has to speak SOAP directly.
+  - title: JSON contracts
+    detail: Each endpoint publishes a documented JSON schema, so the shape of a request and response is explicit instead of inferred from example calls.
+  - title: One way to fail
+    detail: Errors return through the same JSON contract as successful responses, so a client-side prototype only has to handle one response shape, not several.
+  - title: Client demos
+    detail: Each proof of concept ships with a runnable demo client, so the next person can see the contract working before they build against it.
+decisions:
+  - choice: a dedicated service layer in front of SOAP
+    over: exposing SOAP operations directly to new clients
+    because: it let the REST contract stay stable even when the underlying enterprise system's SOAP interface didn't, and kept prototype clients from needing SOAP tooling at all.
+  - choice: documented JSON schemas for every endpoint
+    over: informal, example-based documentation
+    because: the next engineer building against the endpoint needed a contract they could validate against, not a guess based on a sample payload.
+stack:
+  - layer: Service layer
+    items:
+      - name: Java
+        kind: language
+        purpose: Primary implementation language
+      - name: Spring Boot
+        kind: framework
+        purpose: REST service implementation
+      - name: Python
+        kind: language
+        purpose: Service layer for select proofs of concept
+  - layer: Contracts
+    items:
+      - name: REST
+        kind: framework
+        purpose: Client-facing interface style
+      - name: SOAP
+        kind: framework
+        purpose: Enterprise system interface being bridged
+      - name: JSON Schema
+        kind: tool
+        purpose: Documented request and response contracts
+  - layer: Data
+    items:
+      - name: Oracle Database
+        kind: data
+        purpose: Backing enterprise data store
+      - name: Microsoft SQL Server
+        kind: data
+        purpose: Backing enterprise data store
+  - layer: Hosting and tooling
+    items:
+      - name: Apache Tomcat
+        kind: tool
+        purpose: Service hosting
+      - name: Git
+        kind: tool
+        purpose: Version control
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Enterprise systems inside a bank tend to speak SOAP, with contracts that grew over years and clients that were built to match them. A new prototype, or a client team that only wanted a narrow slice of functionality, shouldn't have to learn that whole interface just to ask one question of the system. At BASS, I built the endpoints that stood between the two.
+
+## Who it was for
+
+Internal teams and client prototype efforts working with banking clients in regulated environments, who needed a proof of concept to demonstrate a capability without taking on the full SOAP interface of the underlying system.
+
+## My role
+
+I built the service layer, REST contracts, and client demos for internal and prototype use, bridging SOAP-based enterprise systems and documented JSON contracts. Most of these were built as proofs of concept: small enough to build and demo quickly, but built to the same contract discipline as anything that might later go further.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+Each proof of concept followed the same shape: a service layer talking SOAP to the existing system on one side, and a REST endpoint with a published JSON schema and basic authentication on the other, so a prototype client only ever had to deal with one contract. The service layer itself was written in either Java with Spring Boot or Python, depending on which fit the specific enterprise system and the proof of concept's timeline better.
+
+Errors mattered as much as the happy path. A prototype that returns a different shape for a failure than for a success pushes that complexity onto every client that consumes it, so every endpoint returned errors through the same JSON contract as a successful response.
+
+## How it works
+
+A service layer bridges SOAP-based enterprise systems and a documented REST or JSON contract, which a client demo then consumes directly.
+
+<ArchitectureFlow
+  slug="rest-pocs"
+  title="Internal REST Endpoints & Client Proofs of Concept"
+/>
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+The endpoints and demos gave internal teams a working, documented way to prove a capability against an enterprise system before committing to a full integration, without every prototype needing its own SOAP client. Several proofs of concept moved from "can this work at all" to a demo a client team could see and react to, which is the point of a proof of concept: not a finished product, but a fast, honest answer.
+
+## What I learned
+
+> A prototype earns trust faster when its contract is documented than when its demo just happens to work.
+
+Publishing a JSON schema alongside each endpoint, even for internal proofs of concept, meant the next integration started from a contract instead of from reverse-engineering a working example. It also meant a proof of concept that got approved to continue didn't need its interface redesigned first; the contract was already there.
+
+## What I'd do next
+
+Given a longer runway, I'd standardize the service-layer choice between Java and Python per proof of concept type, so the decision wasn't made fresh each time based on timeline pressure.

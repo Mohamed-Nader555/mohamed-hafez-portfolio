@@ -1,0 +1,213 @@
+---
+import { projects } from '@/data/projects';
+
+interface StackItem {
+  name: string;
+  kind: 'language' | 'ml' | 'data' | 'framework' | 'tool';
+  purpose?: string;
+}
+
+interface StackLayer {
+  layer: string;
+  items: readonly StackItem[];
+}
+
+interface Props {
+  slug: string;
+  layers: readonly StackLayer[];
+}
+
+const { slug, layers } = Astro.props;
+
+const techCount = new Map<string, number>();
+for (const project of projects) {
+  for (const tech of project.technologies) {
+    techCount.set(tech, (techCount.get(tech) ?? 0) + 1);
+  }
+}
+
+function isShared(name: string) {
+  return (techCount.get(name) ?? 0) > 1;
+}
+
+const legend = [
+  { kind: 'language', label: 'Language' },
+  { kind: 'ml', label: 'ML / AI' },
+  { kind: 'data', label: 'Data / storage / auth' },
+  { kind: 'framework', label: 'Framework / tool' },
+] as const;
+---
+
+<div class="stack-layers" data-case-study-slug={slug}>
+  <ul class="stack-layers__legend" aria-hidden="true">
+    {
+      legend.map((entry) => (
+        <li data-kind={entry.kind}>
+          <span class="stack-layers__swatch" />
+          {entry.label}
+        </li>
+      ))
+    }
+  </ul>
+  <dl class="stack-layers__rows">
+    {
+      layers.map((layer) => (
+        <div class="stack-layers__row">
+          <dt>{layer.layer}</dt>
+          <dd>
+            <ul class="stack-layers__chips">
+              {layer.items.map((item) =>
+                isShared(item.name) ? (
+                  <li>
+                    <a
+                      href={`/work?tech=${encodeURIComponent(item.name)}`}
+                      class="stack-layers__chip"
+                      data-kind={item.kind}
+                      title={item.purpose ?? item.name}
+                    >
+                      {item.name}
+                      {item.purpose && (
+                        <span class="visually-hidden">: {item.purpose}</span>
+                      )}
+                    </a>
+                  </li>
+                ) : (
+                  <li>
+                    <span
+                      class="stack-layers__chip"
+                      data-kind={item.kind}
+                      title={item.purpose ?? item.name}
+                    >
+                      {item.name}
+                      {item.purpose && (
+                        <span class="visually-hidden">: {item.purpose}</span>
+                      )}
+                    </span>
+                  </li>
+                ),
+              )}
+            </ul>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</div>
+
+<style>
+  .stack-layers__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    list-style: none;
+    font-size: var(--type-xs);
+    color: var(--color-ink-300);
+  }
+
+  .stack-layers__legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .stack-layers__swatch {
+    inline-size: 0.6rem;
+    block-size: 0.6rem;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+  }
+
+  .stack-layers__legend [data-kind='language'] {
+    color: var(--color-evidence-500);
+  }
+  .stack-layers__legend [data-kind='ml'] {
+    color: var(--color-ai-500);
+  }
+  .stack-layers__legend [data-kind='data'] {
+    color: var(--color-verified-500);
+  }
+  .stack-layers__legend [data-kind='framework'] {
+    color: var(--color-ink-300);
+  }
+
+  .stack-layers__rows {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+
+  .stack-layers__row {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: var(--space-3);
+    align-items: start;
+  }
+
+  .stack-layers__row dt {
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-utility);
+    color: var(--color-ink-300);
+    padding-top: 0.4rem;
+  }
+
+  .stack-layers__row dd {
+    margin: 0;
+  }
+
+  .stack-layers__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stack-layers__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem var(--space-3);
+    border-radius: 999px;
+    font-size: var(--type-xs);
+    text-decoration: none;
+    border: 1px solid var(--border-subtle);
+    background: color-mix(in srgb, var(--color-ink-900) 60%, transparent);
+    color: var(--color-ink-100);
+  }
+
+  a.stack-layers__chip:hover,
+  a.stack-layers__chip:focus-visible {
+    border-color: currentColor;
+  }
+
+  .stack-layers__chip[data-kind='language'] {
+    border-color: color-mix(
+      in srgb,
+      var(--color-evidence-500) 55%,
+      transparent
+    );
+    color: var(--color-evidence-300);
+  }
+  .stack-layers__chip[data-kind='ml'] {
+    border-color: color-mix(in srgb, var(--color-ai-500) 55%, transparent);
+    color: var(--color-ai-300);
+  }
+  .stack-layers__chip[data-kind='data'] {
+    border-color: color-mix(
+      in srgb,
+      var(--color-verified-500) 55%,
+      transparent
+    );
+    color: var(--color-verified-500);
+  }
+
+  @media (max-width: 45rem) {
+    .stack-layers__row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

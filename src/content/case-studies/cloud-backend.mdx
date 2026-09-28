@@ -1,0 +1,67 @@
+---
+slug: cloud-backend
+publishedAt: 2026-09-27
+passport:
+  context: 'Personal project, backend prototype'
+features:
+  - title: Authenticated accounts
+    detail: Signup and login validate input, hash passwords with bcrypt, and issue a 1-hour JWT.
+  - title: Product management
+    detail: Products support full CRUD, an approval state, and filtering.
+  - title: Carts and orders
+    detail: Carts enforce quantity limits before an order is placed.
+  - title: Manual test coverage
+    detail: HTTP request files exercise every endpoint by hand ahead of automated tests.
+stack:
+  - layer: API
+    items:
+      - name: Node.js
+        kind: language
+        purpose: Runtime
+      - name: Express
+        kind: framework
+        purpose: HTTP routing and validation
+  - layer: Data
+    items:
+      - name: MongoDB
+        kind: data
+        purpose: Persistence
+      - name: Mongoose
+        kind: framework
+        purpose: Schema and model layer
+  - layer: Auth
+    items:
+      - name: JWT
+        kind: tool
+        purpose: Session tokens, 1-hour expiry
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A lot of small backend projects mix HTTP handling and business rules in the same route handler, so the logic is hard to test and hard to move if the framework changes. I wanted an e-commerce API where the HTTP layer stays thin and the rules that actually matter, what a cart can hold, what an order needs, live somewhere they can be tested on their own.
+
+## What I built
+
+CloudBackend is a working pre-deployment prototype, not deployed to production. It keeps requests, controllers, services, and data models in separate layers, and routes every request through validation before it reaches business logic.
+
+<FeatureGrid items={frontmatter.features} />
+
+## How it works
+
+A request passes through a validated Express route into a controller and a service layer, which is the only layer allowed to talk to the Mongoose models and MongoDB.
+
+<ArchitectureFlow slug="cloud-backend" title="CloudBackend E-Commerce API" />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> A backend isn't production-ready until tests, authorization middleware, and observability exist.
+
+Writing the HTTP request files for manual testing made the gaps obvious: the endpoints worked, but nothing was verifying that they kept working, and nothing would tell me if they stopped.

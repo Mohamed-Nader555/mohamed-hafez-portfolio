@@ -1,0 +1,75 @@
+---
+interface StatTile {
+  value: string;
+  label: string;
+  note?: string;
+}
+
+interface Props {
+  items: readonly StatTile[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="stat-tiles" aria-label="Key results">
+  {
+    items.map((item) => (
+      <li>
+        <strong>{item.value}</strong>
+        <span>{item.label}</span>
+        {item.note && <small>{item.note}</small>}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .stat-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-6) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stat-tiles li {
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--color-ink-900) 78%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .stat-tiles strong {
+    font-family: var(--font-display);
+    font-size: var(--type-lead);
+    color: var(--color-evidence-300);
+    letter-spacing: var(--tracking-display);
+  }
+
+  .stat-tiles span {
+    font-size: var(--type-sm);
+    color: var(--color-ink-200);
+  }
+
+  .stat-tiles small {
+    font-size: var(--type-xs);
+    color: var(--color-ink-300);
+  }
+
+  @media (max-width: 56rem) {
+    .stat-tiles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .stat-tiles {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -4,8 +4,10 @@ import { existingPublicRoutes, publicRoutes } from './public-routes';
 
 const testOrigin = 'https://portfolio.test';
 
-test('the audit matrix contains all 13 pre-privacy public routes', () => {
-  expect(existingPublicRoutes).toHaveLength(13);
+test('the audit matrix contains all 36 pre-privacy public routes', () => {
+  // 4 role-lens pages + /work + 28 case-study pages + /research/asc-pie +
+  // /experience + /about. See tests/e2e/public-routes.ts.
+  expect(existingPublicRoutes).toHaveLength(36);
 });
 
 for (const route of publicRoutes) {

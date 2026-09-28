@@ -6,8 +6,12 @@ import {
   type SourceRecord,
 } from '@/types/content';
 
+import { androidAppsEvidence } from './android-apps';
+import { appliedMlEvidence } from './applied-ml';
 import { diveEvidence } from './dive';
 import { dostavaEvidence } from './dostava';
+import { earlyJavaEvidence } from './early-java';
+import { enterpriseEvidence } from './enterprise';
 import {
   bassEvidence,
   experienceEvidence,
@@ -15,16 +19,24 @@ import {
 } from './experience';
 import { mindsEyeEvidence } from './minds-eye';
 import { northstarEvidence } from './northstar';
+import { platformEvidence } from './platform';
 import { researchEvidence } from './research';
 import { screeningEvidence } from './screening';
+import { sprintPpEvidence } from './sprint-pp';
 import { teachingEvidence } from './teaching';
 
 const evidenceRecords = [
   ...researchEvidence,
+  ...sprintPpEvidence,
   ...northstarEvidence,
   ...mindsEyeEvidence,
   ...diveEvidence,
   ...dostavaEvidence,
+  ...appliedMlEvidence,
+  ...androidAppsEvidence,
+  ...enterpriseEvidence,
+  ...earlyJavaEvidence,
+  ...platformEvidence,
   ...experienceEvidence,
   ...teachingEvidence,
   ...screeningEvidence,
@@ -88,14 +100,44 @@ function canonicalRecords(
   });
 }
 
+function byIdPrefix(prefix: string): readonly EvidenceRecord[] {
+  return evidence.filter((record) => record.id.startsWith(prefix));
+}
+
 const projectEvidence = new Map<string, readonly EvidenceRecord[]>([
   ['asc-pie', canonicalRecords(researchEvidence)],
+  ['sprint-pp', canonicalRecords(sprintPpEvidence)],
   ['northstar-rag', canonicalRecords(northstarEvidence)],
   ['minds-eye', canonicalRecords(mindsEyeEvidence)],
   ['dive', canonicalRecords(diveEvidence)],
   ['dostava', canonicalRecords(dostavaEvidence)],
-  ['bass', canonicalRecords(bassEvidence)],
+  ['applied-ml-portfolio', byIdPrefix('applied-ml-portfolio-')],
+  ['cti-intrusion-detection', byIdPrefix('cti-intrusion-detection-')],
+  ['search-for-eats', byIdPrefix('search-for-eats-')],
   ['mercato', canonicalRecords(mercatoEvidence)],
+  ['food-planner', byIdPrefix('food-planner-')],
+  ['weather-checker', byIdPrefix('weather-checker-')],
+  ['shop-on-the-go', byIdPrefix('shop-on-the-go-')],
+  ['documentum-workflows', byIdPrefix('documentum-workflows-')],
+  ['pdf-utilities', byIdPrefix('pdf-utilities-')],
+  ['rest-pocs', byIdPrefix('rest-pocs-')],
+  ['this-portfolio', canonicalRecords(platformEvidence)],
+  ['your-life-is-my-life', byIdPrefix('your-life-is-my-life-')],
+  ['death-ninja', byIdPrefix('death-ninja-')],
+  ['cloud-backend', byIdPrefix('cloud-backend-')],
+  ['restaurant-management', byIdPrefix('restaurant-management-')],
+  ['online-tic-tac-toe', byIdPrefix('online-tic-tac-toe-')],
+  ['gulf-arab-chat', byIdPrefix('gulf-arab-chat-')],
+  ['tourist-guide', byIdPrefix('tourist-guide-')],
+  ['sams', byIdPrefix('sams-')],
+  ['donation-app', byIdPrefix('donation-app-')],
+  ['my-card', byIdPrefix('my-card-')],
+  ['top-notch', byIdPrefix('top-notch-')],
+  ['face-recognition-pipeline', byIdPrefix('face-recognition-pipeline-')],
+  ['healthcare-desktop', byIdPrefix('healthcare-desktop-')],
+  ['priority-request-manager', byIdPrefix('priority-request-manager-')],
+  ['school-management-system', byIdPrefix('school-management-system-')],
+  ['myapps-demo', byIdPrefix('myapps-demo-')],
   ['teaching-experience', canonicalRecords(teachingEvidence)],
 ]);
 
@@ -119,14 +161,20 @@ export function getEvidenceForProject(
 }
 
 export {
+  androidAppsEvidence,
+  appliedMlEvidence,
   bassEvidence,
   diveEvidence,
   dostavaEvidence,
+  earlyJavaEvidence,
+  enterpriseEvidence,
   experienceEvidence,
   mercatoEvidence,
   mindsEyeEvidence,
   northstarEvidence,
+  platformEvidence,
   researchEvidence,
   screeningEvidence,
+  sprintPpEvidence,
   teachingEvidence,
 };

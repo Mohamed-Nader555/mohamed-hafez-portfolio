@@ -32,6 +32,15 @@ tmp/
 *.sqlite3
 analytics-exports/
 
+# Private planning/source material (never publish these)
+docs/Mohamed_Hafez_Portfolio_Content_Source.md
+docs/PROJECTS_REWRITE_BRIEF.md
+docs/CLAUDE_CODE_KICKOFF_PROMPT.md
+docs/content-review/
+
+# Generated knowledge graph
+graphify-out/
+
 # Credentials and signing material
 *.pem
 *.key

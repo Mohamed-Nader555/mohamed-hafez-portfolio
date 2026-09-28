@@ -1,0 +1,96 @@
+---
+interface SubProject {
+  title: string;
+  problem: string;
+  approach: string;
+  built: string;
+  lesson: string;
+}
+
+interface Props {
+  items: readonly SubProject[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="sub-project-grid">
+  {
+    items.map((item) => (
+      <li>
+        <details>
+          <summary>{item.title}</summary>
+          <dl>
+            <dt>Problem</dt>
+            <dd>{item.problem}</dd>
+            <dt>Approach</dt>
+            <dd>{item.approach}</dd>
+            <dt>Built</dt>
+            <dd>{item.built}</dd>
+            <dt>Lesson</dt>
+            <dd>{item.lesson}</dd>
+          </dl>
+        </details>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .sub-project-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-5) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sub-project-grid details {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    background: color-mix(in srgb, var(--color-ink-900) 68%, transparent);
+  }
+
+  .sub-project-grid summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: var(--type-sm);
+    color: var(--color-ink-100);
+  }
+
+  .sub-project-grid dl {
+    margin: var(--space-3) 0 0;
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .sub-project-grid dt {
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-utility);
+    color: var(--color-evidence-300);
+    margin-top: var(--space-2);
+  }
+
+  .sub-project-grid dd {
+    margin: 0;
+    font-size: var(--type-xs);
+    color: var(--color-ink-200);
+    line-height: var(--leading-body);
+  }
+
+  @media (max-width: 56rem) {
+    .sub-project-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .sub-project-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

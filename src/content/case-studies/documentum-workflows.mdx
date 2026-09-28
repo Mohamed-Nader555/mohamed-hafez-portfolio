@@ -1,0 +1,118 @@
+---
+slug: documentum-workflows
+publishedAt: 2026-09-27
+passport:
+  context: 'Enterprise consulting, BASS'
+  period: 'Aug 2023 – Sep 2024'
+features:
+  - title: Routed review workflows
+    detail: Incoming documents are classified and routed through the review steps a banking client's process requires before anyone can approve them.
+  - title: Lifecycle states
+    detail: Every document carries a status that reflects exactly where it sits between intake and archive, instead of living in an inbox someone has to remember to check.
+  - title: DQL health queries
+    detail: Scheduled and on-demand DQL queries check that documents and their metadata match what the retention rules say they should be.
+  - title: Archive and retention rules
+    detail: Documents move into archive states that keep them for exactly as long as regulation requires, not a day less or more.
+decisions:
+  - choice: query-based health checks
+    over: manual, case-by-case review
+    because: DQL could confirm the state of the whole repository on a schedule, instead of only the documents someone happened to open that day.
+challenges:
+  - problem: A document can stall silently between review steps, with no visible symptom until an audit asks where it is.
+    solution: I wrote DQL health queries that surface stuck or misclassified documents on a schedule, so problems surface before an audit finds them.
+  - problem: Retention rules only mean something if the system enforces them, not if a person remembers to check them.
+    solution: I built lifecycle and archive states directly into the Documentum workflow, so a document's status is the enforcement, not a note on a ticket.
+stack:
+  - layer: Content platform
+    items:
+      - name: OpenText Documentum
+        kind: framework
+        purpose: Content server and document repository
+      - name: Documentum Composer
+        kind: tool
+        purpose: Workflow and lifecycle definitions
+      - name: DQL
+        kind: language
+        purpose: Repository queries and health checks
+  - layer: Application
+    items:
+      - name: Java
+        kind: language
+        purpose: Workflow logic and integrations
+  - layer: Data
+    items:
+      - name: Oracle Database
+        kind: data
+        purpose: Repository storage
+      - name: Microsoft SQL Server
+        kind: data
+        purpose: Repository storage
+  - layer: Tooling
+    items:
+      - name: Git
+        kind: tool
+        purpose: Version control
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Banks run on documents, and almost every one of them carries personal data, has to reach a specific reviewer, and has to be kept for exactly as long as regulation says, not a day less or more. Proving that a document did all three things correctly, months or years after the fact, is a different problem from just moving it from one folder to another. At BASS, my job was to make that proof automatic instead of something a person reconstructed by hand.
+
+This is where I first met PII as an operational problem, not an abstract one, which is part of what later led to [my thesis work](/work/asc-pie).
+
+## Who it was for
+
+The work supported banking clients in regulated environments, where a document workflow isn't just an internal convenience: it's the audit trail a regulator can ask to see.
+
+## My role
+
+I implemented and supported the workflows, DQL validation controls, and health queries for banking clients in regulated environments. That included the review routing itself, the lifecycle and retention states attached to each document, and the queries that check whether the repository actually matches what those rules require. Support work meant I was also the person who got called when a workflow looked stuck, so I ended up designing a lot of the diagnostics I later relied on myself.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+Underneath the feature list, the day-to-day work was mostly about correctness: making sure a document that should be in "under review" was never quietly stuck, and that a document past its retention window was actually archived rather than just labelled that way. Documentum Composer defined the workflow and lifecycle shapes, but the meaningful engineering was in the DQL that checked those shapes actually held up once real documents, real reviewers, and real deadlines were involved.
+
+A lot of the value here never showed up as a feature a reviewer would notice directly. It showed up as the absence of a problem: a document that reached the right person on time, a retention window that closed itself instead of needing a reminder, an audit question that had a query-backed answer instead of a search through email.
+
+## How it works
+
+A document moves from intake through classification into a routed review workflow, then into lifecycle states that track it through to archive and retention, with DQL health queries checking the repository throughout.
+
+<ArchitectureFlow
+  slug="documentum-workflows"
+  title="Documentum Workflow & Lifecycle Optimization"
+/>
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+The workflows and health queries ran as part of the client's regular operations for banking clients in regulated environments, giving the team a repeatable way to check document state and catch problems before an audit did, rather than relying on someone noticing. Health queries that used to be a one-off investigation became something the team could run routinely, which shifted the work from reacting to a stuck document toward preventing one.
+
+## What I learned
+
+> In regulated systems, the most valuable code is often the code that proves the system is correct.
+
+Writing the queries that check a workflow taught me to treat "is this actually true right now" as its own deliverable, separate from the feature that was supposed to make it true. That distinction stuck with me well beyond this project: a system that claims to enforce a rule and a system that can prove it enforced the rule are not the same system, and regulated environments make you feel the difference.
+
+## What I'd do next
+
+Given more time, I'd push more of the health-query logic further upstream, so a workflow catches a misclassification at intake rather than surfacing it later as a stuck document for a health query to find.

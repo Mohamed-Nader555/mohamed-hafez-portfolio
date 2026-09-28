@@ -1,0 +1,117 @@
+---
+slug: food-planner
+publishedAt: 2026-09-27
+passport:
+  context: ITI Android track project (2023), published to Google Play as part of the training
+  period: '2023'
+  platform: Android
+features:
+  - title: Meal of the day
+    detail: A featured meal greets a user on open, instead of an empty search box.
+  - title: Search by country, ingredient, or category
+    detail: Recipes can be found from three different starting points, depending on what a user already knows they want.
+  - title: Popular meals by country
+    detail: Browsing by country surfaces what's popular there, for someone who wants to cook something new rather than search for something specific.
+  - title: Recipe details with video
+    detail: Each recipe page shows ingredients, steps, and a video, so a cook isn't left guessing at a technique from text alone.
+  - title: Favourites and weekly plan
+    detail: Recipes save to favourites or slot into a weekly plan, kept separately from the recipe content itself.
+  - title: Reminders
+    detail: Scheduled reminders nudge a user back to the plan they made, instead of leaving it to be forgotten.
+  - title: Firebase sign-in or guest mode
+    detail: A user can sign in with Firebase or skip that step entirely and use the app as a guest.
+decisions:
+  - choice: an MVP structure that separates views from data
+    over: letting screens read data sources directly
+    because: recipe content and a user's own plans and favourites needed to change independently without screens quietly depending on how each one was fetched.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+      - name: MVP
+        kind: framework
+        purpose: Separates views from presenters and data
+  - layer: Recipe data
+    items:
+      - name: Retrofit
+        kind: framework
+        purpose: Networking client for TheMealDB API
+      - name: TheMealDB API
+        kind: data
+        purpose: Remote recipe content
+  - layer: User data
+    items:
+      - name: Room
+        kind: data
+        purpose: Favourites and weekly plan storage
+      - name: Firebase Auth
+        kind: data
+        purpose: Optional sign-in; guest mode skips it
+      - name: SharedPreferences
+        kind: data
+        purpose: Lightweight local settings
+  - layer: Tooling
+    items:
+      - name: WorkManager
+        kind: tool
+        purpose: Scheduled reminders
+      - name: Lottie
+        kind: tool
+        purpose: Animated UI feedback
+      - name: Material Design
+        kind: framework
+        purpose: UI components and layout
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Deciding what to cook is a recurring, low-stakes decision that still eats up time every week: what's in season, what a household already knows how to make, what will actually get eaten instead of left in the fridge. Recipe content on its own doesn't solve that; it needs to be searchable from more than one angle and it needs to connect to a plan a person will actually follow.
+
+A recipe app that only lets someone search by name assumes they already know what they want to cook. Most of the time, that's not true: someone wants to cook something new from a country they like, or use up an ingredient sitting in the fridge, or just see what's popular this week. The planning problem starts before the recipe is chosen, not after.
+
+## Who it was for
+
+Anyone planning meals for the week who wants recipes they can search by country, ingredient, or category, and a plan that reminds them rather than relying on memory. That includes someone cooking for a household who wants variety without starting from a blank search box every time, and someone newer to cooking who wants a video alongside the steps rather than text alone.
+
+## My role
+
+I built the Android application end to end during the ITI Android track, from the recipe browsing and search flows through the weekly plan, reminders, and the optional sign-in. As part of the ITI Android training, the app was later published to Google Play as a required deliverable of the track, not as a separately commissioned client product.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+Search by country, ingredient, or category all lead to the same recipe detail screen, so a user can start from whichever angle fits how they're thinking about dinner that day. Favourites and the weekly plan are both user-owned data, kept apart from the recipe content pulled from TheMealDB, so a plan doesn't break if a recipe changes and a recipe doesn't disappear if a plan is cleared. Guest mode means a user can plan meals before ever deciding whether to create an account.
+
+Popular meals by country sit alongside the search paths as a way to browse rather than search, for someone who wants inspiration more than a specific answer. Reminders close the loop between planning and cooking: a weekly plan is only useful if something nudges a person back to it, rather than leaving it as a list they made once and forgot.
+
+## How it works
+
+Views talk to a presenter that keeps remote recipe content and locally stored, user-owned data on separate paths, with reminders scheduled around the plan that results.
+
+<ArchitectureFlow slug="food-planner" title="Healthy Habit / Food Planner" />
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+Healthy Habit / Food Planner was published to Google Play as part of the ITI Android training, not as a client-owned listing. It was a required deliverable of the training track rather than a commercial release.
+
+## What I learned
+
+> Offline planning works when remote content and user-owned data are modelled separately.
+
+Once favourites and the weekly plan lived in their own local store instead of being derived from the recipe API each time, the app stopped depending on a live connection just to show a plan a user had already made. That separation turned out to matter more for reliability than any single feature on its own.

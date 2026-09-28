@@ -1,0 +1,50 @@
+---
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+---
+
+<aside class="deep-dive" id={id} aria-label={`Deep dive: ${title}`}>
+  <p class="deep-dive__kicker">Deep dive</p>
+  <h3>{title}</h3>
+  <div class="deep-dive__body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .deep-dive {
+    margin: var(--space-6) 0;
+    padding: var(--space-5) var(--space-6);
+    border: 1px solid var(--border-subtle);
+    border-left: 0.25rem solid var(--color-ai-500);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--color-ink-900) 75%, transparent);
+    scroll-margin-top: 6rem;
+  }
+
+  .deep-dive__kicker {
+    margin: 0 0 var(--space-1);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-utility);
+    text-transform: uppercase;
+    color: var(--color-ai-300);
+  }
+
+  .deep-dive h3 {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--type-lead);
+    color: var(--color-ink-100);
+  }
+
+  .deep-dive__body {
+    font-size: var(--type-sm);
+    line-height: var(--leading-body);
+    color: var(--color-ink-200);
+  }
+</style>

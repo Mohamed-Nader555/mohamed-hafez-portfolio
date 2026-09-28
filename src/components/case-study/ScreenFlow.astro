@@ -1,0 +1,130 @@
+---
+import { projectImages, type ProjectImageId } from '@/data/project-images';
+
+interface ScreenStep {
+  imageId: string;
+  step?: string;
+  caption: string;
+}
+
+interface Props {
+  projectId: ProjectImageId;
+  steps: readonly ScreenStep[];
+}
+
+const { projectId, steps } = Astro.props;
+const images = projectImages[projectId] ?? [];
+const imageById = new Map(images.map((image) => [image.id, image]));
+---
+
+<figure class="screen-flow" aria-label={`${projectId} screen flow`}>
+  <ol class="screen-flow__track" tabindex="0" aria-label="Scrollable screenshots">
+    {
+      steps.map((step, index) => {
+        const image = imageById.get(step.imageId);
+        if (!image) return null;
+        return (
+          <li>
+            <span class="screen-flow__index" aria-hidden="true">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <picture>
+              <source
+                type="image/avif"
+                srcset={image.avifSrcset}
+                sizes="16rem"
+              />
+              <source
+                type="image/webp"
+                srcset={image.webpSrcset}
+                sizes="16rem"
+              />
+              <img
+                src={image.fallbackSrc}
+                alt={image.alt}
+                width={image.width}
+                height={image.height}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
+            {step.step && <p class="screen-flow__step">{step.step}</p>}
+            <p class="screen-flow__caption">{step.caption}</p>
+            {index < steps.length - 1 && (
+              <span class="screen-flow__arrow" aria-hidden="true">
+                &rarr;
+              </span>
+            )}
+          </li>
+        );
+      })
+    }
+  </ol>
+</figure>
+
+<style>
+  .screen-flow {
+    margin: var(--space-5) 0;
+  }
+
+  .screen-flow__track {
+    display: flex;
+    gap: var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 0 0 var(--space-3);
+    margin: 0;
+    list-style: none;
+  }
+
+  .screen-flow__track li {
+    position: relative;
+    flex: 0 0 auto;
+    max-inline-size: 16rem;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .screen-flow__track img {
+    display: block;
+    max-inline-size: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .screen-flow__index {
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    color: var(--color-evidence-500);
+    margin-bottom: var(--space-1);
+  }
+
+  .screen-flow__step {
+    margin: var(--space-2) 0 0;
+    font-family: var(--font-display);
+    font-size: var(--type-sm);
+    color: var(--color-ink-100);
+  }
+
+  .screen-flow__caption {
+    margin: 0.2rem 0 0;
+    font-size: var(--type-xs);
+    color: var(--color-ink-300);
+  }
+
+  .screen-flow__arrow {
+    position: absolute;
+    inset-inline-end: -1.4rem;
+    inset-block-start: 40%;
+    color: var(--color-evidence-500);
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 45rem) {
+    .screen-flow__arrow {
+      display: none;
+    }
+  }
+</style>

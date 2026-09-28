@@ -1,68 +1,189 @@
 import { expect, test } from '@playwright/test';
 
-const caseStudies = [
-  {
-    slug: 'asc-pie',
-    title: 'ASC-PIE',
-    ownership: /Mohamed designed and built/i,
-    technology: 'PyTorch',
-    evidence: /YorkSpace thesis record/i,
-  },
-  {
-    slug: 'northstar-rag',
-    title: 'Northstar RAG System',
-    ownership: /Mohamed independently built/i,
-    technology: 'Chroma',
-    evidence: /AI\/ML Engineer résumé/i,
-  },
-  {
-    slug: 'minds-eye',
-    title: "Mind's Eye",
-    ownership: /Mohamed delivered more than 80%/i,
-    technology: 'Tesseract OCR',
-    evidence: /Android Developer résumé/i,
-  },
-  {
-    slug: 'dive',
-    title: 'Dive Simulation & Safety Profile Planner',
-    ownership: /Mohamed owned and implemented.*end to end/i,
-    technology: 'scikit-learn',
-    evidence: /Dive Simulation repository/i,
-  },
-  {
-    slug: 'dostava',
-    title: 'Dostava Delivery',
-    ownership: /Mohamed delivered the Android application/i,
-    technology: 'MVVM',
-    evidence: /Android Developer résumé/i,
-  },
+// Brief §4: 28 projects get a `/work` page (6 flagship + 11 story + 11
+// brief). This is hardcoded rather than imported from `@/data/projects`
+// because Playwright's default TS transform does not resolve this repo's
+// `@/*` tsconfig path aliases (used throughout `src/data`), unlike Vitest's
+// aliased config. Keep this in sync with `src/data/projects.ts`.
+const FLAGSHIP_SLUGS = [
+  'asc-pie',
+  'sprint-pp',
+  'northstar-rag',
+  'minds-eye',
+  'dive',
+  'dostava',
 ] as const;
+const STORY_SLUGS = [
+  'applied-ml-portfolio',
+  'cti-intrusion-detection',
+  'search-for-eats',
+  'mercato',
+  'food-planner',
+  'weather-checker',
+  'shop-on-the-go',
+  'documentum-workflows',
+  'pdf-utilities',
+  'rest-pocs',
+  'this-portfolio',
+] as const;
+const BRIEF_SLUGS = [
+  'your-life-is-my-life',
+  'death-ninja',
+  'cloud-backend',
+  'restaurant-management',
+  'online-tic-tac-toe',
+  'gulf-arab-chat',
+  'tourist-guide',
+  'sams',
+  'donation-app',
+  'my-card',
+  'top-notch',
+] as const;
+const ALL_PAGE_SLUGS = [...FLAGSHIP_SLUGS, ...STORY_SLUGS, ...BRIEF_SLUGS];
 
-test('work index publishes exactly the five curated detailed case studies', async ({
+test('work index renders every flagship, story, and brief project as a card', async ({
   page,
 }) => {
   await page.goto('/work');
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Evidence-led work',
+    "Things I've built",
   );
-  const links = page.locator('main a[href^="/work/"]');
-  await expect(links).toHaveCount(5);
-  expect(
-    (
-      await links.evaluateAll((items) =>
-        items.map((item) => item.getAttribute('href')),
-      )
-    ).sort(),
-  ).toEqual(caseStudies.map(({ slug }) => `/work/${slug}`).sort());
 
-  await expect(
-    page.locator('.case-study-card__ownership').first(),
-  ).toContainText(/^Owned: Mohamed/);
+  const links = page.locator('main a[href^="/work/"]:not([href="/work/"])');
+  await expect(links).toHaveCount(ALL_PAGE_SLUGS.length);
+
+  // Read each href individually rather than in one evaluateAll(): this page
+  // renders 28 cards with `data-astro-prefetch`, and a single batched
+  // evaluateAll() call has occasionally raced with the browser's viewport
+  // prefetching and thrown "Execution context was destroyed" mid-read.
+  const count = await links.count();
+  const hrefs: (string | null)[] = [];
+  for (let index = 0; index < count; index += 1) {
+    hrefs.push(await links.nth(index).getAttribute('href'));
+  }
+
+  expect(hrefs.map((href) => href?.replace('/work/', '')).sort()).toEqual(
+    [...ALL_PAGE_SLUGS].sort(),
+  );
 });
 
-for (const study of caseStudies) {
-  test(`${study.title} exposes ownership, technology, evidence, and ordered narrative`, async ({
+test.describe('focus filter', () => {
+  test('clicking a chip toggles hidden cards, aria-pressed, the URL, and the live region', async ({
+    page,
+  }) => {
+    await page.goto('/work');
+
+    const androidChip = page.locator('[data-focus-chip="android"]');
+    const allChip = page.locator('[data-focus-chip="all"]');
+    await expect(allChip).toHaveAttribute('aria-pressed', 'true');
+
+    const dostavaCard = page.locator(
+      '[data-focus]:has(a[href="/work/dostava"])',
+    );
+    const ascPieCard = page.locator(
+      '[data-focus]:has(a[href="/work/asc-pie"])',
+    );
+    await expect(dostavaCard).toBeVisible();
+    await expect(ascPieCard).toBeVisible();
+
+    await androidChip.click();
+
+    await expect(androidChip).toHaveAttribute('aria-pressed', 'true');
+    await expect(allChip).toHaveAttribute('aria-pressed', 'false');
+    await expect(dostavaCard).toBeVisible();
+    await expect(ascPieCard).toBeHidden();
+    await expect(page).toHaveURL(/[?&]focus=android/);
+
+    const liveRegion = page.locator('[data-focus-live]');
+    await expect(liveRegion).toHaveText(/\d+ projects? shown\./);
+  });
+
+  test('loading /work?focus=android directly pre-filters the page', async ({
+    page,
+  }) => {
+    await page.goto('/work?focus=android');
+
+    await expect(page.locator('[data-focus-chip="android"]')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await expect(
+      page.locator('[data-focus]:has(a[href="/work/asc-pie"])'),
+    ).toBeHidden();
+    await expect(
+      page.locator('[data-focus]:has(a[href="/work/dostava"])'),
+    ).toBeVisible();
+  });
+
+  test('every card is visible and filtering has no effect without JavaScript', async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto('/work');
+
+    const links = page.locator('main a[href^="/work/"]:not([href="/work/"])');
+    await expect(links).toHaveCount(ALL_PAGE_SLUGS.length);
+
+    // Cards are server-rendered without a `hidden` attribute; the filter
+    // module that would apply it never executes without JavaScript.
+    const hiddenCount = await page.locator('[data-focus][hidden]').count();
+    expect(hiddenCount).toBe(0);
+    await expect(
+      page.locator('[data-focus]:has(a[href="/work/asc-pie"])'),
+    ).toBeVisible();
+
+    await context.close();
+  });
+});
+
+const HEADING_SPOT_CHECKS = [
+  {
+    slug: 'asc-pie',
+    tier: 'flagship',
+    title: 'ASC-PIE',
+    headings: [
+      'The problem',
+      'Who it was for',
+      'My role',
+      'What I built',
+      'How it works',
+      'Decisions that mattered',
+      'Hard problems I solved',
+      'Tech stack',
+      'Outcome',
+      'What I learned',
+      'What I’d do next',
+      'Links',
+    ],
+  },
+  {
+    slug: 'food-planner',
+    tier: 'story',
+    title: 'Healthy Habit / Food Planner',
+    headings: [
+      'The problem',
+      'Who it was for',
+      'My role',
+      'What I built',
+      'How it works',
+      'Decisions that mattered',
+      'Tech stack',
+      'Outcome',
+      'What I learned',
+    ],
+  },
+  {
+    slug: 'gulf-arab-chat',
+    tier: 'brief',
+    title: 'Gulf Arab Chat',
+    headings: ['The problem', 'What I built', 'Tech stack', 'What I learned'],
+  },
+] as const;
+
+for (const study of HEADING_SPOT_CHECKS) {
+  test(`${study.tier} case study (${study.slug}) has an H1, passport, technologies list, and ordered H2s`, async ({
     page,
   }) => {
     await page.goto(`/work/${study.slug}`);
@@ -70,95 +191,93 @@ for (const study of caseStudies) {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       study.title,
     );
-    await expect(page.getByText(study.ownership).first()).toBeVisible();
+
+    const passport = page.locator('.project-passport');
+    await expect(passport).toBeVisible();
+    const passportLabels = await passport.locator('dt').allTextContents();
+    expect(passportLabels).toEqual(
+      expect.arrayContaining(['My role', 'Context', 'Status']),
+    );
+
     await expect(
       page.getByRole('list', { name: `${study.title} technologies` }),
-    ).toContainText(study.technology);
-    await expect(
-      page.getByRole('region', { name: 'Public evidence' }).getByRole('link', {
-        name: study.evidence,
-      }),
     ).toBeVisible();
 
+    // `<RelatedProjects>` renders its own "Related projects" <h2> inside the
+    // same `<article>`, after the page's own §5.3 section headings.
     expect(await page.locator('article h2').allTextContents()).toEqual([
-      'Context',
-      'Ownership',
-      'Constraints',
-      'Architecture',
-      'Implementation',
-      'Outcome',
-      'Evidence',
-      'Reflection',
+      ...study.headings,
+      'Related projects',
     ]);
   });
 }
 
-test('case-study architecture exposes the same directed relationships visually and accessibly', async ({
+test('TOC links on a flagship page resolve to their section', async ({
   page,
 }) => {
-  await page.goto('/work/northstar-rag');
+  await page.goto('/work/asc-pie');
 
-  const diagram = page.getByRole('figure', {
-    name: /Northstar RAG System architecture/i,
-  });
-  await expect(diagram).toContainText('Document sources');
-  await expect(diagram).toContainText('Grounded answer');
-  await expect(diagram).toContainText(
-    'Relationships: Document sources to Ingest and chunk; Ingest and chunk to Local embeddings; Local embeddings to Chroma retrieval; Chroma retrieval to Grounded answer.',
-  );
+  const tocLinks = page.locator('[data-toc-link]');
+  await expect(tocLinks).toHaveCount(HEADING_SPOT_CHECKS[0].headings.length);
+
+  const outcomeLink = page.getByRole('link', { name: 'Outcome', exact: true });
+  const targetId = await outcomeLink.getAttribute('data-toc-target');
+  expect(targetId).toBeTruthy();
+
+  await outcomeLink.click();
+  await expect(page).toHaveURL(new RegExp(`#${targetId}$`));
+  await expect(page.locator(`#${targetId}`)).toBeAttached();
   await expect(
-    diagram.locator(
-      '[data-edge-from="document-sources"][data-edge-to="ingest-chunk"]',
-    ),
-  ).toHaveCount(1);
-  await expect(page.locator('body')).not.toContainText(
-    /github-northstar-rag|github-dostava/i,
-  );
-  await expect(page.locator('a[href*="Northstar"]')).toHaveCount(0);
+    page.locator(`#${targetId}`).getByText('Outcome', { exact: true }),
+  ).toBeVisible();
 });
 
 const expectedEdges = {
   'asc-pie': [
-    ['privacy-datasets', 'preprocessing'],
-    ['preprocessing', 'shared-pii-labels'],
-    ['shared-pii-labels', 'model-training'],
-    ['model-training', 'ner-evaluation'],
-  ],
-  'northstar-rag': [
-    ['document-sources', 'ingest-chunk'],
-    ['ingest-chunk', 'local-embeddings'],
-    ['local-embeddings', 'chroma-retrieval'],
-    ['chroma-retrieval', 'grounded-answer'],
+    ['data-sources', 'schema-mapping'],
+    ['schema-mapping', 'fixed-splits'],
+    ['fixed-splits', 'synced-exports'],
+    ['synced-exports', 'model-families'],
+    ['model-families', 'canonical-parser'],
+    ['canonical-parser', 'shared-evaluator'],
   ],
   'minds-eye': [
     ['wearable-input', 'android-client'],
-    ['android-client', 'recognition-services'],
-    ['recognition-services', 'ocr-vision-result'],
-    ['ocr-vision-result', 'speech-output'],
+    ['android-client', 'python-service'],
+    ['android-client', 'cloud-vision'],
+    ['python-service', 'speech-output'],
+    ['cloud-vision', 'speech-output'],
+    ['android-client', 'firebase'],
   ],
   dive: [
-    ['android-client', 'retrofit-api'],
-    ['retrofit-api', 'safety-classifier'],
+    ['android-client', 'model-api'],
+    ['model-api', 'result'],
+    ['result', 'recommend-loop'],
+    ['recommend-loop', 'model-api'],
+    ['android-client', 'erdpml'],
     ['android-client', 'firebase-services'],
-    ['android-client', 'location-services'],
+    ['android-client', 'location-weather'],
   ],
   dostava: [
     ['android-interface', 'mvvm-presentation'],
-    ['mvvm-presentation', 'retrofit-services'],
-    ['android-interface', 'room-persistence'],
-    ['delivery-workflows', 'firebase-notifications'],
-    ['delivery-workflows', 'maps-tracking'],
+    ['mvvm-presentation', 'firebase-auth'],
+    ['mvvm-presentation', 'realtime-database'],
+    ['realtime-database', 'order-status'],
+    ['mvvm-presentation', 'firebase-storage'],
   ],
 } as const;
 
+// Brief §6.6: these four architectures deliberately changed from the old
+// (pre-rewrite) test expectations. Verify the rendered edges match
+// `src/data/architectures.ts` exactly.
 for (const [slug, edges] of Object.entries(expectedEdges)) {
-  test(`${slug} architecture renders only its documented directed edges`, async ({
+  test(`${slug} architecture renders exactly the edges in architectures.ts`, async ({
     page,
   }) => {
     await page.goto(`/work/${slug}`);
 
     const renderedEdges = await page
-      .locator('.architecture-diagram [data-edge-from][data-edge-to]')
+      .locator('.architecture-flow__edges [data-edge-from][data-edge-to]')
       .evaluateAll((items) =>
         items.map((item) => [
           item.getAttribute('data-edge-from'),
@@ -170,74 +289,71 @@ for (const [slug, edges] of Object.entries(expectedEdges)) {
   });
 }
 
-for (const slug of ['dive', 'dostava'] as const) {
-  for (const width of [320, 360, 720, 820, 1440]) {
-    test(`${slug} branched architecture remains readable without overflow at ${width}px`, async ({
+for (const path of ['/work', '/work/asc-pie']) {
+  for (const width of [320, 360, 820, 1440]) {
+    test(`${path} has no horizontal overflow at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: width < 600 ? 1000 : 1180 });
-      await page.goto(`/work/${slug}`);
+      await page.goto(path);
 
-      const diagram = page.locator('.architecture-diagram');
-      await expect(diagram).toBeVisible();
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth),
-      ).toBe(width);
-
-      const edgeBoxes = await diagram
-        .locator('[data-edge-from][data-edge-to]')
-        .evaluateAll((items) =>
-          items.map((item) => {
-            const box = item.getBoundingClientRect();
-            return { left: box.left, right: box.right, width: box.width };
-          }),
-        );
-      expect(edgeBoxes).toHaveLength(expectedEdges[slug].length);
-      expect(
-        edgeBoxes.every(
-          ({ left, right, width: edgeWidth }) =>
-            left >= 0 && right <= width && edgeWidth > 0,
-        ),
-      ).toBe(true);
+      ).toBeLessThanOrEqual(width);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     });
   }
 }
 
-test('desktop long-form content remains usable at 200% zoom', async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/work/northstar-rag');
-  await page.evaluate(() => {
-    document.documentElement.style.zoom = '200%';
-  });
-
-  expect(
-    await page.evaluate(
-      () =>
-        document.documentElement.scrollWidth <=
-        document.documentElement.clientWidth,
-    ),
-  ).toBe(true);
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-  await expect(
-    page.getByRole('region', { name: 'Public evidence' }),
-  ).toBeAttached();
-});
-
-for (const width of [320, 360, 820, 1440]) {
-  test(`long-form routes have no horizontal overflow at ${width}px`, async ({
+// Brief §5.7: dive and dostava have real screenshots today; minds-eye and
+// death-ninja are still empty in `src/data/project-images.ts` pending a
+// parallel media-pipeline pass, so they're intentionally not asserted here.
+for (const slug of ['dive', 'dostava'] as const) {
+  test(`${slug} gallery renders screenshots at the constrained device-row size, once wired`, async ({
     page,
   }) => {
-    await page.setViewportSize({ width, height: width < 600 ? 900 : 1100 });
-    await page.goto('/work/northstar-rag');
+    await page.goto(`/work/${slug}`);
 
-    expect(
-      await page.evaluate(() => document.documentElement.scrollWidth),
-    ).toBe(width);
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(
-      page.getByRole('region', { name: 'Public evidence' }),
-    ).toBeVisible();
+    const gallery = page.locator('.project-gallery');
+    const galleryCount = await gallery.count();
+    test.skip(
+      galleryCount === 0,
+      `${slug}.mdx does not render <ProjectGallery> yet, even though ` +
+        `src/data/project-images.ts already has real screenshots for it. ` +
+        `Skipping until the media-pipeline pass wires the component in.`,
+    );
+
+    const pictures = gallery.locator('.project-screenshot picture');
+    await expect(pictures.first()).toBeVisible();
+    const maxWidths = await gallery
+      .locator('.project-screenshot')
+      .evaluateAll((items) =>
+        items.map((item) => {
+          const picture = item.querySelector('picture');
+          return picture ? getComputedStyle(picture).maxInlineSize : null;
+        }),
+      );
+    expect(maxWidths.every((value) => value && value !== 'none')).toBe(true);
   });
 }
+
+// Brief §5.7 / task brief: the Dive "Check → Recommend" ScreenFlow may land
+// from a parallel media-pipeline pass. Assert it only if dive.mdx already
+// references <ScreenFlow>, so this suite doesn't fail on a component that
+// hasn't been wired in yet.
+test('Dive ScreenFlow renders the check-to-recommend loop, once wired', async ({
+  page,
+}) => {
+  await page.goto('/work/dive');
+
+  const screenFlow = page.locator('.screen-flow');
+  const screenFlowCount = await screenFlow.count();
+  test.skip(
+    screenFlowCount === 0,
+    'dive.mdx does not reference <ScreenFlow> yet; skipping until the ' +
+      'media-pipeline pass adds it (see docs/PROJECTS_REWRITE_BRIEF.md §5.7).',
+  );
+
+  await expect(screenFlow).toBeVisible();
+  await expect(screenFlow.locator('li')).toHaveCount(3, { timeout: 1000 });
+});

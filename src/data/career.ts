@@ -46,7 +46,7 @@ export const careerRoles: Record<RoleId, CareerRoleContent> = {
     eyebrow: 'Android Developer',
     hero: 'I create Android products that connect clean mobile architecture with APIs, offline data, maps, Firebase, and applied ML.',
     summary:
-      'I have delivered nine Android applications across delivery, wellbeing, weather, e-commerce, sports, utilities, safety, and gaming. Four were previously published through client-owned Google Play listings. My work covers Kotlin and Java, MVVM/MVP, Jetpack, Retrofit/OkHttp, Room/SQLite, Firebase, Maps and Location, background work, release workflows, and integrations involving OCR, computer vision, and API-based ML.',
+      'I have delivered 16 Android applications across delivery, wellbeing, weather, e-commerce, sports, utilities, safety, education, community, and gaming. Four were previously published on Google Play: three under client-owned listings and one as part of my ITI training. My work covers Kotlin and Java, MVVM/MVP, Jetpack, Retrofit/OkHttp, Room/SQLite, Firebase, Maps and Location, background work, release workflows, and integrations involving OCR, computer vision, and API-based ML.',
     skillOrder: [
       'android',
       'mobile-integration',
@@ -77,7 +77,7 @@ export const careerRoles: Record<RoleId, CareerRoleContent> = {
 };
 
 export const proofStats = [
-  { value: '9', label: 'Android apps delivered' },
+  { value: '16', label: 'Android apps delivered' },
   { value: '4', label: 'Previously shipped to Google Play' },
   { value: '10+', label: 'Applied ML projects' },
   { value: '200+', label: 'Teaching hours' },
@@ -126,8 +126,8 @@ export const careerExperience = [
     title: 'Freelance Android Developer',
     organization: 'Client projects · Remote',
     details: [
-      'I delivered nine Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows.',
-      'Four applications were previously published through client-owned Google Play listings; those listings are no longer maintained by the clients.',
+      'I delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows.',
+      'Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of my ITI training.',
       'I integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
     ],
     weights: { aiml: 1, software: 2, android: 5, teaching: 1 },

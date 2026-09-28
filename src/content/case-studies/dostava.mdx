@@ -1,61 +1,134 @@
 ---
 slug: dostava
-title: Dostava Delivery
-summary: An on-demand courier Android application with order workflows, remote and local data layers, notifications, and map-based tracking.
-roles:
-  - software
-  - android
-ownership: I delivered the Android application and its mobile architecture and service integrations.
-technologies:
-  - Java
-  - MVVM
-  - Retrofit
-  - Room
-  - Firebase
-  - Google Maps
-sourceIds:
-  - resume-android
-  - resume-software
-  - case-study-dostava
-featured: true
-publishedAt: 2026-08-14
+publishedAt: 2026-09-27
+passport:
+  context: Client project, Hadayek El Kobba, Cairo
+  platform: Android
+features:
+  - title: Circular category menu
+    detail: Eight categories give a fast way into supermarket, produce, meat, and restaurant orders, laid out as a single circular menu instead of a scrolling list.
+  - title: Free-form orders
+    detail: Customers can describe exactly what they want from a supermarket or a produce seller instead of picking from a fixed catalogue.
+  - title: Restaurant lists
+    detail: A dedicated restaurant flow sits alongside the free-form categories, for the orders that do map cleanly onto a menu.
+  - title: Offers and promo codes
+    detail: Promotions and discount codes apply at checkout, so a returning customer can see a saving before confirming an order.
+  - title: Cart and order history
+    detail: Order history keeps status visible, from "being prepared" to "delivered," so a customer isn't left guessing once an order is placed.
+  - title: Profile with two addresses
+    detail: Customers store two delivery addresses and two phone numbers for faster repeat orders, covering the common home-and-work pattern without extra typing.
+  - title: Facebook and Google sign-in
+    detail: Sign-in uses Facebook and Google rather than a new account system, so a first order doesn't start with a registration form.
+decisions:
+  - choice: free-form order fields
+    over: a fixed product catalogue for every category
+    because: a courier business selling on behalf of a bakery, a pharmacy, a butcher, and a produce seller can't maintain one shared product list, and customers already knew what they wanted to say, not what to click.
+  - choice: Facebook and Google sign-in
+    over: a first-party account system
+    because: a delivery app's first interaction should be placing an order, not filling out a registration form, and both providers were already trusted by the target customers.
+challenges:
+  - problem: Eight very different order types (produce, meat, supermarket, restaurants) don't share one natural data shape, which risked either a bloated generic order model or eight separate, duplicated ones.
+    solution: I kept a single order record with a category field and a free-form details field, and let category-specific screens shape the input without forking the underlying order model.
+  - problem: Two people, or two devices for the same person, could edit a cart or a profile address at the same time, which risked silently overwriting one of the changes.
+    solution: I relied on Firebase Realtime Database's own synchronization and structured writes so the last confirmed change always won, rather than building a custom conflict-resolution layer for a single-user cart.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+      - name: AndroidX Lifecycle (ViewModel/LiveData)
+        kind: framework
+        purpose: Presentation-layer state
+  - layer: Data & auth
+    items:
+      - name: Firebase Realtime Database
+        kind: data
+        purpose: Users, orders, and catalogue data
+      - name: Firebase Auth
+        kind: data
+        purpose: Facebook and Google sign-in
+      - name: Firebase Storage
+        kind: data
+        purpose: Media assets
+      - name: Facebook Login
+        kind: framework
+        purpose: Social sign-in provider
+  - layer: Tooling
+    items:
+      - name: Firebase Analytics
+        kind: tool
+      - name: AdMob
+        kind: tool
+        purpose: In-app monetization
 ---
 
-import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import DeepDive from '@/components/case-study/DeepDive.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
 import ProjectGallery from '@/components/case-study/ProjectGallery.astro';
 
-## Overview
+## The problem
 
-Dostava is an on-demand courier Android application built around customer order and delivery workflows, notifications, and location-aware tracking.
+In Hadayek El Kobba, Cairo, bakeries, pharmacies, butchers, and produce sellers had no delivery of their own, and the big delivery platforms didn't cover them. A resident who wanted a specific cut of meat, a particular brand from the corner supermarket, or a produce order phrased the way they'd say it out loud to a shopkeeper had no single app to reach any of them. The client's promise to customers was simple: order anything you want, from anyone nearby, and one courier network would carry it.
 
-## Challenge
+## Who it was for
 
-The order experience needed both remote service access and local persistence. Delivery workflows also had to coordinate app state with notifications and map-based location behavior.
+A local courier business and its customers, who needed one app instead of separate phone calls and arrangements with every shop in the neighbourhood. The business itself had no existing digital storefront to build on; the app had to be the storefront, the ordering system, and the delivery tracker all at once, for shops that had never had any of the three.
 
 ## My role
 
-I delivered the Android application using Java and MVVM and integrated the remote, local, notification, and mapping services used by the product workflows.
+I delivered the Android application, including the Firebase-backed data layer, authentication, and order workflows, from the category menu through checkout and order tracking. That covered the client-facing app end to end: the category browsing experience, the free-form order forms, cart and checkout, the profile and address model, and the order-status views that customers checked after placing an order.
 
 ## What I built
 
-I used Java with MVVM to separate presentation behavior from the data layers. Retrofit handles remote APIs, Room provides local persistence, Firebase supports notifications and mobile workflows, and Google Maps supplies delivery location and tracking features.
-
-## Architecture
-
-<ArchitectureDiagram slug="dostava" title="Dostava Delivery" />
-
-`Android Java UI → MVVM presentation → Retrofit remote services`
-
-`Android Java UI → Room local persistence`
-
-`delivery workflows → Firebase notifications + Google Maps tracking`
+<FeatureGrid items={frontmatter.features} />
 
 <ProjectGallery projectId="dostava" />
 
-## Results
+<DeepDive id="why-free-form-orders-won" title="Why free-form orders won">
+  A fixed catalogue works for a single restaurant, not for a courier business
+  that has to represent a bakery, a pharmacy, a butcher, and a produce seller at
+  once. Free-form orders let a customer describe exactly what they want in their
+  own words, the same way they would if they called the shop directly, and the
+  courier fills the order the way a person would rather than matching it against
+  a fixed product list. That flexibility mattered more than a tidy menu
+  structure, because the shops themselves didn't share one either.
+</DeepDive>
 
-Dostava was previously published under a client-owned Google Play listing. It is no longer available because the client did not continue maintenance or request updates, so this portfolio does not present a current store-download action.
+## How it works
 
-## Lessons
+The Android interface uses AndroidX Lifecycle to coordinate Firebase Authentication and a single Realtime Database that holds users, orders, and the catalogue, so every screen that touches an order reads and writes through the same data path.
 
-Dostava reinforced the importance of separating remote and local data responsibilities in a workflow-heavy mobile product. That separation makes order state easier to reason about when network, notification, and map events meet.
+<ArchitectureFlow slug="dostava" title="Dostava Delivery" />
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+A courier network only works if the person carrying the order and the person waiting for it are both looking at the same status, so the status field on an order had to be a single source of truth rather than something each screen tracked separately. Profile addresses had the same shape of problem in miniature: two saved addresses and two phone numbers meant the app had to be explicit about which one applied to a given order, instead of assuming a customer only ever ordered to one place.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+Dostava was previously published under a client-owned Google Play listing. It is no longer available because the client didn't continue maintenance or request updates. While it was live, the app carried eight order categories built around the free-form ordering model, giving one courier network a single storefront for shops that had never had one before.
+
+## What I learned
+
+> Real users don't order from a catalogue; they order what they need from whoever has it.
+
+Building the free-form order path first, instead of treating it as a fallback for whatever didn't fit a proper catalogue, changed how I thought about the rest of the app. The catalogue-style restaurant flow ended up as the special case, not the default, because most of what people actually wanted to order didn't come from a menu in the first place.
+
+## What I'd do next
+
+The eight categories covered what the client's courier network could actually fulfil at the time. If I revisited it, the free-form order model already generalises to more categories without a rework, so the next step would be adding shop types as the courier side of the business grows, rather than changing how an order itself is structured.

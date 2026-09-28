@@ -1,0 +1,50 @@
+---
+slug: top-notch
+publishedAt: 2026-09-27
+passport:
+  context: Personal project, built end to end
+  platform: Android
+features:
+  - title: Recipe search and details
+    detail: Recipe details cover ingredients, instructions, and nutrition.
+  - title: Community recipes
+    detail: A community feed of member-posted recipes has its own post-recipe flow.
+  - title: Personal recipes and diary
+    detail: A personal recipes section and a cooking diary keep an individual's own cooking history.
+  - title: Calendar and timer
+    detail: A calendar plans meals ahead, and a timer helps in the kitchen itself.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+  - layer: Data
+    items:
+      - name: Firebase
+        kind: data
+        purpose: Accounts and community recipe data
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A cook juggles recipes from the internet, recipes from other people, and their own notes, plus a plan for when to cook what, usually across several separate apps.
+
+## What I built
+
+I built Top Notch end to end: recipe search and details covering ingredients, instructions, and nutrition; a community feed of member-posted recipes with its own post-recipe flow; a personal recipes section; a cooking diary; a calendar for planning meals; and a timer for the kitchen. Recipe details pull from an external recipe API, kept separate from the community and personal recipe data so the two collections don't get mixed up, and each part of the app owns its own screens rather than sharing one generic recipe list.
+
+## Tech stack
+
+The Android client is written in Java on top of Firebase for accounts and community recipe data.
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Community content and external catalogue content need separate ownership and caching rules.
+
+Keeping recipes pulled from an external API separate from recipes people posted themselves, with different caching and ownership rules, kept the app predictable as both collections grew.

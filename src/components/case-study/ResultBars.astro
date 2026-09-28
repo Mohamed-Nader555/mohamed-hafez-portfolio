@@ -1,0 +1,188 @@
+---
+interface BarItem {
+  label: string;
+  value: number;
+  groupValue?: number;
+}
+
+interface Props {
+  title: string;
+  items: readonly BarItem[];
+  suffix?: string;
+  groupLabels?: readonly [string, string];
+  magenta?: boolean;
+}
+
+const {
+  title,
+  items,
+  suffix = '%',
+  groupLabels,
+  magenta = false,
+} = Astro.props;
+const maxValue = Math.max(
+  ...items.flatMap((item) => [item.value, item.groupValue ?? 0]),
+  1,
+);
+---
+
+<figure class={`result-bars ${magenta ? 'result-bars--magenta' : ''}`}>
+  <figcaption>{title}</figcaption>
+  <div class="result-bars__chart" aria-hidden="true">
+    {
+      items.map((item) => (
+        <div class="result-bars__row">
+          <span class="result-bars__label">{item.label}</span>
+          <div class="result-bars__track">
+            <i style={`--bar-value:${(item.value / maxValue) * 100}%`} />
+            {item.groupValue !== undefined && (
+              <i
+                class="result-bars__group"
+                style={`--bar-value:${(item.groupValue / maxValue) * 100}%`}
+              />
+            )}
+          </div>
+          <strong>
+            {item.value}
+            {suffix}
+            {item.groupValue !== undefined && ` / ${item.groupValue}${suffix}`}
+          </strong>
+        </div>
+      ))
+    }
+  </div>
+  {
+    groupLabels && (
+      <p class="result-bars__legend" aria-hidden="true">
+        <span class="result-bars__legend-swatch" /> {groupLabels[0]}
+        <span class="result-bars__legend-swatch result-bars__legend-swatch--group" />{' '}
+        {groupLabels[1]}
+      </p>
+    )
+  }
+  <table class="visually-hidden">
+    <caption>{title}</caption>
+    <thead>
+      <tr>
+        <th scope="col">Label</th>
+        <th scope="col">{groupLabels ? groupLabels[0] : 'Value'}</th>
+        {groupLabels && <th scope="col">{groupLabels[1]}</th>}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        items.map((item) => (
+          <tr>
+            <th scope="row">{item.label}</th>
+            <td>
+              {item.value}
+              {suffix}
+            </td>
+            {item.groupValue !== undefined && (
+              <td>
+                {item.groupValue}
+                {suffix}
+              </td>
+            )}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</figure>
+
+<style>
+  .result-bars {
+    margin: var(--space-5) 0;
+  }
+
+  .result-bars figcaption {
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-utility);
+    color: var(--color-evidence-300);
+    margin-bottom: var(--space-3);
+  }
+
+  .result-bars--magenta figcaption {
+    color: var(--color-ai-300);
+  }
+
+  .result-bars__row {
+    display: grid;
+    grid-template-columns: 9rem 1fr 6rem;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  .result-bars__label {
+    font-size: var(--type-sm);
+    color: var(--color-ink-200);
+  }
+
+  .result-bars__track {
+    position: relative;
+    block-size: 0.6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-ink-800) 80%, transparent);
+    overflow: hidden;
+  }
+
+  .result-bars__track i {
+    display: block;
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: var(--bar-value, 0%);
+    background: var(--color-evidence-500);
+    border-radius: inherit;
+  }
+
+  .result-bars--magenta .result-bars__track i {
+    background: var(--color-ai-500);
+  }
+
+  .result-bars__track i.result-bars__group {
+    block-size: 40%;
+    inset-block-start: 30%;
+    background: var(--color-ink-200);
+    opacity: 0.8;
+  }
+
+  .result-bars__row strong {
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    color: var(--color-ink-100);
+    text-align: right;
+  }
+
+  .result-bars__legend {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    font-size: var(--type-xs);
+    color: var(--color-ink-300);
+    margin: var(--space-2) 0 0;
+  }
+
+  .result-bars__legend-swatch {
+    inline-size: 0.7rem;
+    block-size: 0.7rem;
+    border-radius: 2px;
+    background: var(--color-evidence-500);
+    display: inline-block;
+  }
+
+  .result-bars__legend-swatch--group {
+    background: var(--color-ink-200);
+    margin-inline-start: var(--space-3);
+  }
+
+  @media (max-width: 40rem) {
+    .result-bars__row {
+      grid-template-columns: 6rem 1fr 5rem;
+    }
+  }
+</style>

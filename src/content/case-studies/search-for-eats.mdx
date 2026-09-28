@@ -1,0 +1,85 @@
+---
+slug: search-for-eats
+publishedAt: 2026-09-27
+passport:
+  context: Client project
+  platform: Android
+features:
+  - title: Map and list views
+    detail: The same search results switch between a map view and a list view, so a diner can browse however suits the moment.
+  - title: Category filters
+    detail: Results narrow to a chosen kind of food instead of mixing every nearby business into one feed.
+  - title: Rating sort
+    detail: Sorting by rating surfaces the strongest nearby options first, rather than the closest or the newest listing.
+  - title: Recent results offline
+    detail: Recently viewed results stay available without a network connection, so a search doesn't disappear the moment signal drops.
+  - title: Account profile
+    detail: A Firebase-backed profile keeps sign-in and saved preferences attached to the account, not just the device.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+  - layer: Location & networking
+    items:
+      - name: Google Maps Platform
+        kind: framework
+        purpose: Map view, place search, and nearby results
+      - name: Retrofit
+        kind: framework
+        purpose: Networking client for remote data
+  - layer: Data & auth
+    items:
+      - name: Firebase
+        kind: data
+        purpose: Account sign-in and profile storage
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+A generic map app treats a restaurant the same as a pharmacy or a hardware store: everything nearby shows up in one undifferentiated feed. Someone who is hungry and picky doesn't want to filter a general business directory by hand every time; they want a tool built only for finding somewhere to eat. A client asked for exactly that: a restaurant finder, not a maps app that happens to show restaurants.
+
+The friction isn't really about location data, which most map apps already handle well. It's about intent. A person opening a food app already knows they want food; what they don't yet know is which kind, how far they're willing to travel, and whether it's worth the trip. A general-purpose map answers "what's near me," not "what's near me that I'd actually enjoy eating."
+
+## Who it was for
+
+Anyone looking for a place to eat nearby who wants to filter by category and sort by rating instead of digging through unrelated listings to get there. That covers the quick, familiar decision, "somewhere close, right now," as well as the more deliberate one, browsing by category and rating before committing to somewhere new.
+
+## My role
+
+I built the Android application end to end, from the map and list discovery screens through category filtering, rating sort, offline recent results, and the account profile. That included deciding how filtering and sorting would interact with the two result views, rather than treating the map and the list as separate features built on top of a shared search.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+The map and list views share the same underlying result set, so switching between them never means losing a filter or a sort order that was already applied. Category filters and rating sort work together rather than as separate screens, which keeps narrowing a search down to a fast, single motion instead of several. Recent results stay cached on the device, so a search made minutes earlier is still there if a connection drops on the way to the restaurant.
+
+The account profile is deliberately light. Its job is to keep saved preferences attached to a person rather than a device, so a filter someone leans on regularly, a favourite category or a minimum rating, doesn't need to be set again every time they open the app on a different device or after a reinstall.
+
+## How it works
+
+The Android UI drives a location and maps layer for discovery, and a Firebase-backed layer for the account profile, with filtering and sorting sitting between search and the two result views.
+
+<ArchitectureFlow slug="search-for-eats" title="Search for Eats" />
+
+Discovery and account data stay on separate paths on purpose. Map and list results come from the same filtered, sorted query regardless of which view is on screen, while sign-in and saved preferences move through Firebase independently of whatever search is currently running. Neither path has to wait on the other.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+Search for Eats was delivered to the client as a working Android application. It was not published to Google Play; the delivery was to the client directly, not to a public store listing. The app shipped as a focused discovery tool: map and list browsing, category and rating filtering, and an account layer, rather than a broader directory of local businesses.
+
+## What I learned
+
+> Discovery quality comes from ranking and filters as much as from the map itself.
+
+A map view makes results feel immediate, but it's the category filter and the rating sort working together that turn "everything nearby" into "the thing I actually want to eat." The map is where you look; the filtering is what decides what's worth looking at.

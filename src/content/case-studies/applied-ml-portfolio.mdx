@@ -1,0 +1,204 @@
+---
+slug: applied-ml-portfolio
+publishedAt: 2026-09-27
+passport:
+  context: Applied ML delivery, DotPy
+  period: '2021 – 2023'
+stats:
+  - value: '11'
+    label: applied ML projects
+    note: forecasting, segmentation, recommendation, NLP, fraud, and vision
+  - value: '2021–2023'
+    label: delivery period
+    note: at DotPy
+stack:
+  - layer: Language & data
+    items:
+      - name: Python
+        kind: language
+        purpose: Notebook and pipeline language across every engagement
+      - name: pandas
+        kind: data
+        purpose: Data preparation and feature engineering
+  - layer: Modeling
+    items:
+      - name: scikit-learn
+        kind: ml
+        purpose: Classical regression, clustering, and classification models
+      - name: TensorFlow/Keras
+        kind: ml
+        purpose: Feed-forward networks and CNN image classification
+      - name: PyTorch
+        kind: ml
+        purpose: Deep-learning experiments where a project called for it
+  - layer: Delivery
+    items:
+      - name: Docker
+        kind: tool
+        purpose: Packaging a notebook or model for handover
+---
+
+import SubProjectGrid from '@/components/case-study/SubProjectGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+export const subProjects = [
+  {
+    title: 'Profit forecasting for startups',
+    problem:
+      'Early-stage businesses had limited, noisy historical data and needed a forecast that communicated uncertainty instead of a false-precise number.',
+    approach:
+      'I framed the forecast horizon, engineered time and business features, and compared regression and time-aware candidates on held-out data.',
+    built:
+      'A repeatable preprocessing pipeline, a comparison of candidate models with error analysis, and a notebook-style forecast artifact with handover documentation.',
+    lesson:
+      'Forecast credibility comes from honest assumptions and leakage control, not a lower validation error on its own.',
+  },
+  {
+    title: 'House price prediction',
+    problem:
+      'Housing data mixed numeric, categorical, missing, and location-sensitive fields, and the model had to stay interpretable enough to explain its own estimates.',
+    approach:
+      'I profiled the data, handled missing and categorical fields, engineered predictors, and compared regression and ensemble models on generalization.',
+    built:
+      'A reproducible tabular preprocessing pipeline and a reusable prediction notebook with model comparisons and error metrics.',
+    lesson:
+      'Location-based features and target leakage need close checking, because they can make a housing model look stronger than it generalizes.',
+  },
+  {
+    title: 'Net energy prediction for power plants',
+    problem:
+      "A plant's output depended on correlated physical and operating variables, and a naive random split could hide unstable relationships between them.",
+    approach:
+      'I inspected distributions and correlations, cleaned invalid readings, engineered stable predictors, and compared regression models on residual behaviour.',
+    built:
+      'A telemetry preprocessing and feature-selection workflow and a reusable prediction artifact with residual analysis.',
+    lesson:
+      'Operational telemetry needs time-aware validation, since aggregate error metrics can hide drift and shifting operating conditions.',
+  },
+  {
+    title: 'Customer segmentation analysis',
+    problem:
+      "Raw customer and transaction data didn't turn into actionable segments on its own; the groups had to be stable and explainable to be useful.",
+    approach:
+      'I built customer-level behavioural features, standardized the feature space, compared clustering configurations, and translated the result into readable profiles.',
+    built:
+      'Customer-level feature aggregation, clustering experiments with internal quality checks, and a documented segmentation output for business discussion.',
+    lesson:
+      "A mathematically tidy cluster only matters when it's stable and connects to a real business action.",
+  },
+  {
+    title: 'Big-market recommendation system',
+    problem:
+      'A large catalogue created discovery friction, while sparse interactions and cold-start items limited a purely collaborative approach.',
+    approach:
+      'I built content and co-occurrence features from item and interaction data, generated candidate similarities, and evaluated the ranked output.',
+    built:
+      'Catalogue and interaction preprocessing, similarity-based recommendation logic, and reusable ranked-output artifacts.',
+    lesson:
+      'A recommendation baseline should be able to explain why it suggested an item, and treat cold start and popularity bias as explicit constraints, not afterthoughts.',
+  },
+  {
+    title: 'Sentiment analysis on textual data',
+    problem:
+      'Sentiment labels were affected by class balance, negation, and noisy or ambiguous text, and a fair comparison needed one consistent split and metric set.',
+    approach:
+      'I cleaned and normalized the text, built classical vector features, trained baseline classifiers, and compared them against a transformer-style model.',
+    built:
+      'A text-cleaning and feature pipeline, a comparison between classical and transformer-style models, and error-analysis output for handover.',
+    lesson:
+      'Macro metrics and reading the actual errors matter most when a minority sentiment class is easy to overlook.',
+  },
+  {
+    title: 'Interactive chatbot development',
+    problem:
+      'A useful chatbot needed predictable coverage of the intents it actually supported, and a safe fallback for everything else, from a small amount of training data.',
+    approach:
+      'I defined an intent taxonomy, normalized user text, trained the intent classifier, and mapped recognized intents to response and fallback logic.',
+    built:
+      'An intent taxonomy with training examples, an intent classifier, and rule-supported response routing behind a working demo interface.',
+    lesson:
+      'A clear scope and a real fallback path matter more early on than trying to cover as many intents as possible.',
+  },
+  {
+    title: 'Artificial neural networks for business problems',
+    problem:
+      'A feed-forward network could model nonlinear relationships in structured business data, but could just as easily overfit and be hard to justify over a simpler model.',
+    approach:
+      'I scaled the structured features, defined a compact network, trained with validation monitoring, and compared it against a conventional baseline.',
+    built:
+      'A reusable tabular preprocessing pipeline, a configurable training and validation workflow, and a baseline comparison delivered alongside the model.',
+    lesson:
+      'Extra model complexity has to earn its place through a measurable validation gain over the simpler baseline, not novelty.',
+  },
+  {
+    title: 'Fraud detection under class imbalance',
+    problem:
+      "Fraud was rare enough that a model could look accurate overall while missing most of it, so plain accuracy wasn't a usable metric.",
+    approach:
+      'I separated the data before applying any class-balancing technique, compared weighted and resampled classifiers, and reviewed precision, recall, and threshold trade-offs.',
+    built:
+      'A leakage-aware preprocessing and splitting workflow, a comparison of imbalance-handling techniques, and confusion-matrix analysis for the trade-off discussion.',
+    lesson:
+      'Fraud models should be tuned around the cost of a missed case versus a false alarm, not around headline accuracy.',
+  },
+  {
+    title: 'Twitter emotion prediction',
+    problem:
+      'Short social-media text carried abbreviations, hashtags, and overlapping emotions, and aggressive cleaning could strip out the signal along with the noise.',
+    approach:
+      'I normalized platform-specific noise while keeping emotion-bearing cues, compared text classifiers, and reviewed confusion between closely related emotions.',
+    built:
+      'A social-text preprocessing pipeline, a multi-class emotion classifier, and per-class confusion analysis with a reusable inference demo.',
+    lesson:
+      'Cleaning rules should keep emojis, negation, and hashtags when they carry more signal than ordinary words do.',
+  },
+  {
+    title: 'CNN image classification',
+    problem:
+      'The image set had a limited number of samples and a risk of near-duplicate leakage between splits, which meant preprocessing discipline mattered as much as the model.',
+    approach:
+      'I built class-balanced splits, normalized and augmented the images, trained a CNN and a fine-tuned pretrained backbone, and reviewed the misclassified examples.',
+    built:
+      'An image ingestion and augmentation pipeline, a trained CNN with a transfer-learning comparison, and a confusion-based error review.',
+    lesson:
+      'Careful splitting and a look at the actual misclassified images can matter more than changing the architecture.',
+  },
+];
+
+## The problem
+
+Businesses came to DotPy with a specific question they couldn't answer from a spreadsheet: what will this cost next quarter, which customers are about to leave, what's actually in this photo. Each question needed its own data, its own comparison of candidate models, and its own way of proving the answer would hold up once someone else relied on it instead of me.
+
+## My role
+
+I worked as the end-to-end machine learning practitioner across eleven applied projects delivered at DotPy between 2021 and 2023: framing the problem with whoever asked it, preparing and exploring the data, comparing candidate models, validating on held-out data, and packaging the result — as a notebook, an API, or a Docker container — with documentation for whoever picked it up afterward.
+
+## What I built
+
+The eleven projects covered forecasting, house-price and energy prediction, customer segmentation, a recommendation baseline, sentiment and emotion classification, a rule-supported chatbot, feed-forward networks on structured data, fraud detection under class imbalance, and CNN-based image classification. The subject changed every time; the delivery discipline underneath it didn't.
+
+<SubProjectGrid items={subProjects} />
+
+## How it works
+
+Every engagement moved through the same delivery lifecycle, from a scoped business question to a documented handover, whether the underlying problem was a regression, a clustering task, or a CNN.
+
+<ArchitectureFlow
+  slug="applied-ml-portfolio"
+  title="Applied Machine Learning Portfolio"
+/>
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+None of the eleven projects kept its dataset, its row counts, or its final score: what survived is the lifecycle, the technology choices, and the handover discipline, not the numbers a client saw at the time. That's a real gap in my own record-keeping, and I'd rather say so than reconstruct a metric I can't stand behind. What every engagement did produce was a reusable notebook or packaged artifact, a comparison across candidate approaches, and documentation a client's own team could run without me.
+
+## What I learned
+
+> Delivery discipline is portable across problems; the model is not.
+
+The pattern that held across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification was never the algorithm. It was scoping the question honestly, comparing more than one way to answer it, and handing over something documented enough to outlive the engagement.

@@ -1,0 +1,132 @@
+---
+interface ModeFeature {
+  title: string;
+  detail: string;
+}
+
+interface Props {
+  modes: readonly [
+    { id: string; label: string; features: readonly ModeFeature[] },
+    { id: string; label: string; features: readonly ModeFeature[] },
+  ];
+}
+
+const { modes } = Astro.props;
+const [first, second] = modes;
+---
+
+<div class="mode-switch">
+  <div class="mode-switch__toggle">
+    <input type="radio" name="mode-switch" id={`mode-${first.id}`} checked />
+    <label for={`mode-${first.id}`}>{first.label}</label>
+    <input type="radio" name="mode-switch" id={`mode-${second.id}`} />
+    <label for={`mode-${second.id}`}>{second.label}</label>
+  </div>
+
+  <div class="mode-switch__panel" data-panel={first.id}>
+    <h4 class="mode-switch__heading">{first.label}</h4>
+    <ul class="mode-switch__features">
+      {
+        first.features.map((feature) => (
+          <li>
+            <strong>{feature.title}</strong>
+            <span>{feature.detail}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <div class="mode-switch__panel" data-panel={second.id}>
+    <h4 class="mode-switch__heading">{second.label}</h4>
+    <ul class="mode-switch__features">
+      {
+        second.features.map((feature) => (
+          <li>
+            <strong>{feature.title}</strong>
+            <span>{feature.detail}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style>
+  .mode-switch__toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .mode-switch__toggle label {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    margin-inline-end: var(--space-2);
+    margin-bottom: var(--space-3);
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    font-size: var(--type-sm);
+    color: var(--color-ink-200);
+    cursor: pointer;
+  }
+
+  .mode-switch__panel {
+    display: none;
+  }
+
+  /* CSS-first toggle: when the browser supports :has, only the checked
+     mode's panel shows. Without :has support both panels show under their
+     own subheadings, per §5.4. */
+  @supports selector(:has(*)) {
+    .mode-switch__panel {
+      display: block;
+    }
+  }
+
+  .mode-switch:has(#mode-visually-impaired:checked)
+    .mode-switch__panel[data-panel='alzheimer'],
+  .mode-switch:has(#mode-alzheimer:checked)
+    .mode-switch__panel[data-panel='visually-impaired'] {
+    display: none;
+  }
+
+  input:checked + label {
+    background: color-mix(in srgb, var(--color-evidence-500) 20%, transparent);
+    border-color: var(--color-evidence-500);
+    color: var(--color-ink-100);
+  }
+
+  .mode-switch__heading {
+    font-family: var(--font-display);
+    font-size: var(--type-body);
+    color: var(--color-ink-100);
+    margin: var(--space-2) 0;
+  }
+
+  .mode-switch__features {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    list-style: none;
+  }
+
+  .mode-switch__features li {
+    display: grid;
+    gap: 0.2rem;
+    padding: var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-ink-900) 65%, transparent);
+  }
+
+  .mode-switch__features strong {
+    color: var(--color-ink-100);
+    font-size: var(--type-sm);
+  }
+
+  .mode-switch__features span {
+    color: var(--color-ink-300);
+    font-size: var(--type-xs);
+  }
+</style>

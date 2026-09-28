@@ -1,0 +1,55 @@
+---
+slug: gulf-arab-chat
+publishedAt: 2026-09-27
+passport:
+  context: Personal project, built end to end
+  platform: Android
+features:
+  - title: Accounts and recovery
+    detail: Email, phone, and social sign-in cover account creation and recovery.
+  - title: Chat, calls, and live
+    detail: One-to-one messaging, voice and video call flows, and live streaming sit alongside each other.
+  - title: Nearby and discovery
+    detail: Location-based discovery surfaces people nearby, in addition to search.
+  - title: Privacy and safety
+    detail: Privacy controls including an invisible mode, plus report and block tools, sit next to notifications.
+  - title: Localization
+    detail: The interface is localized into English, Arabic, and French.
+stack:
+  - layer: App
+    items:
+      - name: Android (Java)
+        kind: language
+        purpose: Client application language
+  - layer: Location & data
+    items:
+      - name: Google Maps / Location
+        kind: framework
+        purpose: Nearby and discovery features
+      - name: Firebase
+        kind: data
+        purpose: Accounts, messaging data, and media
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Bringing chat, calls, live video, and location-based discovery into one social app, in three languages, means stitching together a lot of separate systems until they feel like a single coherent product.
+
+## What I built
+
+I built Gulf Arab Chat end to end: account creation and recovery with email, phone, and social sign-in; one-to-one chat and messaging; voice and video call flows; live streaming; nearby and discovery; profiles and photos; privacy controls including an invisible mode; report and block tools; notifications; and wallet and gift screens, all localized into English, Arabic, and French. To ship features like in-app calling, live video, and gifting on a reasonable timeline, the app integrates a number of third-party UI and media modules rather than building every piece from scratch; the repository bundles many of them.
+
+## Tech stack
+
+The Android client is written in Java on top of Firebase and Google Maps / Location for nearby discovery. It also talks to a Parse-style backend for some of its server-side data handling.
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Social products need privacy, moderation, and permission design worked out before anything else.
+
+Building the invisible mode, the report-and-block flow, and the notification settings taught me that the "boring" trust-and-safety plumbing of a social app takes as much design thought as chat or live video does.

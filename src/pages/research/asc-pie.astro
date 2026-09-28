@@ -1,5 +1,5 @@
 ---
-import ArchitectureDiagram from '@/components/case-study/ArchitectureDiagram.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
 import ResearchHighlights from '@/components/research/ResearchHighlights.astro';
 import { getEvidenceForProject } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -8,8 +8,11 @@ import { createThesisStructuredData } from '@/lib/seo/structured-data';
 
 export const prerender = true;
 
-const records = getEvidenceForProject('asc-pie');
-const recordById = new Map(records.map((record) => [record.id, record]));
+const ascPieRecords = getEvidenceForProject('asc-pie');
+const sprintPpRecords = getEvidenceForProject('sprint-pp');
+const recordById = new Map(
+  [...ascPieRecords, ...sprintPpRecords].map((record) => [record.id, record]),
+);
 const titleRecord = recordById.get('asc-pie-thesis-title');
 const degreeRecord = recordById.get('asc-pie-degree-awarded');
 const statusRecord = recordById.get('sprint-pp-status');
@@ -61,6 +64,14 @@ const structuredData = [
         <strong>{statusRecord.statement}</strong>
       </p>
     </div>
+    <p class="research-page-links">
+      <a href="/work/asc-pie" data-astro-prefetch="hover"
+        >Read how I built ASC-PIE →</a
+      >
+      <a href="/work/sprint-pp" data-astro-prefetch="hover"
+        >Read how I built SPRINT-PP →</a
+      >
+    </p>
   </header>
 
   <ResearchHighlights />
@@ -75,10 +86,10 @@ const structuredData = [
         A comparable path through privacy datasets
       </h2>
     </div>
-    <ArchitectureDiagram slug="asc-pie" title="ASC-PIE" />
+    <ArchitectureFlow slug="asc-pie" title="ASC-PIE" />
     <div class="evidence-record-grid">
       {
-        records
+        ascPieRecords
           .filter((record) =>
             [
               'asc-pie-evaluation-framework',
@@ -116,3 +127,17 @@ const structuredData = [
     </ul>
   </section>
 </BaseLayout>
+
+<style>
+  .research-page-links {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .research-page-links a {
+    color: var(--color-evidence-300);
+    text-decoration: none;
+    font-size: var(--type-sm);
+  }
+</style>
