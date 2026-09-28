@@ -109,6 +109,16 @@ stack:
         purpose: UI tests
       - name: PyCharm
         kind: tool
+screens:
+  - imageId: sim-input
+    step: Check
+    caption: 'Enter a planned dive — max depth, bottom time, and gas mix — and ask the model.'
+  - imageId: unsafe-result
+    step: Flag it
+    caption: 'A flagged plan surfaces "Recommend a Safe One!" with one tap.'
+  - imageId: safer-plan
+    step: Recommend
+    caption: 'From 45 m / 10 min, the app searched shallower and shorter until the model accepted a plan: 37 m / 2 min.'
 links:
   - label: Repository
     sourceId: github-dive
@@ -121,6 +131,7 @@ import DecisionCards from '@/components/case-study/DecisionCards.astro';
 import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
 import StackLayers from '@/components/case-study/StackLayers.astro';
 import ResultBars from '@/components/case-study/ResultBars.astro';
+import ScreenFlow from '@/components/case-study/ScreenFlow.astro';
 
 ## The problem
 
@@ -156,6 +167,8 @@ just stop there — the recommendation loop reduces depth and bottom time and
 asks the model again, until it lands on a plan the model accepts.
 
 </DeepDive>
+
+<ScreenFlow projectId="dive" steps={frontmatter.screens} />
 
 ## How it works
 

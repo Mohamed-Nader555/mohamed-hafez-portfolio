@@ -103,6 +103,19 @@ stack:
       - name: Google Colab
         kind: tool
         purpose: Training the currency-recognition model
+screens:
+  - imageId: home
+    step: Mode
+    caption: 'Visually Impaired or Alzheimer mode is chosen right here, in the app.'
+  - imageId: vi-menu
+    step: Feature
+    caption: 'Visually Impaired mode groups six recognition features behind one menu.'
+  - imageId: face-start
+    step: Open feature
+    caption: 'Opening Face Recognition surfaces a single capture action.'
+  - imageId: select-action
+    step: Result
+    caption: 'Take Photo or Choose Photo From Gallery starts the capture that produces a spoken result.'
 ---
 
 import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
@@ -112,6 +125,8 @@ import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
 import DecisionCards from '@/components/case-study/DecisionCards.astro';
 import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
 import StackLayers from '@/components/case-study/StackLayers.astro';
+import ScreenFlow from '@/components/case-study/ScreenFlow.astro';
+import HardwareSketch from '@/components/case-study/HardwareSketch.astro';
 
 ## The problem
 
@@ -169,6 +184,8 @@ The app runs in two modes, chosen in the app rather than on the hardware. Visual
   ]}
 />
 
+<ScreenFlow projectId="minds-eye" steps={frontmatter.screens} />
+
 ## My role
 
 I delivered more than 80% of this five-person capstone: the Android app, the cloud integrations, the ESP32-CAM firmware and Bluetooth link, the Python service, the interface contracts between all three, error handling, and deployment. I also built the Egyptian-currency recognition feature from scratch. The team graded the project A+.
@@ -196,6 +213,8 @@ Capture starts on the glasses and ends as speech in the user's ear, whichever mo
 ## How it works
 
 The glasses hand a captured image to the Android app over Bluetooth, and the app routes it either to my Python service for currency and face recognition or to the cloud vision services for everything else, then speaks whatever comes back.
+
+<HardwareSketch />
 
 <ArchitectureFlow slug="minds-eye" title="Mind's Eye" />
 
