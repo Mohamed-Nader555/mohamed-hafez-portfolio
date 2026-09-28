@@ -287,7 +287,7 @@ const projectsData = [
     slug: 'food-planner',
     title: 'Healthy Habit / Food Planner',
     hook: '“What’s for dinner this week?” Recipes from around the world, planned, reminded, and available offline.',
-    category: 'Android · Client project',
+    category: 'Android · ITI training',
     group: 'android',
     status: 'play-iti',
     summary:

@@ -14,6 +14,12 @@ function colorFor(value: number) {
   const alpha = 0.12 + value * 0.75;
   return `color-mix(in srgb, var(--color-evidence-500) ${Math.round(alpha * 100)}%, var(--color-ink-900))`;
 }
+
+function textColorFor(value: number) {
+  // High-alpha cells (bright cyan fill) need dark text for WCAG AA contrast;
+  // low-alpha cells (near-navy fill) need the usual light text.
+  return value > 0.5 ? 'var(--color-ink-950)' : 'var(--color-ink-100)';
+}
 ---
 
 <div class="stage-matrix">
@@ -39,7 +45,9 @@ function colorFor(value: number) {
               <tr>
                 <th scope="row">{stageLabels[rowIndex]}</th>
                 {row.map((value) => (
-                  <td style={`background:${colorFor(value)}`}>
+                  <td
+                    style={`background:${colorFor(value)};color:${textColorFor(value)}`}
+                  >
                     {value.toFixed(2)}
                   </td>
                 ))}
