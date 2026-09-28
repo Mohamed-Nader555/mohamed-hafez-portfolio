@@ -242,6 +242,54 @@
     ]
   },
   {
+    "question": "Which of Mohamed's apps were on Google Play?",
+    "activeRole": "android",
+    "supported": true,
+    "expectedSourceIds": ["resume-android"]
+  },
+  {
+    "question": "What models did the Dive app compare?",
+    "activeRole": "aiml",
+    "supported": true,
+    "expectedSourceIds": ["case-study-dive"]
+  },
+  {
+    "question": "What hardware did Mind's Eye use?",
+    "activeRole": "android",
+    "supported": true,
+    "expectedSourceIds": ["case-study-minds-eye"]
+  },
+  {
+    "question": "What did SPRINT-PP achieve?",
+    "activeRole": "aiml",
+    "supported": true,
+    "expectedSourceIds": ["case-study-sprint-pp"]
+  },
+  {
+    "question": "Was The Death Ninja built in Unity?",
+    "activeRole": "android",
+    "supported": true,
+    "expectedSourceIds": ["case-study-death-ninja"]
+  },
+  {
+    "question": "What did Mohamed build with iText?",
+    "activeRole": "software",
+    "supported": true,
+    "expectedSourceIds": ["case-study-pdf-utilities"]
+  },
+  {
+    "question": "Where was SPRINT-PP accepted?",
+    "activeRole": "aiml",
+    "supported": true,
+    "expectedSourceIds": ["case-study-sprint-pp"]
+  },
+  {
+    "question": "Was Food Planner a client app?",
+    "activeRole": "android",
+    "supported": true,
+    "expectedSourceIds": ["case-study-food-planner"]
+  },
+  {
     "question": "What is Mohamed’s medical history?",
     "activeRole": "aiml",
     "supported": false
@@ -280,5 +328,17 @@
     "question": "What is the weather in Toronto?",
     "activeRole": "aiml",
     "supported": false
+  },
+  {
+    "question": "How many downloads did Dostava have?",
+    "activeRole": "android",
+    "supported": true,
+    "expectedSourceIds": ["case-study-dostava"]
+  },
+  {
+    "question": "What was the accuracy of the currency recognizer?",
+    "activeRole": "aiml",
+    "supported": true,
+    "expectedSourceIds": ["case-study-minds-eye"]
   }
 ]
