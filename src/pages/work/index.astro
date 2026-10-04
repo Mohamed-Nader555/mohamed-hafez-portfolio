@@ -2,6 +2,7 @@
 import FlagshipCard from '@/components/case-study/FlagshipCard.astro';
 import StoryCard from '@/components/case-study/StoryCard.astro';
 import { careerExperience, teachingPortfolio } from '@/data/career';
+import { keyFactsBySlug } from '@/data/key-facts';
 import { projects } from '@/data/projects';
 import { roles } from '@/data/roles';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -26,24 +27,6 @@ const earliestYear = Math.min(
   }),
 );
 const currentYear = new Date().getFullYear();
-
-const keyFactsBySlug: Record<string, { value: string; label: string }[]> = {
-  'asc-pie': [
-    { value: '333,109', label: 'examples' },
-    { value: '99.1%', label: 'best strict F1' },
-  ],
-  'sprint-pp': [
-    { value: '83.5%', label: 'accuracy' },
-    { value: '0', label: 'raw examples stored' },
-  ],
-  'northstar-rag': [{ value: '9', label: 'corpus documents' }],
-  'minds-eye': [
-    { value: 'A+', label: 'capstone grade' },
-    { value: '80%+', label: 'delivered by me' },
-  ],
-  dive: [{ value: '4', label: 'models compared' }],
-  dostava: [{ value: '8', label: 'order categories' }],
-};
 
 const groupOrder = ['ml', 'android', 'backend', 'early'] as const;
 const groupLabels: Record<(typeof groupOrder)[number], string> = {

@@ -15,6 +15,9 @@ const projectsData = [
       'I developed this PII-aware named-entity recognition corpus and evaluation framework for my M.A. thesis, harmonizing four public corpora plus my own synthetic augmentation under a shared 19-type schema.',
     ownership:
       'I designed and built the research pipeline: corpus standardization, the shared schema, the evaluation framework, and the reproducible experiment artifacts, supervised by Prof. Marin Litoiu at York University’s CERAS Lab.',
+    contextLine: 'M.A. thesis · York University',
+    roleLine:
+      'Designed and built the research pipeline, schema and evaluation framework.',
     roles: ['aiml', 'software', 'teaching'],
     roleWeights: { aiml: 5, software: 3, android: 0, teaching: 4 },
     technologies: [
@@ -46,6 +49,9 @@ const projectsData = [
       'I designed and built SPRINT-PP, a privacy-safe continual-learning method that lets a PII-extraction model learn new entity types across stages without storing any raw historical text.',
     ownership:
       'I designed the three-stage protocol, implemented all four compared strategies, developed the SPRINT-PP method, and ran the experiments as part of my M.A. thesis.',
+    contextLine: 'M.A. thesis research · York University',
+    roleLine:
+      'Designed the protocol, implemented all four strategies, developed the method.',
     roles: ['aiml'],
     roleWeights: { aiml: 5, software: 2, android: 0, teaching: 3 },
     technologies: [
@@ -75,6 +81,9 @@ const projectsData = [
       'I independently built Northstar end to end, a hands-on RAG engineering project: a retrieval-augmented assistant that grounds every answer in a nine-document corpus and refuses rather than guessing when the evidence doesn’t support an answer.',
     ownership:
       'I independently built the RAG system end to end as a hands-on RAG engineering project: ingestion, chunking, retrieval, grounded generation, citation validation, refusal behaviour, evaluation, testing, and Docker deployment.',
+    contextLine: 'Independent RAG engineering project',
+    roleLine:
+      'Built the RAG system end to end, from ingestion to Docker deployment.',
     roles: ['aiml', 'software'],
     roleWeights: { aiml: 5, software: 5, android: 1, teaching: 2 },
     technologies: [
@@ -101,6 +110,9 @@ const projectsData = [
       'I helped build Mind’s Eye, an assistive smart-glasses system that pairs an ESP32-CAM wearable with an Android app and cloud vision services so a visually impaired or Alzheimer’s user can hear what the camera sees.',
     ownership:
       'I delivered more than 80% of this five-person capstone: the Android app, cloud integrations, ESP32-CAM firmware and Bluetooth link, the Python service, interface contracts, error handling, and deployment. I built the Egyptian-currency recognition feature from scratch.',
+    contextLine: 'B.Sc. capstone, five-person team · 2022',
+    roleLine:
+      'Delivered more than 80% of the capstone; built the currency recognition from scratch.',
     roles: ['aiml', 'android', 'teaching'],
     roleWeights: { aiml: 4, software: 2, android: 5, teaching: 3 },
     technologies: [
@@ -132,6 +144,9 @@ const projectsData = [
       'I built the Dive Simulation & Safety Profile Planner end to end: an Android app that checks a recreational dive plan against a trained safety model and, when the plan isn’t safe, searches for a shallower or shorter one.',
     ownership:
       'I owned and implemented it end to end: requirements, dive-domain research, data collection and preparation, model training and comparison, recommendation logic, the Android app, Firebase, API integration, hosting, testing, and delivery.',
+    contextLine: 'Client project · June 2024',
+    roleLine:
+      'Owned it end to end, from requirements and model training to the Android app.',
     roles: ['aiml', 'software', 'android'],
     roleWeights: { aiml: 3, software: 4, android: 5, teaching: 1 },
     technologies: [
@@ -163,6 +178,9 @@ const projectsData = [
       'I built Dostava, an Arabic-first Android delivery app that let one courier business carry orders from every shop in the neighbourhood, not just a fixed catalogue.',
     ownership:
       'I delivered the Android application, including the Firebase-backed data layer, authentication, and order workflows.',
+    contextLine: 'Client project · Hadayek El Kobba, Cairo',
+    roleLine:
+      'Delivered the Android app, Firebase data layer, authentication and order workflows.',
     roles: ['software', 'android'],
     roleWeights: { aiml: 1, software: 4, android: 5, teaching: 1 },
     technologies: [
@@ -190,6 +208,9 @@ const projectsData = [
       'I delivered more than ten applied machine-learning projects at DotPy, covering forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification.',
     ownership:
       'I owned each project from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover.',
+    contextLine: 'Applied ML delivery · 2021–2023',
+    roleLine:
+      'Owned each project from problem definition to technical handover.',
     roles: ['aiml', 'teaching'],
     roleWeights: { aiml: 5, software: 2, android: 0, teaching: 2 },
     technologies: [
@@ -295,6 +316,9 @@ const projectsData = [
       'I built Healthy Habit / Food Planner, a recipe and meal-planning Android app with weekly plans, reminders, and offline access, published to Google Play as part of my ITI training.',
     ownership:
       'I built the Android application end to end during the ITI Android track.',
+    contextLine: 'ITI Android track project · 2023',
+    roleLine:
+      'Built the Android application end to end during the ITI Android track.',
     roles: ['android'],
     roleWeights: { aiml: 0, software: 2, android: 4, teaching: 1 },
     technologies: [
@@ -373,6 +397,9 @@ const projectsData = [
       'At BASS, I built and supported OpenText Documentum workflows that route banking clients’ documents through intake, review, and lifecycle states while proving they meet regulatory retention rules.',
     ownership:
       'I implemented and supported the workflows, DQL validation controls, and health queries for banking clients in regulated environments.',
+    contextLine: 'Enterprise consulting · 2023–24',
+    roleLine:
+      'Implemented and supported the workflows, DQL validation controls and health queries.',
     roles: ['software', 'teaching'],
     roleWeights: { aiml: 2, software: 5, android: 1, teaching: 3 },
     technologies: [
@@ -427,6 +454,8 @@ const projectsData = [
       'At BASS, I built internal REST endpoints and client proofs of concept that bridged SOAP-based enterprise systems and clean, documented JSON contracts.',
     ownership:
       'I built the service layer, REST contracts, and client demos for internal and prototype use.',
+    contextLine: 'Enterprise consulting · 2023–24',
+    roleLine: 'Built the service layer, REST contracts and client demos.',
     roles: ['software'],
     roleWeights: { aiml: 1, software: 5, android: 0, teaching: 1 },
     technologies: [
@@ -453,6 +482,9 @@ const projectsData = [
       'I built this site: a four-focus engineering portfolio with typed, validated content and a grounded AI assistant that refuses rather than guesses.',
     ownership:
       'I designed and built the site end to end: the content architecture, the role switcher, the case-study system, and the grounded assistant.',
+    contextLine: 'Personal project · live',
+    roleLine:
+      'Designed and built the site end to end, with the grounded assistant.',
     roles: ['software', 'aiml'],
     roleWeights: { aiml: 3, software: 5, android: 0, teaching: 1 },
     technologies: [
@@ -563,6 +595,8 @@ const projectsData = [
     summary:
       'I built a networked Tic-Tac-Toe game with a JavaFX client and server, offline play against a Minimax AI, and online play with authentication and scores.',
     ownership: 'I built it end to end.',
+    contextLine: 'Freelance Java work',
+    roleLine: 'Built it end to end.',
     roles: ['software', 'teaching'],
     roleWeights: { aiml: 0, software: 3, android: 0, teaching: 2 },
     technologies: ['Java', 'JavaFX', 'Sockets', 'Minimax'],
@@ -795,6 +829,8 @@ const projectsData = [
       'Teaching-assistant and instructor experience across computer science, software development, and AI/ML topics.',
     ownership:
       'I planned and delivered tutorials, labs, office hours, workshops, and technical learning materials.',
+    roleLine:
+      'Planned and delivered tutorials, labs, office hours, workshops and materials.',
     roles: ['teaching'],
     roleWeights: { aiml: 2, software: 2, android: 1, teaching: 5 },
     technologies: [

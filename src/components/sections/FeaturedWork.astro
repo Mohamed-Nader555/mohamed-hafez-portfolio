@@ -1,5 +1,6 @@
 ---
 import StoryCard from '@/components/case-study/StoryCard.astro';
+import { keyFactsBySlug } from '@/data/key-facts';
 import type { DeepReadonly } from '@/lib/content/resolve-lens';
 import type { ProjectRecord } from '@/types/content';
 
@@ -49,6 +50,7 @@ function cardTarget(project: DeepReadonly<ProjectRecord>) {
             featured
             href={href}
             linkLabel={linkLabel}
+            keyFacts={keyFactsBySlug[project.id]}
           />
         );
       })

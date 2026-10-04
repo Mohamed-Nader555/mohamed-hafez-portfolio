@@ -235,7 +235,16 @@ for (const [path, cards] of Object.entries(featuredCards)) {
       await expect(card.locator('.project-card__ownership')).toHaveCount(0);
       expect(
         await card.locator('.technology-list li').count(),
-      ).toBeLessThanOrEqual(3);
+      ).toBeLessThanOrEqual(5);
+      // The richer anatomy: decorative cover, full summary, and a role line.
+      await expect(card.locator('.story-card__cover')).toHaveAttribute(
+        'aria-hidden',
+        'true',
+      );
+      await expect(card.locator('.story-card__summary')).not.toBeEmpty();
+      await expect(card.locator('.story-card__role')).toContainText('My role');
+      if (href !== '#teaching-portfolio')
+        await expect(card.locator('.story-card__context')).not.toBeEmpty();
     }
 
     // Projects with a page carry a status badge; the teaching record has none.
@@ -277,3 +286,34 @@ for (const width of [320, 360, 390, 768, 820, 1024, 1440]) {
     ).toBeAttached();
   });
 }
+
+test('the whole home card is clickable through its single link', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  const card = page
+    .getByRole('region', { name: 'Work I’m proud of' })
+    .locator('article.story-card')
+    .first();
+  await expect(card.getByRole('link')).toHaveCount(1);
+  // Click the summary, not the link: the link's ::after covers the card.
+  await card.scrollIntoViewIfNeeded();
+  const box = (await card.locator('.story-card__summary').boundingBox())!;
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+  await expect(page).toHaveURL(/\/work\/asc-pie$/, { timeout: 30_000 });
+});
+
+test('cards show allowlisted key facts only where a number exists', async ({
+  page,
+}) => {
+  await page.goto('/android');
+  const cards = page
+    .getByRole('region', { name: 'Work I’m proud of' })
+    .locator('article.story-card');
+  // Mind's Eye and Dive and Dostava carry facts; Food Planner has none.
+  await expect(cards.nth(0).locator('.story-card__facts li')).not.toHaveCount(
+    0,
+  );
+  await expect(cards.nth(3).locator('.story-card__facts')).toHaveCount(0);
+});

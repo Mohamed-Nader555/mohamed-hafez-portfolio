@@ -73,6 +73,10 @@ export const projectRecordSchema = z.object({
   status: statusKeySchema.optional(),
   summary: z.string().min(1),
   ownership: z.string().min(1),
+  /** Home-card context, from the page passport only (48 characters at most). */
+  contextLine: z.string().max(48).optional(),
+  /** Home-card role line, from `ownership` only (90 characters at most). */
+  roleLine: z.string().max(90).optional(),
   roles: z.array(roleIdSchema).min(1),
   roleWeights: roleWeightsSchema,
   technologies: z.array(z.string().min(1)).min(1).max(6),
