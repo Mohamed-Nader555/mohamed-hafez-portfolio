@@ -16,6 +16,9 @@ if (!architecture) {
 const nodeById = new Map(
   architecture.nodes.map((node) => [node.id, node] as const),
 );
+const indexById = new Map(
+  architecture.nodes.map((node, index) => [node.id, index] as const),
+);
 
 if (nodeById.size !== architecture.nodes.length) {
   throw new Error(`Duplicate architecture node for ${slug}`);
@@ -42,6 +45,29 @@ const relationshipText = relationships
   )
   .join('; ');
 
+// Each relationship is shown once, on the cards themselves. An unlabelled edge
+// to the very next card is a connector (an arrow in the gap after the source
+// card); every other edge (a branch, a skip, a loop back, or anything with a
+// label) is a link chip in the source card's footer.
+const connectorFrom = new Map<string, string>();
+const chipsFrom = new Map<string, typeof relationships>();
+for (const relationship of relationships) {
+  const { edge } = relationship;
+  const isNext =
+    !edge.label &&
+    !connectorFrom.has(edge.from) &&
+    indexById.get(edge.to) === (indexById.get(edge.from) ?? -2) + 1;
+  if (isNext) connectorFrom.set(edge.from, edge.to);
+  else
+    chipsFrom.set(edge.from, [
+      ...(chipsFrom.get(edge.from) ?? []),
+      relationship,
+    ]);
+}
+// A graph is linear when every edge is a connector: the connected cards
+// already are the pipeline, so the Flow strip would only repeat them.
+const linear = chipsFrom.size === 0;
+
 const pipeline =
   architecture.pipeline ?? architecture.nodes.map((node) => node.label);
 ---
@@ -51,44 +77,48 @@ const pipeline =
   aria-label={`${title} architecture`}
   aria-describedby={`${slug}-architecture-summary`}
 >
-  <p class="architecture-flow__label" aria-hidden="true">Flow</p>
-  <ol class="architecture-flow__pipeline" aria-hidden="true">
-    {
-      pipeline.map((stage) => (
-        <li>
-          <code>{stage}</code>
-        </li>
-      ))
-    }
-  </ol>
-  <p class="architecture-flow__label" aria-hidden="true">Components</p>
+  {
+    !linear && (
+      <>
+        <p class="architecture-flow__label" aria-hidden="true">
+          Main path
+        </p>
+        <ol class="architecture-flow__pipeline" aria-hidden="true">
+          {pipeline.map((stage) => (
+            <li>
+              <code>{stage}</code>
+            </li>
+          ))}
+        </ol>
+      </>
+    )
+  }
+  <p class="architecture-flow__label" aria-hidden="true">
+    {linear ? 'Pipeline, step by step' : 'Components and what they talk to'}
+  </p>
   <ol class="architecture-flow__nodes" aria-hidden="true">
     {
       architecture.nodes.map((node, index) => (
-        <li data-node-id={node.id}>
+        <li data-node-id={node.id} data-next={connectorFrom.get(node.id)}>
           <span class="architecture-flow__node-index">
             {String(index + 1).padStart(2, '0')}
           </span>
           <strong>{node.label}</strong>
           <small>{node.detail}</small>
+          {chipsFrom.has(node.id) && (
+            <ul class="architecture-flow__links" aria-label="Sends to">
+              {chipsFrom.get(node.id)!.map(({ edge, to }) => (
+                <li data-edge-from={edge.from} data-edge-to={edge.to}>
+                  <span aria-hidden="true">→</span> {to.label}
+                  {edge.label && <em>{edge.label}</em>}
+                </li>
+              ))}
+            </ul>
+          )}
         </li>
       ))
     }
   </ol>
-  <p class="architecture-flow__label" aria-hidden="true">Connections</p>
-  <ul class="architecture-flow__edges" aria-hidden="true">
-    {
-      relationships.map(({ edge, from, to }) => (
-        <li data-edge-from={edge.from} data-edge-to={edge.to}>
-          <span>{from.label}</span>
-          <span class="architecture-flow__arrow" aria-hidden="true">
-            {edge.label && <em>{edge.label}</em>}→
-          </span>
-          <span>{to.label}</span>
-        </li>
-      ))
-    }
-  </ul>
   <figcaption id={`${slug}-architecture-summary`}>
     {architecture.summary}
     <span class="visually-hidden"> Relationships: {relationshipText}.</span>
@@ -126,19 +156,18 @@ const pipeline =
 
   .architecture-flow__pipeline,
   .architecture-flow__nodes,
-  .architecture-flow__edges {
+  .architecture-flow__links {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .architecture-flow__pipeline li,
-  .architecture-flow__nodes li,
-  .architecture-flow__edges li {
+  .architecture-flow__nodes li {
     margin: 0;
   }
 
-  /* Pipeline strip: monospace stage chips joined by arrows. */
+  /* Main path: monospace stage chips joined by arrows. */
   .architecture-flow__pipeline {
     display: flex;
     flex-wrap: wrap;
@@ -172,14 +201,20 @@ const pipeline =
     white-space: nowrap;
   }
 
-  /* Component cards. */
+  /* Component cards, with a connector arrow in the gap after a card that
+     leads straight to the next one. */
   .architecture-flow__nodes {
+    --flow-gap: var(--space-5);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.5rem), 1fr));
-    gap: var(--space-3);
+    gap: var(--flow-gap);
+    /* Room for the arrow after the last card of a row: it reads as "continues
+       on the next row" and stays inside the list instead of overflowing. */
+    padding-inline-end: var(--flow-gap);
   }
 
-  .architecture-flow__nodes li {
+  .architecture-flow__nodes > li {
+    position: relative;
     display: grid;
     min-inline-size: 0;
     align-content: start;
@@ -188,6 +223,18 @@ const pipeline =
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
     background: color-mix(in srgb, var(--color-ink-850) 70%, transparent);
+  }
+
+  .architecture-flow__nodes > li[data-next]::after {
+    content: '→';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-end: calc(var(--flow-gap) * -1);
+    inline-size: var(--flow-gap);
+    translate: 0 -50%;
+    color: var(--color-evidence-500);
+    font-family: var(--font-utility);
+    text-align: center;
   }
 
   .architecture-flow__node-index {
@@ -211,46 +258,26 @@ const pipeline =
     line-height: 1.45;
   }
 
-  /* Connections: one compact "from -> to" row per edge. */
-  .architecture-flow__edges {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    gap: var(--space-2);
+  /* Link chips: where a card sends data besides the next card. */
+  .architecture-flow__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+    margin: var(--space-2) 0 0;
+    padding: var(--space-2) 0 0;
+    border-block-start: 1px dashed var(--border-subtle);
   }
 
-  .architecture-flow__edges li {
-    display: grid;
-    min-inline-size: 0;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    gap: var(--space-3);
-    align-items: center;
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    color: var(--color-ink-200);
-    font-size: var(--type-xs);
-    line-height: 1.4;
-  }
-
-  .architecture-flow__edges li > span {
-    min-inline-size: 0;
+  .architecture-flow__links li {
+    color: var(--color-evidence-300);
+    font-family: var(--font-utility);
+    font-size: 0.72rem;
+    line-height: 1.5;
     overflow-wrap: anywhere;
   }
 
-  .architecture-flow__edges li > span:last-child {
-    text-align: end;
-  }
-
-  .architecture-flow__arrow {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    color: var(--color-evidence-500);
-    font-family: var(--font-utility);
-    white-space: nowrap;
-  }
-
-  .architecture-flow__arrow em {
+  .architecture-flow__links em {
+    margin-inline-start: var(--space-1);
     padding: 0.1rem 0.45rem;
     border-radius: 999px;
     background: color-mix(in srgb, var(--color-ai-500) 14%, transparent);
@@ -268,18 +295,28 @@ const pipeline =
     line-height: var(--leading-body);
   }
 
+  /* One column: cards stack, so connectors point down. */
+  @media (max-width: 30rem) {
+    .architecture-flow__nodes {
+      grid-template-columns: 1fr;
+      padding-inline-end: 0;
+    }
+
+    .architecture-flow__nodes > li[data-next]::after {
+      content: '↓';
+      display: grid;
+      place-items: center;
+      inset-block: auto calc(var(--flow-gap) * -1);
+      inset-inline: 0;
+      inline-size: auto;
+      block-size: var(--flow-gap);
+      translate: none;
+    }
+  }
+
   @media (max-width: 22.5rem) {
     .architecture-flow__pipeline code {
       white-space: normal;
-    }
-
-    .architecture-flow__edges li {
-      grid-template-columns: 1fr;
-      gap: var(--space-1);
-    }
-
-    .architecture-flow__edges li > span:last-child {
-      text-align: start;
     }
   }
 </style>
