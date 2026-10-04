@@ -934,6 +934,19 @@
       grid-template-columns: minmax(0, 1.05fr) minmax(16rem, 0.95fr);
       align-items: stretch;
     }
+    /* The context card sits in the narrow aside column here, so stack its
+       signal and facts instead of splitting it into two and three columns. */
+    .lens-hero__aside .lens-hero__context {
+      display: block;
+    }
+    .lens-hero__aside .lens-hero__context dl {
+      grid-template-columns: 1fr;
+      margin-block-start: var(--space-5);
+    }
+    .lens-hero__aside .context-signal {
+      padding-block-end: var(--space-5);
+      border-block-end: 1px solid var(--border-subtle);
+    }
     .lens-hero .recruiter-lens-nav {
       max-inline-size: 100%;
       border-radius: var(--radius-lg);

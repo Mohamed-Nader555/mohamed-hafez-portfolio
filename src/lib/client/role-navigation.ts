@@ -3,7 +3,14 @@ import type { RoleId } from '@/types/content';
 const roleSelector = 'a[data-lens][href*="role="]';
 
 export function installRoleNavigation() {
+  // Each switch awaits a short exit animation before it swaps content. If the
+  // visitor clicks again inside that window, only the latest request may swap;
+  // otherwise the earlier one swaps first and the later one targets a detached
+  // node, leaving the old role on screen under the new role's URL.
+  let latestNavigation = 0;
+
   async function renderRole(url: URL, pushHistory: boolean) {
+    const navigation = ++latestNavigation;
     document.documentElement.dataset.roleNavigating = 'true';
 
     try {
@@ -23,7 +30,10 @@ export function installRoleNavigation() {
 
       const nextRole = nextContent.dataset.role as RoleId;
       const swapContent = () => {
-        currentContent.replaceWith(nextContent);
+        (
+          document.querySelector<HTMLElement>('[data-role-content]') ??
+          currentContent
+        ).replaceWith(nextContent);
         document.title = nextContent.dataset.roleTitle ?? document.title;
         document
           .querySelector('[data-shell]')
@@ -65,6 +75,7 @@ export function installRoleNavigation() {
             { duration: 90, easing: 'ease-in', fill: 'forwards' },
           )
           .finished.catch(() => undefined);
+        if (navigation !== latestNavigation) return;
         swapContent();
         nextContent.animate(
           [
@@ -84,7 +95,9 @@ export function installRoleNavigation() {
     } catch {
       window.location.assign(url);
     } finally {
-      delete document.documentElement.dataset.roleNavigating;
+      if (navigation === latestNavigation) {
+        delete document.documentElement.dataset.roleNavigating;
+      }
     }
   }
 

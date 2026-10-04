@@ -6,7 +6,7 @@ test('reduced motion removes shell and lens transitions', async ({ page }) => {
 
   const shell = page.locator('[data-shell]');
   const lensLink = page
-    .getByRole('navigation', { name: 'Recruiter lens' })
+    .getByRole('navigation', { name: 'Professional focus' })
     .getByRole('link', { name: 'Software Engineer', exact: true });
 
   await expect(shell).toBeVisible();

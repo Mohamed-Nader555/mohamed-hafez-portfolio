@@ -43,6 +43,11 @@ test('keeps an accessible role switcher available after the hero leaves view', a
   await expect(persistentSwitcher).toHaveAttribute('aria-hidden', 'true');
 });
 
+// The case-study body is a two-column layout from 64rem: a narrow sticky
+// "On this page" sidebar on the left and the article on the right. A past bug
+// left the article at its default `order`, which swapped the columns and put
+// the prose in the 16rem track. Guard the intended geometry on one page per
+// tier.
 for (const slug of [
   'asc-pie',
   'northstar-rag',
@@ -50,36 +55,71 @@ for (const slug of [
   'dive',
   'dostava',
 ]) {
-  test(`${slug} uses the wider case-study reading layout`, async ({ page }) => {
+  test(`${slug} puts the contents sidebar left of a wide reading column`, async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(`/work/${slug}`);
 
     const measurements = await page.evaluate(() => {
-      const hero = document.querySelector('.longform-hero');
+      const hero = document.querySelector('.case-study-hero');
+      const toc = document.querySelector('.case-study-toc');
       const prose = document.querySelector('.case-study-prose');
-      const overview = Array.from(document.querySelectorAll('h2')).find(
-        (heading) => heading.textContent?.trim() === 'Overview',
-      )?.nextElementSibling;
-      if (!hero || !prose || !overview)
-        throw new Error('Layout target missing');
+      if (!hero || !toc || !prose) throw new Error('Layout target missing');
       const heroBox = hero.getBoundingClientRect();
+      const heroStyle = getComputedStyle(hero);
+      const tocBox = toc.getBoundingClientRect();
       const proseBox = prose.getBoundingClientRect();
-      const overviewBox = overview.getBoundingClientRect();
       return {
-        heroLeft: heroBox.left,
+        // Compare content edges: the header and the body are both
+        // `shell-container`s, so they share the same side padding.
+        heroLeft: heroBox.left + parseFloat(heroStyle.paddingLeft),
+        heroRight: heroBox.right - parseFloat(heroStyle.paddingRight),
+        tocLeft: tocBox.left,
+        tocRight: tocBox.right,
+        tocWidth: tocBox.width,
+        tocPosition: getComputedStyle(toc).position,
         proseLeft: proseBox.left,
-        heroWidth: heroBox.width,
+        proseRight: proseBox.right,
         proseWidth: proseBox.width,
-        overviewWidth: overviewBox.width,
       };
     });
 
+    // Sidebar first and narrow, article second and wide.
+    expect(measurements.tocLeft).toBeLessThan(measurements.proseLeft);
+    expect(measurements.tocRight).toBeLessThanOrEqual(measurements.proseLeft);
+    expect(measurements.tocWidth).toBeLessThanOrEqual(272);
+    expect(measurements.proseWidth).toBeGreaterThanOrEqual(640);
+    expect(measurements.proseWidth).toBeGreaterThan(
+      measurements.tocWidth * 2.5,
+    );
+    expect(measurements.tocPosition).toBe('sticky');
+
+    // Both columns line up with the page header.
+    expect(Math.abs(measurements.heroLeft - measurements.tocLeft)).toBeLessThan(
+      2,
+    );
     expect(
-      Math.abs(measurements.heroLeft - measurements.proseLeft),
+      Math.abs(measurements.heroRight - measurements.proseRight),
     ).toBeLessThan(2);
-    expect(
-      Math.abs(measurements.heroWidth - measurements.proseWidth),
-    ).toBeLessThan(2);
-    expect(measurements.overviewWidth).toBeGreaterThanOrEqual(900);
   });
 }
+
+test('the contents list and the article share one full-width column below 64rem', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 820, height: 1000 });
+  await page.goto('/work/dive');
+
+  const widths = await page.evaluate(() => {
+    const toc = document.querySelector('.case-study-toc');
+    const prose = document.querySelector('.case-study-prose');
+    if (!toc || !prose) throw new Error('Layout target missing');
+    return {
+      tocWidth: toc.getBoundingClientRect().width,
+      proseWidth: prose.getBoundingClientRect().width,
+    };
+  });
+
+  expect(Math.abs(widths.tocWidth - widths.proseWidth)).toBeLessThan(2);
+});

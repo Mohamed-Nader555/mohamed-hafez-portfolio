@@ -125,7 +125,7 @@ test('thesis page charts carry the deck numbers, including validity', async ({
   ]);
 });
 
-for (const width of [320, 360, 390, 768, 1440]) {
+for (const width of [320, 360, 390, 768, 1024, 1440]) {
   test(`thesis page has no horizontal overflow at ${width}px`, async ({
     page,
   }) => {
@@ -162,7 +162,7 @@ test('about publishes validated screening facts and direct contact', async ({
   await page.goto('/about');
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Engineering breadth, one evidence standard',
+    'Engineering across AI, software, mobile, and teaching',
   );
   await expect(page.getByText('Toronto, Ontario, Canada.')).toBeVisible();
   await expect(page.getByText('Immediately available.')).toBeVisible();

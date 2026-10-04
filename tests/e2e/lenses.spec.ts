@@ -7,6 +7,7 @@ const lenses = [
     title: 'Mohamed Hafez — AI/ML Engineer',
     resume: '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',
     firstProject: 'ASC-PIE',
+    heroPhrase: 'privacy-aware NLP',
   },
   {
     path: '/software',
@@ -14,6 +15,7 @@ const lenses = [
     title: 'Mohamed Hafez — Software Engineer',
     resume: '/resumes/Mohamed-Hafez-Software-Engineer.pdf',
     firstProject: 'Northstar RAG System',
+    heroPhrase: 'reliable services',
   },
   {
     path: '/android',
@@ -21,6 +23,7 @@ const lenses = [
     title: 'Mohamed Hafez — Android Developer',
     resume: '/resumes/Mohamed-Hafez-Android-Developer.pdf',
     firstProject: 'Mind’s Eye',
+    heroPhrase: 'Android products',
   },
   {
     path: '/teaching',
@@ -28,22 +31,26 @@ const lenses = [
     title: 'Mohamed Hafez — TA / Instructor',
     resume: '/resumes/Mohamed-Hafez-TA-Instructor.pdf',
     firstProject: 'Teaching & Technical Instruction',
+    heroPhrase: 'practical labs',
   },
 ] as const;
 
 for (const lens of lenses) {
-  test(`${lens.label} route exposes role-specific evidence and metadata`, async ({
+  test(`${lens.label} route exposes its hero, metadata, and featured work`, async ({
     page,
   }) => {
     await page.goto(lens.path);
 
     await expect(page).toHaveTitle(lens.title);
-    await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      lens.label,
-    );
+    const heading = page.getByRole('heading', { level: 1 });
+    await expect(heading).toContainText('I’m Mohamed Hafez');
+    await expect(heading).toContainText(lens.heroPhrase);
+    await expect(
+      page.getByRole('region', { name: `${lens.label} overview` }),
+    ).toBeVisible();
     await expect(
       page
-        .getByRole('navigation', { name: 'Recruiter lens' })
+        .getByRole('navigation', { name: 'Professional focus' })
         .getByRole('link', { name: lens.label, exact: true }),
     ).toHaveAttribute('aria-current', 'page');
     await expect(
@@ -69,60 +76,57 @@ test('the default AI/ML hierarchy makes the full engineering and teaching breadt
   await expect(hero).toContainText('TA / Instructor');
 
   const headings = await page.locator('main h2').allTextContents();
-  expect(headings).toEqual([
-    '60-second evidence',
-    'Featured work',
-    'Experience & capabilities',
-    'Research & teaching depth',
+  // The first h2 is the project spotlight; the rest are the page sections.
+  expect(headings.slice(1)).toEqual([
+    'A focused view of my work',
+    'Work I’m proud of',
+    'Experience across research, products, and teaching',
+    'Skills organized by how I use them',
+    'How I help people learn',
+    'The foundation behind my work',
     'Start a direct conversation',
   ]);
 });
 
-test('AI/ML depth exposes ASC-PIE and SPRINT-PP with official-first sourcing', async ({
+test('each lens spotlights its own project and never claims an unpublished SPRINT-PP', async ({
   page,
 }) => {
-  await page.goto('/');
+  const spotlights = [
+    ['/', 'ASC-PIE', '/research/asc-pie'],
+    ['/software', 'Northstar RAG System', '/work/northstar-rag'],
+    ['/android', 'Mind’s Eye', '/work/minds-eye'],
+    [
+      '/teaching',
+      'Teaching & Technical Instruction',
+      '/experience#teaching-and-communication-title',
+    ],
+  ] as const;
 
-  const depth = page.getByRole('region', { name: 'Research & teaching depth' });
-  await expect(depth).toContainText('ASC-PIE');
-  await expect(depth).toContainText(
-    'SPRINT-PP is a research paper submitted and under review.',
-  );
-  await expect(
-    depth.getByRole('link', { name: 'Source · YorkSpace thesis record' }),
-  ).toHaveAttribute(
-    'href',
-    'https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e',
-  );
-  const sprintStatus = depth
-    .getByRole('article')
-    .filter({ hasText: 'SPRINT-PP research status' });
-  await expect(
-    sprintStatus.getByRole('link', { name: 'Source · AI/ML Engineer résumé' }),
-  ).toHaveAttribute('href', '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf');
-  await expect(sprintStatus.locator('a[href="/research/asc-pie"]')).toHaveCount(
-    0,
-  );
-  await expect(page.locator('body')).not.toContainText(
-    /published SPRINT-PP|accepted SPRINT-PP/i,
-  );
+  for (const [path, title, href] of spotlights) {
+    await page.goto(path);
+    const spotlight = page.getByRole('complementary', {
+      name: 'Project spotlight',
+    });
+    await expect(spotlight).toContainText(title);
+    await expect(spotlight.getByRole('link')).toHaveAttribute('href', href);
+    await expect(page.locator('body')).not.toContainText(
+      /published SPRINT-PP|accepted SPRINT-PP|under review/i,
+    );
+  }
 });
 
-test('teaching depth exposes CEH as training with the matching resume source', async ({
+test('certificates list CEH as a training programme, never a certification', async ({
   page,
 }) => {
   await page.goto('/teaching');
 
-  const depth = page.getByRole('region', { name: 'Research & teaching depth' });
-  await expect(depth).toContainText(
-    'Mohamed completed CEH training; he did not receive an official CEH certification.',
-  );
-  const ceh = depth
-    .getByRole('article')
-    .filter({ hasText: 'CEH training status' });
+  const credentials = page.getByRole('region', {
+    name: 'Certificates and training',
+  });
   await expect(
-    ceh.getByRole('link', { name: 'Source · TA / Instructor résumé' }),
-  ).toHaveAttribute('href', '/resumes/Mohamed-Hafez-TA-Instructor.pdf');
+    credentials.getByText('Certified Ethical Hacker (CEH)'),
+  ).toBeVisible();
+  await expect(credentials).toContainText(/training programme only/i);
   await expect(page.locator('body')).not.toContainText(/CEH certified/i);
 });
 
@@ -138,18 +142,18 @@ test('lens, contact, resume, and case-study links remain real without JavaScript
   await page.goto('/');
 
   const lensNavigation = page.getByRole('navigation', {
-    name: 'Recruiter lens',
+    name: 'Professional focus',
   });
   await expect(
     lensNavigation.getByRole('link', {
       name: 'Software Engineer',
       exact: true,
     }),
-  ).toHaveAttribute('href', '/software');
+  ).toHaveAttribute('href', '/?role=software');
   await lensNavigation
     .getByRole('link', { name: 'Software Engineer', exact: true })
     .click();
-  await expect(page).toHaveURL(/\/software$/);
+  await expect(page).toHaveURL(/\?role=software$/);
 
   await expect(
     page.getByRole('link', { name: 'Email Mohamed', exact: true }).first(),
@@ -166,9 +170,9 @@ test('lens, contact, resume, and case-study links remain real without JavaScript
   ).toHaveAttribute('href', '/work/northstar-rag');
   await expect(
     featured.getByRole('link', {
-      name: 'Read the story: Dive Simulation & Safety Profile Planner',
+      name: 'Read the story: Documentum Workflow & Lifecycle Optimization',
     }),
-  ).toHaveAttribute('href', '/work/dive');
+  ).toHaveAttribute('href', '/work/documentum-workflows');
 
   await context.close();
 });
@@ -255,7 +259,7 @@ test('the ASC-PIE card opens the story page, not the research record', async ({
   await expect(page).toHaveURL(/\/work\/asc-pie$/, { timeout: 30_000 });
 });
 
-for (const width of [320, 360, 820, 1440]) {
+for (const width of [320, 360, 390, 768, 820, 1024, 1440]) {
   test(`lens hierarchy has no horizontal overflow at ${width}px`, async ({
     page,
   }) => {

@@ -317,6 +317,110 @@ describe('case-study content collection', () => {
     );
   });
 
+  // Parent brief §9.1 forbidden-wording regressions. The patterns live here, in
+  // the test file only: public code and content must never carry them.
+  describe('forbidden wording (brief §9.1)', () => {
+    const BANK_NAMES = /Alinma|Banque\s+Saudi\s+Fransi|\bBSF\b/i;
+    // Non-clinical wellbeing language only on Your Life Is My Life.
+    const CLINICAL_TERMS =
+      /\b(treatment|therapy|therapist|depress\w*|suicid\w*|patients?|diagnos\w*|medical|psychiatr\w*)\b/i;
+    // The commercial app template Mercato was adapted from must stay unnamed.
+    const MERCATO_TEMPLATE = /tic[\s-]?tic/i;
+    const PAYMENT_CLAIMS = /payment\s+gateway|processes\s+payments?/i;
+
+    async function pageTexts() {
+      const entries = await loadCaseStudies();
+      return new Map(entries.map((entry) => [entry.id, entry]));
+    }
+
+    function sentences(text: string) {
+      return text.split(/(?<=[.!?])\s+/);
+    }
+
+    it('never names the banking clients in any case study', async () => {
+      for (const entry of (await pageTexts()).values()) {
+        expect(entry.raw, `${entry.id} names a bank`).not.toMatch(BANK_NAMES);
+      }
+    });
+
+    it('never names the banking clients in catalogue data or sources', () => {
+      const publicData = JSON.stringify({ projects, sources });
+      expect(publicData).not.toMatch(BANK_NAMES);
+    });
+
+    it('keeps Your Life Is My Life in non-clinical wellbeing language', async () => {
+      const entry = (await pageTexts()).get('your-life-is-my-life')!;
+      expect(nodeText(entry.tree)).not.toMatch(CLINICAL_TERMS);
+      expect(JSON.stringify(entry.data)).not.toMatch(CLINICAL_TERMS);
+      const project = projectBySlug.get('your-life-is-my-life')!;
+      expect(
+        `${project.hook} ${project.summary} ${project.ownership}`,
+      ).not.toMatch(CLINICAL_TERMS);
+    });
+
+    it('does not name the template Mercato was adapted from', async () => {
+      const texts = await pageTexts();
+      expect(texts.get('mercato')!.raw).not.toMatch(MERCATO_TEMPLATE);
+      const project = projectBySlug.get('mercato')!;
+      expect(
+        `${project.hook} ${project.summary} ${project.ownership}`,
+      ).not.toMatch(MERCATO_TEMPLATE);
+      // And it is a football-talent platform, never a marketplace.
+      expect(nodeText(texts.get('mercato')!.tree)).not.toMatch(/marketplace/i);
+    });
+
+    it('never describes Search for Eats as published on Google Play', async () => {
+      const texts = await pageTexts();
+      const searchForEats = nodeText(texts.get('search-for-eats')!.tree);
+      // The one place Google Play is mentioned must negate it.
+      for (const sentence of sentences(searchForEats)) {
+        if (/google play/i.test(sentence)) {
+          expect(sentence, sentence).toMatch(/\bnot\b/i);
+        }
+      }
+      // Anywhere else, a sentence naming Search for Eats and Google Play
+      // together must also negate it.
+      for (const entry of texts.values()) {
+        for (const sentence of sentences(nodeText(entry.tree))) {
+          if (
+            /search for eats/i.test(sentence) &&
+            /google play/i.test(sentence)
+          ) {
+            expect(sentence, `${entry.id}: ${sentence}`).toMatch(/\bnot\b/i);
+          }
+        }
+      }
+      expect(projectBySlug.get('search-for-eats')!.status).toBe(
+        'client-delivered',
+      );
+    });
+
+    it('never claims My Card is a payment gateway or processes payments', async () => {
+      const entry = (await pageTexts()).get('my-card')!;
+      // The page may say there is no gateway behind its payment screen; it
+      // must never say there is one.
+      for (const sentence of sentences(nodeText(entry.tree))) {
+        if (PAYMENT_CLAIMS.test(sentence)) {
+          expect(sentence, sentence).toMatch(/\b(no|not|never|without)\b/i);
+        }
+      }
+      const project = projectBySlug.get('my-card')!;
+      expect(
+        `${project.hook} ${project.summary} ${project.ownership}`,
+      ).not.toMatch(PAYMENT_CLAIMS);
+    });
+
+    it('catches each forbidden pattern when it is present', () => {
+      // Guards against a regex typo silently turning a check into a no-op.
+      expect('Alinma Bank').toMatch(BANK_NAMES);
+      expect('Banque Saudi Fransi').toMatch(BANK_NAMES);
+      expect('therapy for depression').toMatch(CLINICAL_TERMS);
+      expect('a TicTic style app').toMatch(MERCATO_TEMPLATE);
+      expect('a payment gateway').toMatch(PAYMENT_CLAIMS);
+      expect('it processes payments').toMatch(PAYMENT_CLAIMS);
+    });
+  });
+
   it('keeps natural project links where they add reader value', async () => {
     const entries = new Map(
       (await loadCaseStudies()).map((entry) => [entry.id, entry]),

@@ -18,7 +18,9 @@ test('switches roles through the query without reloading the browser document', 
     });
   });
 
-  const android = page.getByRole('link', {
+  // Scope to the hero switcher: once the page scrolls, the persistent switcher
+  // becomes available to assistive tech too and the bare name matches twice.
+  const android = page.locator('.lens-hero').getByRole('link', {
     name: 'Android Developer',
     exact: true,
   });
@@ -140,4 +142,28 @@ test('featured story cards swap instantly with the role and stay one document', 
     ),
   ).toBe('same-document');
   expect(runtimeErrors).toEqual([]);
+});
+
+test('two quick role switches end on the last role, in both the content and the URL', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  // Click the second role before the first switch's exit animation finishes.
+  const hero = page.locator('.lens-hero');
+  await hero
+    .getByRole('link', { name: 'Android Developer', exact: true })
+    .click();
+  await page
+    .getByRole('link', { name: 'Software Engineer', exact: true })
+    .first()
+    .click();
+
+  await expect(page.locator('[data-role-content]')).toHaveAttribute(
+    'data-role',
+    'software',
+  );
+  await expect(page).toHaveURL(/\?role=software$/);
+  await expect(page).toHaveTitle('Mohamed Hafez — Software Engineer');
 });

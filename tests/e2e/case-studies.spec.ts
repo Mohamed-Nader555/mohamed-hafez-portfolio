@@ -337,8 +337,16 @@ for (const route of ['/work/asc-pie', '/work/dive', '/research/asc-pie']) {
   });
 }
 
-for (const path of ['/work', '/work/asc-pie']) {
-  for (const width of [320, 360, 820, 1440]) {
+// Parent brief §5.8 / §9: the six required widths on the index, one page per
+// tier (flagship, story, brief; the card tier has no page), and, in
+// research-accuracy.spec.ts, the research record.
+for (const path of [
+  '/work',
+  '/work/asc-pie',
+  '/work/mercato',
+  '/work/my-card',
+]) {
+  for (const width of [320, 360, 390, 768, 1024, 1440]) {
     test(`${path} has no horizontal overflow at ${width}px`, async ({
       page,
     }) => {
