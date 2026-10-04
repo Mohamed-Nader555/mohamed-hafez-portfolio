@@ -48,6 +48,7 @@ import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
 import StackLayers from '@/components/case-study/StackLayers.astro';
 import CompareTable from '@/components/case-study/CompareTable.astro';
 import StageMatrix from '@/components/case-study/StageMatrix.astro';
+import RepositoryLinks from '@/components/case-study/RepositoryLinks.astro';
 
 _Paper: "ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction" — accepted to IEEE CASCON 2026 (Toronto, 10–12 Nov 2026); the method is also part of my M.A. thesis. No author list yet._
 
@@ -66,6 +67,10 @@ I designed the three-stage protocol, implemented all four compared update strate
 ## What I built
 
 I built the staged benchmark itself, not just the mitigation. Every stage adds new PII types on top of what came before, and I score each strategy two ways: a stage-restricted view that shows what a strategy learned, and a cumulative view that shows what it managed to keep usable once later stages arrived. Separating those two views is what makes it possible to see forgetting and new-type learning as two different numbers instead of one blurred score.
+
+Every one of those scores is entity-level F1, not token accuracy, and that choice matters here. In PII extraction most tokens in any sentence are labelled O, meaning "not an entity". A model that has forgotten an entire type can still label the large majority of tokens correctly, because it simply calls them O, so token accuracy stays respectable while the model can no longer find a single entity of that type. Entity-level F1 only gives credit when the whole entity is found, so it shows forgetting the way a user would experience it: the thing you needed extracted is missing.
+
+The two views also read differently across strategies, which is why I kept both. In the stage-restricted view, replay's score on the first stage slips as later stages arrive, while SPRINT-PP holds it almost level. In the cumulative view, where old and new types are scored together, that gap widens, because a model that has quietly lost one type drags down every sentence containing it. Reading the two together is what separates a method that learns new types from one that also keeps the old ones usable.
 
 <FeatureGrid items={frontmatter.features} />
 
@@ -183,4 +188,6 @@ The underlying research's own future work applies directly here: evaluating SPRI
 
 ## Links
 
-The continual-learning results here build directly on the corpus and shared evaluator described on the [ASC-PIE research record](/research/asc-pie), and the underlying thesis is catalogued on [YorkSpace](https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e). The IEEE Xplore record will be added once the CASCON 2026 proceedings are published.
+The continual-learning results here build directly on the corpus and shared evaluator described on the [ASC-PIE research record](/research/asc-pie), and the underlying thesis is catalogued on [YorkSpace](https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e). The IEEE Xplore record will be added once the CASCON 2026 proceedings are published. The experiments behind it run from the thesis experiments repository.
+
+<RepositoryLinks slug={frontmatter.slug} />

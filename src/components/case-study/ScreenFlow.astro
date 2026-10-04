@@ -18,7 +18,11 @@ const imageById = new Map(images.map((image) => [image.id, image]));
 ---
 
 <figure class="screen-flow" aria-label={`${projectId} screen flow`}>
-  <ol class="screen-flow__track" tabindex="0" aria-label="Scrollable screenshots">
+  <ol
+    class="screen-flow__track"
+    tabindex="0"
+    aria-label="Scrollable screenshots"
+  >
     {
       steps.map((step, index) => {
         const image = imageById.get(step.imageId);

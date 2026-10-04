@@ -184,107 +184,6 @@
     line-height: 1.5;
   }
 
-  .architecture-diagram {
-    max-inline-size: none;
-    margin-block: var(--space-8);
-    padding: clamp(var(--space-4), 3vw, var(--space-6));
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-lg);
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--color-ink-800) 65%, transparent),
-      color-mix(in srgb, var(--color-ink-900) 84%, transparent)
-    );
-    box-shadow: var(--shadow-surface);
-  }
-
-  .architecture-diagram__nodes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
-    gap: var(--space-3);
-    padding: 0;
-    list-style: none;
-  }
-
-  .architecture-diagram__nodes li {
-    display: grid;
-    min-inline-size: 0;
-    align-content: start;
-    gap: var(--space-2);
-    padding: var(--space-4);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    background: color-mix(in srgb, var(--color-ink-850) 70%, transparent);
-  }
-
-  .architecture-diagram__node-index {
-    color: var(--color-ai-300);
-    font-family: var(--font-utility);
-    font-size: var(--type-xs);
-  }
-
-  .architecture-diagram__nodes strong {
-    color: var(--color-ink-100);
-    font-size: var(--type-sm);
-    line-height: 1.3;
-    overflow-wrap: anywhere;
-  }
-
-  .architecture-diagram__nodes small {
-    color: var(--color-ink-300);
-    font-size: var(--type-xs);
-    line-height: 1.4;
-  }
-
-  .architecture-diagram__relationships-heading {
-    margin-block: var(--space-6) var(--space-3);
-    color: var(--color-ink-300);
-    font-family: var(--font-utility);
-    font-size: var(--type-xs);
-    letter-spacing: var(--tracking-utility);
-    text-transform: uppercase;
-  }
-
-  .architecture-diagram__relationships {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-3);
-    padding: 0;
-    list-style: none;
-  }
-
-  .architecture-diagram__relationships li {
-    display: grid;
-    min-inline-size: 0;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    gap: var(--space-3);
-    align-items: center;
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    color: var(--color-ink-200);
-    font-size: var(--type-xs);
-    line-height: 1.4;
-  }
-
-  .architecture-diagram__relationships li span {
-    min-inline-size: 0;
-    overflow-wrap: anywhere;
-  }
-
-  .architecture-diagram__arrow {
-    color: var(--color-evidence-500);
-    font-family: var(--font-utility);
-  }
-
-  .architecture-diagram figcaption {
-    margin-block-start: var(--space-6);
-    padding-block-start: var(--space-4);
-    border-block-start: 1px solid var(--border-subtle);
-    color: var(--color-ink-200);
-    font-size: var(--type-sm);
-  }
-
   .longform-evidence-wrap {
     padding-block-end: var(--space-section);
   }
@@ -438,10 +337,6 @@
   .about-contact {
     padding-block: var(--space-section);
     border-block-start: 1px solid var(--border-subtle);
-  }
-
-  .research-record .architecture-diagram {
-    max-inline-size: var(--width-shell);
   }
 
   .evidence-record-grid {
@@ -602,10 +497,6 @@
       border-block-end: 0;
     }
 
-    .architecture-diagram__relationships {
-      grid-template-columns: 1fr;
-    }
-
     .project-gallery {
       grid-template-columns: 1fr;
     }
@@ -618,16 +509,6 @@
 
     .about-contact nav {
       grid-template-columns: 1fr;
-    }
-
-    .architecture-diagram__relationships li {
-      grid-template-columns: 1fr;
-      gap: var(--space-2);
-    }
-
-    .architecture-diagram__arrow {
-      transform: rotate(90deg);
-      justify-self: start;
     }
   }
 }

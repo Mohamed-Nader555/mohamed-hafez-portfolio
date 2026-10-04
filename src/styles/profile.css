@@ -594,13 +594,6 @@
   .featured-section .project-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .project-card {
-    min-block-size: 22rem;
-  }
-  .project-card:first-child {
-    border-color: var(--border-strong);
-    box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 18%);
-  }
 
   .career-timeline {
     display: grid;
@@ -870,33 +863,33 @@
     color: var(--color-ink-200);
     font-size: var(--type-xs);
   }
-  .bar-chart i {
-    position: relative;
+  .bar-chart__bar {
     display: block;
+    inline-size: 100%;
     block-size: 0.75rem;
     background: var(--color-ink-800);
   }
-  .bar-chart i::after {
-    position: absolute;
-    inset: 0 auto 0 0;
-    inline-size: var(--bar-value);
-    background: linear-gradient(
-      90deg,
-      var(--color-evidence-700),
-      var(--color-evidence-300)
-    );
-    content: '';
+  .bar-chart__bar rect {
+    fill: var(--color-evidence-500);
   }
-  .bar-chart--magenta i::after {
-    background: linear-gradient(
-      90deg,
-      var(--color-ai-700),
-      var(--color-ai-300)
-    );
+  .bar-chart--magenta .bar-chart__bar rect {
+    fill: var(--color-ai-500);
   }
   .bar-chart strong {
+    min-inline-size: 3.4rem;
     color: var(--color-ink-100);
     font-family: var(--font-utility);
+    text-align: end;
+  }
+  .bar-chart--validity > div {
+    grid-template-columns: minmax(7rem, 0.7fr) minmax(5rem, 1fr) auto auto;
+  }
+  .bar-chart small {
+    min-inline-size: 6.5rem;
+    color: var(--color-ink-300);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    text-align: end;
   }
   .research-chart-grid figure > p {
     margin-block-start: var(--space-6);
@@ -928,6 +921,19 @@
     .lens-hero__aside {
       grid-template-columns: minmax(0, 1.05fr) minmax(16rem, 0.95fr);
       align-items: stretch;
+    }
+    /* The context card sits in the narrow aside column here, so stack its
+       signal and facts instead of splitting it into two and three columns. */
+    .lens-hero__aside .lens-hero__context {
+      display: block;
+    }
+    .lens-hero__aside .lens-hero__context dl {
+      grid-template-columns: 1fr;
+      margin-block-start: var(--space-5);
+    }
+    .lens-hero__aside .context-signal {
+      padding-block-end: var(--space-5);
+      border-block-end: 1px solid var(--border-subtle);
     }
     .lens-hero .recruiter-lens-nav {
       max-inline-size: 100%;
@@ -1012,6 +1018,13 @@
     .bar-chart > div {
       grid-template-columns: minmax(6rem, 0.7fr) minmax(5rem, 1fr) auto;
     }
+    .bar-chart--validity > div {
+      grid-template-columns: minmax(6rem, 0.7fr) minmax(5rem, 1fr) auto;
+    }
+    .bar-chart--validity small {
+      grid-column: 2 / -1;
+      text-align: start;
+    }
     .teaching-cards article:first-child,
     .education-grid article:first-child {
       grid-column: auto;
@@ -1068,6 +1081,26 @@
     to {
       opacity: 1;
       filter: blur(0);
+    }
+  }
+
+  /* 320px: a two-column stat grid cannot hold "2,025,878" at display size. */
+  @media (max-width: 24rem) {
+    .research-stat-grid {
+      grid-template-columns: 1fr;
+    }
+    .research-chart-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .research-chart-grid figure {
+      padding: var(--space-4);
+    }
+    .bar-chart > div,
+    .bar-chart--validity > div {
+      grid-template-columns: minmax(4.5rem, 0.7fr) minmax(3rem, 1fr) auto;
+    }
+    .bar-chart strong {
+      min-inline-size: 3rem;
     }
   }
 

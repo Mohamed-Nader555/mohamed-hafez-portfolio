@@ -1,17 +1,17 @@
 import { expect, test } from '@playwright/test';
 
 const lensDestinations = [
-  { name: 'AI/ML Engineer', href: '/' },
-  { name: 'Software Engineer', href: '/software' },
-  { name: 'Android Developer', href: '/android' },
-  { name: 'TA / Instructor', href: '/teaching' },
+  { name: 'AI/ML Engineer', href: '/?role=aiml' },
+  { name: 'Software Engineer', href: '/?role=software' },
+  { name: 'Android Developer', href: '/?role=android' },
+  { name: 'TA / Instructor', href: '/?role=teaching' },
 ] as const;
 
 const primaryDestinations = [
   { name: 'Work', href: '/work' },
   { name: 'Research', href: '/research/asc-pie' },
-  { name: 'Experience', href: '/experience' },
-  { name: 'About', href: '/about' },
+  { name: 'Experience', href: '/#career-title' },
+  { name: 'About', href: '/#profile-summary-title' },
   { name: 'Contact', href: 'mailto:mohamed.m.nader555@gmail.com' },
 ] as const;
 
@@ -33,7 +33,7 @@ for (const viewport of [
     await expect(page.getByRole('contentinfo')).toBeVisible();
 
     const lensNavigation = page.getByRole('navigation', {
-      name: 'Recruiter lens',
+      name: 'Professional focus',
     });
     await expect(lensNavigation).toBeVisible();
 
@@ -213,7 +213,7 @@ for (const fontMode of ['loaded', 'blocked'] as const) {
   });
 }
 
-test('skip link and recruiter lenses work without JavaScript', async ({
+test('skip link and the focus switcher work without JavaScript', async ({
   browser,
 }) => {
   const context = await browser.newContext({
@@ -228,7 +228,7 @@ test('skip link and recruiter lenses work without JavaScript', async ({
   await expect(skipLink).toHaveAttribute('href', '#main-content');
 
   const lensNavigation = page.getByRole('navigation', {
-    name: 'Recruiter lens',
+    name: 'Professional focus',
   });
   await expect(
     lensNavigation.getByRole('link', { name: 'AI/ML Engineer', exact: true }),
@@ -238,7 +238,7 @@ test('skip link and recruiter lenses work without JavaScript', async ({
       name: 'Software Engineer',
       exact: true,
     }),
-  ).toHaveAttribute('href', '/software');
+  ).toHaveAttribute('href', '/?role=software');
 
   const disclosure = page.locator('details.site-menu');
   await disclosure.getByText('Explore', { exact: true }).click();
@@ -263,6 +263,6 @@ test('base metadata describes the canonical page', async ({ page }) => {
   );
   await expect(page.locator('meta[property="og:description"]')).toHaveAttribute(
     'content',
-    /AI\/ML/i,
+    /privacy-aware NLP/i,
   );
 });

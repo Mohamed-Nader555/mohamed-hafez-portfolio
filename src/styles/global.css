@@ -102,3 +102,13 @@
     white-space: nowrap;
   }
 }
+
+/*
+ * Astro emits this rule as an inline <style> next to every island. The
+ * production CSP (style-src 'self') blocks inline styles, so ship it here.
+ */
+astro-island,
+astro-slot,
+astro-static-slot {
+  display: contents;
+}

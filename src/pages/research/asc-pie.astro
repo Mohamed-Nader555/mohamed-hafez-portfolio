@@ -1,7 +1,19 @@
 ---
 import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import CompareTable from '@/components/case-study/CompareTable.astro';
+import ResultBars from '@/components/case-study/ResultBars.astro';
 import ResearchHighlights from '@/components/research/ResearchHighlights.astro';
 import { getEvidenceForProject } from '@/data';
+import { PROJECT_STATUS } from '@/data/project-status';
+import {
+  corpusAblation,
+  paperLine,
+  perTypeGains,
+  promptingVersusFineTuning,
+  researchQuestions,
+  supervisor,
+  thesisAbstract,
+} from '@/data/research-asc-pie';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { resolveSources } from '@/lib/content/resolve-sources';
 import { createThesisStructuredData } from '@/lib/seo/structured-data';
@@ -61,9 +73,22 @@ const structuredData = [
       </p>
       <p role="group" aria-label="SPRINT-PP status">
         <span>SPRINT-PP</span>
-        <strong>{statusRecord.statement}</strong>
+        <strong>{PROJECT_STATUS['accepted-cascon'].longer}</strong>
       </p>
     </div>
+    <dl class="research-meta">
+      <div>
+        <dt>Supervisor</dt>
+        <dd>{supervisor.name} · {supervisor.lab}</dd>
+      </div>
+      <div>
+        <dt>Paper</dt>
+        <dd>
+          <cite>{paperLine.title}</cite>
+          <strong>{paperLine.status}</strong>
+        </dd>
+      </div>
+    </dl>
     <p class="research-page-links">
       <a href="/work/asc-pie" data-astro-prefetch="hover"
         >Read how I built ASC-PIE →</a
@@ -74,7 +99,83 @@ const structuredData = [
     </p>
   </header>
 
+  <section
+    class="research-abstract shell-container"
+    aria-labelledby="research-abstract-title"
+  >
+    <div class="section-heading">
+      <p class="utility-label">Thesis abstract</p>
+      <h2 id="research-abstract-title">What the thesis set out to do</h2>
+    </div>
+    <figure>
+      <blockquote>
+        <p>{thesisAbstract}</p>
+      </blockquote>
+      <figcaption>Abstract from the York University thesis record</figcaption>
+    </figure>
+  </section>
+
   <ResearchHighlights />
+
+  <section
+    class="research-answers shell-container"
+    aria-labelledby="research-answers-title"
+  >
+    <div class="section-heading">
+      <p class="utility-label">Findings</p>
+      <h2 id="research-answers-title">
+        Answers to the four research questions
+      </h2>
+    </div>
+
+    {
+      researchQuestions.map((question) => (
+        <article class="research-answer" id={question.id}>
+          <h3>
+            <span>{question.label}</span>
+            {question.title}
+          </h3>
+          <p>{question.answer}</p>
+          {question.id === 'rq1' && (
+            <p class="research-answer__note">
+              The chart above ranks all seven models by strict F1 and shows each
+              one's validity.
+            </p>
+          )}
+          {question.id === 'rq2' && (
+            <CompareTable
+              caption={promptingVersusFineTuning.caption}
+              columns={promptingVersusFineTuning.columns}
+              rows={promptingVersusFineTuning.rows}
+            />
+          )}
+          {question.id === 'rq3' && (
+            <p class="research-answer__note">
+              The chart above compares the four update strategies on final
+              accuracy.
+            </p>
+          )}
+          {question.id === 'rq4' && (
+            <>
+              <ResultBars
+                title={corpusAblation.title}
+                items={corpusAblation.items}
+                groupLabels={corpusAblation.groupLabels}
+                decimals={3}
+                suffix=""
+              />
+              <CompareTable
+                caption={perTypeGains.caption}
+                columns={perTypeGains.columns}
+                rows={perTypeGains.rows}
+              />
+              <p class="research-answer__note">{perTypeGains.caveat}</p>
+            </>
+          )}
+        </article>
+      ))
+    }
+  </section>
 
   <section
     class="research-record shell-container"
@@ -129,6 +230,125 @@ const structuredData = [
 </BaseLayout>
 
 <style>
+  .research-meta {
+    display: grid;
+    max-inline-size: 60rem;
+    gap: var(--space-4);
+    margin: var(--space-8) 0 0;
+  }
+
+  .research-meta > div {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  .research-meta dt {
+    color: var(--color-ink-300);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-utility);
+    text-transform: uppercase;
+  }
+
+  .research-meta dd {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    color: var(--color-ink-100);
+  }
+
+  .research-meta cite {
+    font-style: normal;
+  }
+
+  .research-meta strong {
+    color: var(--color-verified-500);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-utility);
+    text-transform: uppercase;
+  }
+
+  .research-abstract {
+    padding-block: var(--space-section);
+  }
+
+  .research-abstract blockquote {
+    max-inline-size: var(--width-reading);
+    margin: 0;
+    padding-inline-start: var(--space-6);
+    border-inline-start: 3px solid var(--color-ai-500);
+    color: var(--color-ink-100);
+    font-size: var(--type-lead);
+    line-height: 1.65;
+  }
+
+  .research-abstract blockquote p {
+    margin: 0;
+  }
+
+  .research-abstract figcaption {
+    margin-block-start: var(--space-4);
+    padding-inline-start: var(--space-6);
+    color: var(--color-ink-300);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-utility);
+    text-transform: uppercase;
+  }
+
+  .research-answers {
+    padding-block: var(--space-section);
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  .research-answer {
+    max-inline-size: 60rem;
+    padding-block: var(--space-6);
+    border-block-end: 1px solid var(--border-subtle);
+  }
+
+  .research-answer h3 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-3);
+    color: var(--color-ink-100);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.6rem);
+    line-height: 1.2;
+  }
+
+  .research-answer h3 span {
+    color: var(--color-ai-300);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-utility);
+  }
+
+  .research-answer p {
+    max-inline-size: var(--width-reading);
+    color: var(--color-ink-200);
+    line-height: var(--leading-body);
+  }
+
+  .research-answer__note {
+    margin-block-start: var(--space-3);
+    font-size: var(--type-sm);
+    color: var(--color-ink-300);
+  }
+
+  @media (max-width: 40rem) {
+    .research-meta > div {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+
   .research-page-links {
     display: flex;
     gap: var(--space-4);

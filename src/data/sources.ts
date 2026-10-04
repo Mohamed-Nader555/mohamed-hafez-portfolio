@@ -1,3 +1,4 @@
+import { repoSourceRecords } from '@/data/repos';
 import { sourceRecordSchema, type SourceRecord } from '@/types/content';
 
 const sourceRecords = [
@@ -58,26 +59,6 @@ const sourceRecords = [
     isPublic: false,
   },
   {
-    id: 'github-thesis-experiments',
-    label: 'Thesis experiments repository',
-    kind: 'github',
-    publicHref: 'https://github.com/Mohamed-Nader555/Thesis-Experiments',
-    isPublic: true,
-  },
-  {
-    id: 'github-dive',
-    label: 'Dive Simulation repository',
-    kind: 'github',
-    publicHref: 'https://github.com/Mohamed-Nader555/Diving-Simulation-App',
-    isPublic: true,
-  },
-  {
-    id: 'github-dostava',
-    label: 'Dostava implementation audit provenance',
-    kind: 'github',
-    isPublic: false,
-  },
-  {
     id: 'case-study-asc-pie',
     label: 'ASC-PIE case study',
     kind: 'case-study',
@@ -131,13 +112,6 @@ const sourceRecords = [
     label: 'Availability and work authorization',
     kind: 'approved-source',
     publicHref: '/about',
-    isPublic: true,
-  },
-  {
-    id: 'github-portfolio',
-    label: 'This site’s repository',
-    kind: 'github',
-    publicHref: 'https://github.com/Mohamed-Nader555/mohamed-hafez-portfolio',
     isPublic: true,
   },
   // Case-study sources: one per §4 flagship/story/brief page (brief §6.4).
@@ -302,50 +276,10 @@ const sourceRecords = [
     publicHref: '/work/top-notch',
     isPublic: true,
   },
-  // Pending repo placeholders (D11): isPublic false until Mohamed flips them
-  // to live. Only the repos the brief names directly get a stub for now.
-  {
-    id: 'github-northstar-rag-system',
-    label: 'Northstar RAG System repository (pending)',
-    kind: 'github',
-    isPublic: false,
-  },
-  {
-    id: 'github-gp-android',
-    label: "Mind's Eye Android repository (pending)",
-    kind: 'github',
-    isPublic: false,
-  },
-  {
-    id: 'github-gp-arduino',
-    label: "Mind's Eye Arduino firmware repository (pending)",
-    kind: 'github',
-    isPublic: false,
-  },
-  {
-    id: 'github-gp-all',
-    label: "Mind's Eye combined repository (pending)",
-    kind: 'github',
-    isPublic: false,
-  },
-  {
-    id: 'github-anon-datasets',
-    label: 'ASC-PIE PII/NER toolkit repository (pending)',
-    kind: 'github',
-    isPublic: false,
-  },
-  {
-    id: 'github-shop-on-the-go-team',
-    label: 'Shop on the Go (ITI team) repository (pending)',
-    kind: 'github',
-    isPublic: false,
-  },
-  {
-    id: 'github-shop-on-the-go-individual',
-    label: 'Shop on the Go (individual) repository (pending)',
-    kind: 'github',
-    isPublic: false,
-  },
 ] as const satisfies readonly SourceRecord[];
 
-export const sources = sourceRecordSchema.array().parse(sourceRecords);
+// One source per repository (D11), derived from the repo table: public only
+// while the repo is `live`.
+export const sources = sourceRecordSchema
+  .array()
+  .parse([...sourceRecords, ...repoSourceRecords()]);

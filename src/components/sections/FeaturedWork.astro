@@ -1,5 +1,5 @@
 ---
-import { sources } from '@/data';
+import StoryCard from '@/components/case-study/StoryCard.astro';
 import type { DeepReadonly } from '@/lib/content/resolve-lens';
 import type { ProjectRecord } from '@/types/content';
 
@@ -8,28 +8,22 @@ interface Props {
 }
 
 const { projects } = Astro.props;
-const sourceById = new Map(sources.map((source) => [source.id, source]));
 
-function resolveProjectSource(project: DeepReadonly<ProjectRecord>) {
-  const projectSources = project.sourceIds
-    .map((id) => sourceById.get(id))
-    .filter((source) => source?.isPublic && source.publicHref);
-  const source =
-    projectSources.find((candidate) => candidate?.kind === 'case-study') ??
-    projectSources.find((candidate) => candidate?.kind === 'official') ??
-    projectSources[0];
+// Every featured card opens the project's story at /work/<slug>. The one
+// featured project with no page, teaching, points at the teaching section
+// further down this page instead.
+const TEACHING_ANCHOR = '#teaching-portfolio';
 
-  if (!source?.publicHref) {
-    throw new Error(`Project ${project.id} lacks a public evidence target.`);
-  }
-
-  return source;
+function cardTarget(project: DeepReadonly<ProjectRecord>) {
+  const hasPage = ['flagship', 'story', 'brief'].includes(project.detailLevel);
+  return hasPage
+    ? { href: `/work/${project.slug}`, linkLabel: 'Read the story' }
+    : { href: TEACHING_ANCHOR, linkLabel: 'See how I teach' };
 }
 ---
 
 <section
   class="lens-section featured-section shell-container"
-  aria-label="Featured work"
   aria-labelledby="featured-title"
 >
   <header class="section-heading section-heading--split">
@@ -38,48 +32,24 @@ function resolveProjectSource(project: DeepReadonly<ProjectRecord>) {
       <h2 id="featured-title">Work I’m proud of</h2>
     </div>
     <p>
-      Research systems, client products, and engineering work carried from
-      problem definition through delivery.
+      These are the four I would walk you through first for this kind of work.
+      Each opens into the full story: the problem, what I built myself, and what
+      I would change.
     </p>
   </header>
 
-  <div class="project-grid">
+  <div class="project-grid featured-grid">
     {
-      projects.slice(0, 4).map((project, index) => {
-        const source = resolveProjectSource(project);
+      projects.slice(0, 4).map((project) => {
+        const { href, linkLabel } = cardTarget(project);
 
         return (
-          <article class="project-card">
-            <div class="project-card__index" aria-hidden="true">
-              {String(index + 1).padStart(2, '0')}
-            </div>
-            <div class="project-card__body">
-              <p class="project-card__type">
-                {['flagship', 'story', 'brief'].includes(project.detailLevel)
-                  ? 'Case study'
-                  : 'Project'}
-              </p>
-              <h3>{project.title}</h3>
-              <p>{project.summary}</p>
-              <p class="project-card__ownership">{project.ownership}</p>
-              <ul
-                class="technology-list"
-                aria-label={`${project.title} technologies`}
-              >
-                {project.technologies.slice(0, 5).map((technology) => (
-                  <li>{technology}</li>
-                ))}
-              </ul>
-              <a
-                class="project-card__link"
-                href={source.publicHref}
-                data-astro-prefetch="viewport"
-                aria-label={`View ${project.title} project`}
-              >
-                View project <span aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </article>
+          <StoryCard
+            project={project}
+            featured
+            href={href}
+            linkLabel={linkLabel}
+          />
         );
       })
     }

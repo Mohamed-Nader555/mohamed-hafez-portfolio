@@ -119,9 +119,6 @@ screens:
   - imageId: safer-plan
     step: Recommend
     caption: 'From 45 m / 10 min, the app searched shallower and shorter until the model accepted a plan: 37 m / 2 min.'
-links:
-  - label: Repository
-    sourceId: github-dive
 ---
 
 import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
@@ -133,10 +130,13 @@ import StackLayers from '@/components/case-study/StackLayers.astro';
 import ResultBars from '@/components/case-study/ResultBars.astro';
 import ScreenFlow from '@/components/case-study/ScreenFlow.astro';
 import ProjectGallery from '@/components/case-study/ProjectGallery.astro';
+import RepositoryLinks from '@/components/case-study/RepositoryLinks.astro';
 
 ## The problem
 
 Decompression illness comes from ascending without the stops a diver's body needs, and the rules that prevent it live in dive tables that are easy to misread under water. Everything else a diver needs — a logbook, the weather, the nearest hospital — is scattered across separate apps and paper. A client asked me for one planner that put all of it in a diver's pocket.
+
+The tables are the hard part to get right. The Recreational Dive Planner is split into three tables, and each one depends on the result of the one before it: a first dive gives a pressure group, a surface interval changes that group, and the group then sets the limits for the next dive. A diver reading them on a boat, tired and in a hurry, can easily pick the wrong row. The first thing I had to do was understand the tables well enough to turn them into code, and only then ask where a trained model could add something the tables alone could not.
 
 ## Who it was for
 
@@ -149,6 +149,8 @@ I owned and implemented the Dive Simulation & Safety Profile Planner end to end:
 ## What I built
 
 The app is a planning and education aid, not a safety device. It doesn't replace a dive computer, formal training, or a diver's own judgement — it's a second check that sits alongside those things, built to help someone think through a plan before they're in the water.
+
+A typical session starts with signing in with Google and confirming the email address from a message the app sends, which the app requires before it saves anything. From the Dive tab, a diver can open eRDPML to work out a pressure group: bottom time and maximum depth for a first dive, or surface interval and the previous pressure group on top of those for a second one. Or they can open AI Simulation, enter depth, bottom time, the oxygen percentage in the tank, and whether it is the first or second dive of the day, and tap Check. PPO₂ is calculated for them from the depth and the gas mix, so there is one less number to get wrong.
 
 <FeatureGrid items={frontmatter.features} />
 
@@ -167,6 +169,8 @@ present them as one. When the model says a plan isn't safe, the app doesn't
 just stop there — the recommendation loop reduces depth and bottom time and
 asks the model again, until it lands on a plan the model accepts.
 
+I collected the training data myself, partly by web scraping, and prepared it in Python before training in Google Colab. The four models are different ways of drawing the same line between safe and not safe. An SVC looks for the boundary that separates the two classes, logistic regression estimates a probability and thresholds it, a decision tree asks a sequence of yes-or-no questions about the inputs, and the neural network learns weights across several layers. I chose the tree partly because its scores were the best and partly because a sequence of questions is the easiest of the four to reason about. A perfect training score is also a reason for caution, which is why the page leads with the caveat rather than the number.
+
 </DeepDive>
 
 <ScreenFlow projectId="dive" steps={frontmatter.screens} />
@@ -182,6 +186,10 @@ The Android client posts a dive plan to a hosted model API, which returns a safe
   title="Dive Simulation & Safety Profile Planner"
 />
 
+The model itself lives behind a small Python API hosted on PythonAnywhere, so the Android app never carries the model. It sends the plan, gets back safe or not safe, and the Recommend button repeats that exchange with a shallower, shorter plan each time. Firebase handles sign-in and holds users, logbook entries, and accident reports, Google Maps Platform supplies the map picker and the nearest hospitals, and OpenWeather supplies live conditions and the seven-day forecast. Because the app depends on that many outside services, I traced the traffic between them while I built it to confirm that every request and response was what I expected.
+
+Two of the features are there for the worst day of a dive. The accident report is a form that can be filled in and saved ahead of time or completed when the ambulance arrives, so responders reaching an unresponsive diver can see quickly what happened. The Emergency screen puts a call to the local number, the nearest hospitals one tap away, the DAN number, and a short list of safety tips in one place, so nobody has to search for them under stress.
+
 ## Decisions that mattered
 
 <DecisionCards items={frontmatter.decisions} />
@@ -193,6 +201,8 @@ The Android client posts a dive plan to a hosted model API, which returns a safe
 ## Tech stack
 
 <StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+Security got its own attention because the app stores personal details. Passwords are encrypted with AES, access to the Realtime Database is limited by per-user permissions, and every request that carries user data is a POST, so the data travels in the body of the request instead of in a URL.
 
 ## Outcome
 
@@ -219,8 +229,10 @@ A diver can see the same RDP numbers dive tables have always shown, and see the 
 
 ## What I'd do next
 
-The project's own future work points toward technical-diving calculators, such as trimix, and toward gathering more dive records directly from dive centres so the underlying dataset reflects a wider range of real dives.
+The project's own future work points toward technical-diving calculators, such as trimix, and toward gathering more dive records directly from dive centres so the underlying dataset reflects a wider range of real dives. More records would let me retrain the models and see whether the offline scores hold up on dives the first dataset never covered. The other direction is technical diving, where divers breathe mixed gases such as trimix. That would need calculators for the maximum allowed depth from the oxygen percentage, a way to work out a blend of oxygen, nitrogen, and helium, and a separate model, since the current one was trained only on recreational dives.
 
 ## Links
 
-- [Repository](https://github.com/Mohamed-Nader555/Diving-Simulation-App) — the Android client is public. It isn't polished for a general audience, since it was built for a specific client, but it's the real, delivered implementation described above.
+The Android client is public. It isn't polished for a general audience, since it was built for a specific client, but it's the real, delivered implementation described above.
+
+<RepositoryLinks slug={frontmatter.slug} />

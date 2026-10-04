@@ -72,8 +72,6 @@ links:
     sourceId: official-yorkspace
   - label: Thesis permanent handle
     sourceId: official-thesis-handle
-  - label: Thesis-Experiments repository
-    sourceId: github-thesis-experiments
 ---
 
 import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
@@ -84,6 +82,7 @@ import DecisionCards from '@/components/case-study/DecisionCards.astro';
 import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
 import StackLayers from '@/components/case-study/StackLayers.astro';
 import CompareTable from '@/components/case-study/CompareTable.astro';
+import RepositoryLinks from '@/components/case-study/RepositoryLinks.astro';
 
 ## The problem
 
@@ -216,4 +215,6 @@ The thesis's own future directions apply here directly: extending ASC-PIE to mul
 
 ## Links
 
-The thesis is catalogued on [YorkSpace](https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e) and reachable through its [permanent handle](https://hdl.handle.net/10315/43932). The corpus tooling, training scripts, and evaluation harness behind every number on this page are public in the [Thesis-Experiments repository](https://github.com/Mohamed-Nader555/Thesis-Experiments).
+The thesis is catalogued on [YorkSpace](https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e) and reachable through its [permanent handle](https://hdl.handle.net/10315/43932). The corpus tooling, training scripts, and evaluation harness behind every number on this page live in the thesis experiments repository.
+
+<RepositoryLinks slug={frontmatter.slug} />

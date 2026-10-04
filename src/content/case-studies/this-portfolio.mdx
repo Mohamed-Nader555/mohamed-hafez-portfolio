@@ -59,15 +59,13 @@ stack:
       - name: Playwright
         kind: tool
         purpose: End-to-end tests
-links:
-  - label: Repository
-    sourceId: github-portfolio
 ---
 
 import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
 import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
 import DecisionCards from '@/components/case-study/DecisionCards.astro';
 import StackLayers from '@/components/case-study/StackLayers.astro';
+import RepositoryLinks from '@/components/case-study/RepositoryLinks.astro';
 
 ## The problem
 
@@ -118,3 +116,9 @@ Building the refusal path before the generation path changed how I thought about
 ## What I'd do next
 
 The retrieval layer works on the curated facts that exist today; the natural next step is broadening what's curated rather than changing how retrieval or refusal work. I'd also like to add the usage analytics the pipeline was designed for, on aggregate counts rather than raw transcripts, once I'm confident the privacy trade-offs are right.
+
+## Links
+
+The whole site, including the assistant and its tests, is public.
+
+<RepositoryLinks slug={frontmatter.slug} />

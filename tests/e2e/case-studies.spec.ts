@@ -289,8 +289,64 @@ for (const [slug, edges] of Object.entries(expectedEdges)) {
   });
 }
 
-for (const path of ['/work', '/work/asc-pie']) {
-  for (const width of [320, 360, 820, 1440]) {
+// Regression: ArchitectureFlow once rendered as unstyled numbered lists on
+// every diagram page because its class names matched no CSS. Check one linear
+// (asc-pie) and one branched (dive) page, plus the research record.
+for (const route of ['/work/asc-pie', '/work/dive', '/research/asc-pie']) {
+  test(`${route} architecture diagram is styled and contained`, async ({
+    page,
+  }) => {
+    await page.goto(route);
+
+    const figure = page.locator('.architecture-flow').first();
+    await expect(figure).toBeVisible();
+
+    await expect(figure.locator('.architecture-flow__nodes')).toHaveCSS(
+      'display',
+      'grid',
+    );
+    await expect(figure.locator('.architecture-flow__nodes')).toHaveCSS(
+      'list-style-type',
+      'none',
+    );
+    await expect(figure.locator('.architecture-flow__pipeline')).toHaveCSS(
+      'display',
+      'flex',
+    );
+    await expect(figure).not.toHaveCSS('border-top-width', '0px');
+    await expect(figure).not.toHaveCSS('border-top-style', 'none');
+
+    const overflow = await figure.evaluate((el) => ({
+      figure: el.scrollWidth - el.clientWidth,
+      lists: [
+        ...el.querySelectorAll(
+          '.architecture-flow__pipeline, .architecture-flow__nodes, .architecture-flow__edges',
+        ),
+      ].map((list) => {
+        const box = list.getBoundingClientRect();
+        const outer = el.getBoundingClientRect();
+        return (
+          list.scrollWidth - list.clientWidth <= 0 &&
+          box.left >= outer.left - 1 &&
+          box.right <= outer.right + 1
+        );
+      }),
+    }));
+    expect(overflow.figure).toBeLessThanOrEqual(0);
+    expect(overflow.lists).toEqual([true, true, true]);
+  });
+}
+
+// Parent brief §5.8 / §9: the six required widths on the index, one page per
+// tier (flagship, story, brief; the card tier has no page), and, in
+// research-accuracy.spec.ts, the research record.
+for (const path of [
+  '/work',
+  '/work/asc-pie',
+  '/work/mercato',
+  '/work/my-card',
+]) {
+  for (const width of [320, 360, 390, 768, 1024, 1440]) {
     test(`${path} has no horizontal overflow at ${width}px`, async ({
       page,
     }) => {
@@ -309,19 +365,14 @@ for (const path of ['/work', '/work/asc-pie']) {
 // death-ninja are still empty in `src/data/project-images.ts` pending a
 // parallel media-pipeline pass, so they're intentionally not asserted here.
 for (const slug of ['dive', 'dostava'] as const) {
-  test(`${slug} gallery renders screenshots at the constrained device-row size, once wired`, async ({
+  test(`${slug} gallery renders screenshots at the constrained device-row size`, async ({
     page,
   }) => {
     await page.goto(`/work/${slug}`);
 
     const gallery = page.locator('.project-gallery');
     const galleryCount = await gallery.count();
-    test.skip(
-      galleryCount === 0,
-      `${slug}.mdx does not render <ProjectGallery> yet, even though ` +
-        `src/data/project-images.ts already has real screenshots for it. ` +
-        `Skipping until the media-pipeline pass wires the component in.`,
-    );
+    expect(galleryCount).toBeGreaterThan(0);
 
     const pictures = gallery.locator('.project-screenshot picture');
     await expect(pictures.first()).toBeVisible();
@@ -341,18 +392,14 @@ for (const slug of ['dive', 'dostava'] as const) {
 // from a parallel media-pipeline pass. Assert it only if dive.mdx already
 // references <ScreenFlow>, so this suite doesn't fail on a component that
 // hasn't been wired in yet.
-test('Dive ScreenFlow renders the check-to-recommend loop, once wired', async ({
+test('Dive ScreenFlow renders the check-to-recommend loop', async ({
   page,
 }) => {
   await page.goto('/work/dive');
 
   const screenFlow = page.locator('.screen-flow');
   const screenFlowCount = await screenFlow.count();
-  test.skip(
-    screenFlowCount === 0,
-    'dive.mdx does not reference <ScreenFlow> yet; skipping until the ' +
-      'media-pipeline pass adds it (see docs/PROJECTS_REWRITE_BRIEF.md §5.7).',
-  );
+  expect(screenFlowCount).toBeGreaterThan(0);
 
   await expect(screenFlow).toBeVisible();
   await expect(screenFlow.locator('li')).toHaveCount(3, { timeout: 1000 });

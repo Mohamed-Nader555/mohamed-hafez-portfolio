@@ -11,6 +11,8 @@ interface Props {
   suffix?: string;
   groupLabels?: readonly [string, string];
   magenta?: boolean;
+  /** Fixed decimal places for printed values (keeps trailing zeros). */
+  decimals?: number;
 }
 
 const {
@@ -19,7 +21,10 @@ const {
   suffix = '%',
   groupLabels,
   magenta = false,
+  decimals,
 } = Astro.props;
+const format = (value: number) =>
+  decimals === undefined ? String(value) : value.toFixed(decimals);
 const maxValue = Math.max(
   ...items.flatMap((item) => [item.value, item.groupValue ?? 0]),
   1,
@@ -34,18 +39,37 @@ const maxValue = Math.max(
         <div class="result-bars__row">
           <span class="result-bars__label">{item.label}</span>
           <div class="result-bars__track">
-            <i style={`--bar-value:${(item.value / maxValue) * 100}%`} />
-            {item.groupValue !== undefined && (
-              <i
-                class="result-bars__group"
-                style={`--bar-value:${(item.groupValue / maxValue) * 100}%`}
+            {/* Bar lengths are SVG attributes, not inline styles: the site's
+                CSP (style-src 'self') blocks style="..." attributes. */}
+            <svg
+              class="result-bars__svg"
+              viewBox="0 0 100 10"
+              preserveAspectRatio="none"
+              focusable="false"
+            >
+              <rect
+                class="result-bars__fill"
+                x="0"
+                y="0"
+                width={(item.value / maxValue) * 100}
+                height="10"
               />
-            )}
+              {item.groupValue !== undefined && (
+                <rect
+                  class="result-bars__fill result-bars__group"
+                  x="0"
+                  y="3"
+                  width={(item.groupValue / maxValue) * 100}
+                  height="4"
+                />
+              )}
+            </svg>
           </div>
           <strong>
-            {item.value}
+            {format(item.value)}
             {suffix}
-            {item.groupValue !== undefined && ` / ${item.groupValue}${suffix}`}
+            {item.groupValue !== undefined &&
+              ` / ${format(item.groupValue)}${suffix}`}
           </strong>
         </div>
       ))
@@ -75,12 +99,12 @@ const maxValue = Math.max(
           <tr>
             <th scope="row">{item.label}</th>
             <td>
-              {item.value}
+              {format(item.value)}
               {suffix}
             </td>
             {item.groupValue !== undefined && (
               <td>
-                {item.groupValue}
+                {format(item.groupValue)}
                 {suffix}
               </td>
             )}
@@ -93,7 +117,10 @@ const maxValue = Math.max(
 
 <style>
   .result-bars {
+    position: relative;
     margin: var(--space-5) 0;
+    /* Contains the visually hidden fallback table so it never widens the page. */
+    overflow: clip;
   }
 
   .result-bars figcaption {
@@ -130,24 +157,22 @@ const maxValue = Math.max(
     overflow: hidden;
   }
 
-  .result-bars__track i {
+  .result-bars__svg {
     display: block;
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: var(--bar-value, 0%);
-    background: var(--color-evidence-500);
-    border-radius: inherit;
+    inline-size: 100%;
+    block-size: 100%;
   }
 
-  .result-bars--magenta .result-bars__track i {
-    background: var(--color-ai-500);
+  .result-bars__fill {
+    fill: var(--color-evidence-500);
   }
 
-  .result-bars__track i.result-bars__group {
-    block-size: 40%;
-    inset-block-start: 30%;
-    background: var(--color-ink-200);
+  .result-bars--magenta .result-bars__fill {
+    fill: var(--color-ai-500);
+  }
+
+  .result-bars .result-bars__group {
+    fill: var(--color-ink-200);
     opacity: 0.8;
   }
 

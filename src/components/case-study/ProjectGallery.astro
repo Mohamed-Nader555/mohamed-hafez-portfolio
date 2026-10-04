@@ -16,7 +16,11 @@ const images = projectImages[projectId] ?? [];
   <p class="project-gallery__hint" aria-hidden="true">
     Scroll to see more &rarr;
   </p>
-  <div class="project-gallery__row" tabindex="0" aria-label="Scrollable screenshots">
+  <div
+    class="project-gallery__row"
+    tabindex="0"
+    aria-label="Scrollable screenshots"
+  >
     {
       images.map((image) => (
         <figure class="project-screenshot" data-orientation={image.orientation}>

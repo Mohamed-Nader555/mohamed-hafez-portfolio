@@ -7,6 +7,7 @@ const lenses = [
     title: 'Mohamed Hafez — AI/ML Engineer',
     resume: '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',
     firstProject: 'ASC-PIE',
+    heroPhrase: 'privacy-aware NLP',
   },
   {
     path: '/software',
@@ -14,6 +15,7 @@ const lenses = [
     title: 'Mohamed Hafez — Software Engineer',
     resume: '/resumes/Mohamed-Hafez-Software-Engineer.pdf',
     firstProject: 'Northstar RAG System',
+    heroPhrase: 'reliable services',
   },
   {
     path: '/android',
@@ -21,6 +23,7 @@ const lenses = [
     title: 'Mohamed Hafez — Android Developer',
     resume: '/resumes/Mohamed-Hafez-Android-Developer.pdf',
     firstProject: 'Mind’s Eye',
+    heroPhrase: 'Android products',
   },
   {
     path: '/teaching',
@@ -28,22 +31,26 @@ const lenses = [
     title: 'Mohamed Hafez — TA / Instructor',
     resume: '/resumes/Mohamed-Hafez-TA-Instructor.pdf',
     firstProject: 'Teaching & Technical Instruction',
+    heroPhrase: 'practical labs',
   },
 ] as const;
 
 for (const lens of lenses) {
-  test(`${lens.label} route exposes role-specific evidence and metadata`, async ({
+  test(`${lens.label} route exposes its hero, metadata, and featured work`, async ({
     page,
   }) => {
     await page.goto(lens.path);
 
     await expect(page).toHaveTitle(lens.title);
-    await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      lens.label,
-    );
+    const heading = page.getByRole('heading', { level: 1 });
+    await expect(heading).toContainText('I’m Mohamed Hafez');
+    await expect(heading).toContainText(lens.heroPhrase);
+    await expect(
+      page.getByRole('region', { name: `${lens.label} overview` }),
+    ).toBeVisible();
     await expect(
       page
-        .getByRole('navigation', { name: 'Recruiter lens' })
+        .getByRole('navigation', { name: 'Professional focus' })
         .getByRole('link', { name: lens.label, exact: true }),
     ).toHaveAttribute('aria-current', 'page');
     await expect(
@@ -51,7 +58,7 @@ for (const lens of lenses) {
     ).toHaveAttribute('href', lens.resume);
     await expect(
       page
-        .getByRole('region', { name: 'Featured work' })
+        .getByRole('region', { name: 'Work I’m proud of' })
         .getByRole('heading', { level: 3 })
         .first(),
     ).toHaveText(lens.firstProject);
@@ -69,60 +76,57 @@ test('the default AI/ML hierarchy makes the full engineering and teaching breadt
   await expect(hero).toContainText('TA / Instructor');
 
   const headings = await page.locator('main h2').allTextContents();
-  expect(headings).toEqual([
-    '60-second evidence',
-    'Featured work',
-    'Experience & capabilities',
-    'Research & teaching depth',
+  // The first h2 is the project spotlight; the rest are the page sections.
+  expect(headings.slice(1)).toEqual([
+    'A focused view of my work',
+    'Work I’m proud of',
+    'Experience across research, products, and teaching',
+    'Skills organized by how I use them',
+    'How I help people learn',
+    'The foundation behind my work',
     'Start a direct conversation',
   ]);
 });
 
-test('AI/ML depth exposes ASC-PIE and SPRINT-PP with official-first sourcing', async ({
+test('each lens spotlights its own project and never claims an unpublished SPRINT-PP', async ({
   page,
 }) => {
-  await page.goto('/');
+  const spotlights = [
+    ['/', 'ASC-PIE', '/research/asc-pie'],
+    ['/software', 'Northstar RAG System', '/work/northstar-rag'],
+    ['/android', 'Mind’s Eye', '/work/minds-eye'],
+    [
+      '/teaching',
+      'Teaching & Technical Instruction',
+      '/experience#teaching-and-communication-title',
+    ],
+  ] as const;
 
-  const depth = page.getByRole('region', { name: 'Research & teaching depth' });
-  await expect(depth).toContainText('ASC-PIE');
-  await expect(depth).toContainText(
-    'SPRINT-PP is a research paper submitted and under review.',
-  );
-  await expect(
-    depth.getByRole('link', { name: 'Source · YorkSpace thesis record' }),
-  ).toHaveAttribute(
-    'href',
-    'https://yorkspace.library.yorku.ca/items/379ae5c1-63dc-4036-bd47-f27a01cd195e',
-  );
-  const sprintStatus = depth
-    .getByRole('article')
-    .filter({ hasText: 'SPRINT-PP research status' });
-  await expect(
-    sprintStatus.getByRole('link', { name: 'Source · AI/ML Engineer résumé' }),
-  ).toHaveAttribute('href', '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf');
-  await expect(sprintStatus.locator('a[href="/research/asc-pie"]')).toHaveCount(
-    0,
-  );
-  await expect(page.locator('body')).not.toContainText(
-    /published SPRINT-PP|accepted SPRINT-PP/i,
-  );
+  for (const [path, title, href] of spotlights) {
+    await page.goto(path);
+    const spotlight = page.getByRole('complementary', {
+      name: 'Project spotlight',
+    });
+    await expect(spotlight).toContainText(title);
+    await expect(spotlight.getByRole('link')).toHaveAttribute('href', href);
+    await expect(page.locator('body')).not.toContainText(
+      /published SPRINT-PP|accepted SPRINT-PP|under review/i,
+    );
+  }
 });
 
-test('teaching depth exposes CEH as training with the matching resume source', async ({
+test('certificates list CEH as a training programme, never a certification', async ({
   page,
 }) => {
   await page.goto('/teaching');
 
-  const depth = page.getByRole('region', { name: 'Research & teaching depth' });
-  await expect(depth).toContainText(
-    'Mohamed completed CEH training; he did not receive an official CEH certification.',
-  );
-  const ceh = depth
-    .getByRole('article')
-    .filter({ hasText: 'CEH training status' });
+  const credentials = page.getByRole('region', {
+    name: 'Certificates and training',
+  });
   await expect(
-    ceh.getByRole('link', { name: 'Source · TA / Instructor résumé' }),
-  ).toHaveAttribute('href', '/resumes/Mohamed-Hafez-TA-Instructor.pdf');
+    credentials.getByText('Certified Ethical Hacker (CEH)'),
+  ).toBeVisible();
+  await expect(credentials).toContainText(/training programme only/i);
   await expect(page.locator('body')).not.toContainText(/CEH certified/i);
 });
 
@@ -138,18 +142,18 @@ test('lens, contact, resume, and case-study links remain real without JavaScript
   await page.goto('/');
 
   const lensNavigation = page.getByRole('navigation', {
-    name: 'Recruiter lens',
+    name: 'Professional focus',
   });
   await expect(
     lensNavigation.getByRole('link', {
       name: 'Software Engineer',
       exact: true,
     }),
-  ).toHaveAttribute('href', '/software');
+  ).toHaveAttribute('href', '/?role=software');
   await lensNavigation
     .getByRole('link', { name: 'Software Engineer', exact: true })
     .click();
-  await expect(page).toHaveURL(/\/software$/);
+  await expect(page).toHaveURL(/\?role=software$/);
 
   await expect(
     page.getByRole('link', { name: 'Email Mohamed', exact: true }).first(),
@@ -158,20 +162,104 @@ test('lens, contact, resume, and case-study links remain real without JavaScript
     page.getByRole('link', { name: /Software Engineer résumé/i }).first(),
   ).toHaveAttribute('href', '/resumes/Mohamed-Hafez-Software-Engineer.pdf');
 
-  const featured = page.getByRole('region', { name: 'Featured work' });
+  const featured = page.getByRole('region', { name: 'Work I’m proud of' });
   await expect(
-    featured.getByRole('link', { name: 'View Northstar RAG System evidence' }),
+    featured.getByRole('link', {
+      name: 'Read the story: Northstar RAG System',
+    }),
   ).toHaveAttribute('href', '/work/northstar-rag');
   await expect(
     featured.getByRole('link', {
-      name: 'View Dive Simulation & Safety Profile Planner evidence',
+      name: 'Read the story: Documentum Workflow & Lifecycle Optimization',
     }),
-  ).toHaveAttribute('href', '/work/dive');
+  ).toHaveAttribute('href', '/work/documentum-workflows');
 
   await context.close();
 });
 
-for (const width of [320, 360, 820, 1440]) {
+// The four featured cards use the story-card look: kicker, title, hook, up to
+// three chips, a status badge (when the project has one), and one link to the
+// project's story. Teaching has no page, so its card links to the teaching
+// section on the same page.
+const featuredCards = {
+  '/': [
+    ['ASC-PIE', '/work/asc-pie'],
+    ['SPRINT-PP', '/work/sprint-pp'],
+    ['Northstar RAG System', '/work/northstar-rag'],
+    ['Applied Machine Learning Portfolio', '/work/applied-ml-portfolio'],
+  ],
+  '/software': [
+    ['Northstar RAG System', '/work/northstar-rag'],
+    [
+      'Documentum Workflow & Lifecycle Optimization',
+      '/work/documentum-workflows',
+    ],
+    ['This Portfolio', '/work/this-portfolio'],
+    ['Internal REST Endpoints & Client Proofs of Concept', '/work/rest-pocs'],
+  ],
+  '/android': [
+    ['Mind’s Eye', '/work/minds-eye'],
+    ['Dive Simulation & Safety Profile Planner', '/work/dive'],
+    ['Dostava Delivery', '/work/dostava'],
+    ['Healthy Habit / Food Planner', '/work/food-planner'],
+  ],
+  '/teaching': [
+    ['Teaching & Technical Instruction', '#teaching-portfolio'],
+    ['ASC-PIE', '/work/asc-pie'],
+    ['Mind’s Eye', '/work/minds-eye'],
+    [
+      'Documentum Workflow & Lifecycle Optimization',
+      '/work/documentum-workflows',
+    ],
+  ],
+} as const;
+
+for (const [path, cards] of Object.entries(featuredCards)) {
+  test(`${path} featured work shows four story cards that link to their stories`, async ({
+    page,
+  }) => {
+    await page.goto(path);
+
+    const featured = page.getByRole('region', { name: 'Work I’m proud of' });
+    const articles = featured.locator('article.story-card');
+    await expect(articles).toHaveCount(4);
+
+    for (const [index, [title, href]] of cards.entries()) {
+      const card = articles.nth(index);
+      await expect(card.getByRole('heading', { level: 3 })).toHaveText(title);
+      // One link per card, pointing at the story (or the teaching anchor).
+      await expect(card.getByRole('link')).toHaveCount(1);
+      await expect(card.getByRole('link')).toHaveAttribute('href', href);
+      // The hook, not the old summary/ownership pair.
+      await expect(card.locator('.story-card__hook')).not.toBeEmpty();
+      await expect(card.locator('.project-card__ownership')).toHaveCount(0);
+      expect(
+        await card.locator('.technology-list li').count(),
+      ).toBeLessThanOrEqual(3);
+    }
+
+    // Projects with a page carry a status badge; the teaching record has none.
+    const badges = featured.locator('.status-badge__pill');
+    await expect(badges).toHaveCount(path === '/teaching' ? 3 : 4);
+  });
+}
+
+test('the ASC-PIE card opens the story page, not the research record', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const link = page
+    .getByRole('region', { name: 'Work I’m proud of' })
+    .getByRole('link', { name: 'Read the story: ASC-PIE' });
+  await expect(link).toHaveAttribute('href', '/work/asc-pie');
+  await link.click();
+  // The first visit compiles the case-study page in the dev server.
+  await expect(page).toHaveURL(/\/work\/asc-pie$/, { timeout: 30_000 });
+});
+
+for (const width of [320, 360, 390, 768, 820, 1024, 1440]) {
   test(`lens hierarchy has no horizontal overflow at ${width}px`, async ({
     page,
   }) => {
@@ -182,7 +270,7 @@ for (const width of [320, 360, 820, 1440]) {
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(width);
     await expect(
-      page.getByRole('region', { name: 'Featured work' }),
+      page.getByRole('region', { name: 'Work I’m proud of' }),
     ).toBeVisible();
     await expect(
       page.getByRole('region', { name: 'Direct contact' }),

@@ -1,3 +1,4 @@
+import { reposForProject } from '@/data/repos';
 import { projectRecordSchema, type ProjectRecord } from '@/types/content';
 
 const projectsData = [
@@ -807,6 +808,13 @@ const projectsData = [
     detailLevel: 'supporting',
     public: true,
   },
-] as const satisfies readonly ProjectRecord[];
+] as const satisfies readonly Omit<ProjectRecord, 'repos'>[];
 
-export const projects = projectRecordSchema.array().parse(projectsData);
+// Repositories come from the repo table (`repos.ts`) so one edit there
+// updates the catalogue, the pages, and the public source registry together.
+export const projects = projectRecordSchema.array().parse(
+  projectsData.map((project) => ({
+    ...project,
+    repos: reposForProject(project.slug),
+  })),
+);
