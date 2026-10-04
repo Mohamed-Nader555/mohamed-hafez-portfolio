@@ -197,3 +197,34 @@ describe('performance', () => {
     expect(timings[Math.floor(timings.length / 2)]!).toBeLessThan(3);
   });
 });
+
+describe('follow-up context', () => {
+  const history = [
+    { role: 'user' as const, content: 'How does Dostava handle orders?' },
+    {
+      role: 'assistant' as const,
+      content: 'Dostava uses Firebase.',
+      citationIds: ['case-study-dostava'],
+    },
+  ];
+  const withHistory = (question: string) =>
+    retrieveEvidence({ question, history, activeRole: 'android', limit: 8 });
+
+  it('does not let a broad question inherit the previous answer', () => {
+    for (const question of ['Tell me about Mohamed', 'How can I contact him?'])
+      expect(
+        withHistory(question).chunks.filter(
+          (chunk) => chunk.projectId === 'dostava',
+        ),
+        question,
+      ).toEqual([]);
+  });
+
+  it('still carries sources into a short follow-up', () => {
+    expect(
+      withHistory('What else did he integrate?').chunks.some(
+        (chunk) => chunk.projectId === 'dostava',
+      ),
+    ).toBe(true);
+  });
+});

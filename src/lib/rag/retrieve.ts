@@ -419,14 +419,22 @@ export function retrieveEvidence(input: RetrievalInput): RetrievalResult {
   const ownContent = meaningfulTerms(raw).filter(
     (term) => !WEAK_TERMS.has(term),
   );
-  const carriesContext = carriedIds.size > 0 && ownContent.length <= 4;
+  const route = detectRoutes(raw, input.activeRole, projectNamed, techNamed);
+  // A short follow-up ("What else did he integrate?") inherits the previous
+  // sources; a question that names its own subject or routes to an overview
+  // ("Tell me about Mohamed") does not.
+  const carriesContext =
+    carriedIds.size > 0 &&
+    ownContent.length <= 4 &&
+    !route &&
+    !projectNamed &&
+    !techNamed;
   const query = carriesContext ? [raw, ...priorUsers].join(' ') : raw;
   const allTerms = meaningfulTerms(query);
   const contentWanted = allTerms.filter((term) => !WEAK_TERMS.has(term));
   // "Tell me about Mohamed" has no content words: only then do the weak ones
   // take part in the search.
   const terms = contentWanted.length ? contentWanted : allTerms;
-  const route = detectRoutes(raw, input.activeRole, projectNamed, techNamed);
 
   const { scored, run } = runSearch(terms, contentWanted);
   const synonyms = synonymTerms(raw);

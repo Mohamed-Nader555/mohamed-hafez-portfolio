@@ -16,7 +16,7 @@ async function open(page: Page, slug: string) {
   });
   // Centre the rail so a fixed header or launcher never sits on top of it.
   await track(page).evaluate((element) =>
-    element.scrollIntoView({ block: 'center' }),
+    element.scrollIntoView({ block: 'center', behavior: 'instant' }),
   );
 }
 
