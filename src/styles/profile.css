@@ -888,8 +888,20 @@
     );
   }
   .bar-chart strong {
+    min-inline-size: 3.4rem;
     color: var(--color-ink-100);
     font-family: var(--font-utility);
+    text-align: end;
+  }
+  .bar-chart--validity > div {
+    grid-template-columns: minmax(7rem, 0.7fr) minmax(5rem, 1fr) auto auto;
+  }
+  .bar-chart small {
+    min-inline-size: 6.5rem;
+    color: var(--color-ink-300);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    text-align: end;
   }
   .research-chart-grid figure > p {
     margin-block-start: var(--space-6);
@@ -1005,6 +1017,13 @@
     .bar-chart > div {
       grid-template-columns: minmax(6rem, 0.7fr) minmax(5rem, 1fr) auto;
     }
+    .bar-chart--validity > div {
+      grid-template-columns: minmax(6rem, 0.7fr) minmax(5rem, 1fr) auto;
+    }
+    .bar-chart--validity small {
+      grid-column: 2 / -1;
+      text-align: start;
+    }
     .teaching-cards article:first-child,
     .education-grid article:first-child {
       grid-column: auto;
@@ -1061,6 +1080,26 @@
     to {
       opacity: 1;
       filter: blur(0);
+    }
+  }
+
+  /* 320px: a two-column stat grid cannot hold "2,025,878" at display size. */
+  @media (max-width: 24rem) {
+    .research-stat-grid {
+      grid-template-columns: 1fr;
+    }
+    .research-chart-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .research-chart-grid figure {
+      padding: var(--space-4);
+    }
+    .bar-chart > div,
+    .bar-chart--validity > div {
+      grid-template-columns: minmax(4.5rem, 0.7fr) minmax(3rem, 1fr) auto;
+    }
+    .bar-chart strong {
+      min-inline-size: 3rem;
     }
   }
 

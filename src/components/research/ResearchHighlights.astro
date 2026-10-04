@@ -1,13 +1,6 @@
 ---
-const benchmarks = [
-  ['RoBERTa-large', 99.1],
-  ['FLAN-T5-base', 98.7],
-  ['ModernBERT-large', 84.6],
-  ['BERT-large-cased', 80.7],
-  ['Llama 3.1 8B', 69.0],
-  ['Qwen 2.5 7B', 40.0],
-  ['BART-base', 34.8],
-] as const;
+import { modelFamilies } from '@/data/research-asc-pie';
+
 const strategies = [
   ['SPRINT-PP', 83.5],
   ['Distillation', 83.0],
@@ -34,20 +27,26 @@ const strategies = [
   </div>
   <div class="research-chart-grid">
     <figure>
-      <figcaption>Supervised fine-tuning · strict F1</figcaption>
-      <div class="bar-chart">
+      <figcaption>
+        Supervised fine-tuning · strict F1 and output validity
+      </figcaption>
+      <div class="bar-chart bar-chart--validity">
         {
-          benchmarks.map(([label, value]) => (
+          modelFamilies.map((model) => (
             <div>
-              <>
-                <span>{label}</span>
-                <i style={`--bar-value:${value}%`} />
-                <strong>{value}%</strong>
-              </>
+              <span>{model.label}</span>
+              <i style={`--bar-value:${model.f1}%`} />
+              <strong>{model.f1.toFixed(1)}%</strong>
+              <small>validity {model.validity}</small>
             </div>
           ))
         }
       </div>
+      <p>
+        Validity is the share of generated outputs that follow the required
+        structure. The four strongest models produce usable output every time.
+        The decoder-only and BART-base models do not.
+      </p>
     </figure>
     <figure>
       <figcaption>Continual-learning accuracy by strategy</figcaption>
@@ -58,7 +57,7 @@ const strategies = [
               <>
                 <span>{label}</span>
                 <i style={`--bar-value:${value}%`} />
-                <strong>{value}%</strong>
+                <strong>{value.toFixed(1)}%</strong>
               </>
             </div>
           ))

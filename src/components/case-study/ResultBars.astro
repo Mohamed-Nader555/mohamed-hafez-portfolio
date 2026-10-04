@@ -11,6 +11,8 @@ interface Props {
   suffix?: string;
   groupLabels?: readonly [string, string];
   magenta?: boolean;
+  /** Fixed decimal places for printed values (keeps trailing zeros). */
+  decimals?: number;
 }
 
 const {
@@ -19,7 +21,10 @@ const {
   suffix = '%',
   groupLabels,
   magenta = false,
+  decimals,
 } = Astro.props;
+const format = (value: number) =>
+  decimals === undefined ? String(value) : value.toFixed(decimals);
 const maxValue = Math.max(
   ...items.flatMap((item) => [item.value, item.groupValue ?? 0]),
   1,
@@ -43,9 +48,10 @@ const maxValue = Math.max(
             )}
           </div>
           <strong>
-            {item.value}
+            {format(item.value)}
             {suffix}
-            {item.groupValue !== undefined && ` / ${item.groupValue}${suffix}`}
+            {item.groupValue !== undefined &&
+              ` / ${format(item.groupValue)}${suffix}`}
           </strong>
         </div>
       ))
@@ -75,12 +81,12 @@ const maxValue = Math.max(
           <tr>
             <th scope="row">{item.label}</th>
             <td>
-              {item.value}
+              {format(item.value)}
               {suffix}
             </td>
             {item.groupValue !== undefined && (
               <td>
-                {item.groupValue}
+                {format(item.groupValue)}
                 {suffix}
               </td>
             )}
@@ -93,7 +99,10 @@ const maxValue = Math.max(
 
 <style>
   .result-bars {
+    position: relative;
     margin: var(--space-5) 0;
+    /* Contains the visually hidden fallback table so it never widens the page. */
+    overflow: clip;
   }
 
   .result-bars figcaption {
