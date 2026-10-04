@@ -1,31 +1,38 @@
 import { buildEvidenceFallback } from '@/lib/rag/extractive-fallback';
-import { retrieveEvidence } from '@/lib/rag/retrieve';
+import { followUpsFor, retrieveEvidence } from '@/lib/rag/retrieve';
+import type { RetrievalResult } from '@/lib/rag/types';
+import { starterSuggestions } from '@/data/assistant-suggestions';
+import { parseModelOutput, ungroundedNumbers } from './answer-guards';
 import { buildGroundedMessages } from './prompt';
 import { validateModelAnswer } from './response-schema';
 import type { AiProvider, AnswerInput, ChatResponse } from './types';
 
-const refusal = (requestId: string): ChatResponse => ({
+const OUT_OF_SCOPE =
+  'I do not have verified public evidence for that. I can help with Mohamed’s projects, experience, education, availability, or work authorization.';
+
+const refusal = (
+  requestId: string,
+  retrieval?: RetrievalResult,
+  fallbackSuggestions: string[] = [],
+): ChatResponse => ({
   requestId,
   answer:
-    'I do not have verified public evidence for that. I can help with Mohamed’s projects, experience, education, availability, or work authorization.',
+    retrieval?.refusalReason === 'unknown-technology'
+      ? `The portfolio doesn’t show experience with ${retrieval.unknownSubject}. I can tell you which technologies Mohamed has used in his published projects.`
+      : retrieval?.refusalReason === 'unknown-employer'
+        ? `The portfolio doesn’t list ${retrieval.unknownSubject} among Mohamed’s employers. I can tell you where he has worked.`
+        : OUT_OF_SCOPE,
   answerStatus: 'refused',
   citations: [],
-  followUps: [
-    'Ask about a project.',
-    'Ask about availability or work authorization.',
-  ],
+  followUps: (retrieval?.suggestions?.length
+    ? retrieval.suggestions
+    : fallbackSuggestions
+  ).slice(0, 3),
   telemetry: { questionCategory: 'unknown', latencyBucket: 'lt-500ms' },
 });
 
-function parsed(raw: unknown): unknown {
-  if (typeof raw === 'string') return JSON.parse(raw);
-  if (raw && typeof raw === 'object' && 'response' in raw)
-    return parsed(raw.response);
-  return raw;
-}
-
 function normalizeModelAnswer(raw: unknown, allowed: Set<string>): unknown {
-  const value = parsed(raw);
+  const value = parseModelOutput(raw);
   if (!value || typeof value !== 'object') return value;
   const record = value as Record<string, unknown>;
   const citationIds = Array.isArray(record.citationIds)
@@ -43,12 +50,8 @@ function normalizeModelAnswer(raw: unknown, allowed: Set<string>): unknown {
       : citationIds.length
         ? citationIds
         : [...allowed].slice(0, 3);
-  const followUps = Array.isArray(record.followUps)
-    ? record.followUps
-        .filter((item): item is string => typeof item === 'string')
-        .slice(0, 3)
-    : [];
-  return { ...record, citationIds: safeCitationIds, followUps };
+  // Follow-ups come from templates the evaluation proves answerable.
+  return { ...record, citationIds: safeCitationIds, followUps: [] };
 }
 
 export async function answerRecruiterQuestion(
@@ -56,15 +59,21 @@ export async function answerRecruiterQuestion(
   input: AnswerInput,
 ): Promise<ChatResponse> {
   const started = Date.now();
-  const retrieval = retrieveEvidence({ ...input, limit: 5 });
-  if (!retrieval.supported) return refusal(input.requestId);
+  const retrieval = retrieveEvidence({ ...input, limit: 8 });
+  if (!retrieval.supported)
+    return refusal(
+      input.requestId,
+      retrieval,
+      starterSuggestions[input.activeRole],
+    );
+  const followUps = followUpsFor(retrieval, input.activeRole);
   try {
     const raw = await deps.provider.generate({
       messages: buildGroundedMessages({
         question: input.question,
         chunks: retrieval.chunks,
       }),
-      maxTokens: 500,
+      maxTokens: 600,
       temperature: 0.1,
     });
     const allowed = new Set(
@@ -76,7 +85,16 @@ export async function answerRecruiterQuestion(
       normalizeModelAnswer(raw, allowed),
       allowed,
     );
-    if (answer.answerStatus === 'refused') return refusal(input.requestId);
+    if (answer.answerStatus === 'refused')
+      return refusal(input.requestId, undefined, followUps);
+    const stray = ungroundedNumbers(
+      answer.answer,
+      retrieval.chunks.flatMap((chunk) => [chunk.title, chunk.text]),
+    );
+    if (stray.length)
+      throw new Error(
+        `Answer contains ungrounded numbers: ${stray.join(', ')}`,
+      );
     const citations = retrieval.chunks
       .flatMap((chunk) => chunk.citations)
       .filter(
@@ -92,7 +110,7 @@ export async function answerRecruiterQuestion(
       answer: answer.answer,
       answerStatus: 'answered',
       citations,
-      followUps: answer.followUps,
+      followUps,
       telemetry: {
         questionCategory: retrieval.category,
         latencyBucket:
@@ -108,9 +126,9 @@ export async function answerRecruiterQuestion(
     };
   } catch (error) {
     console.error(
-      'Workers AI synthesis failed; serving verified evidence fallback.',
+      'Workers AI synthesis was not usable; serving the evidence answer.',
       error instanceof Error ? error.message : 'Unknown synthesis error',
     );
-    return buildEvidenceFallback(retrieval, input.requestId);
+    return buildEvidenceFallback(retrieval, input.requestId, followUps);
   }
 }

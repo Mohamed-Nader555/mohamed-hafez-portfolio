@@ -1,10 +1,10 @@
-import type { RefObject } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import type { RoleId } from '@/types/content';
-import type { ChatResponse } from '@/lib/ai/types';
 import { chatFailureMessage, type ChatFailureCode } from './chat-errors';
 import { ChatMessage } from './ChatMessage';
 import { ChatSuggestions } from './ChatSuggestions';
 import { NeuralGlyph } from './NeuralGlyph';
+import type { ThreadEntry } from './session-store';
 
 const roleLabels: Record<RoleId, string> = {
   aiml: 'AI & ML',
@@ -20,14 +20,14 @@ export function ChatPanel({
   close,
   clear,
   submit,
-  response,
+  thread,
+  pendingQuestion,
   state,
   errorCode,
   challengeVisible,
   turnstileSlotRef,
   suggestions,
   selectedRole,
-  lastQuestion,
 }: {
   inputRef: RefObject<HTMLTextAreaElement | null>;
   draft: string;
@@ -35,15 +35,26 @@ export function ChatPanel({
   close(): void;
   clear(): void;
   submit(event: { preventDefault(): void }): void;
-  response?: ChatResponse;
+  thread: ThreadEntry[];
+  pendingQuestion: string;
   state: string;
   errorCode?: ChatFailureCode;
   challengeVisible: boolean;
   turnstileSlotRef: RefObject<HTMLDivElement | null>;
   suggestions: string[];
   selectedRole: RoleId;
-  lastQuestion: string;
 }) {
+  const end = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    // Newest at the bottom, kept in view.
+    const reduced = window.matchMedia?.(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    end.current?.scrollIntoView?.({
+      block: 'end',
+      behavior: reduced ? 'auto' : 'smooth',
+    });
+  }, [thread.length, pendingQuestion, state]);
   const busy = state === 'verifying' || state === 'submitting';
   return (
     <>
@@ -91,12 +102,13 @@ export function ChatPanel({
 
         <div className="chat-panel-body">
           <p className="chat-privacy">
-            Answers use only published projects, résumés, research, and
-            experience. This conversation stays in your browser session.
+            Answers come only from what’s published on this site: projects,
+            research, experience, teaching and education. This conversation
+            stays in your browser session.
           </p>
 
           <div className="chat-conversation" aria-live="polite">
-            {!lastQuestion && !response && state === 'ready' && (
+            {!thread.length && !pendingQuestion && state === 'ready' && (
               <div className="chat-welcome">
                 <p className="chat-query-label">QUERY PORTFOLIO</p>
                 <h3>What would you like to understand?</h3>
@@ -107,10 +119,23 @@ export function ChatPanel({
               </div>
             )}
 
-            {lastQuestion && (
+            {thread.map((entry, index) => (
+              <div
+                className="chat-exchange"
+                key={`${index}-${entry.response.requestId}`}
+              >
+                <div className="chat-turn chat-turn--user">
+                  <span className="chat-turn-label">You</span>
+                  <p>{entry.question}</p>
+                </div>
+                <ChatMessage response={entry.response} />
+              </div>
+            ))}
+
+            {pendingQuestion && (
               <div className="chat-turn chat-turn--user">
                 <span className="chat-turn-label">You</span>
-                <p>{lastQuestion}</p>
+                <p>{pendingQuestion}</p>
               </div>
             )}
 
@@ -136,12 +161,12 @@ export function ChatPanel({
               </div>
             )}
 
-            {response && <ChatMessage response={response} />}
             {state === 'error' && errorCode && (
               <p className="chat-error" role="alert" data-error={errorCode}>
                 {chatFailureMessage(errorCode)}
               </p>
             )}
+            <div ref={end} aria-hidden="true" />
           </div>
 
           <ChatSuggestions suggestions={suggestions} onChoose={setDraft} />

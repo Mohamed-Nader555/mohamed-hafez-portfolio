@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RoleId } from '@/types/content';
-import type { ChatResponse } from '@/lib/ai/types';
+import { starterSuggestions } from '@/data/assistant-suggestions';
 import { submitChatTurn } from './chat-client';
 import { ChatFailure, type ChatFailureCode } from './chat-errors';
 import { ChatLauncher } from './ChatLauncher';
 import { ChatPanel } from './ChatPanel';
-import { createSessionStore } from './session-store';
+import { createSessionStore, type ThreadEntry } from './session-store';
 import {
   requestTurnstileToken,
   resolveTurnstileSiteKey,
@@ -18,15 +18,16 @@ export function PortfolioAssistant({
   turnstileSiteKey = '1x00000000000000000000AA',
 }: {
   activeRole: RoleId;
-  initialSuggestions: string[];
+  /** Overrides the per-focus starter questions (tests). */
+  initialSuggestions?: string[];
   turnstileSiteKey?: string;
 }) {
   const [selectedRole, setSelectedRole] = useState(activeRole);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState('');
   const [state, setState] = useState('ready');
-  const [response, setResponse] = useState<ChatResponse>();
-  const [lastQuestion, setLastQuestion] = useState('');
+  const [thread, setThread] = useState<ThreadEntry[]>([]);
+  const [pendingQuestion, setPendingQuestion] = useState('');
   const [errorCode, setErrorCode] = useState<ChatFailureCode>();
   const [challengeVisible, setChallengeVisible] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -39,6 +40,10 @@ export function PortfolioAssistant({
     typeof window === 'undefined'
       ? undefined
       : createSessionStore(window.sessionStorage);
+  useEffect(() => {
+    // Hydrate after mount: the page is server-rendered with an empty thread.
+    setThread(createSessionStore(window.sessionStorage).thread());
+  }, []);
   useEffect(() => {
     if (open) requestAnimationFrame(() => inputRef.current?.focus());
   }, [open]);
@@ -75,8 +80,8 @@ export function PortfolioAssistant({
     cancelPending();
     store?.clear();
     setDraft('');
-    setResponse(undefined);
-    setLastQuestion('');
+    setThread([]);
+    setPendingQuestion('');
     setErrorCode(undefined);
     setState('ready');
   };
@@ -85,8 +90,8 @@ export function PortfolioAssistant({
     // dialog is gone: hand the question back instead of waiting it out.
     if (state === 'verifying') {
       cancelPending();
-      setDraft(lastQuestion);
-      setLastQuestion('');
+      setDraft(pendingQuestion);
+      setPendingQuestion('');
       setState('ready');
     }
     setOpen(false);
@@ -107,8 +112,7 @@ export function PortfolioAssistant({
     let timedOut = false;
     setState('verifying');
     setErrorCode(undefined);
-    setLastQuestion(question);
-    setResponse(undefined);
+    setPendingQuestion(question);
     setDraft('');
     try {
       const session = store.load();
@@ -148,12 +152,15 @@ export function PortfolioAssistant({
         content: next.answer,
         citationIds: next.citations.map((citation) => citation.sourceId),
       });
-      setResponse(next);
+      store.appendExchange({ question, response: next });
+      setThread(store.thread());
+      setPendingQuestion('');
       setState(next.answerStatus);
     } catch (error) {
       // Cleared, closed or superseded: whoever cancelled already reset state.
       if (run !== runId.current) return;
       setDraft(question);
+      setPendingQuestion('');
       setErrorCode(
         error instanceof ChatFailure
           ? error.code
@@ -167,9 +174,10 @@ export function PortfolioAssistant({
       if (run === runId.current) setChallengeVisible(false);
     }
   };
-  const suggestions = response?.followUps.length
-    ? response.followUps
-    : initialSuggestions;
+  const latest = thread[thread.length - 1]?.response;
+  const suggestions = latest?.followUps.length
+    ? latest.followUps
+    : (initialSuggestions ?? starterSuggestions[selectedRole]);
   return (
     <aside className="portfolio-assistant" aria-label="Portfolio assistant">
       <ChatLauncher onOpen={() => setOpen(true)} />
@@ -181,14 +189,14 @@ export function PortfolioAssistant({
           close={closePanel}
           clear={clear}
           submit={submit}
-          response={response}
+          thread={thread}
+          pendingQuestion={pendingQuestion}
           state={state}
           errorCode={errorCode}
           challengeVisible={challengeVisible}
           turnstileSlotRef={turnstileSlotRef}
           suggestions={suggestions}
           selectedRole={selectedRole}
-          lastQuestion={lastQuestion}
         />
       )}
       <p className="sr-only" aria-live="polite">

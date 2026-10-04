@@ -133,3 +133,24 @@ test('the human-check slot lives inside the dialog, above the composer', async (
   );
   expect(aboveComposer).toBe(true);
 });
+
+test('on localhost with no .dev.vars, a real question returns an answer with sources', async ({
+  page,
+}) => {
+  const textbox = await openAssistant(page);
+  await textbox.fill('How was Northstar built?');
+  await page.getByRole('button', { name: /send question/i }).click();
+  const message = page.locator('.chat-message').first();
+  await expect(message).toBeVisible({ timeout: 30_000 });
+  await expect(message).toContainText(/Northstar/);
+  expect(await page.locator('.chat-citations a').count()).toBeGreaterThan(0);
+  // The whole session stays on screen: a second question adds to the thread.
+  await page
+    .getByRole('textbox', { name: /your question/i })
+    .fill('Tell me about Mohamed');
+  await page.getByRole('button', { name: /send question/i }).click();
+  await expect(page.locator('.chat-message')).toHaveCount(2, {
+    timeout: 30_000,
+  });
+  await expect(page.locator('.chat-turn--user')).toHaveCount(2);
+});

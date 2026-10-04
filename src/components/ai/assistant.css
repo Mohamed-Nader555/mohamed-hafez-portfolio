@@ -431,6 +431,11 @@
   gap: 0.8rem;
 }
 
+.chat-exchange {
+  display: grid;
+  gap: 0.8rem;
+}
+
 .chat-welcome {
   position: relative;
   overflow: hidden;

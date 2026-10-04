@@ -16,6 +16,7 @@ export default defineConfig({
       'tests/unit/**/*.test.ts?(x)',
       'tests/integration/**/*.test.ts?(x)',
     ],
+    globalSetup: ['tests/global-setup.ts'],
     setupFiles: ['tests/setup.ts'],
   },
 });

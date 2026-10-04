@@ -114,6 +114,20 @@ const sourceRecords = [
     publicHref: '/about',
     isPublic: true,
   },
+  {
+    id: 'public-about',
+    label: 'About Mohamed Hafez',
+    kind: 'approved-source',
+    publicHref: '/about',
+    isPublic: true,
+  },
+  {
+    id: 'public-home',
+    label: 'Portfolio home and contact',
+    kind: 'approved-source',
+    publicHref: '/',
+    isPublic: true,
+  },
   // Case-study sources: one per §4 flagship/story/brief page (brief §6.4).
   {
     id: 'case-study-sprint-pp',

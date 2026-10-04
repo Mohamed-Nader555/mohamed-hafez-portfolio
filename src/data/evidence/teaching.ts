@@ -44,6 +44,48 @@ const records = [
     sourceIds: ['resume-aiml', 'resume-teaching'],
     public: true,
   },
+  {
+    id: 'student-leadership',
+    title: 'Student leadership at Helwan University',
+    statement:
+      'At Helwan University (2018–2022), Mohamed was Leader of the Academic Committee in the Minders Student Activity, a member of the Technical Committee of the Microsoft Student Partner Tech Club, and an instructor at the Google Developers Student Club.',
+    topics: [
+      'leadership',
+      'student activities',
+      'Minders',
+      'Microsoft Student Partner',
+      'Google Developers Student Club',
+    ],
+    aliases: [
+      'student leadership',
+      'Academic Committee',
+      'Minders Student Activity',
+      'leadership experience',
+    ],
+    roleWeights: { aiml: 1, software: 1, android: 1, teaching: 4 },
+    sourceIds: ['resume-teaching'],
+    public: true,
+  },
+  {
+    id: 'icpc-contestant',
+    title: 'ICPC contestant',
+    statement:
+      'Mohamed competed in the ICPC programming contest in three consecutive years: 2019, 2020, and 2021.',
+    topics: ['ICPC', 'competitive programming', 'problem solving'],
+    aliases: [
+      'competitive programming',
+      'programming contest',
+      'ICPC contestant',
+    ],
+    roleWeights: { aiml: 1, software: 2, android: 1, teaching: 3 },
+    sourceIds: [
+      'resume-aiml',
+      'resume-software',
+      'resume-android',
+      'resume-teaching',
+    ],
+    public: true,
+  },
 ] as const satisfies readonly EvidenceRecord[];
 
 export const teachingEvidence = evidenceRecordSchema.array().parse(records);
