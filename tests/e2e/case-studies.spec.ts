@@ -365,19 +365,14 @@ for (const path of [
 // death-ninja are still empty in `src/data/project-images.ts` pending a
 // parallel media-pipeline pass, so they're intentionally not asserted here.
 for (const slug of ['dive', 'dostava'] as const) {
-  test(`${slug} gallery renders screenshots at the constrained device-row size, once wired`, async ({
+  test(`${slug} gallery renders screenshots at the constrained device-row size`, async ({
     page,
   }) => {
     await page.goto(`/work/${slug}`);
 
     const gallery = page.locator('.project-gallery');
     const galleryCount = await gallery.count();
-    test.skip(
-      galleryCount === 0,
-      `${slug}.mdx does not render <ProjectGallery> yet, even though ` +
-        `src/data/project-images.ts already has real screenshots for it. ` +
-        `Skipping until the media-pipeline pass wires the component in.`,
-    );
+    expect(galleryCount).toBeGreaterThan(0);
 
     const pictures = gallery.locator('.project-screenshot picture');
     await expect(pictures.first()).toBeVisible();
@@ -397,18 +392,14 @@ for (const slug of ['dive', 'dostava'] as const) {
 // from a parallel media-pipeline pass. Assert it only if dive.mdx already
 // references <ScreenFlow>, so this suite doesn't fail on a component that
 // hasn't been wired in yet.
-test('Dive ScreenFlow renders the check-to-recommend loop, once wired', async ({
+test('Dive ScreenFlow renders the check-to-recommend loop', async ({
   page,
 }) => {
   await page.goto('/work/dive');
 
   const screenFlow = page.locator('.screen-flow');
   const screenFlowCount = await screenFlow.count();
-  test.skip(
-    screenFlowCount === 0,
-    'dive.mdx does not reference <ScreenFlow> yet; skipping until the ' +
-      'media-pipeline pass adds it (see docs/PROJECTS_REWRITE_BRIEF.md §5.7).',
-  );
+  expect(screenFlowCount).toBeGreaterThan(0);
 
   await expect(screenFlow).toBeVisible();
   await expect(screenFlow.locator('li')).toHaveCount(3, { timeout: 1000 });

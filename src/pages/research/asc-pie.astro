@@ -4,6 +4,7 @@ import CompareTable from '@/components/case-study/CompareTable.astro';
 import ResultBars from '@/components/case-study/ResultBars.astro';
 import ResearchHighlights from '@/components/research/ResearchHighlights.astro';
 import { getEvidenceForProject } from '@/data';
+import { PROJECT_STATUS } from '@/data/project-status';
 import {
   corpusAblation,
   paperLine,
@@ -72,7 +73,7 @@ const structuredData = [
       </p>
       <p role="group" aria-label="SPRINT-PP status">
         <span>SPRINT-PP</span>
-        <strong>{statusRecord.statement}</strong>
+        <strong>{PROJECT_STATUS['accepted-cascon'].longer}</strong>
       </p>
     </div>
     <dl class="research-meta">

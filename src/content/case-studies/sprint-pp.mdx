@@ -70,6 +70,8 @@ I built the staged benchmark itself, not just the mitigation. Every stage adds n
 
 Every one of those scores is entity-level F1, not token accuracy, and that choice matters here. In PII extraction most tokens in any sentence are labelled O, meaning "not an entity". A model that has forgotten an entire type can still label the large majority of tokens correctly, because it simply calls them O, so token accuracy stays respectable while the model can no longer find a single entity of that type. Entity-level F1 only gives credit when the whole entity is found, so it shows forgetting the way a user would experience it: the thing you needed extracted is missing.
 
+The two views also read differently across strategies, which is why I kept both. In the stage-restricted view, replay's score on the first stage slips as later stages arrive, while SPRINT-PP holds it almost level. In the cumulative view, where old and new types are scored together, that gap widens, because a model that has quietly lost one type drags down every sentence containing it. Reading the two together is what separates a method that learns new types from one that also keeps the old ones usable.
+
 <FeatureGrid items={frontmatter.features} />
 
 <DeepDive id="how-sprint-pp-remembers-without-storing" title="How SPRINT-PP remembers without storing">

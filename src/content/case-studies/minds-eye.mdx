@@ -196,7 +196,7 @@ I delivered more than 80% of this five-person capstone: the Android app, the clo
 
 Capture starts on the glasses and ends as speech in the user's ear, whichever mode is active. The user takes a photo in one of two ways: by pressing the button on the camera, or by choosing a picture from the phone's gallery. A photo from the glasses travels over Bluetooth to the Android app. The app sends it on to my Python service or to a cloud vision service, depending on which feature the user opened, and the answer comes back to the phone as text that the app speaks aloud. The user never has to look at a screen to find out what happened.
 
-I wrote every link in that chain: the firmware on the ESP32-CAM, the Bluetooth hand-off to the app, the app's screens and speech output, and the service that sits behind it. That is also why the interface contracts between them mattered so much to me. The glasses only know how to capture and send an image. The app only knows how to ask for a result and say it. Each side could change without breaking the other as long as the contract held.
+I built most of every link in that chain: the firmware on the ESP32-CAM, the Bluetooth hand-off to the app, the app's screens and speech output, and the service that sits behind it, which is why I also owned the contracts between them. That is also why the interface contracts between them mattered so much to me. The glasses only know how to capture and send an image. The app only knows how to ask for a result and say it. Each side could change without breaking the other as long as the contract held.
 
 <FeatureGrid items={frontmatter.features} />
 

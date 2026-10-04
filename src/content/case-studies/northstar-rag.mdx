@@ -112,6 +112,8 @@ Chunking was the first real decision. I split text into 700-character chunks tha
 
 The embedding model runs locally. Every chunk is embedded with a small sentence-transformers model, so no document text leaves the machine to be indexed and a question costs nothing to embed. For a corpus this size, I expected retrieval quality to depend far more on how the text is chunked than on how large the embedding model is.
 
+The service itself is small on purpose. FastAPI and Uvicorn expose a health endpoint, so a deployment can tell whether the process is up, and a question-answering endpoint that takes a question and returns the answer or the refusal. The vector store is a persistent Chroma collection kept on a Docker volume, so restarting the stack does not mean re-embedding nine documents. Pydantic models define the request and response shapes, which keeps the contract between the API and its callers explicit and testable.
+
 The API answers with more than text. Each response lists the sources it used, and every source carries the document name, the page, the section when the format has one, the chunk id, and the retrieval distance. A question like how many days a week someone may work remotely gets back either an answer with numbered citations or the fixed refusal, and in both cases the caller can see exactly what was retrieved.
 
 <FeatureGrid items={frontmatter.features} />
