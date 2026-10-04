@@ -289,6 +289,54 @@ for (const [slug, edges] of Object.entries(expectedEdges)) {
   });
 }
 
+// Regression: ArchitectureFlow once rendered as unstyled numbered lists on
+// every diagram page because its class names matched no CSS. Check one linear
+// (asc-pie) and one branched (dive) page, plus the research record.
+for (const route of ['/work/asc-pie', '/work/dive', '/research/asc-pie']) {
+  test(`${route} architecture diagram is styled and contained`, async ({
+    page,
+  }) => {
+    await page.goto(route);
+
+    const figure = page.locator('.architecture-flow').first();
+    await expect(figure).toBeVisible();
+
+    await expect(figure.locator('.architecture-flow__nodes')).toHaveCSS(
+      'display',
+      'grid',
+    );
+    await expect(figure.locator('.architecture-flow__nodes')).toHaveCSS(
+      'list-style-type',
+      'none',
+    );
+    await expect(figure.locator('.architecture-flow__pipeline')).toHaveCSS(
+      'display',
+      'flex',
+    );
+    await expect(figure).not.toHaveCSS('border-top-width', '0px');
+    await expect(figure).not.toHaveCSS('border-top-style', 'none');
+
+    const overflow = await figure.evaluate((el) => ({
+      figure: el.scrollWidth - el.clientWidth,
+      lists: [
+        ...el.querySelectorAll(
+          '.architecture-flow__pipeline, .architecture-flow__nodes, .architecture-flow__edges',
+        ),
+      ].map((list) => {
+        const box = list.getBoundingClientRect();
+        const outer = el.getBoundingClientRect();
+        return (
+          list.scrollWidth - list.clientWidth <= 0 &&
+          box.left >= outer.left - 1 &&
+          box.right <= outer.right + 1
+        );
+      }),
+    }));
+    expect(overflow.figure).toBeLessThanOrEqual(0);
+    expect(overflow.lists).toEqual([true, true, true]);
+  });
+}
+
 for (const path of ['/work', '/work/asc-pie']) {
   for (const width of [320, 360, 820, 1440]) {
     test(`${path} has no horizontal overflow at ${width}px`, async ({
