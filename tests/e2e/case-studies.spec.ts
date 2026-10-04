@@ -404,3 +404,20 @@ test('Dive ScreenFlow renders the check-to-recommend loop', async ({
   await expect(screenFlow).toBeVisible();
   await expect(screenFlow.locator('li')).toHaveCount(3, { timeout: 1000 });
 });
+
+test('the work index counts case studies, and no label says "story"', async ({
+  page,
+}) => {
+  await page.goto('/work');
+  await expect(page.locator('.work-index__counter')).toContainText(
+    '28 case studies',
+  );
+  await expect(page.locator('main')).not.toContainText(
+    /read the story|project stories/i,
+  );
+  await page.goto('/');
+  await expect(page.locator('main')).not.toContainText(/read the story/i);
+  await expect(
+    page.getByRole('link', { name: /^Explore the project: / }).first(),
+  ).toBeVisible();
+});

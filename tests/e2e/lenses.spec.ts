@@ -165,12 +165,12 @@ test('lens, contact, resume, and case-study links remain real without JavaScript
   const featured = page.getByRole('region', { name: 'Work I’m proud of' });
   await expect(
     featured.getByRole('link', {
-      name: 'Read the story: Northstar RAG System',
+      name: 'Explore the project: Northstar RAG System',
     }),
   ).toHaveAttribute('href', '/work/northstar-rag');
   await expect(
     featured.getByRole('link', {
-      name: 'Read the story: Documentum Workflow & Lifecycle Optimization',
+      name: 'Explore the project: Documentum Workflow & Lifecycle Optimization',
     }),
   ).toHaveAttribute('href', '/work/documentum-workflows');
 
@@ -215,7 +215,7 @@ const featuredCards = {
 } as const;
 
 for (const [path, cards] of Object.entries(featuredCards)) {
-  test(`${path} featured work shows four story cards that link to their stories`, async ({
+  test(`${path} featured work shows four project cards that link to their case studies`, async ({
     page,
   }) => {
     await page.goto(path);
@@ -253,7 +253,7 @@ for (const [path, cards] of Object.entries(featuredCards)) {
   });
 }
 
-test('the ASC-PIE card opens the story page, not the research record', async ({
+test('the ASC-PIE card opens the case study, not the research record', async ({
   page,
 }) => {
   await page.goto('/');
@@ -261,7 +261,7 @@ test('the ASC-PIE card opens the story page, not the research record', async ({
 
   const link = page
     .getByRole('region', { name: 'Work I’m proud of' })
-    .getByRole('link', { name: 'Read the story: ASC-PIE' });
+    .getByRole('link', { name: 'Explore the project: ASC-PIE' });
   await expect(link).toHaveAttribute('href', '/work/asc-pie');
   await link.click();
   // The first visit compiles the case-study page in the dev server.
