@@ -35,7 +35,15 @@ const strategies = [
           modelFamilies.map((model) => (
             <div>
               <span>{model.label}</span>
-              <i style={`--bar-value:${model.f1}%`} />
+              <svg
+                class="bar-chart__bar"
+                viewBox="0 0 100 10"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <rect x="0" y="0" width={model.f1} height="10" />
+              </svg>
               <strong>{model.f1.toFixed(1)}%</strong>
               <small>validity {model.validity}</small>
             </div>
@@ -56,7 +64,15 @@ const strategies = [
             <div>
               <>
                 <span>{label}</span>
-                <i style={`--bar-value:${value}%`} />
+                <svg
+                  class="bar-chart__bar"
+                  viewBox="0 0 100 10"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <rect x="0" y="0" width={value} height="10" />
+                </svg>
                 <strong>{value.toFixed(1)}%</strong>
               </>
             </div>
