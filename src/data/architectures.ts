@@ -632,11 +632,11 @@ export const architectures: Readonly<Record<string, ArchitectureDefinition>> = {
   },
   'this-portfolio': {
     summary:
-      'Curated, typed content pre-renders the site, while a separate assistant path retrieves over the same curated evidence, refuses before generation, and validates citations before answering.',
+      'Typed, validated content pre-renders the site, while a separate assistant path retrieves over the same published content, refuses before generation, and validates citations before answering.',
     nodes: [
       {
         id: 'curated-data',
-        label: 'Curated data',
+        label: 'Published content',
         detail: 'Typed, Zod-validated facts',
       },
       {
@@ -653,7 +653,7 @@ export const architectures: Readonly<Record<string, ArchitectureDefinition>> = {
       {
         id: 'retrieval',
         label: 'Retrieval',
-        detail: 'Lexical retrieval over curated evidence',
+        detail: 'Lexical retrieval over the published content',
       },
       {
         id: 'refusal-gate',

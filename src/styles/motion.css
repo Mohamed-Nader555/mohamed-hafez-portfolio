@@ -49,6 +49,7 @@
   }
 
   .story-card--featured:hover,
+  .story-card--featured:focus-within,
   .case-study-card:hover,
   .experience-records article:hover,
   .depth-grid article:hover,
@@ -160,6 +161,7 @@
     .primary-action:hover,
     .secondary-action:hover,
     .story-card--featured:hover,
+    .story-card--featured:focus-within,
     .case-study-card:hover,
     .experience-records article:hover,
     .depth-grid article:hover,

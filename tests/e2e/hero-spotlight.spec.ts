@@ -11,7 +11,7 @@ test('hero presents a meaningful project spotlight for each selected role', asyn
   await expect(spotlight).toContainText('ASC-PIE');
   await expect(spotlight.getByRole('link')).toHaveAttribute(
     'href',
-    '/research/asc-pie',
+    '/work/asc-pie',
   );
 
   await page

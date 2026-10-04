@@ -1,3 +1,8 @@
+import {
+  FORBIDDEN_HASHES,
+  forbiddenHashesIn,
+  sha256,
+} from '../helpers/forbidden-terms';
 import { execFileSync } from 'node:child_process';
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -320,12 +325,9 @@ describe('case-study content collection', () => {
   // Parent brief §9.1 forbidden-wording regressions. The patterns live here, in
   // the test file only: public code and content must never carry them.
   describe('forbidden wording (brief §9.1)', () => {
-    const BANK_NAMES = /Alinma|Banque\s+Saudi\s+Fransi|\bBSF\b/i;
     // Non-clinical wellbeing language only on Your Life Is My Life.
     const CLINICAL_TERMS =
       /\b(treatment|therapy|therapist|depress\w*|suicid\w*|patients?|diagnos\w*|medical|psychiatr\w*)\b/i;
-    // The commercial app template Mercato was adapted from must stay unnamed.
-    const MERCATO_TEMPLATE = /tic[\s-]?tic/i;
     const PAYMENT_CLAIMS = /payment\s+gateway|processes\s+payments?/i;
 
     async function pageTexts() {
@@ -339,13 +341,17 @@ describe('case-study content collection', () => {
 
     it('never names the banking clients in any case study', async () => {
       for (const entry of (await pageTexts()).values()) {
-        expect(entry.raw, `${entry.id} names a bank`).not.toMatch(BANK_NAMES);
+        expect(
+          forbiddenHashesIn(entry.raw),
+          `${entry.id} contains a forbidden name`,
+        ).toEqual([]);
       }
     });
 
     it('never names the banking clients in catalogue data or sources', () => {
-      const publicData = JSON.stringify({ projects, sources });
-      expect(publicData).not.toMatch(BANK_NAMES);
+      expect(forbiddenHashesIn(JSON.stringify({ projects, sources }))).toEqual(
+        [],
+      );
     });
 
     it('keeps Your Life Is My Life in non-clinical wellbeing language', async () => {
@@ -360,11 +366,13 @@ describe('case-study content collection', () => {
 
     it('does not name the template Mercato was adapted from', async () => {
       const texts = await pageTexts();
-      expect(texts.get('mercato')!.raw).not.toMatch(MERCATO_TEMPLATE);
+      expect(forbiddenHashesIn(texts.get('mercato')!.raw)).toEqual([]);
       const project = projectBySlug.get('mercato')!;
       expect(
-        `${project.hook} ${project.summary} ${project.ownership}`,
-      ).not.toMatch(MERCATO_TEMPLATE);
+        forbiddenHashesIn(
+          `${project.hook} ${project.summary} ${project.ownership}`,
+        ),
+      ).toEqual([]);
       // And it is a football-talent platform, never a marketplace.
       expect(nodeText(texts.get('mercato')!.tree)).not.toMatch(/marketplace/i);
     });
@@ -411,11 +419,18 @@ describe('case-study content collection', () => {
     });
 
     it('catches each forbidden pattern when it is present', () => {
-      // Guards against a regex typo silently turning a check into a no-op.
-      expect('Alinma Bank').toMatch(BANK_NAMES);
-      expect('Banque Saudi Fransi').toMatch(BANK_NAMES);
+      // Guards against a check silently turning into a no-op. A neutral,
+      // made-up term stands in for the real names, which are never written
+      // down: its hash is added to a set inside this test.
+      const madeUp = new Set([sha256('zorblax')]);
+      expect(forbiddenHashesIn('Acme Zorblax holdings', madeUp)).toHaveLength(
+        1,
+      );
+      expect(forbiddenHashesIn('a bank and a bank holding', madeUp)).toEqual(
+        [],
+      );
+      expect(forbiddenHashesIn('Zorblax', FORBIDDEN_HASHES)).toEqual([]);
       expect('therapy for depression').toMatch(CLINICAL_TERMS);
-      expect('a TicTic style app').toMatch(MERCATO_TEMPLATE);
       expect('a payment gateway').toMatch(PAYMENT_CLAIMS);
       expect('it processes payments').toMatch(PAYMENT_CLAIMS);
     });

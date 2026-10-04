@@ -276,16 +276,30 @@ for (const [slug, edges] of Object.entries(expectedEdges)) {
   }) => {
     await page.goto(`/work/${slug}`);
 
+    // Every edge is shown exactly once: as a connector (`data-next` on the
+    // source card) or as a link chip in the source card's footer.
     const renderedEdges = await page
-      .locator('.architecture-flow__edges [data-edge-from][data-edge-to]')
-      .evaluateAll((items) =>
-        items.map((item) => [
-          item.getAttribute('data-edge-from'),
-          item.getAttribute('data-edge-to'),
-        ]),
-      );
+      .locator('.architecture-flow')
+      .first()
+      .evaluate((figure) => [
+        ...[...figure.querySelectorAll('[data-edge-from][data-edge-to]')].map(
+          (item) => [
+            item.getAttribute('data-edge-from'),
+            item.getAttribute('data-edge-to'),
+          ],
+        ),
+        ...[...figure.querySelectorAll('li[data-node-id][data-next]')].map(
+          (item) => [
+            item.getAttribute('data-node-id'),
+            item.getAttribute('data-next'),
+          ],
+        ),
+      ]);
+    const key = (pair: readonly (string | null)[]) => pair.join('>');
 
-    expect(renderedEdges).toEqual(edges);
+    expect(renderedEdges.map(key).sort()).toEqual(
+      edges.map((edge) => key(edge)).sort(),
+    );
   });
 }
 
@@ -309,9 +323,10 @@ for (const route of ['/work/asc-pie', '/work/dive', '/research/asc-pie']) {
       'list-style-type',
       'none',
     );
-    await expect(figure.locator('.architecture-flow__pipeline')).toHaveCSS(
-      'display',
-      'flex',
+    // A branching graph keeps the Main path strip; a linear one hides it,
+    // because its connected cards already are the pipeline.
+    await expect(figure.locator('.architecture-flow__pipeline')).toHaveCount(
+      route === '/work/dive' ? 1 : 0,
     );
     await expect(figure).not.toHaveCSS('border-top-width', '0px');
     await expect(figure).not.toHaveCSS('border-top-style', 'none');
@@ -320,7 +335,7 @@ for (const route of ['/work/asc-pie', '/work/dive', '/research/asc-pie']) {
       figure: el.scrollWidth - el.clientWidth,
       lists: [
         ...el.querySelectorAll(
-          '.architecture-flow__pipeline, .architecture-flow__nodes, .architecture-flow__edges',
+          '.architecture-flow__pipeline, .architecture-flow__nodes, .architecture-flow__links',
         ),
       ].map((list) => {
         const box = list.getBoundingClientRect();
@@ -333,7 +348,8 @@ for (const route of ['/work/asc-pie', '/work/dive', '/research/asc-pie']) {
       }),
     }));
     expect(overflow.figure).toBeLessThanOrEqual(0);
-    expect(overflow.lists).toEqual([true, true, true]);
+    expect(overflow.lists.length).toBeGreaterThanOrEqual(1);
+    expect(overflow.lists.every(Boolean)).toBe(true);
   });
 }
 
@@ -403,4 +419,68 @@ test('Dive ScreenFlow renders the check-to-recommend loop', async ({
 
   await expect(screenFlow).toBeVisible();
   await expect(screenFlow.locator('li')).toHaveCount(3, { timeout: 1000 });
+});
+
+test('the work index counts case studies, and no label says "story"', async ({
+  page,
+}) => {
+  await page.goto('/work');
+  await expect(page.locator('.work-index__counter')).toContainText(
+    '28 case studies',
+  );
+  await expect(page.locator('main')).not.toContainText(
+    /read the story|project stories/i,
+  );
+  await page.goto('/');
+  await expect(page.locator('main')).not.toContainText(/read the story/i);
+  await expect(
+    page.getByRole('link', { name: /^Explore the project: / }).first(),
+  ).toBeVisible();
+});
+
+test('the diagram has no Connections block; Dive shows each relationship once', async ({
+  page,
+}) => {
+  await page.goto('/work/dive');
+  const figure = page.locator('.architecture-flow').first();
+  await expect(figure.locator('.architecture-flow__edges')).toHaveCount(0);
+  await expect(figure).not.toContainText('Connections');
+  await expect(figure).toContainText('Main path');
+  await expect(figure).toContainText('Components and what they talk to');
+
+  const client = figure.locator('[data-node-id="android-client"]');
+  const chips = client.locator('ul[aria-label="Sends to"] > li');
+  await expect(chips).toHaveCount(4);
+  await expect(chips.nth(0)).toContainText('Model API');
+  await expect(chips.nth(0).locator('em')).toHaveText('HTTPS POST');
+  await expect(chips.nth(1)).toContainText('eRDPML');
+  await expect(chips.nth(2)).toContainText('Firebase services');
+  await expect(chips.nth(3)).toContainText('Location & weather');
+
+  // Model API → Result → Recommend loop are joined by connectors.
+  await expect(figure.locator('[data-node-id="model-api"]')).toHaveAttribute(
+    'data-next',
+    'result',
+  );
+  await expect(figure.locator('[data-node-id="result"]')).toHaveAttribute(
+    'data-next',
+    'recommend-loop',
+  );
+  // The loop back to Model API is one chip on Recommend loop.
+  const loop = figure.locator('[data-node-id="recommend-loop"]');
+  await expect(loop).not.toHaveAttribute('data-next', /.+/);
+  await expect(
+    loop.locator('ul[aria-label="Sends to"] > li[data-edge-to="model-api"]'),
+  ).toHaveCount(1);
+});
+
+test('a linear diagram hides the Main path strip and labels the cards as a pipeline', async ({
+  page,
+}) => {
+  await page.goto('/work/asc-pie');
+  const figure = page.locator('.architecture-flow').first();
+  await expect(figure).toContainText('Pipeline, step by step');
+  await expect(figure).not.toContainText('Main path');
+  await expect(figure.locator('.architecture-flow__links')).toHaveCount(0);
+  await expect(figure.locator('li[data-next]')).toHaveCount(6);
 });

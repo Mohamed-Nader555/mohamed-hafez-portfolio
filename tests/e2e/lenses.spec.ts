@@ -92,7 +92,7 @@ test('each lens spotlights its own project and never claims an unpublished SPRIN
   page,
 }) => {
   const spotlights = [
-    ['/', 'ASC-PIE', '/research/asc-pie'],
+    ['/', 'ASC-PIE', '/work/asc-pie'],
     ['/software', 'Northstar RAG System', '/work/northstar-rag'],
     ['/android', 'Mind’s Eye', '/work/minds-eye'],
     [
@@ -165,12 +165,12 @@ test('lens, contact, resume, and case-study links remain real without JavaScript
   const featured = page.getByRole('region', { name: 'Work I’m proud of' });
   await expect(
     featured.getByRole('link', {
-      name: 'Read the story: Northstar RAG System',
+      name: 'Explore the project: Northstar RAG System',
     }),
   ).toHaveAttribute('href', '/work/northstar-rag');
   await expect(
     featured.getByRole('link', {
-      name: 'Read the story: Documentum Workflow & Lifecycle Optimization',
+      name: 'Explore the project: Documentum Workflow & Lifecycle Optimization',
     }),
   ).toHaveAttribute('href', '/work/documentum-workflows');
 
@@ -215,7 +215,7 @@ const featuredCards = {
 } as const;
 
 for (const [path, cards] of Object.entries(featuredCards)) {
-  test(`${path} featured work shows four story cards that link to their stories`, async ({
+  test(`${path} featured work shows four project cards that link to their case studies`, async ({
     page,
   }) => {
     await page.goto(path);
@@ -235,7 +235,16 @@ for (const [path, cards] of Object.entries(featuredCards)) {
       await expect(card.locator('.project-card__ownership')).toHaveCount(0);
       expect(
         await card.locator('.technology-list li').count(),
-      ).toBeLessThanOrEqual(3);
+      ).toBeLessThanOrEqual(5);
+      // The richer anatomy: decorative cover, full summary, and a role line.
+      await expect(card.locator('.story-card__cover')).toHaveAttribute(
+        'aria-hidden',
+        'true',
+      );
+      await expect(card.locator('.story-card__summary')).not.toBeEmpty();
+      await expect(card.locator('.story-card__role')).toContainText('My role');
+      if (href !== '#teaching-portfolio')
+        await expect(card.locator('.story-card__context')).not.toBeEmpty();
     }
 
     // Projects with a page carry a status badge; the teaching record has none.
@@ -244,7 +253,7 @@ for (const [path, cards] of Object.entries(featuredCards)) {
   });
 }
 
-test('the ASC-PIE card opens the story page, not the research record', async ({
+test('the ASC-PIE card opens the case study, not the research record', async ({
   page,
 }) => {
   await page.goto('/');
@@ -252,7 +261,7 @@ test('the ASC-PIE card opens the story page, not the research record', async ({
 
   const link = page
     .getByRole('region', { name: 'Work I’m proud of' })
-    .getByRole('link', { name: 'Read the story: ASC-PIE' });
+    .getByRole('link', { name: 'Explore the project: ASC-PIE' });
   await expect(link).toHaveAttribute('href', '/work/asc-pie');
   await link.click();
   // The first visit compiles the case-study page in the dev server.
@@ -277,3 +286,34 @@ for (const width of [320, 360, 390, 768, 820, 1024, 1440]) {
     ).toBeAttached();
   });
 }
+
+test('the whole home card is clickable through its single link', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  const card = page
+    .getByRole('region', { name: 'Work I’m proud of' })
+    .locator('article.story-card')
+    .first();
+  await expect(card.getByRole('link')).toHaveCount(1);
+  // Click the summary, not the link: the link's ::after covers the card.
+  await card.scrollIntoViewIfNeeded();
+  const box = (await card.locator('.story-card__summary').boundingBox())!;
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+  await expect(page).toHaveURL(/\/work\/asc-pie$/, { timeout: 30_000 });
+});
+
+test('cards show allowlisted key facts only where a number exists', async ({
+  page,
+}) => {
+  await page.goto('/android');
+  const cards = page
+    .getByRole('region', { name: 'Work I’m proud of' })
+    .locator('article.story-card');
+  // Mind's Eye and Dive and Dostava carry facts; Food Planner has none.
+  await expect(cards.nth(0).locator('.story-card__facts li')).not.toHaveCount(
+    0,
+  );
+  await expect(cards.nth(3).locator('.story-card__facts')).toHaveCount(0);
+});

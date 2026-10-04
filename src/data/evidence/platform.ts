@@ -20,7 +20,7 @@ const records = [
     id: 'this-portfolio-assistant',
     title: 'This portfolio’s assistant',
     statement:
-      'The assistant on this site is protected by Turnstile and two rate limiters, retrieves lexically over curated, validated evidence, refuses before generation when nothing supports an answer, generates with Workers AI (Llama 3.1 8B) when it does, validates citations, and falls back to an extractive, verified-text answer if generation is unavailable.',
+      'The assistant on this site is protected by Turnstile and two rate limiters, retrieves lexically over the published, validated content, refuses before generation when nothing supports an answer, generates with Workers AI (Llama 3.1 8B) when it does, validates citations, and falls back to an extractive, verified-text answer if generation is unavailable.',
     topics: ['assistant', 'Turnstile', 'Workers AI', 'refusal', 'citations'],
     aliases: ['Ask Mohamed.AI', 'grounded assistant'],
     roleWeights: { aiml: 4, software: 4, android: 0, teaching: 1 },

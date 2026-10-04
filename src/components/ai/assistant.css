@@ -292,6 +292,7 @@
 .chat-header,
 .chat-context-bar,
 .chat-panel-body,
+.chat-turnstile,
 .chat-composer {
   position: relative;
   z-index: 1;
@@ -426,6 +427,11 @@
 }
 
 .chat-conversation {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.chat-exchange {
   display: grid;
   gap: 0.8rem;
 }
@@ -723,6 +729,34 @@
   border-color: rgb(85 223 253 / 45%);
 }
 
+.chat-turnstile {
+  flex: 0 0 auto;
+  padding: 0 1.1rem;
+  background: rgb(5 8 23 / 72%);
+}
+
+.chat-turnstile[data-active='true'] {
+  border-top: 1px solid rgb(85 223 253 / 11%);
+  padding-block: 0.7rem 0.2rem;
+}
+
+.chat-turnstile-hint {
+  margin-block-end: 0.5rem;
+  color: var(--color-ink-300);
+  font-family: var(--font-utility);
+  font-size: 0.75rem;
+}
+
+.chat-turnstile-hint:empty {
+  display: none;
+}
+
+.chat-turnstile-slot:focus-visible {
+  border-radius: 0.5rem;
+  outline: 2px solid var(--color-evidence-500);
+  outline-offset: 3px;
+}
+
 .chat-composer {
   flex: 0 0 auto;
   border-top: 1px solid rgb(85 223 253 / 11%);
@@ -962,6 +996,7 @@
 
   .chat-header,
   .chat-context-bar,
+  .chat-turnstile,
   .chat-composer {
     padding-inline: 0.85rem;
   }

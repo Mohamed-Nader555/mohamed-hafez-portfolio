@@ -1,4 +1,4 @@
-import { evidence, projects, screeningFacts, sources } from '@/data';
+import { evidence, projects, screeningFacts } from '@/data';
 import {
   careerExperience,
   credentials,
@@ -6,14 +6,28 @@ import {
   skillGroups,
   teachingPortfolio,
 } from '@/data/career';
+import { PROJECT_STATUS } from '@/data/project-status';
 import type { EvidenceRecord, RoleId } from '@/types/content';
-import type { KnowledgeCategory, KnowledgeChunk } from './types';
-
-const sourceById = new Map(
-  sources
-    .filter((source) => source.isPublic && source.publicHref)
-    .map((source) => [source.id, source]),
-);
+import {
+  allResumeIds,
+  allRoles,
+  citationsFor,
+  projectAliases,
+} from './chunk-helpers';
+import {
+  architectureChunks,
+  profileChunks,
+  repositoryChunks,
+  researchChunks,
+} from './chunk-data';
+import { chunkCaseStudyPages, type CaseStudyPage } from './chunk-pages';
+import { overviewChunks } from './chunk-overview';
+import type {
+  KnowledgeCategory,
+  KnowledgeChunk,
+  KnowledgeEntity,
+} from './types';
+import { assistantVoice } from './voice';
 
 // Longest/most-specific prefixes are listed first so a shared stem (e.g.
 // "shop-on-the-go" vs a hypothetical "shop-on-the-go-team") never resolves
@@ -79,31 +93,13 @@ function projectFor(record: EvidenceRecord): string | undefined {
   )?.[1];
 }
 
-function citationsFor(sourceIds: string[]) {
-  return sourceIds.flatMap((id) => {
-    const source = sourceById.get(id);
-    return source?.publicHref
-      ? [{ sourceId: id, label: source.label, href: source.publicHref }]
-      : [];
-  });
-}
+export type KnowledgeBase = {
+  chunks: KnowledgeChunk[];
+  entities: KnowledgeEntity[];
+};
 
-const allResumeIds = [
-  'resume-aiml',
-  'resume-software',
-  'resume-android',
-  'resume-teaching',
-];
-
-function assistantVoice(text: string) {
-  return text
-    .replace(/\bI’m\b/g, 'Mohamed is')
-    .replace(/\bI have\b/g, 'Mohamed has')
-    .replace(/\bI\b/g, 'Mohamed')
-    .replace(/\bmy\b/gi, 'his');
-}
-
-export function chunkEvidence(): KnowledgeChunk[] {
+/** Verified evidence, catalogue summaries and the career/teaching record. */
+function evidenceChunks(): KnowledgeChunk[] {
   const facts = evidence.map((record) => ({
     id: record.id,
     title: record.title,
@@ -117,24 +113,29 @@ export function chunkEvidence(): KnowledgeChunk[] {
     category: categoryFor(record),
     citations: citationsFor(record.sourceIds),
   }));
-  const summaries = projects.map((project) => ({
-    id: `project-${project.id}`,
-    title: project.title,
-    text: `${project.summary} ${project.ownership} Technologies: ${project.technologies.join(', ')}.`,
-    topics: [project.title, ...project.technologies],
-    aliases: [project.id, project.slug, ...project.technologies],
-    roles: [...project.roles],
-    projectId: project.id,
-    category: 'project' as const,
-    citations: citationsFor(project.sourceIds),
-  }));
+  const summaries = projects.map((project) => {
+    const status = project.status ? PROJECT_STATUS[project.status] : undefined;
+    return {
+      id: `project-${project.id}`,
+      title: project.title,
+      text: assistantVoice(
+        `${project.hook} ${project.summary} ${project.ownership} Technologies: ${project.technologies.join(', ')}.${status ? ` Status: ${status.longer}` : ''}`,
+      ),
+      topics: [project.title, ...project.technologies],
+      aliases: projectAliases(project),
+      roles: [...project.roles],
+      projectId: project.id,
+      category: 'project' as const,
+      citations: citationsFor(project.sourceIds),
+    };
+  });
   const screening = screeningFacts.map((fact) => ({
     id: `screening-summary-${fact.id}`,
     title: fact.label,
     text: fact.statement,
     topics: [...fact.topics],
     aliases: [...fact.aliases, fact.id],
-    roles: ['aiml', 'software', 'android', 'teaching'] as RoleId[],
+    roles: allRoles,
     category: 'screening' as const,
     citations: citationsFor(fact.sourceIds),
   }));
@@ -158,7 +159,7 @@ export function chunkEvidence(): KnowledgeChunk[] {
     text: `Mohamed’s ${group.label.toLowerCase()} experience includes ${group.skills}.`,
     topics: [group.label, ...group.skills.split(' · ')],
     aliases: [group.id, ...group.skills.split(' · ')],
-    roles: ['aiml', 'software', 'android', 'teaching'] as RoleId[],
+    roles: allRoles,
     category: 'skills' as const,
     citations: citationsFor(allResumeIds),
   }));
@@ -180,7 +181,7 @@ export function chunkEvidence(): KnowledgeChunk[] {
     text: `${item.period}. ${item.institution}. ${item.details.join(' ')}`,
     topics: [item.credential, item.institution, 'education'],
     aliases: [item.credential, item.institution],
-    roles: ['aiml', 'software', 'android', 'teaching'] as RoleId[],
+    roles: allRoles,
     category: 'experience' as const,
     citations: citationsFor(allResumeIds),
   }));
@@ -190,7 +191,7 @@ export function chunkEvidence(): KnowledgeChunk[] {
     text: credentials.map(([title, meta]) => `${title}: ${meta}.`).join(' '),
     topics: ['certificates', 'training', 'CEH', 'AWS', 'Android'],
     aliases: credentials.flatMap(([title]) => [title]),
-    roles: ['aiml', 'software', 'android', 'teaching'] as RoleId[],
+    roles: allRoles,
     category: 'skills' as const,
     citations: citationsFor(allResumeIds),
   };
@@ -203,5 +204,41 @@ export function chunkEvidence(): KnowledgeChunk[] {
     ...teachingChunks,
     ...educationChunks,
     credentialChunk,
-  ].filter((chunk) => chunk.citations.length > 0);
+  ]
+    .map((chunk) => ({ ...chunk, family: 'evidence' as const }))
+    .filter((chunk) => chunk.citations.length > 0);
 }
+
+/**
+ * Everything the assistant may answer from: evidence records, case-study
+ * pages (when supplied), architecture, public repositories, the research
+ * record, the profile, and generated overview and technology chunks.
+ */
+export function buildKnowledge(
+  options: { pages?: readonly CaseStudyPage[] } = {},
+): KnowledgeBase {
+  const overview = overviewChunks();
+  // Everything the assistant says about Mohamed is in the third person,
+  // whatever voice the source copy was written in.
+  const chunks = [
+    ...evidenceChunks(),
+    ...chunkCaseStudyPages(options.pages ?? []),
+    ...architectureChunks(),
+    ...repositoryChunks(),
+    ...researchChunks(),
+    ...profileChunks(),
+    ...overview.chunks,
+  ]
+    .filter((chunk) => chunk.citations.length > 0)
+    .map((chunk) => ({ ...chunk, text: assistantVoice(chunk.text) }));
+  const ids = new Set<string>();
+  for (const chunk of chunks) {
+    if (ids.has(chunk.id)) throw new Error(`Duplicate chunk id: ${chunk.id}`);
+    ids.add(chunk.id);
+  }
+  return { chunks, entities: overview.entities };
+}
+
+export const chunkEvidence = (
+  options: { pages?: readonly CaseStudyPage[] } = {},
+): KnowledgeChunk[] => buildKnowledge(options).chunks;

@@ -3,7 +3,7 @@ import type { ChatResponse } from '@/lib/ai/types';
 export function ChatMessage({ response }: { response: ChatResponse }) {
   const statusLabel =
     response.answerStatus === 'fallback'
-      ? 'Verified fallback'
+      ? 'From the portfolio'
       : response.answerStatus === 'refused'
         ? 'Outside evidence scope'
         : 'Grounded answer';

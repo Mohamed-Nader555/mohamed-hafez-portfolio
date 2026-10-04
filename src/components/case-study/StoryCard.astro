@@ -1,24 +1,35 @@
 ---
+import ProjectCover from '@/components/case-study/ProjectCover.astro';
 import StatusBadge from '@/components/case-study/StatusBadge.astro';
+import type { KeyFact } from '@/data/key-facts';
 import type { DeepReadonly } from '@/lib/content/resolve-lens';
 import type { ProjectRecord } from '@/types/content';
 
 interface Props {
   project: DeepReadonly<ProjectRecord>;
   /**
-   * Home-page variant: a status badge, at most three chips, and one explicit
-   * link. `href` overrides the default `/work/<slug>` target and `linkLabel`
-   * is the visible link text.
+   * Home-page variant: cover band, context, summary, key facts, role line,
+   * up to five chips, a status badge, and one explicit link that covers the
+   * whole card. `href` overrides the default `/work/<slug>` target and
+   * `linkLabel` is the visible link text.
    */
   featured?: boolean;
   href?: string;
   linkLabel?: string;
+  keyFacts?: readonly KeyFact[];
 }
 
-const { project, featured = false, href, linkLabel } = Astro.props;
+const {
+  project,
+  featured = false,
+  href,
+  linkLabel,
+  keyFacts = [],
+} = Astro.props;
 const isBrief = project.detailLevel === 'brief';
 const target = href ?? `/work/${project.slug}`;
-const chips = project.technologies.slice(0, featured ? 3 : 5);
+const chips = project.technologies.slice(0, 5);
+const facts = keyFacts.slice(0, 3);
 const Heading = featured ? 'h3' : 'h4';
 ---
 
@@ -27,10 +38,24 @@ const Heading = featured ? 'h3' : 'h4';
   data-focus={project.roles.join(' ')}
   data-tech={project.technologies.join('|')}
 >
-  <p class="utility-label">
-    {project.category}
-    {isBrief && <span class="story-card__short-read">Short read</span>}
-  </p>
+  {
+    featured && (
+      <div class="story-card__cover" aria-hidden="true">
+        <ProjectCover slug={project.slug} group={project.group} />
+      </div>
+    )
+  }
+  <div class="story-card__kicker">
+    <p class="utility-label">
+      {project.category}
+      {isBrief && <span class="story-card__short-read">Short read</span>}
+    </p>
+    {
+      featured && project.contextLine && (
+        <p class="story-card__context">{project.contextLine}</p>
+      )
+    }
+  </div>
   {
     featured ? (
       <Heading transition:name={`project-title-${project.slug}`}>
@@ -45,6 +70,27 @@ const Heading = featured ? 'h3' : 'h4';
     )
   }
   <p class="story-card__hook">{project.hook}</p>
+  {featured && <p class="story-card__summary">{project.summary}</p>}
+  {
+    featured && facts.length > 0 && (
+      <ul class="story-card__facts" aria-label={`${project.title} key facts`}>
+        {facts.map((fact) => (
+          <li>
+            <strong>{fact.value}</strong>
+            <span>{fact.label}</span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {
+    featured && project.roleLine && (
+      <p class="story-card__role">
+        <span class="story-card__role-label">My role</span>
+        {project.roleLine}
+      </p>
+    )
+  }
   <ul class="technology-list" aria-label={`${project.title} technologies`}>
     {chips.map((technology) => <li>{technology}</li>)}
   </ul>
@@ -58,9 +104,9 @@ const Heading = featured ? 'h3' : 'h4';
           class="story-card__link"
           href={target}
           data-astro-prefetch="viewport"
-          aria-label={`${linkLabel ?? 'Read the story'}: ${project.title}`}
+          aria-label={`${linkLabel ?? 'Explore the project'}: ${project.title}`}
         >
-          {linkLabel ?? 'Read the story'} <span aria-hidden="true">→</span>
+          {linkLabel ?? 'Explore the project'} <span aria-hidden="true">→</span>
         </a>
       </div>
     )
@@ -105,13 +151,40 @@ const Heading = featured ? 'h3' : 'h4';
     margin-block-start: 0;
   }
 
-  /* Home-page variant: the same card look, a little more room, and a footer
-     carrying the status badge and the single link. */
+  /* Home-page variant: a cover band, the full anatomy, and a footer carrying
+     the status badge and the single link, which stretches over the card. */
   .story-card--featured {
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: clamp(var(--space-5), 3vw, var(--space-6));
     border-color: var(--border-strong);
+  }
+
+  .story-card__cover {
+    block-size: 5rem;
+    margin: calc(var(--space-2) * -1) 0 var(--space-4);
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+  }
+
+  .story-card__kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+  }
+
+  .story-card__kicker .utility-label,
+  .story-card__kicker .story-card__context {
+    margin: 0;
+  }
+
+  .story-card__kicker .story-card__context {
+    color: var(--color-ink-300);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
   }
 
   .story-card--featured h3 {
@@ -123,8 +196,42 @@ const Heading = featured ? 'h3' : 'h4';
   }
 
   .story-card--featured .story-card__hook {
+    color: var(--color-ink-100);
     font-size: var(--type-body);
     line-height: var(--leading-body);
+  }
+
+  .story-card__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+
+  .story-card__facts strong {
+    display: block;
+    color: var(--color-evidence-300);
+    font-family: var(--font-display);
+  }
+
+  .story-card__facts span {
+    color: var(--color-ink-300);
+    font-size: var(--type-xs);
+  }
+
+  .story-card__role {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .story-card__role-label {
+    color: var(--color-ai-300);
+    font-family: var(--font-utility);
+    font-size: var(--type-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .story-card__footer {
@@ -144,5 +251,34 @@ const Heading = featured ? 'h3' : 'h4';
     gap: var(--space-2);
     color: var(--color-evidence-300);
     font-weight: 700;
+  }
+
+  /* The one link covers the card, so the whole card is clickable while
+     keyboard and screen-reader users still meet a single link. */
+  .story-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .story-card--featured:hover,
+  .story-card--featured:focus-within {
+    border-color: color-mix(in srgb, var(--color-accent-cyan) 52%, transparent);
+  }
+
+  .story-card--featured:has(.story-card__link:focus-visible) {
+    outline: 2px solid var(--color-evidence-500);
+    outline-offset: 2px;
+  }
+
+  .story-card__link:focus-visible {
+    outline: none;
+  }
+
+  @media (min-width: 48.0625rem) {
+    .story-card__cover {
+      block-size: 6.5rem;
+    }
   }
 </style>

@@ -1,5 +1,6 @@
 ---
 import StoryCard from '@/components/case-study/StoryCard.astro';
+import { keyFactsBySlug } from '@/data/key-facts';
 import type { DeepReadonly } from '@/lib/content/resolve-lens';
 import type { ProjectRecord } from '@/types/content';
 
@@ -9,7 +10,7 @@ interface Props {
 
 const { projects } = Astro.props;
 
-// Every featured card opens the project's story at /work/<slug>. The one
+// Every featured card opens the project's case study at /work/<slug>. The one
 // featured project with no page, teaching, points at the teaching section
 // further down this page instead.
 const TEACHING_ANCHOR = '#teaching-portfolio';
@@ -17,7 +18,7 @@ const TEACHING_ANCHOR = '#teaching-portfolio';
 function cardTarget(project: DeepReadonly<ProjectRecord>) {
   const hasPage = ['flagship', 'story', 'brief'].includes(project.detailLevel);
   return hasPage
-    ? { href: `/work/${project.slug}`, linkLabel: 'Read the story' }
+    ? { href: `/work/${project.slug}`, linkLabel: 'Explore the project' }
     : { href: TEACHING_ANCHOR, linkLabel: 'See how I teach' };
 }
 ---
@@ -33,8 +34,8 @@ function cardTarget(project: DeepReadonly<ProjectRecord>) {
     </div>
     <p>
       These are the four I would walk you through first for this kind of work.
-      Each opens into the full story: the problem, what I built myself, and what
-      I would change.
+      Each one opens into a full case study: the problem, what I built myself,
+      and what I would change.
     </p>
   </header>
 
@@ -49,6 +50,7 @@ function cardTarget(project: DeepReadonly<ProjectRecord>) {
             featured
             href={href}
             linkLabel={linkLabel}
+            keyFacts={keyFactsBySlug[project.id]}
           />
         );
       })

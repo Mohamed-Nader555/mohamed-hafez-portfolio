@@ -1,0 +1,39 @@
+---
+interface Props {
+  /** Accessible name of the rail group, e.g. "Dive feature screenshots". */
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<div class="shot-rail" data-shot-rail role="group" aria-label={label}>
+  <slot />
+  <div class="shot-rail__controls" data-rail-controls>
+    <button
+      type="button"
+      class="shot-rail__button"
+      data-rail-prev
+      aria-label="Previous screenshot"
+      disabled
+    >
+      <span aria-hidden="true">←</span>
+    </button>
+    <div class="shot-rail__progress" aria-hidden="true">
+      <span class="shot-rail__thumb"></span>
+    </div>
+    <p class="shot-rail__counter" data-rail-counter>01 / 01</p>
+    <button
+      type="button"
+      class="shot-rail__button"
+      data-rail-next
+      aria-label="Next screenshot"
+    >
+      <span aria-hidden="true">→</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  import '@/lib/client/screenshot-rail';
+</script>

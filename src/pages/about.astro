@@ -1,5 +1,6 @@
 ---
 import ContactLinks from '@/components/layout/ContactLinks.astro';
+import { aboutIntro } from '@/data/about';
 import { evidence, profile, screeningFacts } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
@@ -17,13 +18,9 @@ if (!education) throw new Error('About page is missing education evidence.');
   roleId="aiml"
 >
   <header class="longform-hero shell-container">
-    <p class="utility-label">About Mohamed Hafez</p>
-    <h1>Engineering across AI, software, mobile, and teaching</h1>
-    <p class="longform-hero__summary">
-      I’m a Toronto-based engineer who enjoys taking complex ideas from research
-      and architecture through implementation. My work spans AI/ML, software
-      systems, Android products, and technical teaching.
-    </p>
+    <p class="utility-label">{aboutIntro.eyebrow}</p>
+    <h1>{aboutIntro.heading}</h1>
+    <p class="longform-hero__summary">{aboutIntro.summary}</p>
   </header>
 
   <section class="about-grid shell-container" aria-labelledby="screening-title">

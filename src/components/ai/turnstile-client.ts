@@ -1,4 +1,8 @@
-import { PORTFOLIO_CHAT_TURNSTILE_ACTION } from '@/lib/security/turnstile';
+import {
+  isLocalHostname,
+  PORTFOLIO_CHAT_TURNSTILE_ACTION,
+} from '@/lib/security/turnstile';
+import { ChatFailure, type ChatFailureCode } from './chat-errors';
 
 declare global {
   interface Window {
@@ -14,56 +18,150 @@ declare global {
           action: string;
           appearance: 'interaction-only';
           callback(token: string): void;
-          'error-callback'(): void;
+          'error-callback'(errorCode?: string | number): void;
           'expired-callback'(): void;
+          'timeout-callback'?(): void;
+          'before-interactive-callback'?(): void;
+          'after-interactive-callback'?(): void;
         },
       ): string;
     };
   }
 }
+
+/** Cloudflare's always-passes test site key, used on every local host. */
+export const TURNSTILE_TEST_SITEKEY = '1x00000000000000000000AA';
+export const TURNSTILE_TEST_TOKEN = 'XXXX.DUMMY.TOKEN.XXXX';
+export const TURNSTILE_TIMEOUT_MS = 30_000;
+const TURNSTILE_SCRIPT_SRC =
+  'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+export const TURNSTILE_HOSTNAME_HINT =
+  'This hostname is not allowed for the Turnstile widget. Add it under the widget’s hostname settings in the Cloudflare dashboard.';
+
 export function testTurnstileToken(): string {
-  return 'XXXX.DUMMY.TOKEN.XXXX';
+  return TURNSTILE_TEST_TOKEN;
 }
-function loaded(): Promise<void> {
+
+/**
+ * The site key is chosen in the browser because a prerendered page cannot see
+ * the request host at render time: on a local host the test key always wins.
+ */
+export function resolveTurnstileSiteKey(
+  siteKey: string,
+  hostname: string = typeof window === 'undefined'
+    ? ''
+    : window.location.hostname,
+): string {
+  return isLocalHostname(hostname) ? TURNSTILE_TEST_SITEKEY : siteKey;
+}
+
+let scriptLoad: Promise<void> | undefined;
+function loadTurnstile(): Promise<void> {
   if (window.turnstile) return Promise.resolve();
-  return new Promise((resolve, reject) => {
+  if (scriptLoad) return scriptLoad;
+  scriptLoad = new Promise<void>((resolve, reject) => {
     const script = document.createElement('script');
-    script.src =
-      'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    script.src = TURNSTILE_SCRIPT_SRC;
     script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Turnstile could not load.'));
+    const fail = () => {
+      script.remove();
+      scriptLoad = undefined;
+      reject(new Error('Turnstile could not load.'));
+    };
+    script.onload = () => (window.turnstile ? resolve() : fail());
+    script.onerror = fail;
     document.head.append(script);
   });
+  return scriptLoad;
 }
-export async function requestTurnstileToken(siteKey: string): Promise<string> {
-  if (siteKey === '1x00000000000000000000AA') return testTurnstileToken();
-  await loaded();
-  if (!window.turnstile) throw new Error('Turnstile unavailable.');
-  const turnstile = window.turnstile;
-  if (!turnstile) throw new Error('Turnstile unavailable.');
-  return new Promise((resolve, reject) => {
-    const target = document.createElement('div');
-    target.style.position = 'fixed';
-    target.style.right = '1rem';
-    target.style.bottom = '1rem';
-    target.style.zIndex = '2147483647';
-    document.body.append(target);
-    const finish = (value?: string) => {
-      turnstile.remove(widgetId);
-      target.remove();
-      if (value) resolve(value);
-      else reject(new Error('Turnstile verification failed.'));
+
+export type TurnstileRequestOptions = {
+  /** Slot inside the chat dialog the widget renders into. */
+  container?: HTMLElement | null;
+  /** Called with true while Turnstile needs the visitor to interact. */
+  onInteractive?(active: boolean): void;
+  timeoutMs?: number;
+  signal?: AbortSignal;
+};
+
+export async function requestTurnstileToken(
+  siteKey: string,
+  options: TurnstileRequestOptions = {},
+): Promise<string> {
+  if (siteKey === TURNSTILE_TEST_SITEKEY) return TURNSTILE_TEST_TOKEN;
+  return new Promise<string>((resolve, reject) => {
+    let widgetId: string | undefined;
+    let fallbackTarget: HTMLElement | undefined;
+    let settled = false;
+    let warned = false;
+    const timer = window.setTimeout(
+      () => fail('verification_timeout'),
+      options.timeoutMs ?? TURNSTILE_TIMEOUT_MS,
+    );
+    const onAbort = () =>
+      settle(() => reject(new DOMException('Aborted', 'AbortError')));
+    const settle = (action: () => void) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timer);
+      options.signal?.removeEventListener('abort', onAbort);
+      if (widgetId !== undefined) {
+        try {
+          window.turnstile?.remove(widgetId);
+        } catch {
+          // The widget may already be gone with its container.
+        }
+        widgetId = undefined;
+      }
+      fallbackTarget?.remove();
+      options.onInteractive?.(false);
+      action();
     };
-    const widgetId = turnstile.render(target, {
-      sitekey: siteKey,
-      execution: 'execute',
-      action: PORTFOLIO_CHAT_TURNSTILE_ACTION,
-      appearance: 'interaction-only',
-      callback: (token) => finish(token),
-      'error-callback': () => finish(),
-      'expired-callback': () => finish(),
-    });
-    turnstile.execute(widgetId);
+    const fail = (code: ChatFailureCode) =>
+      settle(() => reject(new ChatFailure(code)));
+    if (options.signal?.aborted) return onAbort();
+    options.signal?.addEventListener('abort', onAbort, { once: true });
+
+    loadTurnstile().then(
+      () => {
+        if (settled || !window.turnstile) return;
+        let target = options.container ?? undefined;
+        if (!target) {
+          // Only reached when no dialog slot was supplied.
+          target = fallbackTarget = document.createElement('div');
+          document.body.append(target);
+        }
+        try {
+          widgetId = window.turnstile.render(target, {
+            sitekey: siteKey,
+            execution: 'execute',
+            action: PORTFOLIO_CHAT_TURNSTILE_ACTION,
+            appearance: 'interaction-only',
+            callback: (token) => settle(() => resolve(token)),
+            'error-callback': (errorCode) => {
+              if (!warned) {
+                warned = true;
+                const code = String(errorCode ?? '');
+                console.warn(
+                  `[portfolio-chat] Turnstile error ${code || 'unknown'}.` +
+                    (code.startsWith('1102')
+                      ? ` ${TURNSTILE_HOSTNAME_HINT}`
+                      : ''),
+                );
+              }
+              fail('verification_failed');
+            },
+            'expired-callback': () => fail('verification_failed'),
+            'timeout-callback': () => fail('verification_timeout'),
+            'before-interactive-callback': () => options.onInteractive?.(true),
+            'after-interactive-callback': () => options.onInteractive?.(false),
+          });
+          window.turnstile.execute(widgetId);
+        } catch {
+          fail('verification_failed');
+        }
+      },
+      () => fail('verification_blocked'),
+    );
   });
 }
