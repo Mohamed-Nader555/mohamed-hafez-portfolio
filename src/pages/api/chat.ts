@@ -8,6 +8,8 @@ import {
 import { chatRequestSchema } from '@/lib/ai/types';
 import { allowChatRequest } from '@/lib/security/chat-rate-limit';
 import {
+  isLocalHostname,
+  parseExpectedHostnames,
   PORTFOLIO_CHAT_TURNSTILE_ACTION,
   validateTurnstile,
 } from '@/lib/security/turnstile';
@@ -45,6 +47,7 @@ type Env = {
     limit(input: { key: string }): Promise<{ success: boolean }>;
   };
   AI_MODEL?: string;
+  TURNSTILE_EXPECTED_HOSTNAMES?: string;
   TURNSTILE_EXPECTED_HOSTNAME?: string;
 };
 
@@ -66,15 +69,27 @@ export const POST: APIRoute = async ({ request }) => {
   if (!requestBody.success)
     return error(400, 'invalid_request', 'Invalid request.');
   const env = cloudflareEnv as Env;
-  const local =
-    new URL(request.url).hostname === 'localhost' ||
-    new URL(request.url).hostname === '127.0.0.1';
+  const local = isLocalHostname(new URL(request.url).hostname);
   if (!env.TURNSTILE_SECRET_KEY && !local)
     return error(
       503,
       'temporarily_unavailable',
       'The assistant is temporarily unavailable.',
     );
+  const configuredHostnames = parseExpectedHostnames(env);
+  if (!configuredHostnames.length && !local) {
+    console.error(
+      'Chat is disabled: set TURNSTILE_EXPECTED_HOSTNAMES (comma-separated hostnames allowed to produce Turnstile tokens) in wrangler.jsonc.',
+    );
+    return error(
+      503,
+      'temporarily_unavailable',
+      'The assistant is temporarily unavailable.',
+    );
+  }
+  const expectedHostnames = configuredHostnames.length
+    ? configuredHostnames
+    : ['localhost', '127.0.0.1', '[::1]'];
   const secret = env.TURNSTILE_SECRET_KEY ?? TEST_SECRET;
   const usesLocalTestKeys =
     local &&
@@ -85,7 +100,7 @@ export const POST: APIRoute = async ({ request }) => {
     : await validateTurnstile({
         token: requestBody.data.turnstileToken,
         secret,
-        expectedHostname: env.TURNSTILE_EXPECTED_HOSTNAME,
+        expectedHostnames,
         expectedAction: PORTFOLIO_CHAT_TURNSTILE_ACTION,
       });
   if (!human)

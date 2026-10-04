@@ -1,6 +1,7 @@
 import type { RefObject } from 'react';
 import type { RoleId } from '@/types/content';
 import type { ChatResponse } from '@/lib/ai/types';
+import { chatFailureMessage, type ChatFailureCode } from './chat-errors';
 import { ChatMessage } from './ChatMessage';
 import { ChatSuggestions } from './ChatSuggestions';
 import { NeuralGlyph } from './NeuralGlyph';
@@ -21,6 +22,9 @@ export function ChatPanel({
   submit,
   response,
   state,
+  errorCode,
+  challengeVisible,
+  turnstileSlotRef,
   suggestions,
   selectedRole,
   lastQuestion,
@@ -33,10 +37,14 @@ export function ChatPanel({
   submit(event: { preventDefault(): void }): void;
   response?: ChatResponse;
   state: string;
+  errorCode?: ChatFailureCode;
+  challengeVisible: boolean;
+  turnstileSlotRef: RefObject<HTMLDivElement | null>;
   suggestions: string[];
   selectedRole: RoleId;
   lastQuestion: string;
 }) {
+  const busy = state === 'verifying' || state === 'submitting';
   return (
     <>
       <div className="chat-backdrop" aria-hidden="true" onMouseDown={close} />
@@ -106,7 +114,7 @@ export function ChatPanel({
               </div>
             )}
 
-            {state === 'submitting' && (
+            {(state === 'verifying' || state === 'submitting') && (
               <div className="chat-inference" role="status">
                 <span className="inference-nodes" aria-hidden="true">
                   <i />
@@ -114,27 +122,40 @@ export function ChatPanel({
                   <i />
                 </span>
                 <span>
-                  <strong>Retrieving evidence</strong>
-                  <small>Searching the verified knowledge base</small>
+                  <strong>
+                    {state === 'verifying'
+                      ? 'Checking you’re human…'
+                      : 'Retrieving evidence'}
+                  </strong>
+                  <small>
+                    {state === 'verifying'
+                      ? 'A quick check before I answer'
+                      : 'Searching the verified knowledge base'}
+                  </small>
                 </span>
               </div>
             )}
 
             {response && <ChatMessage response={response} />}
-            {state === 'error' && (
-              <p className="chat-error">
-                The request could not be completed. Your draft is still
-                available to retry.
-              </p>
-            )}
-            {state === 'rate-limited' && (
-              <p className="chat-error">
-                Please wait a minute before trying another question.
+            {state === 'error' && errorCode && (
+              <p className="chat-error" role="alert" data-error={errorCode}>
+                {chatFailureMessage(errorCode)}
               </p>
             )}
           </div>
 
           <ChatSuggestions suggestions={suggestions} onChoose={setDraft} />
+        </div>
+
+        <div className="chat-turnstile" data-active={challengeVisible}>
+          <p className="chat-turnstile-hint" role="status">
+            {challengeVisible ? 'One quick check before I answer.' : ''}
+          </p>
+          <div
+            ref={turnstileSlotRef}
+            className="chat-turnstile-slot"
+            tabIndex={-1}
+          />
         </div>
 
         <form className="chat-composer" onSubmit={submit}>
@@ -165,12 +186,16 @@ export function ChatPanel({
             <button
               className="chat-send"
               type="submit"
-              disabled={state === 'submitting' || !draft.trim()}
+              disabled={busy || !draft.trim()}
               aria-label={
-                state === 'submitting' ? 'Retrieving evidence' : 'Send question'
+                state === 'verifying'
+                  ? 'Checking you’re human'
+                  : state === 'submitting'
+                    ? 'Retrieving evidence'
+                    : 'Send question'
               }
             >
-              <span>{state === 'submitting' ? '···' : 'Send'}</span>
+              <span>{busy ? '···' : 'Send'}</span>
               <span aria-hidden="true">↗</span>
             </button>
           </div>

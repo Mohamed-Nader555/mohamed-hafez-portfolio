@@ -13,13 +13,13 @@ const mocks = vi.hoisted(() => ({
   submitChatTurn: vi.fn(),
 }));
 
-vi.mock('@/components/ai/turnstile-client', () => ({
+vi.mock('@/components/ai/turnstile-client', async (importOriginal) => ({
+  ...(await importOriginal<
+    typeof import('@/components/ai/turnstile-client')
+  >()),
   requestTurnstileToken: mocks.requestTurnstileToken,
 }));
 vi.mock('@/components/ai/chat-client', () => ({
-  ChatClientError: class ChatClientError extends Error {
-    code = 'test_error';
-  },
   submitChatTurn: mocks.submitChatTurn,
 }));
 import { PortfolioAssistant } from '@/components/ai/PortfolioAssistant';

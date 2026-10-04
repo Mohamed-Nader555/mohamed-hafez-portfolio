@@ -4,6 +4,7 @@ import type { KnowledgeChunk, RetrievalInput, RetrievalResult } from './types';
 
 export const SUPPORT_SCORE_THRESHOLD = 7;
 const chunks = chunkEvidence();
+export const knowledgeChunkCount = () => chunks.length;
 const unsupportedPattern =
   /\b(medical|doctor|health history|salary|compensation|political|politics|private|hidden document|reveal|ignore previous|weather|contact (his|a) |former manager)\b/i;
 

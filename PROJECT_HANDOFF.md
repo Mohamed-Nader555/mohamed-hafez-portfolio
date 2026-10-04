@@ -175,7 +175,7 @@ The fixed launcher is branded **“Ask Mohamed.AI”** with a “Grounded AI” 
 
 Current initial suggestions: “How was Northstar built?”, “What technologies did Mohamed use in Dostava?”, and “Where is Mohamed located and when can he start?”. Strict refusal covers unsupported/private, compensation, medical, political, hidden-document, and invented-employment questions. A `telemetry` object is returned in the API response, but no custom-events pipeline currently consumes it.
 
-Production configuration in `wrangler.jsonc`: Worker name `mohamed-hafez-portfolio`, `AI` binding, model var, public Turnstile site key, expected workers.dev hostname, two rate-limit bindings. Production secrets required: `TURNSTILE_SECRET_KEY` and `RATE_LIMIT_HASH_SECRET`. Never put them in Markdown or Git. `src/env.d.ts`/`src/types/cloudflare-workers.d.ts` define bindings. `docs/implementation/AI_OPERATIONS.md` describes model/fallback operations but contains some pre-deployment wording; use code and Cloudflare dashboard as current truth.
+Production configuration in `wrangler.jsonc`: Worker name `mohamed-hafez-portfolio`, `AI` binding, model var, public Turnstile site key, `TURNSTILE_EXPECTED_HOSTNAMES` (comma-separated: the custom domain, `www`, and the workers.dev name; the old singular `TURNSTILE_EXPECTED_HOSTNAME` is still read as a one-item fallback; off localhost an empty list makes `/api/chat` return 503), two rate-limit bindings. `GET /api/chat/health` returns `{ ok, ai, verification, hostnames, knowledgeChunks }` (no secrets, `no-store`) so the deployment's configuration can be checked from a browser. Production secrets required: `TURNSTILE_SECRET_KEY` and `RATE_LIMIT_HASH_SECRET`. Never put them in Markdown or Git. `src/env.d.ts`/`src/types/cloudflare-workers.d.ts` define bindings. `docs/implementation/AI_OPERATIONS.md` describes model/fallback operations but contains some pre-deployment wording; use code and Cloudflare dashboard as current truth.
 
 ## 7. Repository, build, and deployment
 
@@ -209,7 +209,9 @@ npm ci
 npm run dev
 ```
 
-Development runs at `http://localhost:4321/` by default. `.dev.vars.example` contains only Cloudflare dummy local keys. If local AI binding is absent, supported questions can reach the evidence fallback; production AI behavior requires the real Cloudflare binding/secrets. Do not place actual secrets in the example file.
+Development runs at `http://localhost:4321/` by default. `.dev.vars.example` contains only Cloudflare dummy local keys. Do not place actual secrets in the example file.
+
+**Chat locally.** `npm run dev` with no `.dev.vars` gives a working chat: on `localhost`, `127.0.0.1` and `[::1]` the browser always uses Cloudflare's test site key (`1x00000000000000000000AA`, see `resolveTurnstileSiteKey` in `turnstile-client.ts`) and the API accepts the matching dummy token. Local answers come from the extractive fallback, because the Workers AI binding is not available locally (`remoteBindings: false` in `astro.config.mjs`). To try the real model, temporarily set `remoteBindings: true` there, run `npx wrangler login`, restart `npm run dev`, and do not commit that change (it spends the account's Workers AI allowance).
 
 Useful commands: `npm run check`, `npm run lint`, `npm run format:check`, `npm run knowledge:build`, `npm run knowledge:evaluate`, `npm run test:unit`, `npm run test:e2e`, `npm run test:a11y`, `npm run build`, `npm run deploy:dry`, `npm run deploy`. `npm run test` chains unit and E2E. Playwright currently defines Chromium desktop and Chromium mobile projects, not Firefox/WebKit. The repo has Lighthouse configs but no GitHub workflow in this snapshot.
 
