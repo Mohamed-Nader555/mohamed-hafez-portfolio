@@ -83,3 +83,61 @@ test('exposes a blurred role transition and a visible pointer-following glow', a
     2,
   );
 });
+
+test('featured story cards swap instantly with the role and stay one document', async ({
+  page,
+}) => {
+  const runtimeErrors: string[] = [];
+  page.on('pageerror', (error) => runtimeErrors.push(error.message));
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  await page.evaluate(() =>
+    Object.assign(window, { __portfolioDocumentMarker: 'same-document' }),
+  );
+
+  const expectations = [
+    ['aiml', 'AI/ML Engineer', 'ASC-PIE', '/work/asc-pie'],
+    [
+      'software',
+      'Software Engineer',
+      'Northstar RAG System',
+      '/work/northstar-rag',
+    ],
+    ['android', 'Android Developer', 'Mind’s Eye', '/work/minds-eye'],
+    [
+      'teaching',
+      'TA / Instructor',
+      'Teaching & Technical Instruction',
+      '#teaching-portfolio',
+    ],
+  ] as const;
+
+  for (const [role, label, firstTitle, firstHref] of expectations) {
+    await page.getByRole('link', { name: label, exact: true }).first().click();
+    await expect(page.locator('[data-role-content]')).toHaveAttribute(
+      'data-role',
+      role,
+    );
+
+    const cards = page
+      .getByRole('region', { name: 'Work I’m proud of' })
+      .locator('article.story-card');
+    await expect(cards).toHaveCount(4);
+    await expect(cards.first().getByRole('heading', { level: 3 })).toHaveText(
+      firstTitle,
+    );
+    await expect(cards.first().getByRole('link')).toHaveAttribute(
+      'href',
+      firstHref,
+    );
+  }
+
+  expect(
+    await page.evaluate(
+      () =>
+        (window as Window & { __portfolioDocumentMarker?: string })
+          .__portfolioDocumentMarker,
+    ),
+  ).toBe('same-document');
+  expect(runtimeErrors).toEqual([]);
+});

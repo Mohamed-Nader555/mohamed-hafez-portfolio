@@ -1,16 +1,29 @@
 ---
+import StatusBadge from '@/components/case-study/StatusBadge.astro';
+import type { DeepReadonly } from '@/lib/content/resolve-lens';
 import type { ProjectRecord } from '@/types/content';
 
 interface Props {
-  project: ProjectRecord;
+  project: DeepReadonly<ProjectRecord>;
+  /**
+   * Home-page variant: a status badge, at most three chips, and one explicit
+   * link. `href` overrides the default `/work/<slug>` target and `linkLabel`
+   * is the visible link text.
+   */
+  featured?: boolean;
+  href?: string;
+  linkLabel?: string;
 }
 
-const { project } = Astro.props;
+const { project, featured = false, href, linkLabel } = Astro.props;
 const isBrief = project.detailLevel === 'brief';
+const target = href ?? `/work/${project.slug}`;
+const chips = project.technologies.slice(0, featured ? 3 : 5);
+const Heading = featured ? 'h3' : 'h4';
 ---
 
 <article
-  class="story-card"
+  class:list={['story-card', { 'story-card--featured': featured }]}
   data-focus={project.roles.join(' ')}
   data-tech={project.technologies.join('|')}
 >
@@ -18,19 +31,40 @@ const isBrief = project.detailLevel === 'brief';
     {project.category}
     {isBrief && <span class="story-card__short-read">Short read</span>}
   </p>
-  <h4 transition:name={`project-title-${project.slug}`}>
-    <a href={`/work/${project.slug}`} data-astro-prefetch="hover"
-      >{project.title}</a
-    >
-  </h4>
-  <p>{project.hook}</p>
+  {
+    featured ? (
+      <Heading transition:name={`project-title-${project.slug}`}>
+        {project.title}
+      </Heading>
+    ) : (
+      <Heading transition:name={`project-title-${project.slug}`}>
+        <a href={target} data-astro-prefetch="hover">
+          {project.title}
+        </a>
+      </Heading>
+    )
+  }
+  <p class="story-card__hook">{project.hook}</p>
   <ul class="technology-list" aria-label={`${project.title} technologies`}>
-    {
-      project.technologies
-        .slice(0, 5)
-        .map((technology) => <li>{technology}</li>)
-    }
+    {chips.map((technology) => <li>{technology}</li>)}
   </ul>
+  {
+    featured && (
+      <div class="story-card__footer">
+        {project.status && (
+          <StatusBadge status={project.status} showLonger={false} />
+        )}
+        <a
+          class="story-card__link"
+          href={target}
+          data-astro-prefetch="viewport"
+          aria-label={`${linkLabel ?? 'Read the story'}: ${project.title}`}
+        >
+          {linkLabel ?? 'Read the story'} <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    )
+  }
 </article>
 
 <style>
@@ -65,5 +99,50 @@ const isBrief = project.detailLevel === 'brief';
     margin: 0 0 var(--space-3);
     font-size: var(--type-sm);
     color: var(--color-ink-200);
+  }
+
+  .story-card .technology-list {
+    margin-block-start: 0;
+  }
+
+  /* Home-page variant: the same card look, a little more room, and a footer
+     carrying the status badge and the single link. */
+  .story-card--featured {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(var(--space-5), 3vw, var(--space-6));
+    border-color: var(--border-strong);
+  }
+
+  .story-card--featured h3 {
+    margin: var(--space-1) 0 var(--space-3);
+    color: var(--color-ink-100);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.6rem);
+    line-height: 1.2;
+  }
+
+  .story-card--featured .story-card__hook {
+    font-size: var(--type-body);
+    line-height: var(--leading-body);
+  }
+
+  .story-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-block-start: auto;
+    padding-block-start: var(--space-4);
+  }
+
+  .story-card__link {
+    display: inline-flex;
+    min-block-size: 44px;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-evidence-300);
+    font-weight: 700;
   }
 </style>

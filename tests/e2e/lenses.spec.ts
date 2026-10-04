@@ -51,7 +51,7 @@ for (const lens of lenses) {
     ).toHaveAttribute('href', lens.resume);
     await expect(
       page
-        .getByRole('region', { name: 'Featured work' })
+        .getByRole('region', { name: 'Work I’m proud of' })
         .getByRole('heading', { level: 3 })
         .first(),
     ).toHaveText(lens.firstProject);
@@ -158,17 +158,101 @@ test('lens, contact, resume, and case-study links remain real without JavaScript
     page.getByRole('link', { name: /Software Engineer résumé/i }).first(),
   ).toHaveAttribute('href', '/resumes/Mohamed-Hafez-Software-Engineer.pdf');
 
-  const featured = page.getByRole('region', { name: 'Featured work' });
+  const featured = page.getByRole('region', { name: 'Work I’m proud of' });
   await expect(
-    featured.getByRole('link', { name: 'View Northstar RAG System evidence' }),
+    featured.getByRole('link', {
+      name: 'Read the story: Northstar RAG System',
+    }),
   ).toHaveAttribute('href', '/work/northstar-rag');
   await expect(
     featured.getByRole('link', {
-      name: 'View Dive Simulation & Safety Profile Planner evidence',
+      name: 'Read the story: Dive Simulation & Safety Profile Planner',
     }),
   ).toHaveAttribute('href', '/work/dive');
 
   await context.close();
+});
+
+// The four featured cards use the story-card look: kicker, title, hook, up to
+// three chips, a status badge (when the project has one), and one link to the
+// project's story. Teaching has no page, so its card links to the teaching
+// section on the same page.
+const featuredCards = {
+  '/': [
+    ['ASC-PIE', '/work/asc-pie'],
+    ['SPRINT-PP', '/work/sprint-pp'],
+    ['Northstar RAG System', '/work/northstar-rag'],
+    ['Applied Machine Learning Portfolio', '/work/applied-ml-portfolio'],
+  ],
+  '/software': [
+    ['Northstar RAG System', '/work/northstar-rag'],
+    [
+      'Documentum Workflow & Lifecycle Optimization',
+      '/work/documentum-workflows',
+    ],
+    ['This Portfolio', '/work/this-portfolio'],
+    ['Internal REST Endpoints & Client Proofs of Concept', '/work/rest-pocs'],
+  ],
+  '/android': [
+    ['Mind’s Eye', '/work/minds-eye'],
+    ['Dive Simulation & Safety Profile Planner', '/work/dive'],
+    ['Dostava Delivery', '/work/dostava'],
+    ['Healthy Habit / Food Planner', '/work/food-planner'],
+  ],
+  '/teaching': [
+    ['Teaching & Technical Instruction', '#teaching-portfolio'],
+    ['ASC-PIE', '/work/asc-pie'],
+    ['Mind’s Eye', '/work/minds-eye'],
+    [
+      'Documentum Workflow & Lifecycle Optimization',
+      '/work/documentum-workflows',
+    ],
+  ],
+} as const;
+
+for (const [path, cards] of Object.entries(featuredCards)) {
+  test(`${path} featured work shows four story cards that link to their stories`, async ({
+    page,
+  }) => {
+    await page.goto(path);
+
+    const featured = page.getByRole('region', { name: 'Work I’m proud of' });
+    const articles = featured.locator('article.story-card');
+    await expect(articles).toHaveCount(4);
+
+    for (const [index, [title, href]] of cards.entries()) {
+      const card = articles.nth(index);
+      await expect(card.getByRole('heading', { level: 3 })).toHaveText(title);
+      // One link per card, pointing at the story (or the teaching anchor).
+      await expect(card.getByRole('link')).toHaveCount(1);
+      await expect(card.getByRole('link')).toHaveAttribute('href', href);
+      // The hook, not the old summary/ownership pair.
+      await expect(card.locator('.story-card__hook')).not.toBeEmpty();
+      await expect(card.locator('.project-card__ownership')).toHaveCount(0);
+      expect(
+        await card.locator('.technology-list li').count(),
+      ).toBeLessThanOrEqual(3);
+    }
+
+    // Projects with a page carry a status badge; the teaching record has none.
+    const badges = featured.locator('.status-badge__pill');
+    await expect(badges).toHaveCount(path === '/teaching' ? 3 : 4);
+  });
+}
+
+test('the ASC-PIE card opens the story page, not the research record', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  const link = page
+    .getByRole('region', { name: 'Work I’m proud of' })
+    .getByRole('link', { name: 'Read the story: ASC-PIE' });
+  await expect(link).toHaveAttribute('href', '/work/asc-pie');
+  await link.click();
+  // The first visit compiles the case-study page in the dev server.
+  await expect(page).toHaveURL(/\/work\/asc-pie$/, { timeout: 30_000 });
 });
 
 for (const width of [320, 360, 820, 1440]) {
@@ -182,7 +266,7 @@ for (const width of [320, 360, 820, 1440]) {
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(width);
     await expect(
-      page.getByRole('region', { name: 'Featured work' }),
+      page.getByRole('region', { name: 'Work I’m proud of' }),
     ).toBeVisible();
     await expect(
       page.getByRole('region', { name: 'Direct contact' }),

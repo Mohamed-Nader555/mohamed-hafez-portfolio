@@ -594,13 +594,6 @@
   .featured-section .project-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .project-card {
-    min-block-size: 22rem;
-  }
-  .project-card:first-child {
-    border-color: var(--border-strong);
-    box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 18%);
-  }
 
   .career-timeline {
     display: grid;

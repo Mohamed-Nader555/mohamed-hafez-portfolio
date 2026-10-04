@@ -37,7 +37,7 @@
       transform var(--motion-duration-base) var(--motion-ease-out);
   }
 
-  .project-card,
+  .story-card--featured,
   .case-study-card,
   .experience-records article,
   .depth-grid article,
@@ -48,7 +48,7 @@
       box-shadow var(--motion-duration-base) ease;
   }
 
-  .project-card:hover,
+  .story-card--featured:hover,
   .case-study-card:hover,
   .experience-records article:hover,
   .depth-grid article:hover,
@@ -159,7 +159,7 @@
     .lens-link:hover,
     .primary-action:hover,
     .secondary-action:hover,
-    .project-card:hover,
+    .story-card--featured:hover,
     .case-study-card:hover,
     .experience-records article:hover,
     .depth-grid article:hover,

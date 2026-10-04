@@ -65,7 +65,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 
   function prepareReveals() {
     const elements = document.querySelectorAll(
-      '.section-heading, .project-card, .case-study-card, .experience-records article, .depth-grid article, .responsibility-groups article, .career-timeline article, .skills-grid article, .teaching-cards article, .education-grid article, .project-library__grid article, .research-stat-grid article, .research-chart-grid figure',
+      '.section-heading, .story-card--featured, .case-study-card, .experience-records article, .depth-grid article, .responsibility-groups article, .career-timeline article, .skills-grid article, .teaching-cards article, .education-grid article, .project-library__grid article, .research-stat-grid article, .research-chart-grid figure',
     );
     const reducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
