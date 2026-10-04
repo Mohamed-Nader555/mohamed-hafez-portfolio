@@ -213,11 +213,11 @@ describe('case-study content collection', () => {
       if (!bounds) continue;
 
       const words = countProseWords(entry.content);
-      // Generous tolerance: our stripper is a heuristic (it approximates
-      // rendered word count from raw MDX source, including inline literal
-      // data like SubProjectGrid's 11 entries), not a full MDX AST evaluator,
-      // so allow 15% below and a wider margin above the brief's target band.
-      const min = Math.round(bounds.min * 0.65);
+      // Our stripper is a heuristic (it approximates rendered word count
+      // from raw MDX source, including inline literal data like
+      // SubProjectGrid's 11 entries), not a full MDX AST evaluator, so allow
+      // 5% below the brief's minimum and a wider margin above its maximum.
+      const min = Math.round(bounds.min * 0.95);
       const max = Math.round(bounds.max * 1.6);
       expect(
         words,

@@ -98,7 +98,7 @@ Plain LLM chat over company documents is good at sounding sure of itself. Ask it
 
 ## Who it was for
 
-I framed Northstar around a fictional mid-sized company, Northstar Technologies, and built its knowledge base out of nine internal documents spanning three formats on purpose: an employee handbook, an IT security policy, a remote-work policy, and a travel and expense policy as PDFs; a benefits and leave guide and a customer-support escalation procedure as plain text; and a data classification and retention standard, an engineering on-call runbook, and a platform architecture overview as Markdown. Mixing formats meant ingestion had to handle all three cleanly, not just the easy case.
+I framed Northstar around a fictional mid-sized company, Northstar Technologies, and built its knowledge base out of nine internal documents spanning three formats on purpose: an employee handbook, an IT security policy, a remote-work policy, and a travel and expense policy as PDFs; a benefits and leave guide and a customer-support escalation procedure as plain text; and a data classification and retention standard, an engineering on-call runbook, and a platform architecture overview as Markdown. Mixing formats meant ingestion had to handle all three cleanly, not just the easy case. It also meant the documents differ the way real ones do: a PDF has pages, a Markdown file has headings, and a plain-text file has neither, so the system couldn't assume any one structure.
 
 ## My role
 
@@ -107,6 +107,12 @@ I built Northstar independently, end to end, as a hands-on RAG engineering proje
 ## What I built
 
 The system extracts text from every document format, splits it into recursive chunks, embeds those chunks locally, and stores them in a persistent vector database that a FastAPI service queries at request time.
+
+Chunking was the first real decision. I split text into 700-character chunks that overlap by 100 characters, using a recursive splitter that prefers to break at paragraph and sentence boundaries before it cuts mid-sentence. A chunk that is too large buries the one sentence that answers a question inside unrelated policy text. One that is too small loses the context that makes the sentence mean anything. The overlap is there so a rule that straddles a boundary still appears whole in at least one chunk.
+
+The embedding model runs locally. Every chunk is embedded with a small sentence-transformers model, so no document text leaves the machine to be indexed and a question costs nothing to embed. For a corpus this size, I expected retrieval quality to depend far more on how the text is chunked than on how large the embedding model is.
+
+The API answers with more than text. Each response lists the sources it used, and every source carries the document name, the page, the section when the format has one, the chunk id, and the retrieval distance. A question like how many days a week someone may work remotely gets back either an answer with numbered citations or the fixed refusal, and in both cases the caller can see exactly what was retrieved.
 
 <FeatureGrid items={frontmatter.features} />
 
@@ -127,7 +133,9 @@ A query is embedded with the same local model used for ingestion, matched agains
   all. If nothing clears it, the API returns a fixed refusal message and the
   language model is never called. That ordering matters — it means the model
   can't paper over a retrieval miss with a fluent guess, because it never gets
-  the chance to try.
+  the chance to try. The threshold is a cosine-distance cut-off that I can
+  configure, and it is deliberately blunt: a chunk is either close enough to be
+  used or it is dropped, with no partial credit.
 </DeepDive>
 
 ## Decisions that mattered
@@ -145,6 +153,8 @@ A query is embedded with the same local model used for ingestion, matched agains
 ## Outcome
 
 Northstar works today as a functional baseline: it ingests the nine-document corpus, answers questions with numbered citations back to the source chunks, and refuses cleanly when the corpus doesn't cover a question. I have not run a full RAGAS evaluation against it yet — building the evaluation question set is still roadmap work, and I'd rather say that plainly than imply scores exist that don't.
+
+What does exist is the harness. The evaluation pipeline is wired for the four RAGAS measures, faithfulness, answer relevancy, context precision, and context recall, so the work left is writing the question set, not building more tooling. The API and retrieval layers are covered by pytest tests that call the service over HTTP with httpx, and the whole stack starts with Docker Compose. The limits are just as plain. The corpus is nine documents about a fictional company, which is enough to prove the pipeline end to end but not enough to say how it would behave on a few thousand real policies.
 
 ## What I learned
 

@@ -79,15 +79,21 @@ In Hadayek El Kobba, Cairo, bakeries, pharmacies, butchers, and produce sellers 
 
 A local courier business and its customers, who needed one app instead of separate phone calls and arrangements with every shop in the neighbourhood. The business itself had no existing digital storefront to build on; the app had to be the storefront, the ordering system, and the delivery tracker all at once, for shops that had never had any of the three.
 
+The app's own welcome text states the promise in one sentence: orders within Hadayek El Kobba, covering supermarket items, food, bread, vegetables, fruit, medicine, and much more. It was written Arabic-first, because that is the language its customers shop in. Screens read right to left, and the labels and order instructions are in Arabic.
+
 ## My role
 
 I delivered the Android application, including the Firebase-backed data layer, authentication, and order workflows, from the category menu through checkout and order tracking. That covered the client-facing app end to end: the category browsing experience, the free-form order forms, cart and checkout, the profile and address model, and the order-status views that customers checked after placing an order.
 
 ## What I built
 
+The home screen is a circular menu of eight categories: supermarket, medicine, meat and poultry, desserts, vegetables and fruit, bakery, restaurants, and a catch-all for other things. What happens next depends on the category. Restaurants open a list to choose from, while the supermarket, meat, and produce categories open free-form order screens, where the customer writes the shop and the items in their own words, such as a weight of tomatoes from the market, and adds that request to the cart.
+
 <FeatureGrid items={frontmatter.features} />
 
 <ProjectGallery projectId="dostava" />
+
+Once an order is placed, My Orders lists it with an order number, the time it was placed, the delivery fee, and a status that moves from "being prepared" to "delivered", each with its own icon. The profile screen stores a photo that the customer can crop, a name, a detailed address with an optional second one, and a phone number with an optional second one, so a repeat order starts with the details already filled in. The app also has the small things a neighbourhood service needs: a button to call the courier, sharing and rating the app, an about page, and an AdMob banner.
 
 <DeepDive id="why-free-form-orders-won" title="Why free-form orders won">
   A fixed catalogue works for a single restaurant, not for a courier business
@@ -96,12 +102,18 @@ I delivered the Android application, including the Firebase-backed data layer, a
   own words, the same way they would if they called the shop directly, and the
   courier fills the order the way a person would rather than matching it against
   a fixed product list. That flexibility mattered more than a tidy menu
-  structure, because the shops themselves didn't share one either.
+  structure, because the shops themselves didn't share one either. The trade-off
+  is real: a free-form request needs a person to read it, so the courier does
+  the interpreting that a catalogue would have done in code. For a neighbourhood
+  service where the courier already knows the shops, that was the right place to
+  put the effort.
 </DeepDive>
 
 ## How it works
 
 The Android interface uses AndroidX Lifecycle to coordinate Firebase Authentication and a single Realtime Database that holds users, orders, and the catalogue, so every screen that touches an order reads and writes through the same data path.
+
+Firebase was the whole back end, which shaped the design in a few ways. There is no server of my own between the app and its data. Sign-in with Facebook or Google goes through Firebase Authentication, orders, users, and the catalogue live in the Realtime Database, profile and product images sit in Firebase Storage, and Firebase Analytics records how the app is used. The upside for a small client was fewer moving parts and nothing extra to host. The cost was that the structure of the database had to carry rules a server would normally enforce, so I kept each order as one record that every screen reads in the same way.
 
 <ArchitectureFlow slug="dostava" title="Dostava Delivery" />
 
@@ -122,6 +134,8 @@ A courier network only works if the person carrying the order and the person wai
 ## Outcome
 
 Dostava was previously published under a client-owned Google Play listing. It is no longer available because the client didn't continue maintenance or request updates. While it was live, the app carried eight order categories built around the free-form ordering model, giving one courier network a single storefront for shops that had never had one before.
+
+The release work was mine too: preparing signed builds, the store listing, and updates. The listing is gone now only because the client stopped maintaining it, and I can't point to download or rating figures because none were kept. What remains is the code and the screens on this page, which are the real app.
 
 ## What I learned
 

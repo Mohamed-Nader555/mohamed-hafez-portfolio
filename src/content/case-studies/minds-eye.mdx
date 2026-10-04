@@ -184,6 +184,8 @@ The app runs in two modes, chosen in the app rather than on the hardware. Visual
   ]}
 />
 
+A first-time user registers and signs in, and the app then opens on those two modes. For a blind or visually impaired user, the app is meant to run with TalkBack switched on, so the screen reader announces where focus is and the recognition features speak their results. Each feature answers a different everyday question: what is in the room, which landmark is this, who is standing next to me, what do these objects look like, what does this receipt say, and which banknote am I holding. Alzheimer mode asks only one: who is this?
+
 <ScreenFlow projectId="minds-eye" steps={frontmatter.screens} />
 
 ## My role
@@ -192,7 +194,9 @@ I delivered more than 80% of this five-person capstone: the Android app, the clo
 
 ## What I built
 
-Capture starts on the glasses and ends as speech in the user's ear, whichever mode is active.
+Capture starts on the glasses and ends as speech in the user's ear, whichever mode is active. The user takes a photo in one of two ways: by pressing the button on the camera, or by choosing a picture from the phone's gallery. A photo from the glasses travels over Bluetooth to the Android app. The app sends it on to my Python service or to a cloud vision service, depending on which feature the user opened, and the answer comes back to the phone as text that the app speaks aloud. The user never has to look at a screen to find out what happened.
+
+I wrote every link in that chain: the firmware on the ESP32-CAM, the Bluetooth hand-off to the app, the app's screens and speech output, and the service that sits behind it. That is also why the interface contracts between them mattered so much to me. The glasses only know how to capture and send an image. The app only knows how to ask for a result and say it. Each side could change without breaking the other as long as the contract held.
 
 <FeatureGrid items={frontmatter.features} />
 
@@ -203,7 +207,9 @@ Capture starts on the glasses and ends as speech in the user's ear, whichever mo
   general-purpose API for it. A captured image goes through preprocessing and
   into that model, served from my Python service, and the structured result
   comes back through OCR-assisted and spoken confirmation so the user hears a
-  denomination, not a guess. I'm not naming the model's architecture, dataset
+  denomination, not a guess. Spoken confirmation matters more here than in any
+  other feature, because a wrong answer about money is easy to act on and hard
+  to notice without sight. I'm not naming the model's architecture, dataset
   size, or an accuracy figure here — none of that was preserved in a form I'd
   stand behind — and it doesn't run on-device or offline; recognition always
   goes through the service. What it can't do yet: total a handful of mixed cash.
@@ -214,6 +220,8 @@ Capture starts on the glasses and ends as speech in the user's ear, whichever mo
 
 The glasses hand a captured image to the Android app over Bluetooth, and the app routes it either to my Python service for currency and face recognition or to the cloud vision services for everything else, then speaks whatever comes back.
 
+The Python service is a Flask application hosted on Heroku, and the Android app reaches it with ordinary HTTP requests. Behind it, I used OpenCV for preprocessing and the `face_recognition` library for the familiar-face feature, with Tesseract available for reading text. Google Cloud Vision handles captioning, landmark and object labels, and text, while Azure Computer Vision adds face attributes. Firebase keeps user accounts and the enrolled faces. Splitting the work this way meant I only trained a model where the commercial services fell short, and everything else came from services that were already good at it.
+
 <HardwareSketch />
 
 <ArchitectureFlow slug="minds-eye" title="Mind's Eye" />
@@ -223,6 +231,8 @@ The glasses hand a captured image to the Android app over Bluetooth, and the app
 <DecisionCards items={frontmatter.decisions} />
 
 ## Hard problems I solved
+
+Most of the hard problems came from the same constraint: the person using this product cannot see a progress indicator or an error dialog. Every wait, failure, and success has to be spoken, and every wait has a cost. The team's own future-work slide names the two that bothered us most, server pricing and response time, and we left both as the first things to optimise next.
 
 <ChallengeCards items={frontmatter.challenges} />
 
@@ -243,3 +253,5 @@ No single piece of Mind's Eye was exotic on its own — a microcontroller, a pho
 ## What I'd do next
 
 The team's own future-work notes point at two real gaps. The currency model classifies one note's denomination at a time and can't yet total a handful of mixed cash, and server cost and latency for the cloud vision calls need real optimization before this could run at a larger scale. Both are software problems, not hardware ones, and both are the kind I'd tackle first.
+
+Our notes list a few concrete steps. We would move to a more capable server so it could run more complex commands and models, and resize photos before upload so each request takes less time to process. We would also let a visually impaired user skip signing in, since only Alzheimer mode needs an account to hold the enrolled faces. Finally, we expected newer cognitive services to appear that could make responses faster, and we planned to swap them in where they helped.

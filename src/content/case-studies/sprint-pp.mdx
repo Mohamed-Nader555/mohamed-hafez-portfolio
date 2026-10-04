@@ -67,6 +67,8 @@ I designed the three-stage protocol, implemented all four compared update strate
 
 I built the staged benchmark itself, not just the mitigation. Every stage adds new PII types on top of what came before, and I score each strategy two ways: a stage-restricted view that shows what a strategy learned, and a cumulative view that shows what it managed to keep usable once later stages arrived. Separating those two views is what makes it possible to see forgetting and new-type learning as two different numbers instead of one blurred score.
 
+Every one of those scores is entity-level F1, not token accuracy, and that choice matters here. In PII extraction most tokens in any sentence are labelled O, meaning "not an entity". A model that has forgotten an entire type can still label the large majority of tokens correctly, because it simply calls them O, so token accuracy stays respectable while the model can no longer find a single entity of that type. Entity-level F1 only gives credit when the whole entity is found, so it shows forgetting the way a user would experience it: the thing you needed extracted is missing.
+
 <FeatureGrid items={frontmatter.features} />
 
 <DeepDive id="how-sprint-pp-remembers-without-storing" title="How SPRINT-PP remembers without storing">
