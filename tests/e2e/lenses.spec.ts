@@ -92,7 +92,7 @@ test('each lens spotlights its own project and never claims an unpublished SPRIN
   page,
 }) => {
   const spotlights = [
-    ['/', 'ASC-PIE', '/research/asc-pie'],
+    ['/', 'ASC-PIE', '/work/asc-pie'],
     ['/software', 'Northstar RAG System', '/work/northstar-rag'],
     ['/android', 'Mind’s Eye', '/work/minds-eye'],
     [

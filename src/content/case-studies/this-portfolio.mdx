@@ -11,7 +11,7 @@ features:
   - title: Pre-rendered pages
     detail: Pages are pre-rendered at build time, so the site works fully before any client-side script runs.
   - title: A grounded assistant
-    detail: An in-page assistant answers questions about the work by retrieving from curated, validated facts, then refuses rather than guessing when nothing supports an answer.
+    detail: An in-page assistant answers questions about the work by retrieving from the content published on the site, then refuses rather than guessing when nothing supports an answer.
 decisions:
   - choice: a zero-budget-first Cloudflare stack
     over: a paid hosting and inference setup
@@ -85,13 +85,13 @@ This site: a four-focus portfolio built on typed, validated content, with a smal
 
 <FeatureGrid items={frontmatter.features} />
 
-The assistant is deliberately conservative. A question comes in behind Turnstile and two rate limiters, then goes through lexical retrieval over curated, validated facts. If retrieval doesn't turn up anything that supports an answer, the pipeline refuses before it ever reaches generation. When it does have support, Workers AI (Llama 3.1 8B) writes the answer, its citations are checked against what was actually retrieved, and if that check fails the assistant falls back to an extractive answer built directly from the retrieved text instead of a generated one. Conversation history stays in the browser session only.
+The assistant is deliberately conservative. A question comes in behind Turnstile and two rate limiters, then goes through lexical retrieval over the published, validated content. If retrieval doesn't turn up anything that supports an answer, the pipeline refuses before it ever reaches generation. When it does have support, Workers AI (Llama 3.1 8B) writes the answer, its citations are checked against what was actually retrieved, and if that check fails the assistant falls back to an extractive answer built directly from the retrieved text instead of a generated one. Conversation history stays in the browser session only.
 
 Analytics on how the assistant is used is not live today; the pipeline is built to support it later without storing raw transcripts, but nothing is currently collecting or reporting that data.
 
 ## How it works
 
-The static site pre-renders from the same curated data the assistant retrieves from, so the two halves of the project share one source of facts but run on independent paths.
+The static site pre-renders from the same published content the assistant retrieves from, so the two halves of the project share one source of facts but run on independent paths.
 
 <ArchitectureFlow slug="this-portfolio" title="This Portfolio" />
 
@@ -105,7 +105,7 @@ The static site pre-renders from the same curated data the assistant retrieves f
 
 ## Outcome
 
-The site runs today as the live, evolving thing you're reading: a pre-rendered portfolio that stays fully readable without JavaScript, plus an assistant layer that answers from curated facts and says "I don't have enough to answer that" rather than filling the gap.
+The site runs today as the live, evolving thing you're reading: a pre-rendered portfolio that stays fully readable without JavaScript, plus an assistant layer that answers from the published content and says "I don't have enough to answer that" rather than filling the gap.
 
 ## What I learned
 
@@ -115,7 +115,7 @@ Building the refusal path before the generation path changed how I thought about
 
 ## What I'd do next
 
-The retrieval layer works on the curated facts that exist today; the natural next step is broadening what's curated rather than changing how retrieval or refusal work. I'd also like to add the usage analytics the pipeline was designed for, on aggregate counts rather than raw transcripts, once I'm confident the privacy trade-offs are right.
+The retrieval layer works on the published content that exists today; the natural next step is broadening what's published rather than changing how retrieval or refusal work. I'd also like to add the usage analytics the pipeline was designed for, on aggregate counts rather than raw transcripts, once I'm confident the privacy trade-offs are right.
 
 ## Links
 
