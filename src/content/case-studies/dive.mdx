@@ -119,9 +119,6 @@ screens:
   - imageId: safer-plan
     step: Recommend
     caption: 'From 45 m / 10 min, the app searched shallower and shorter until the model accepted a plan: 37 m / 2 min.'
-links:
-  - label: Repository
-    sourceId: github-dive
 ---
 
 import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
@@ -133,6 +130,7 @@ import StackLayers from '@/components/case-study/StackLayers.astro';
 import ResultBars from '@/components/case-study/ResultBars.astro';
 import ScreenFlow from '@/components/case-study/ScreenFlow.astro';
 import ProjectGallery from '@/components/case-study/ProjectGallery.astro';
+import RepositoryLinks from '@/components/case-study/RepositoryLinks.astro';
 
 ## The problem
 
@@ -235,4 +233,6 @@ The project's own future work points toward technical-diving calculators, such a
 
 ## Links
 
-- [Repository](https://github.com/Mohamed-Nader555/Diving-Simulation-App) — the Android client is public. It isn't polished for a general audience, since it was built for a specific client, but it's the real, delivered implementation described above.
+The Android client is public. It isn't polished for a general audience, since it was built for a specific client, but it's the real, delivered implementation described above.
+
+<RepositoryLinks slug={frontmatter.slug} />

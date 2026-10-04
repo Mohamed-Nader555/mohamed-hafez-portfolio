@@ -53,6 +53,16 @@ export const evidenceRecordSchema = z.object({
 });
 export type EvidenceRecord = z.infer<typeof evidenceRecordSchema>;
 
+export const repoStateSchema = z.enum(['live', 'pending']);
+export type RepoState = z.infer<typeof repoStateSchema>;
+
+export const projectRepoSchema = z.object({
+  name: z.string().min(1),
+  url: z.url(),
+  state: repoStateSchema,
+});
+export type ProjectRepo = z.infer<typeof projectRepoSchema>;
+
 export const projectRecordSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   slug: z.string().regex(/^[a-z0-9-]+$/),
@@ -67,6 +77,7 @@ export const projectRecordSchema = z.object({
   roleWeights: roleWeightsSchema,
   technologies: z.array(z.string().min(1)).min(1).max(6),
   sourceIds: sourceIdsSchema,
+  repos: z.array(projectRepoSchema),
   detailLevel: z.enum(['flagship', 'story', 'brief', 'card', 'supporting']),
   public: z.literal(true),
 });

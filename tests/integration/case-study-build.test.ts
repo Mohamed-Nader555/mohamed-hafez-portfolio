@@ -325,7 +325,12 @@ describe('case-study content collection', () => {
     expect(collectLinks(entries.get('asc-pie')!.tree).length).toBeGreaterThan(
       0,
     );
-    expect(collectLinks(entries.get('dive')!.tree).length).toBeGreaterThan(0);
+    // Dive's repository link is data-driven (repos table -> RepositoryLinks),
+    // not a hand-written markdown link.
+    expect(entries.get('dive')!.raw).toContain('<RepositoryLinks');
+    expect(
+      projectBySlug.get('dive')!.repos.map((repo) => repo.state),
+    ).toContain('live');
     // D11 / §7.3: no link to Northstar's own (unready) repository — internal
     // cross-links to other case studies (ASC-PIE, This Portfolio) are fine
     // and expected.
