@@ -192,6 +192,10 @@ function initRail(root: HTMLElement) {
   const next = root.querySelector<HTMLButtonElement>('[data-rail-next]');
   const counter = root.querySelector<HTMLElement>('[data-rail-counter]');
   root.setAttribute('data-enhanced', '');
+  // The roving zoom buttons become the rail's single tab stop, so the
+  // scroller itself no longer needs one (or its label).
+  track.removeAttribute('tabindex');
+  track.removeAttribute('aria-label');
 
   const max = () => Math.max(0, track.scrollWidth - track.clientWidth);
   const scrollToIndex = (index: number) =>

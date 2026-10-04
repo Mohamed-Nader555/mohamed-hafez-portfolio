@@ -23,6 +23,7 @@ describe('assistantVoice', () => {
       'Mohamed builds APIs and Mohamed tests them.',
     ],
     ['I built it myself.', 'Mohamed built it himself.'],
+    ['I plan to publish it.', 'Mohamed plans to publish it.'],
     [
       'The client asked me for a planner.',
       'The client asked him for a planner.',
@@ -238,6 +239,31 @@ describe('question guard', () => {
     expect(checkQuestion('What does the Weather Checker app do?', true)).toBe(
       'allowed',
     );
+  });
+
+  it.each([
+    'How much money does he want?',
+    'Does he have a criminal record?',
+    'Write a poem about Java.',
+    'Write a cover letter for Dive.',
+    'Translate Dive into French.',
+  ])('refuses %j even when it names a project or technology', (question) => {
+    expect(checkQuestion(question, true)).toBe('refuse');
+    expect(checkQuestion(question, false)).toBe('refuse');
+  });
+
+  it('refuses real-time questions unless a project or technology is named', () => {
+    expect(checkQuestion('What time is it?', false)).toBe('refuse');
+    expect(checkQuestion('What is the date today?', false)).toBe('allowed');
+  });
+
+  it('does not block accessibility work that mentions disabilities', () => {
+    expect(
+      checkQuestion(
+        'What accessibility work helps people with disabilities?',
+        false,
+      ),
+    ).toBe('allowed');
   });
 
   it('no longer blocks "worked for" career questions', () => {

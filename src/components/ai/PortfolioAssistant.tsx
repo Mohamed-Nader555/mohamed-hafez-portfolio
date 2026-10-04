@@ -36,13 +36,18 @@ export function PortfolioAssistant({
   const verification = useRef<AbortController | undefined>(undefined);
   const runId = useRef(0);
   const closeRef = useRef<() => void>(() => {});
-  const store =
-    typeof window === 'undefined'
-      ? undefined
-      : createSessionStore(window.sessionStorage);
+  const store = (() => {
+    try {
+      return typeof window === 'undefined'
+        ? undefined
+        : createSessionStore(window.sessionStorage);
+    } catch {
+      return undefined;
+    }
+  })();
   useEffect(() => {
     // Hydrate after mount: the page is server-rendered with an empty thread.
-    setThread(createSessionStore(window.sessionStorage).thread());
+    setThread(store?.thread() ?? []);
   }, []);
   useEffect(() => {
     if (open) requestAnimationFrame(() => inputRef.current?.focus());

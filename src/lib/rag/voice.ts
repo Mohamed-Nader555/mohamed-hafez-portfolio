@@ -52,6 +52,17 @@ const presentTense: Record<string, string> = {
   explain: 'explains',
   treat: 'treats',
   rely: 'relies',
+  plan: 'plans',
+  hope: 'hopes',
+  aim: 'aims',
+  expect: 'expects',
+  intend: 'intends',
+  believe: 'believes',
+  wish: 'wishes',
+  think: 'thinks',
+  say: 'says',
+  put: 'puts',
+  see: 'sees',
 };
 
 const rules: Array<[RegExp, string | ((...match: string[]) => string)]> = [
