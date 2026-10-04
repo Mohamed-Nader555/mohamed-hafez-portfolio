@@ -1,4 +1,5 @@
 ---
+import ScreenshotRail from '@/components/case-study/ScreenshotRail.astro';
 import { projectImages, type ProjectImageId } from '@/data/project-images';
 
 interface Props {
@@ -16,47 +17,57 @@ const images = projectImages[projectId] ?? [];
   <p class="project-gallery__hint" aria-hidden="true">
     Scroll to see more &rarr;
   </p>
-  <div
-    class="project-gallery__row"
-    tabindex="0"
-    aria-label="Scrollable screenshots"
-  >
-    {
-      images.map((image) => (
-        <figure class="project-screenshot" data-orientation={image.orientation}>
-          <picture>
-            <source
-              type="image/avif"
-              srcset={image.avifSrcset}
-              sizes={
-                image.orientation === 'landscape'
-                  ? '(max-width: 45rem) calc(100vw - 2rem), 26rem'
-                  : '(max-width: 45rem) calc(100vw - 2rem), 16rem'
-              }
-            />
-            <source
-              type="image/webp"
-              srcset={image.webpSrcset}
-              sizes={
-                image.orientation === 'landscape'
-                  ? '(max-width: 45rem) calc(100vw - 2rem), 26rem'
-                  : '(max-width: 45rem) calc(100vw - 2rem), 16rem'
-              }
-            />
-            <img
-              src={image.fallbackSrc}
-              alt={image.alt}
-              width={image.width}
-              height={image.height}
-              loading="lazy"
-              decoding="async"
-            />
-          </picture>
-          <figcaption>{image.caption}</figcaption>
-        </figure>
-      ))
-    }
-  </div>
+  <ScreenshotRail label={`${projectId} screenshot rail`}>
+    <div
+      class="project-gallery__row"
+      data-rail-track
+      tabindex="0"
+      aria-label="Scrollable screenshots"
+    >
+      {
+        images.map((image) => (
+          <figure
+            class="project-screenshot"
+            data-orientation={image.orientation}
+            data-rail-slide
+            data-rail-caption={image.caption}
+          >
+            <span class="shot-rail__frame">
+              <picture>
+                <source
+                  type="image/avif"
+                  srcset={image.avifSrcset}
+                  sizes={
+                    image.orientation === 'landscape'
+                      ? '(max-width: 45rem) calc(100vw - 2rem), 26rem'
+                      : '(max-width: 45rem) calc(100vw - 2rem), 16rem'
+                  }
+                />
+                <source
+                  type="image/webp"
+                  srcset={image.webpSrcset}
+                  sizes={
+                    image.orientation === 'landscape'
+                      ? '(max-width: 45rem) calc(100vw - 2rem), 26rem'
+                      : '(max-width: 45rem) calc(100vw - 2rem), 16rem'
+                  }
+                />
+                <img
+                  src={image.fallbackSrc}
+                  alt={image.alt}
+                  width={image.width}
+                  height={image.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+            </span>
+            <figcaption>{image.caption}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </ScreenshotRail>
 </section>
 
 <style>
@@ -101,8 +112,6 @@ const images = projectImages[projectId] ?? [];
     display: block;
     inline-size: 100%;
     height: auto;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-subtle);
   }
 
   .project-screenshot figcaption {

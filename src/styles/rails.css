@@ -1,0 +1,394 @@
+/*
+ * Screenshot rails (ProjectGallery, ScreenFlow) and their lightbox.
+ *
+ * The no-JavaScript rail is a plain scrolling strip with a thin scrollbar in
+ * the site colours. `screenshot-rail.ts` adds `data-enhanced`, which hides the
+ * native scrollbar and turns on the fades, controls, progress thumb and
+ * entrance animation. Position is driven by the `--rail-visible` and
+ * `--rail-progress` custom properties the script sets through the CSSOM.
+ */
+
+.shot-rail {
+  position: relative;
+  /* The rail sits in grid containers; without this its scrolling content
+     would set the column's minimum width and widen the whole page. */
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.shot-rail [data-rail-track] {
+  position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--color-evidence-500) rgb(143 165 195 / 16%);
+  scrollbar-width: thin;
+}
+
+.shot-rail[data-enhanced] [data-rail-track] {
+  cursor: grab;
+  scrollbar-width: none;
+  /* Soft fades that appear only on a side that has more to show. */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--rail-fade-start, 0px),
+    #000 calc(100% - var(--rail-fade-end, 0px)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 var(--rail-fade-start, 0px),
+    #000 calc(100% - var(--rail-fade-end, 0px)),
+    transparent 100%
+  );
+}
+
+.shot-rail[data-enhanced] [data-rail-track]::-webkit-scrollbar {
+  display: none;
+}
+
+.shot-rail[data-fade-start] {
+  --rail-fade-start: 3rem;
+}
+
+.shot-rail[data-fade-end] {
+  --rail-fade-end: 3rem;
+}
+
+.shot-rail [data-rail-track][data-dragging] {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+/* ---------------------------------------------------------------- controls */
+
+.shot-rail__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-block-size: 2.75rem;
+  margin-block-start: var(--space-3);
+  /* Space is reserved up front so enhancing the rail never shifts the page. */
+  visibility: hidden;
+}
+
+.shot-rail[data-enhanced] .shot-rail__controls {
+  visibility: visible;
+}
+
+.shot-rail[data-static] .shot-rail__controls {
+  visibility: hidden;
+}
+
+.shot-rail__button {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  color: var(--color-ink-100);
+  background:
+    linear-gradient(135deg, rgb(8 17 38 / 96%), rgb(11 21 48 / 92%)) padding-box,
+    linear-gradient(
+        135deg,
+        rgb(85 223 253 / 70%),
+        rgb(85 223 253 / 10%) 45%,
+        rgb(255 79 216 / 55%)
+      )
+      border-box;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    box-shadow var(--motion-duration-base) ease,
+    opacity var(--motion-duration-base) ease;
+}
+
+.shot-rail__button:hover:not(:disabled) {
+  box-shadow: 0 0 1.1rem rgb(85 223 253 / 28%);
+}
+
+.shot-rail__button:focus-visible,
+.shot-rail__zoom:focus-visible,
+.shot-lightbox__close:focus-visible {
+  outline: 2px solid var(--color-evidence-500);
+  outline-offset: 3px;
+}
+
+.shot-rail__button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+/* Swiping is natural on touch screens. */
+@media (pointer: coarse) {
+  .shot-rail__controls .shot-rail__button {
+    display: none;
+  }
+}
+
+.shot-rail__progress {
+  position: relative;
+  flex: 1 1 auto;
+  block-size: 1px;
+  background: rgb(143 165 195 / 28%);
+}
+
+.shot-rail__thumb {
+  position: absolute;
+  inset-block: -1px;
+  inline-size: calc(var(--rail-visible, 1) * 100%);
+  inset-inline-start: calc(
+    var(--rail-progress, 0) * (100% - var(--rail-visible, 1) * 100%)
+  );
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--color-evidence-500),
+    var(--color-ai-500)
+  );
+  box-shadow:
+    0 0 0.6rem rgb(85 223 253 / 55%),
+    0 0 1rem rgb(255 79 216 / 25%);
+}
+
+.shot-rail__counter {
+  min-inline-size: 6ch;
+  margin: 0;
+  color: var(--color-ink-300);
+  font-family: var(--font-utility);
+  font-size: var(--type-xs);
+  letter-spacing: 0.08em;
+  text-align: end;
+}
+
+/* ------------------------------------------------------------------ slides */
+
+.shot-rail [data-rail-slide] {
+  position: relative;
+}
+
+.shot-rail__frame {
+  position: relative;
+  display: block;
+  padding: 1px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    135deg,
+    rgb(85 223 253 / 42%),
+    rgb(85 223 253 / 6%) 40%,
+    rgb(255 79 216 / 8%) 60%,
+    rgb(255 79 216 / 38%)
+  );
+  box-shadow: 0 0.8rem 2rem rgb(0 2 15 / 45%);
+  transition:
+    transform var(--motion-duration-base) var(--motion-ease-out),
+    box-shadow var(--motion-duration-base) ease,
+    background var(--motion-duration-base) ease;
+}
+
+.shot-rail__frame picture {
+  display: block;
+  overflow: hidden;
+  border-radius: calc(var(--radius-lg) - 1px);
+  background: var(--color-ink-950);
+}
+
+.shot-rail__frame img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+[data-rail-slide]:hover .shot-rail__frame,
+.shot-rail__frame:focus-within {
+  background: linear-gradient(
+    135deg,
+    rgb(85 223 253 / 90%),
+    rgb(85 223 253 / 22%) 40%,
+    rgb(255 79 216 / 25%) 60%,
+    rgb(255 79 216 / 85%)
+  );
+  box-shadow:
+    0 1.1rem 2.6rem rgb(0 2 15 / 55%),
+    0 0 1.4rem rgb(85 223 253 / 18%);
+}
+
+.shot-rail__zoom {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: inherit;
+}
+
+/* ------------------------------------------------------------------ motion */
+
+@keyframes shot-rail-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shot-lightbox-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hidden only until the rail first scrolls into view; opacity and
+     translate leave the layout untouched. */
+  .shot-rail[data-enhanced]:not([data-revealed]) [data-rail-slide] {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  .shot-rail[data-revealed] [data-rail-slide] {
+    animation: shot-rail-in 560ms var(--motion-ease-out) both;
+    animation-delay: calc(var(--rail-index, 0) * 70ms);
+  }
+
+  [data-rail-slide]:hover .shot-rail__frame,
+  .shot-rail__frame:focus-within {
+    transform: translateY(-0.3rem);
+  }
+
+  .shot-lightbox[open] .shot-lightbox__panel {
+    animation: shot-lightbox-in 220ms var(--motion-ease-out) both;
+  }
+}
+
+/* ---------------------------------------------------------------- lightbox */
+
+.shot-lightbox {
+  position: fixed;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: var(--space-4);
+  border: 0;
+  color: var(--color-ink-100);
+  background: transparent;
+}
+
+.shot-lightbox[open] {
+  display: grid;
+  place-items: center;
+}
+
+.shot-lightbox::backdrop {
+  background: rgb(2 5 18 / 84%);
+  backdrop-filter: blur(6px);
+}
+
+.shot-lightbox__panel {
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  max-inline-size: min(100%, 72rem);
+  max-block-size: 100%;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(155deg, rgb(8 17 38 / 98%), rgb(5 8 23 / 98%)) padding-box,
+    linear-gradient(
+        135deg,
+        rgb(85 223 253 / 60%),
+        rgb(85 223 253 / 8%) 40%,
+        rgb(255 79 216 / 10%) 62%,
+        rgb(255 79 216 / 55%)
+      )
+      border-box;
+  box-shadow: 0 2rem 6rem rgb(0 2 15 / 70%);
+}
+
+.shot-lightbox__figure {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  margin: 0;
+}
+
+.shot-lightbox__image {
+  display: grid;
+  place-items: center;
+}
+
+/* Natural size at most: `auto` sizes use the file's own dimensions. */
+.shot-lightbox__image img {
+  display: block;
+  inline-size: auto;
+  block-size: auto;
+  max-inline-size: min(100%, 88vw);
+  max-block-size: 68vh;
+  border-radius: var(--radius-md);
+}
+
+.shot-lightbox__caption {
+  max-inline-size: 40rem;
+  color: var(--color-ink-200);
+  font-size: var(--type-sm);
+  text-align: center;
+}
+
+.shot-lightbox__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.shot-lightbox__close {
+  position: absolute;
+  inset-block-start: var(--space-3);
+  inset-inline-end: var(--space-3);
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border: 1px solid rgb(85 223 253 / 30%);
+  border-radius: 50%;
+  color: var(--color-ink-100);
+  background: rgb(8 17 38 / 85%);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 45rem) {
+  .shot-lightbox {
+    padding: var(--space-2);
+  }
+
+  .shot-lightbox__panel {
+    padding: var(--space-4) var(--space-3) var(--space-3);
+  }
+
+  .shot-lightbox__image img {
+    max-block-size: 62vh;
+  }
+}
