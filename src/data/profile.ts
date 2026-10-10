@@ -4,7 +4,7 @@ export const profile = profileSchema.parse({
   name: 'Mohamed Hafez',
   githubHandle: 'Mohamed-Nader555',
   location: 'Toronto, Ontario, Canada',
-  availability: 'Immediately available',
+  availability: 'Open to new roles, one-week notice period',
   workAuthorization: 'Open PGWP valid through June 2029',
   sponsorship: 'No sponsorship required',
   workPreferences: {

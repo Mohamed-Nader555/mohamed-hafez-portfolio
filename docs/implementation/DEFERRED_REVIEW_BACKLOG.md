@@ -6,7 +6,7 @@
 
 ## Launch decision
 
-Finish the grounded AI assistant, inspect the complete site locally, fix only launch-blocking defects, and deploy to a free Cloudflare `workers.dev` hostname without custom analytics. The portfolio, résumé downloads, direct contact actions, and grounded assistant do not depend on custom analytics.
+Finish the grounded AI assistant, inspect the complete site locally, fix only launch-blocking defects, and deploy to Cloudflare (production is now `https://mohamednhafez.com`; it first launched on a `workers.dev` hostname) without custom analytics. The portfolio, résumé downloads, direct contact actions, and grounded assistant do not depend on custom analytics.
 
 ## Reviews deferred
 
@@ -48,7 +48,7 @@ Finish the grounded AI assistant, inspect the complete site locally, fix only la
 
 - Create the free Cloudflare account, verify email, enable authenticator-based two-factor authentication, and confirm no paid plan/billing method is enabled.
 - Create/connect the Worker project and public GitHub repository.
-- Configure the actual `PUBLIC_SITE_URL` after Cloudflare assigns the `workers.dev` hostname.
+- Done: `PUBLIC_SITE_URL` is `https://mohamednhafez.com`, the production origin.
 - Create the Turnstile widget and store only its public site key in public configuration; store its secret with Cloudflare secrets.
 - Configure Workers AI and both rate-limiter bindings; store `RATE_LIMIT_HASH_SECRET` as a Cloudflare secret.
 - Reconfirm the selected Workers AI model is eligible for the free allocation immediately before deployment.
@@ -61,7 +61,6 @@ Finish the grounded AI assistant, inspect the complete site locally, fix only la
 - Headshot/portrait treatment.
 - Vectorize semantic retrieval only if measured evaluation shows lexical recall gaps.
 - Paid Workers AI or another provider only after observed demand; no automatic upgrade.
-- Custom domain.
 - Expanded GitHub showcase after repository cleanup.
 - Private analytics dashboard.
 - Multilingual assistant.

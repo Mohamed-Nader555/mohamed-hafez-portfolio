@@ -40,6 +40,25 @@ const bassRecords = [
   },
 ] as const satisfies readonly EvidenceRecord[];
 
+const currentRoleRecords = [
+  {
+    id: 'eklan-current-role',
+    title: 'Current role at Eklan',
+    statement:
+      'I am currently working as Founding AI Engineer at Eklan (2026 to present).',
+    topics: ['Eklan', 'Founding AI Engineer', 'current role', 'notice period'],
+    aliases: [
+      'current employer',
+      'present role',
+      'where does Mohamed work now',
+      'who does Mohamed work for',
+    ],
+    roleWeights: { aiml: 4, software: 4, android: 0, teaching: 0 },
+    sourceIds: ['public-experience'],
+    public: true,
+  },
+] as const satisfies readonly EvidenceRecord[];
+
 const mercatoRecords = [
   {
     id: 'mercato-football-talent',
@@ -66,9 +85,12 @@ const mercatoRecords = [
 ] as const satisfies readonly EvidenceRecord[];
 
 export const bassEvidence = evidenceRecordSchema.array().parse(bassRecords);
+export const currentRoleEvidence = evidenceRecordSchema
+  .array()
+  .parse(currentRoleRecords);
 export const mercatoEvidence = evidenceRecordSchema
   .array()
   .parse(mercatoRecords);
 export const experienceEvidence = evidenceRecordSchema
   .array()
-  .parse([...bassEvidence, ...mercatoEvidence]);
+  .parse([...currentRoleEvidence, ...bassEvidence, ...mercatoEvidence]);

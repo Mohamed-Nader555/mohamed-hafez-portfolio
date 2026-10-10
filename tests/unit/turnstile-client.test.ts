@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   requestTurnstileToken,
   resolveTurnstileSiteKey,
+  turnstileErrorFailureCode,
   TURNSTILE_HOSTNAME_HINT,
   TURNSTILE_TEST_SITEKEY,
 } from '@/components/ai/turnstile-client';
@@ -57,6 +58,22 @@ describe('resolveTurnstileSiteKey', () => {
       resolveTurnstileSiteKey('0xPRODUCTION', 'mohamed-hafez-portfolio.x.dev'),
     ).toBe('0xPRODUCTION');
   });
+});
+
+describe('turnstileErrorFailureCode', () => {
+  it.each([110100, '110100', '110110', 110200, '110200', '110201'])(
+    'treats configuration error %s as the assistant being offline',
+    (code) => {
+      expect(turnstileErrorFailureCode(code)).toBe('temporarily_unavailable');
+    },
+  );
+
+  it.each([300030, '300030', '600010', '110600', undefined, ''])(
+    'keeps %s as a failed check',
+    (code) => {
+      expect(turnstileErrorFailureCode(code)).toBe('verification_failed');
+    },
+  );
 });
 
 describe('requestTurnstileToken', () => {
@@ -124,7 +141,15 @@ describe('requestTurnstileToken', () => {
     expect(document.head.querySelector('script')).toBeNull();
   });
 
-  it('rejects with verification_failed and warns once on a widget error', async () => {
+  it('never lets Turnstile retry on its own', async () => {
+    const turnstile = installTurnstile();
+    await requestTurnstileToken('production-site-key', {
+      container: document.createElement('div'),
+    });
+    expect(turnstile.options().retry).toBe('never');
+  });
+
+  it('rejects with temporarily_unavailable and warns once on a hostname error', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const turnstile = installTurnstile((options) => {
       options['error-callback'](110200);
@@ -134,11 +159,22 @@ describe('requestTurnstileToken', () => {
       requestTurnstileToken('production-site-key', {
         container: document.createElement('div'),
       }),
-    ).rejects.toMatchObject({ code: 'verification_failed' });
+    ).rejects.toMatchObject({ code: 'temporarily_unavailable' });
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn.mock.calls[0]![0]).toContain('110200');
     expect(warn.mock.calls[0]![0]).toContain(TURNSTILE_HOSTNAME_HINT);
     expect(turnstile.remove).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects a bad site key with temporarily_unavailable and no hostname hint', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    installTurnstile((options) => options['error-callback']('110100'));
+    await expect(
+      requestTurnstileToken('production-site-key', {
+        container: document.createElement('div'),
+      }),
+    ).rejects.toMatchObject({ code: 'temporarily_unavailable' });
+    expect(warn.mock.calls[0]![0]).not.toContain(TURNSTILE_HOSTNAME_HINT);
   });
 
   it('does not add the hostname hint to unrelated error codes', async () => {

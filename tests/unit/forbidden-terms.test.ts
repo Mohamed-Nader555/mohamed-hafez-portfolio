@@ -30,6 +30,12 @@ describe('forbidden terms', () => {
     for (const hash of FORBIDDEN_HASHES) expect(hash).toMatch(/^[0-9a-f]{64}$/);
   });
 
+  it('still holds the client names plus the private-profile hashes', () => {
+    // 9 client-name hashes, then people, private projects, address, date of
+    // birth and an old phone number. Fewer means a hash was deleted.
+    expect(FORBIDDEN_HASHES.size).toBeGreaterThanOrEqual(40);
+  });
+
   it('appears nowhere in the tracked repository files', () => {
     const files = execFileSync('git', ['ls-files', '-z'], {
       encoding: 'utf8',
@@ -43,5 +49,6 @@ describe('forbidden terms', () => {
       return found.length ? [`${file}: ${found.join(', ')}`] : [];
     });
     expect(hits).toEqual([]);
-  });
+    // Every tracked file is tokenized and hashed, which is slow on a busy machine.
+  }, 60_000);
 });

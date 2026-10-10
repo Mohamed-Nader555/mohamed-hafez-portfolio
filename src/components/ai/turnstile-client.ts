@@ -17,6 +17,7 @@ declare global {
           execution: 'execute';
           action: string;
           appearance: 'interaction-only';
+          retry: 'never';
           callback(token: string): void;
           'error-callback'(errorCode?: string | number): void;
           'expired-callback'(): void;
@@ -37,6 +38,20 @@ const TURNSTILE_SCRIPT_SRC =
   'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 export const TURNSTILE_HOSTNAME_HINT =
   'This hostname is not allowed for the Turnstile widget. Add it under the widget’s hostname settings in the Cloudflare dashboard.';
+
+/**
+ * Codes 1101xx (bad site key) and 1102xx (hostname not authorised) are faults
+ * in our own configuration, not a visitor failing the check, so the panel
+ * shows the offline message instead of asking the visitor to try again.
+ */
+export function turnstileErrorFailureCode(
+  errorCode?: string | number,
+): ChatFailureCode {
+  const code = String(errorCode ?? '');
+  return code.startsWith('1101') || code.startsWith('1102')
+    ? 'temporarily_unavailable'
+    : 'verification_failed';
+}
 
 export function testTurnstileToken(): string {
   return TURNSTILE_TEST_TOKEN;
@@ -137,6 +152,9 @@ export async function requestTurnstileToken(
             execution: 'execute',
             action: PORTFOLIO_CHAT_TURNSTILE_ACTION,
             appearance: 'interaction-only',
+            // An automatic retry can fire after settle() removed the widget
+            // and surface as an uncaught "Nothing to reset found" error.
+            retry: 'never',
             callback: (token) => settle(() => resolve(token)),
             'error-callback': (errorCode) => {
               if (!warned) {
@@ -149,7 +167,7 @@ export async function requestTurnstileToken(
                       : ''),
                 );
               }
-              fail('verification_failed');
+              fail(turnstileErrorFailureCode(errorCode));
             },
             'expired-callback': () => fail('verification_failed'),
             'timeout-callback': () => fail('verification_timeout'),

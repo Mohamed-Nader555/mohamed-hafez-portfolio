@@ -166,7 +166,7 @@ Never commit:
 
 ## Current launch scope
 
-The portfolio, responsive role experience, case studies, resume downloads, direct contact actions, and grounded assistant implementation are complete. Cloudflare account connection and production deployment remain environment-specific launch steps. Custom analytics, job-description matching, testimonials, a custom domain, and several final manual QA passes are intentionally deferred and recorded in the [review and enhancement backlog](docs/implementation/DEFERRED_REVIEW_BACKLOG.md).
+The portfolio, responsive role experience, case studies, resume downloads, direct contact actions, and grounded assistant implementation are complete. Cloudflare account connection and production deployment remain environment-specific launch steps. Custom analytics, job-description matching, testimonials, and several final manual QA passes are intentionally deferred and recorded in the [review and enhancement backlog](docs/implementation/DEFERRED_REVIEW_BACKLOG.md).
 
 ## License and content
 

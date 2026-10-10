@@ -165,7 +165,12 @@ test('about publishes validated screening facts and direct contact', async ({
     'Engineering across AI, software, mobile, and teaching',
   );
   await expect(page.getByText('Toronto, Ontario, Canada.')).toBeVisible();
-  await expect(page.getByText('Immediately available.')).toBeVisible();
+  await expect(
+    page.getByText(
+      'Currently working as Founding AI Engineer at Eklan. Open to new roles, with a one-week notice period.',
+      { exact: true },
+    ),
+  ).toBeVisible();
   await expect(
     page.getByText('Open PGWP valid through June 2029.'),
   ).toBeVisible();

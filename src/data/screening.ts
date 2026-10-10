@@ -18,9 +18,15 @@ const facts = [
   {
     id: 'availability',
     label: 'Availability',
-    statement: 'Immediately available.',
-    topics: ['availability', 'start date'],
-    aliases: ['when can Mohamed start', 'immediate start'],
+    statement:
+      'Currently working as Founding AI Engineer at Eklan. Open to new roles, with a one-week notice period.',
+    topics: ['availability', 'start date', 'notice period', 'current role'],
+    aliases: [
+      'when can Mohamed start',
+      'notice period',
+      'current employer',
+      'is Mohamed currently employed',
+    ],
     sourceIds: ['public-availability'],
     public: true,
   },

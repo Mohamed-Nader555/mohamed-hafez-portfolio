@@ -129,7 +129,7 @@ export const profileSchema = z.object({
   name: z.literal('Mohamed Hafez'),
   githubHandle: z.literal('Mohamed-Nader555'),
   location: z.literal('Toronto, Ontario, Canada'),
-  availability: z.literal('Immediately available'),
+  availability: z.literal('Open to new roles, one-week notice period'),
   workAuthorization: z.literal('Open PGWP valid through June 2029'),
   sponsorship: z.literal('No sponsorship required'),
   workPreferences: z.object({
