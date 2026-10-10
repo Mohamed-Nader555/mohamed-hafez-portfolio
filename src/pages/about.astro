@@ -1,6 +1,7 @@
 ---
 import ContactLinks from '@/components/layout/ContactLinks.astro';
 import { aboutIntro } from '@/data/about';
+import { questionBank } from '@/data/claims';
 import { evidence, profile, screeningFacts } from '@/data';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 
@@ -10,6 +11,21 @@ const education = evidence.find(
   (record) => record.id === 'asc-pie-degree-awarded',
 );
 if (!education) throw new Error('About page is missing education evidence.');
+
+// His answers, in the file's order and under the file's headings. Gap answers
+// are for the chat only and never appear on a page.
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+const published = questionBank.filter((answer) => !answer.gap);
+const questionGroups = [
+  ...new Set(published.map((answer) => answer.group)),
+].map((name) => ({
+  name,
+  answers: published.filter((answer) => answer.group === name),
+}));
 ---
 
 <BaseLayout
@@ -51,6 +67,38 @@ if (!education) throw new Error('About page is missing education evidence.');
     <div>
       <p>{education.statement}</p>
     </div>
+  </section>
+
+  <section
+    id="questions"
+    class="about-questions shell-container"
+    aria-labelledby="questions-title"
+  >
+    <header>
+      <p class="utility-label">Straight answers</p>
+      <h2 id="questions-title">Questions I’m often asked</h2>
+      <p>
+        Short answers to what recruiters and hiring managers ask most. The
+        portfolio assistant quotes these exactly and labels them as my answers.
+      </p>
+    </header>
+    {
+      questionGroups.map((group) => (
+        <section aria-labelledby={`questions-${slugify(group.name)}`}>
+          <header>
+            <h3 id={`questions-${slugify(group.name)}`}>{group.name}</h3>
+          </header>
+          <div>
+            {group.answers.map((answer) => (
+              <article id={answer.id}>
+                <h4>{answer.question}</h4>
+                <p>{answer.answer}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
   </section>
 
   <section
