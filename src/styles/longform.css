@@ -202,6 +202,7 @@
   .official-records h2,
   .education-record h2,
   .about-contact h2,
+  .about-questions h2,
   .responsibility-groups h2 {
     margin-block: var(--space-3) var(--space-4);
     color: var(--color-ink-100);
@@ -334,6 +335,7 @@
   .responsibility-groups,
   .about-grid,
   .education-record,
+  .about-questions,
   .about-contact {
     padding-block: var(--space-section);
     border-block-start: 1px solid var(--border-subtle);
@@ -453,12 +455,57 @@
     text-decoration: none;
   }
 
+  .about-questions {
+    display: grid;
+    gap: var(--space-16);
+  }
+
+  .about-questions > header p:not(.utility-label) {
+    max-inline-size: var(--width-reading);
+  }
+
+  .about-questions > section {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.55fr) minmax(0, 1.45fr);
+    gap: clamp(var(--space-8), 5vw, var(--space-16));
+  }
+
+  .about-questions h3 {
+    color: var(--color-ink-100);
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.7rem);
+    font-weight: 620;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .about-questions > section > div {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .about-questions article {
+    padding-block-end: var(--space-6);
+    border-block-end: 1px solid var(--border-subtle);
+  }
+
+  .about-questions h4 {
+    margin-block-end: var(--space-3);
+    color: var(--color-ink-100);
+    font-size: var(--type-lead);
+  }
+
+  .about-questions article p {
+    max-inline-size: var(--width-reading);
+  }
+
   @media (max-width: 55.999rem) {
     .case-study-brief,
     .case-study-evidence,
     .official-records,
     .education-record,
     .about-contact,
+    .about-questions > section,
     .responsibility-groups > section {
       grid-template-columns: 1fr;
     }

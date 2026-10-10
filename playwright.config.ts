@@ -16,6 +16,9 @@ export default defineConfig({
       PUBLIC_SITE_URL: 'https://portfolio.test',
     },
     reuseExistingServer: false,
+    // A cold start runs the knowledge build and `wrangler types` first and has
+    // taken over 30 s; the 60 s default timed out once.
+    timeout: 120_000,
     url: 'http://127.0.0.1:4321/@vite/client',
   },
   projects: [

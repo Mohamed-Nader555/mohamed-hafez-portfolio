@@ -122,6 +122,13 @@ const sourceRecords = [
     isPublic: true,
   },
   {
+    id: 'public-about-questions',
+    label: 'Questions Mohamed is often asked',
+    kind: 'approved-source',
+    publicHref: '/about#questions',
+    isPublic: true,
+  },
+  {
     id: 'public-home',
     label: 'Portfolio home and contact',
     kind: 'approved-source',

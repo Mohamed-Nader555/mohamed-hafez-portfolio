@@ -1,34 +1,26 @@
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import MiniSearch from 'minisearch';
-import YAML from 'yaml';
+import { projects } from '../src/data/index.ts';
 import { buildKnowledge } from '../src/lib/rag/chunk-evidence.ts';
-import type { CaseStudyPage } from '../src/lib/rag/chunk-pages.ts';
-import { splitFrontmatter } from '../src/lib/rag/mdx-text.ts';
+import { claimLedgerEntries } from '../src/lib/rag/claims-ledger.ts';
+import {
+  KNOWLEDGE_MAX_CHARS,
+  mergeLedger,
+  renderKnowledgeMarkdown,
+  type LedgerEntry,
+} from '../src/lib/rag/ledger.ts';
 import { miniSearchOptions } from '../src/lib/rag/search-config.ts';
 import type { KnowledgeIndexArtifact } from '../src/lib/rag/types.ts';
-import { caseStudyFrontmatterSchema } from '../src/types/case-study.ts';
+import { buildSiteLedger, loadCaseStudyPages } from './site-ledger.ts';
+
+export { loadCaseStudyPages };
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const casesDir = resolve(root, 'src/content/case-studies');
 const outputPath = resolve(root, 'src/generated/knowledge-index.json');
-
-/** Reads and validates every case-study page (frontmatter and body). */
-export async function loadCaseStudyPages(): Promise<CaseStudyPage[]> {
-  const files = (await readdir(casesDir)).filter((file) =>
-    file.endsWith('.mdx'),
-  );
-  return Promise.all(
-    files.sort().map(async (file) => {
-      const { frontmatter, body } = splitFrontmatter(
-        await readFile(resolve(casesDir, file), 'utf8'),
-      );
-      const parsed = caseStudyFrontmatterSchema.parse(YAML.parse(frontmatter));
-      return { slug: parsed.slug, frontmatter: parsed, body };
-    }),
-  );
-}
+const ledgerPath = resolve(root, 'src/generated/ledger.json');
+const knowledgePath = resolve(root, 'src/generated/knowledge.md');
 
 export async function buildKnowledgeIndex(): Promise<KnowledgeIndexArtifact> {
   const { chunks, entities } = buildKnowledge({
@@ -53,19 +45,45 @@ export async function buildKnowledgeIndex(): Promise<KnowledgeIndexArtifact> {
   };
 }
 
+/**
+ * The claims ledger (site claims, then the claims from Mohamed's notes and
+ * answers) and its readable form. Both are deterministic: the same content
+ * gives the same bytes, which Gemini's automatic caching relies on.
+ */
+export async function buildLedgerArtifacts(): Promise<{
+  ledger: LedgerEntry[];
+  markdown: string;
+}> {
+  const site = await buildSiteLedger();
+  const ledger = mergeLedger(site, claimLedgerEntries(site));
+  const markdown = renderKnowledgeMarkdown(ledger, {
+    projects: projects.map(({ id, title }) => ({ id, title })),
+  });
+  return { ledger, markdown };
+}
+
 export async function writeKnowledgeIndex() {
   const artifact = await buildKnowledgeIndex();
+  const { ledger, markdown } = await buildLedgerArtifacts();
   await mkdir(dirname(outputPath), { recursive: true });
   const json = `${JSON.stringify(artifact)}\n`;
   await writeFile(outputPath, json, 'utf8');
-  return { artifact, bytes: Buffer.byteLength(json) };
+  await writeFile(ledgerPath, `${JSON.stringify(ledger)}\n`, 'utf8');
+  await writeFile(knowledgePath, markdown, 'utf8');
+  return {
+    artifact,
+    bytes: Buffer.byteLength(json),
+    claims: ledger.length,
+    knowledgeChars: markdown.length,
+  };
 }
 
 if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-  const { artifact, bytes } = await writeKnowledgeIndex();
+  const { artifact, bytes, claims, knowledgeChars } =
+    await writeKnowledgeIndex();
   const byFamily = artifact.chunks.reduce<Record<string, number>>(
     (counts, chunk) => ({
       ...counts,
@@ -80,6 +98,7 @@ if (
       .map(([family, count]) => `${family} ${count}`)
       .join(
         ', ',
-      )}); ${artifact.entities.length} entities; ${(bytes / 1024).toFixed(0)} KiB.\n`,
+      )}); ${artifact.entities.length} entities; ${(bytes / 1024).toFixed(0)} KiB.\n` +
+      `Generated ${claims} ledger claims; knowledge.md is ${knowledgeChars} characters (limit ${KNOWLEDGE_MAX_CHARS}).\n`,
   );
 }
