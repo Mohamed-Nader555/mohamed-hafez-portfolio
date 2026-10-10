@@ -7,6 +7,7 @@ vi.mock('@/lib/security/turnstile', async (importOriginal) => ({
 import { POST } from '@/pages/api/chat';
 import { GET as health } from '@/pages/api/chat/health';
 import { validateTurnstile } from '@/lib/security/turnstile';
+import { HEALTH_VERSION } from '@/lib/health-version';
 
 const payload = {
   question: 'How was Northstar built?',
@@ -236,6 +237,7 @@ describe('GET /api/chat/health', () => {
       'knowledgeChunks',
       'ok',
       'verification',
+      'version',
     ]);
     expect(body).toMatchObject({
       ok: true,
@@ -244,6 +246,9 @@ describe('GET /api/chat/health', () => {
       hostnames: 2,
     });
     expect(body.knowledgeChunks).toBeGreaterThan(50);
+    // Each brief 3 stage bumps this so a deployment can be recognised.
+    expect(body.version).toBe(HEALTH_VERSION);
+    expect(HEALTH_VERSION).toMatch(/^brief3-[a-e]$/);
   });
 
   it('is not ok when verification or hostnames are missing', async () => {

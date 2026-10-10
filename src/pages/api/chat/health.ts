@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { env as cloudflareEnv } from 'cloudflare:workers';
+import { HEALTH_VERSION } from '@/lib/health-version';
 import { knowledgeChunkCount } from '@/lib/rag/retrieve';
 import { parseExpectedHostnames } from '@/lib/security/turnstile';
 
@@ -24,6 +25,7 @@ export const GET: APIRoute = async () => {
       verification,
       hostnames,
       knowledgeChunks: knowledgeChunkCount(),
+      version: HEALTH_VERSION,
     }),
     {
       status: 200,
