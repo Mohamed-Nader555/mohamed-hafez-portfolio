@@ -151,7 +151,9 @@ function evidenceChunks(): KnowledgeChunk[] {
       .filter(([, weight]) => weight > 0)
       .map(([role]) => role) as RoleId[],
     category: 'experience' as const,
-    citations: citationsFor(allResumeIds),
+    citations: citationsFor(
+      'sourceIds' in entry ? entry.sourceIds : allResumeIds,
+    ),
   }));
   const skillChunks = skillGroups.map((group) => ({
     id: `skills-${group.id}`,
