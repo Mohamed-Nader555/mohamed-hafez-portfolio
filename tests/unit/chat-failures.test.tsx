@@ -68,6 +68,7 @@ describe('every failure shows its own message and keeps the draft', () => {
     'verification_blocked',
     'verification_failed',
     'verification_timeout',
+    'temporarily_unavailable',
   ] as const)('%s from the human check', async (code) => {
     mocks.requestTurnstileToken.mockRejectedValue(new ChatFailure(code));
     vi.stubGlobal('fetch', vi.fn());

@@ -59,3 +59,10 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Agent briefs and the live progress log (local only, never publish these)
+docs/AGENT_BRIEF*.md
+Claude outputs/
+
+# Private master profile material (never publish this)
+Universal Information/
