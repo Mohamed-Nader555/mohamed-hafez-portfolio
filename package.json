@@ -8,6 +8,7 @@
     "assets:images": "tsx scripts/optimize-project-images.ts",
     "assets:verify": "tsx scripts/verify-public-assets.ts",
     "budget:js": "tsx scripts/verify-javascript-budgets.ts",
+    "claims:apply": "tsx scripts/apply-claims.ts",
     "dev": "npm run knowledge:build && wrangler types && astro dev",
     "build": "npm run knowledge:build && wrangler types && astro check && astro build && tsx scripts/add-csp-script-hashes.ts",
     "check": "npm run knowledge:build && wrangler types && astro check",

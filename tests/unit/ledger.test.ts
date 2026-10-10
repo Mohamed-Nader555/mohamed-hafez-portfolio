@@ -195,12 +195,34 @@ describe('the built ledger and knowledge file', () => {
     expect(ledger.length).toBeGreaterThan(400);
   });
 
-  it('leaves out the overview family and keeps every other chunk as a site claim', () => {
+  it('leaves out the overview family and keeps every other chunk as a direct site claim', () => {
     expect(ledger.some((claim) => claim.id.startsWith('overview-'))).toBe(
       false,
     );
-    expect(ledger.every((claim) => claim.origin === 'site')).toBe(true);
-    expect(ledger.every((claim) => claim.strength === 'direct')).toBe(true);
+    const site = ledger.filter((claim) => claim.origin === 'site');
+    expect(site.length).toBeGreaterThan(500);
+    expect(site.every((claim) => claim.strength === 'direct')).toBe(true);
+  });
+
+  it('adds Mohamed’s notes and answers after the site claims, each resting on site claims', () => {
+    const origins = ledger.map((claim) => claim.origin);
+    expect(origins.lastIndexOf('site')).toBeLessThan(origins.indexOf('notes'));
+    const byId = new Map(ledger.map((claim) => [claim.id, claim]));
+    const notes = ledger.filter((claim) => claim.origin === 'notes');
+    expect(notes.filter((claim) => claim.id.startsWith('br-'))).toHaveLength(
+      22,
+    );
+    expect(notes.some((claim) => claim.id.startsWith('skills-'))).toBe(true);
+    for (const claim of notes) {
+      expect(claim.basisIds?.length, claim.id).toBeGreaterThan(0);
+      for (const id of claim.basisIds!)
+        expect(byId.get(id)?.origin, `${claim.id} -> ${id}`).toBe('site');
+    }
+    const answers = ledger.filter((claim) => claim.origin === 'own-words');
+    expect(answers.length).toBeGreaterThan(20);
+    expect(ledger.find((claim) => claim.strength === 'related')?.origin).toBe(
+      'notes',
+    );
   });
 
   it('writes the same file every time and stays under the size limit', async () => {
@@ -219,8 +241,14 @@ describe('the built ledger and knowledge file', () => {
     expect(screening).not.toMatch(/immediately available/i);
   });
 
-  it('contains no forbidden term and no first-person claim', () => {
+  it('contains no forbidden term, and the site claims are in the third person', () => {
     expect(forbiddenHashesIn(markdown)).toEqual([]);
-    expect(markdown).not.toMatch(/\bI (built|designed|developed)\b/);
+    // His own answers are first person by design and sit in their own section.
+    const siteAndNotes = markdown.slice(
+      0,
+      markdown.indexOf('## Mohamed’s answers'),
+    );
+    expect(siteAndNotes).not.toMatch(/\bI (built|designed|developed)\b/);
+    expect(markdown).toContain('## Mohamed’s answers');
   });
 });

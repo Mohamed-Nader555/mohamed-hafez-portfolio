@@ -1,44 +1,26 @@
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import MiniSearch from 'minisearch';
-import YAML from 'yaml';
 import { projects } from '../src/data/index.ts';
 import { buildKnowledge } from '../src/lib/rag/chunk-evidence.ts';
-import type { CaseStudyPage } from '../src/lib/rag/chunk-pages.ts';
+import { claimLedgerEntries } from '../src/lib/rag/claims-ledger.ts';
 import {
   KNOWLEDGE_MAX_CHARS,
-  ledgerFromChunks,
   mergeLedger,
   renderKnowledgeMarkdown,
   type LedgerEntry,
 } from '../src/lib/rag/ledger.ts';
-import { splitFrontmatter } from '../src/lib/rag/mdx-text.ts';
 import { miniSearchOptions } from '../src/lib/rag/search-config.ts';
 import type { KnowledgeIndexArtifact } from '../src/lib/rag/types.ts';
-import { caseStudyFrontmatterSchema } from '../src/types/case-study.ts';
+import { buildSiteLedger, loadCaseStudyPages } from './site-ledger.ts';
+
+export { loadCaseStudyPages };
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const casesDir = resolve(root, 'src/content/case-studies');
 const outputPath = resolve(root, 'src/generated/knowledge-index.json');
 const ledgerPath = resolve(root, 'src/generated/ledger.json');
 const knowledgePath = resolve(root, 'src/generated/knowledge.md');
-
-/** Reads and validates every case-study page (frontmatter and body). */
-export async function loadCaseStudyPages(): Promise<CaseStudyPage[]> {
-  const files = (await readdir(casesDir)).filter((file) =>
-    file.endsWith('.mdx'),
-  );
-  return Promise.all(
-    files.sort().map(async (file) => {
-      const { frontmatter, body } = splitFrontmatter(
-        await readFile(resolve(casesDir, file), 'utf8'),
-      );
-      const parsed = caseStudyFrontmatterSchema.parse(YAML.parse(frontmatter));
-      return { slug: parsed.slug, frontmatter: parsed, body };
-    }),
-  );
-}
 
 export async function buildKnowledgeIndex(): Promise<KnowledgeIndexArtifact> {
   const { chunks, entities } = buildKnowledge({
@@ -64,15 +46,16 @@ export async function buildKnowledgeIndex(): Promise<KnowledgeIndexArtifact> {
 }
 
 /**
- * The claims ledger and its readable form. Both are deterministic: the same
- * content gives the same bytes, which Gemini's automatic caching relies on.
+ * The claims ledger (site claims, then the claims from Mohamed's notes and
+ * answers) and its readable form. Both are deterministic: the same content
+ * gives the same bytes, which Gemini's automatic caching relies on.
  */
 export async function buildLedgerArtifacts(): Promise<{
   ledger: LedgerEntry[];
   markdown: string;
 }> {
-  const { chunks } = buildKnowledge({ pages: await loadCaseStudyPages() });
-  const ledger = mergeLedger(ledgerFromChunks(chunks), []);
+  const site = await buildSiteLedger();
+  const ledger = mergeLedger(site, claimLedgerEntries(site));
   const markdown = renderKnowledgeMarkdown(ledger, {
     projects: projects.map(({ id, title }) => ({ id, title })),
   });
