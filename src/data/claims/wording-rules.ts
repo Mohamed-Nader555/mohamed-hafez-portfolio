@@ -127,6 +127,11 @@ export const datedStatements: readonly { date: string; statement: string }[] = [
     statement:
       'He works at Eklan as Founding AI Engineer, with a one-week notice period. The site and the assistant may say so.',
   },
+  {
+    date: '2026-10-10',
+    statement:
+      'His answers say 16 Android applications, as the site does. The folder\'s "nine" and its open question about the fourth Google Play app are stale; the site\'s wording stands.',
+  },
 ];
 
 export const sourcePrecedence: readonly string[] = [
