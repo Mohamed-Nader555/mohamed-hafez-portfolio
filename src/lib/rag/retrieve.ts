@@ -42,7 +42,7 @@ export const knowledgeChunkCount = () => chunks.length;
 const escapeRegExp = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-function findEntities(raw: string) {
+function findEntities(raw: string, cap = 3) {
   const padded = ` ${matchKey(raw)} `;
   const projectHits: KnowledgeEntity[] = [];
   let techHits: KnowledgeEntity[] = [];
@@ -66,9 +66,24 @@ function findEntities(raw: string) {
   );
   if (primary.length) techHits = primary;
   return {
-    projectHits: projectHits.slice(0, 3),
-    techHits: techHits.slice(0, 3),
+    projectHits: projectHits.slice(0, cap),
+    techHits: techHits.slice(0, cap),
   };
+}
+
+/** Every project and technology a text names, uncapped; used by the answer checks. */
+export function entitiesNamedIn(text: string): KnowledgeEntity[] {
+  const { projectHits, techHits } = findEntities(text, Infinity);
+  return [...projectHits, ...techHits];
+}
+
+/** The hard guard, applied the way retrieval applies it, for the ledger path. */
+export function guardRefuses(question: string): boolean {
+  const { projectHits, techHits } = findEntities(question);
+  return (
+    checkQuestion(question, projectHits.length > 0 || techHits.length > 0) ===
+    'refuse'
+  );
 }
 
 // ------------------------------------------------------------------ routes --
