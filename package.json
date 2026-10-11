@@ -8,6 +8,8 @@
     "answers:evaluate": "tsx --env-file=.dev.vars scripts/evaluate-answers.ts",
     "assets:images": "tsx scripts/optimize-project-images.ts",
     "assets:verify": "tsx scripts/verify-public-assets.ts",
+    "briefs:build": "tsx scripts/build-role-briefs.ts",
+    "briefs:check": "tsx --env-file=.dev.vars scripts/check-role-briefs.ts",
     "budget:js": "tsx scripts/verify-javascript-budgets.ts",
     "claims:apply": "tsx scripts/apply-claims.ts",
     "dev": "npm run knowledge:build && wrangler types && astro dev",
