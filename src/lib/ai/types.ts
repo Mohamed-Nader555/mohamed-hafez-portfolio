@@ -35,6 +35,14 @@ export type ChatSegment = {
   claimIds: string[];
   citations: Citation[];
 };
+/**
+ * A next step offered under an answer. The email action carries only the
+ * address; the browser builds the `mailto:` link with the visitor's question.
+ */
+export type ChatAction =
+  | { kind: 'case-study'; label: string; href: string }
+  | { kind: 'resume'; label: string; href: string }
+  | { kind: 'email'; label: string; address: string };
 /** How an answer was made, for the "How this answer was made" note. No text. */
 export type ChatTrace = {
   path: 'ledger' | 'fallback';
@@ -52,6 +60,7 @@ export type ChatResponse = {
   answerStatus: 'answered' | 'not_covered' | 'refused' | 'fallback';
   citations: Citation[];
   segments?: ChatSegment[];
+  actions?: ChatAction[];
   /** Terms the visitor asked about that the site does not show. */
   notShown?: string[];
   trace?: ChatTrace;

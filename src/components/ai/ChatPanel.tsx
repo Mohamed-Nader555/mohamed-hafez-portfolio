@@ -128,7 +128,10 @@ export function ChatPanel({
                   <span className="chat-turn-label">You</span>
                   <p>{entry.question}</p>
                 </div>
-                <ChatMessage response={entry.response} />
+                <ChatMessage
+                  response={entry.response}
+                  question={entry.question}
+                />
               </div>
             ))}
 

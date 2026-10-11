@@ -86,6 +86,9 @@ describe('answerFromLedger', () => {
     });
     expect(response.segments![0]!.citations.length).toBeGreaterThan(0);
     expect(response.citations.length).toBeGreaterThan(0);
+    expect(response.actions?.map((action) => action.kind)).toEqual(
+      expect.arrayContaining(['resume', 'email']),
+    );
     expect(response.trace).toMatchObject({
       path: 'ledger',
       writerModel: 'writer-model',

@@ -13,6 +13,7 @@ import {
   filterNotShown,
   type DraftSegment,
 } from './answer-checks';
+import { buildActions } from './actions';
 import { runChecker } from './checker';
 import type { GeminiProvider, GeminiUsage } from './gemini-provider';
 import { buildHintIds, matchHints } from './hints';
@@ -101,12 +102,18 @@ export async function answerFromLedger(
       drafted,
       dropped: drafted,
     };
-    return retrieval.supported
-      ? {
-          ...buildEvidenceFallback(retrieval, input.requestId, followUps),
-          trace,
-        }
-      : refusal(input.requestId, retrieval, followUps);
+    if (!retrieval.supported)
+      return refusal(input.requestId, retrieval, followUps);
+    const evidence = buildEvidenceFallback(
+      retrieval,
+      input.requestId,
+      followUps,
+    );
+    return {
+      ...evidence,
+      actions: buildActions(evidence.citations, input.activeRole),
+      trace,
+    };
   };
 
   const ledgerIds = new Set(deps.claims.map((claim) => claim.id));
@@ -236,12 +243,16 @@ export async function answerFromLedger(
     checkerUsage: { model: deps.checkerModel, ...usageFields(checked.usage) },
   });
 
+  const citations = mergeCitations(
+    segments.map((segment) => segment.citations),
+  );
   return {
     requestId: input.requestId,
     answer: segments.map((segment) => segment.text).join(' '),
     answerStatus,
-    citations: mergeCitations(segments.map((segment) => segment.citations)),
+    citations,
     segments,
+    actions: buildActions(citations, input.activeRole),
     ...(notShown.length ? { notShown } : {}),
     trace,
     followUps,
