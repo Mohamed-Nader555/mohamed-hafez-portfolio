@@ -12,6 +12,7 @@ import {
   ChatFailure,
   type ChatFailureCode,
 } from '@/components/ai/chat-errors';
+import { CHAT_REQUEST_TIMEOUT_MS } from '@/lib/ai/timeouts';
 
 const mocks = vi.hoisted(() => ({ requestTurnstileToken: vi.fn() }));
 vi.mock('@/components/ai/turnstile-client', async (importOriginal) => ({
@@ -116,7 +117,7 @@ describe('every failure shows its own message and keeps the draft', () => {
 });
 
 describe('request timer', () => {
-  it('starts after the token arrives and reports a network failure after 20 seconds', async () => {
+  it('starts after the token arrives and reports a network failure after the request limit', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: false });
     let release: (token: string) => void = () => {};
     mocks.requestTurnstileToken.mockReturnValue(
@@ -143,7 +144,7 @@ describe('request timer', () => {
     await act(async () => release('verified-token'));
     expect(fetch).toHaveBeenCalledTimes(1);
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(19_999);
+      await vi.advanceTimersByTimeAsync(CHAT_REQUEST_TIMEOUT_MS - 1);
     });
     expect(screen.queryByRole('alert')).toBeNull();
     await act(async () => {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RoleId } from '@/types/content';
 import { starterSuggestions } from '@/data/assistant-suggestions';
+import { CHAT_REQUEST_TIMEOUT_MS } from '@/lib/ai/timeouts';
 import { submitChatTurn } from './chat-client';
 import { ChatFailure, type ChatFailureCode } from './chat-errors';
 import { ChatLauncher } from './ChatLauncher';
@@ -139,7 +140,7 @@ export function PortfolioAssistant({
       timeout = window.setTimeout(() => {
         timedOut = true;
         abort.abort();
-      }, 20_000);
+      }, CHAT_REQUEST_TIMEOUT_MS);
       const next = await submitChatTurn(
         {
           question,

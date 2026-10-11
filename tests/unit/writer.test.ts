@@ -214,7 +214,7 @@ describe('runWriter', () => {
     expect(request.input).toContain('What does he do?');
     expect(request.thinkingLevel).toBe('medium');
     expect(request.timeoutMs).toBe(WRITER_TIMEOUT_MS);
-    expect(WRITER_TIMEOUT_MS).toBe(12_000);
+    expect(WRITER_TIMEOUT_MS).toBe(20_000);
     expect(request.schema).toBe(WRITER_SCHEMA);
     expect(request.maxOutputTokens).toBeGreaterThanOrEqual(4096);
     expect(result.draft.segments[0]!.claimIds).toEqual(['claim-a']);

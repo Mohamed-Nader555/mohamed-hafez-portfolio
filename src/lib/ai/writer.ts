@@ -14,8 +14,9 @@ import type {
   GeminiUsage,
 } from './gemini-provider';
 import type { ConversationTurn } from '@/lib/rag/types';
+import { WRITER_TIMEOUT_MS } from './timeouts';
 
-export const WRITER_TIMEOUT_MS = 12_000;
+export { WRITER_TIMEOUT_MS };
 /** Thinking tokens count against the limit, so it is generous. */
 const WRITER_MAX_OUTPUT_TOKENS = 8192;
 const MAX_SEGMENTS = 6;

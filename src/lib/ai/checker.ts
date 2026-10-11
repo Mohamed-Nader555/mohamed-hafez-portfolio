@@ -4,8 +4,9 @@
 import { z } from 'zod';
 import type { LedgerEntry } from '@/lib/rag/ledger';
 import type { GeminiProvider, GeminiUsage } from './gemini-provider';
+import { CHECKER_TIMEOUT_MS } from './timeouts';
 
-export const CHECKER_TIMEOUT_MS = 5000;
+export { CHECKER_TIMEOUT_MS };
 const CHECKER_MAX_OUTPUT_TOKENS = 2048;
 
 export const CHECKER_SCHEMA = {
