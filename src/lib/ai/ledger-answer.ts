@@ -41,7 +41,7 @@ export type LedgerDeps = {
   log?: (event: Record<string, unknown>) => void;
 };
 
-const latencyBucketFor = (elapsed: number) =>
+export const latencyBucketFor = (elapsed: number) =>
   elapsed < 500
     ? ('lt-500ms' as const)
     : elapsed < 2000
@@ -50,7 +50,7 @@ const latencyBucketFor = (elapsed: number) =>
         ? ('2s-5s' as const)
         : ('gt-5s' as const);
 
-const labelOf = (cited: readonly LedgerEntry[]): ChatLabel =>
+export const labelOf = (cited: readonly LedgerEntry[]): ChatLabel =>
   cited.length === 0
     ? 'reading'
     : cited.some((claim) => claim.origin === 'own-words')
@@ -59,7 +59,7 @@ const labelOf = (cited: readonly LedgerEntry[]): ChatLabel =>
         ? 'notes'
         : 'site';
 
-const mergeCitations = (lists: Citation[][]): Citation[] => {
+export const mergeCitations = (lists: Citation[][]): Citation[] => {
   const seen = new Map<string, Citation>();
   for (const citation of lists.flat())
     if (!seen.has(citation.sourceId)) seen.set(citation.sourceId, citation);
@@ -71,14 +71,14 @@ const joinTerms = (terms: readonly string[]) =>
     ? (terms[0] ?? '')
     : `${terms.slice(0, -1).join(', ')} or ${terms[terms.length - 1]}`;
 
-const usageFields = (usage?: GeminiUsage) => ({
+export const usageFields = (usage?: GeminiUsage) => ({
   inputTokens: usage?.inputTokens ?? 0,
   cachedTokens: usage?.cachedTokens ?? 0,
   outputTokens: usage?.outputTokens ?? 0,
   thinkingTokens: usage?.thinkingTokens ?? 0,
 });
 
-const errorName = (error: unknown) =>
+export const errorName = (error: unknown) =>
   error instanceof Error ? error.message : 'Unknown error';
 
 export async function answerFromLedger(

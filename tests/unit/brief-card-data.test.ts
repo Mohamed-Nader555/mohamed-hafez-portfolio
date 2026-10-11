@@ -75,6 +75,37 @@ describe('briefToText', () => {
     );
   });
 
+  it('labels his own answer and the assistant’s reading inside an item', () => {
+    const text = briefToText({
+      title: 'T',
+      groups: [
+        {
+          id: 'not-shown',
+          label: 'Not shown on the site',
+          items: [
+            {
+              text: 'Run clusters',
+              detail: ['I have not run clusters.'],
+              detailLabel: 'Mohamed’s answer',
+              note: 'Nearby work is listed above.',
+            },
+          ],
+        },
+      ],
+      askHim: [],
+    });
+    expect(text).toBe(
+      [
+        'T',
+        '',
+        'Not shown on the site',
+        '- Run clusters',
+        '  Mohamed’s answer: I have not run clusters.',
+        '  Assistant’s reading: Nearby work is listed above.',
+      ].join('\n'),
+    );
+  });
+
   it('leaves out the page line and the prompts when there are none', () => {
     const text = briefToText({
       title: 'T',

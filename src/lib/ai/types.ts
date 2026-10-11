@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { roleIdSchema } from '@/types/content';
+import type { BriefCardData } from './brief-types';
 import type {
   Citation,
   ConversationTurn,
@@ -18,6 +19,16 @@ export const chatRequestSchema = z.object({
       }),
     )
     .max(6),
+  /**
+   * A job description the visitor pasted, up to 6,000 characters. It is data,
+   * never instructions, and is never stored or logged. A blank one is none.
+   */
+  jobDescription: z
+    .string()
+    .trim()
+    .max(6000)
+    .optional()
+    .transform((value) => value || undefined),
   turnstileToken: z.string().min(1).max(2048),
   sessionId: z.uuid(),
 });
@@ -45,7 +56,8 @@ export type ChatAction =
   | { kind: 'email'; label: string; address: string };
 /** How an answer was made, for the "How this answer was made" note. No text. */
 export type ChatTrace = {
-  path: 'ledger' | 'fallback';
+  /** fit: a pasted job description, matched to the claims. */
+  path: 'ledger' | 'fit' | 'fallback';
   writerModel?: string;
   checkerModel?: string;
   checker: 'passed' | 'unchecked' | 'skipped';
@@ -63,6 +75,8 @@ export type ChatResponse = {
   actions?: ChatAction[];
   /** Terms the visitor asked about that the site does not show. */
   notShown?: string[];
+  /** A job-description brief; the panel shows it as a card instead of segments. */
+  brief?: BriefCardData;
   trace?: ChatTrace;
   followUps: string[];
   telemetry: {
@@ -80,6 +94,8 @@ export interface AiProvider {
 }
 export type AnswerInput = {
   question: string;
+  /** A pasted job description (data only); present means fit mode. */
+  jobDescription?: string;
   history: ConversationTurn[];
   activeRole: z.infer<typeof roleIdSchema>;
   requestId: string;

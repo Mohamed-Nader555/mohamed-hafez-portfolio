@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CHECKER_TIMEOUT_MS } from '@/lib/ai/checker';
 import {
   CHAT_REQUEST_TIMEOUT_MS,
+  FIT_WRITER_TIMEOUT_MS,
   CHECKER_TIMEOUT_MS as CHECKER_LIMIT,
   WRITER_TIMEOUT_MS as WRITER_LIMIT,
 } from '@/lib/ai/timeouts';
@@ -18,10 +19,15 @@ describe('time limits', () => {
     expect(CHECKER_TIMEOUT_MS).toBe(CHECKER_LIMIT);
   });
 
-  it('keeps the browser waiting longer than a slow writer plus the checker', () => {
-    expect(CHAT_REQUEST_TIMEOUT_MS).toBe(30_000);
+  it('gives the job-description writer, which thinks longer, 25 seconds', () => {
+    expect(FIT_WRITER_TIMEOUT_MS).toBe(25_000);
+    expect(FIT_WRITER_TIMEOUT_MS).toBeGreaterThan(WRITER_LIMIT);
+  });
+
+  it('keeps the browser waiting longer than the slowest writer plus the checker', () => {
+    expect(CHAT_REQUEST_TIMEOUT_MS).toBe(35_000);
     expect(CHAT_REQUEST_TIMEOUT_MS).toBeGreaterThan(
-      WRITER_LIMIT + CHECKER_LIMIT,
+      Math.max(WRITER_LIMIT, FIT_WRITER_TIMEOUT_MS) + CHECKER_LIMIT,
     );
   });
 });

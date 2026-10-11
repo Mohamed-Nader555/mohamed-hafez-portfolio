@@ -2,23 +2,13 @@
 // clipboard. Used by the role picker (stored briefs) and by the pasted
 // job-description brief. Pure functions; no model is involved.
 import type { RoleBrief } from '@/data/claims/types';
+import type { BriefCardData, BriefGroup } from '@/lib/ai/brief-types';
 
-export type BriefItem = { text: string; detail: string[] };
-export type BriefGroup = {
-  id: 'direct' | 'related' | 'not-shown';
-  label: string;
-  items: BriefItem[];
-};
-export type BriefCardData = {
-  title: string;
-  /** His own words, labelled; shown first. */
-  summary?: { label: string; text: string };
-  groups: BriefGroup[];
-  /** Questions that lead into his strengths. */
-  askHim: string[];
-  /** The role's own page, when there is one. */
-  pageHref?: string;
-};
+export type {
+  BriefCardData,
+  BriefGroup,
+  BriefItem,
+} from '@/lib/ai/brief-types';
 
 export const GROUP_LABELS = {
   direct: 'Direct experience',
@@ -61,7 +51,11 @@ export function briefToText(card: BriefCardData, origin = ''): string {
         group.label,
         ...group.items.flatMap((item) => [
           `- ${item.text}`,
-          ...item.detail.map((line) => `  ${line}`),
+          ...item.detail.map(
+            (line) =>
+              `  ${item.detailLabel ? `${item.detailLabel}: ` : ''}${line}`,
+          ),
+          ...(item.note ? [`  Assistant’s reading: ${item.note}`] : []),
         ]),
       ]);
   if (card.askHim.length)

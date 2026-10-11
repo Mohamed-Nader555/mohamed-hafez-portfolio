@@ -28,6 +28,22 @@ export const refusal = (
   telemetry: { questionCategory: 'unknown', latencyBucket: 'lt-500ms' },
 });
 
+export const JOB_DESCRIPTION_INSTRUCTIONS =
+  'I can’t use that job description because it contains instructions aimed at the assistant. Paste just the posting’s requirements and responsibilities and I’ll match them to the site.';
+
+/** A pasted job description carries instructions for the assistant; no model sees it. */
+export const jobDescriptionRefusal = (
+  requestId: string,
+  followUps: string[] = [],
+): ChatResponse => ({
+  requestId,
+  answer: JOB_DESCRIPTION_INSTRUCTIONS,
+  answerStatus: 'refused',
+  citations: [],
+  followUps: followUps.slice(0, 3),
+  telemetry: { questionCategory: 'unknown', latencyBucket: 'lt-500ms' },
+});
+
 /** The writer judged the question outside his professional background. */
 export const professionalOnly = (
   requestId: string,

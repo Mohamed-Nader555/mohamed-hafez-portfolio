@@ -1,8 +1,14 @@
 import type { APIRoute } from 'astro';
 import { env as cloudflareEnv } from 'cloudflare:workers';
-import { answerRecruiterQuestion } from '@/lib/ai/answer-service';
+import { starterSuggestions } from '@/data/assistant-suggestions';
+import {
+  answerRecruiterQuestion,
+  FitUnavailableError,
+} from '@/lib/ai/answer-service';
 import { chooseAssistant, type AssistantEnv } from '@/lib/ai/assistant-runtime';
 import { createLedgerDeps } from '@/lib/ai/ledger-deps';
+import { jobDescriptionRefusal } from '@/lib/ai/refusal';
+import { jobDescriptionHasInjection } from '@/lib/rag/guard';
 import { guardRefuses } from '@/lib/rag/retrieve';
 import {
   createWorkersAiProvider,
@@ -128,6 +134,24 @@ export const POST: APIRoute = async ({ request }) => {
           throw new Error('AI unavailable');
         },
       };
+  const { jobDescription } = requestBody.data;
+  // Instructions hidden in a pasted job description are refused in code: no
+  // model sees it and it does not count towards the daily cap. The hard guard
+  // does not run on the job description itself, since adverts mention salary.
+  if (
+    jobDescription &&
+    !guardRefuses(requestBody.data.question) &&
+    jobDescriptionHasInjection(jobDescription)
+  )
+    return new Response(
+      JSON.stringify(
+        jobDescriptionRefusal(
+          requestId,
+          starterSuggestions[requestBody.data.activeRole],
+        ),
+      ),
+      { status: 200, headers },
+    );
   // A question the hard guard refuses never reaches a model, so it does not
   // count towards the daily cap.
   const ledger =
@@ -135,15 +159,27 @@ export const POST: APIRoute = async ({ request }) => {
     (await chooseAssistant(env)) === 'ledger'
       ? createLedgerDeps(env)
       : undefined;
-  const response = await answerRecruiterQuestion(
-    {
-      provider,
-      modelId: env.AI_MODEL ?? DEFAULT_WORKERS_AI_MODEL,
-      ledger,
-    },
-    { ...requestBody.data, requestId },
-  );
-  return new Response(JSON.stringify(response), { status: 200, headers });
+  try {
+    const response = await answerRecruiterQuestion(
+      {
+        provider,
+        modelId: env.AI_MODEL ?? DEFAULT_WORKERS_AI_MODEL,
+        ledger,
+      },
+      { ...requestBody.data, requestId },
+    );
+    return new Response(JSON.stringify(response), { status: 200, headers });
+  } catch (failure) {
+    // A job description is never silently dropped: without the full assistant
+    // the visitor is told to try again, and keeps what they pasted.
+    if (failure instanceof FitUnavailableError)
+      return error(
+        503,
+        'temporarily_unavailable',
+        'The assistant is temporarily unavailable.',
+      );
+    throw failure;
+  }
 };
 export const ALL: APIRoute = async () =>
   error(405, 'method_not_allowed', 'Method not allowed.');

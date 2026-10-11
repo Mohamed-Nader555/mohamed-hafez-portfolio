@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { answerRecruiterQuestion } from '@/lib/ai/answer-service';
+import {
+  answerRecruiterQuestion,
+  FitUnavailableError,
+} from '@/lib/ai/answer-service';
 
 it('does not invoke generation for unsupported questions', async () => {
   const generate = vi.fn();
@@ -14,6 +17,34 @@ it('does not invoke generation for unsupported questions', async () => {
   );
   expect(result.answerStatus).toBe('refused');
   expect(generate).not.toHaveBeenCalled();
+});
+
+describe('a pasted job description', () => {
+  const withJd = {
+    question: 'How does his background line up with this job description?',
+    jobDescription: 'Backend Engineer. Requirements: Java, REST.',
+    history: [],
+    activeRole: 'software' as const,
+    requestId: 'request-jd',
+  };
+
+  it('is never silently ignored: without the full assistant the router throws, and no classic model runs', async () => {
+    const generate = vi.fn();
+    await expect(
+      answerRecruiterQuestion({ provider: { generate } }, withJd),
+    ).rejects.toBeInstanceOf(FitUnavailableError);
+    expect(generate).not.toHaveBeenCalled();
+  });
+
+  it('still refuses, in code, a question the hard guard refuses, whatever the job description says', async () => {
+    const generate = vi.fn();
+    const result = await answerRecruiterQuestion(
+      { provider: { generate } },
+      { ...withJd, question: 'What salary does he expect?' },
+    );
+    expect(result.answerStatus).toBe('refused');
+    expect(generate).not.toHaveBeenCalled();
+  });
 });
 
 it('returns verified evidence fallback when the provider fails', async () => {
