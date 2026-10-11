@@ -154,3 +154,61 @@ test('on localhost with no .dev.vars, a real question returns an answer with sou
   });
   await expect(page.locator('.chat-turn--user')).toHaveCount(2);
 });
+
+test('"Hiring for a role?" shows a stored brief at once and sends nothing', async ({
+  page,
+}) => {
+  let requests = 0;
+  await page.route('**/api/chat', async (route) => {
+    requests += 1;
+    await route.fulfill({ json: answered });
+  });
+  await openAssistant(page);
+  await page.getByRole('button', { name: 'Hiring for a role?' }).click();
+  const picker = page.getByRole('region', { name: /hiring for a role/i });
+  await picker.getByRole('button', { name: 'NLP Engineer' }).click();
+
+  const card = page.getByRole('article', { name: 'NLP Engineer' });
+  await expect(card).toBeVisible();
+  await expect(card.getByText('Mohamed’s answer')).toBeVisible();
+  await expect(
+    card.getByRole('heading', { name: 'Direct experience' }),
+  ).toBeVisible();
+  await expect(
+    card.getByRole('link', { name: /open the full page/i }),
+  ).toHaveAttribute('href', '/hiring/nlp-engineer');
+  // The card fits the panel on any screen width.
+  const overflow = await card.evaluate(
+    (node) => node.scrollWidth - node.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+
+  await page.getByRole('button', { name: /back to chat/i }).click();
+  await expect(
+    page.getByRole('textbox', { name: /your question/i }),
+  ).toBeVisible();
+  expect(requests).toBe(0);
+});
+
+test('a fallback answer says the full assistant was busy, and Try again asks again', async ({
+  page,
+}) => {
+  const fallback = {
+    ...answered,
+    answer: 'A summary of verified facts.',
+    answerStatus: 'fallback',
+  };
+  let calls = 0;
+  await page.route('**/api/chat', async (route) => {
+    calls += 1;
+    await route.fulfill({ json: calls === 1 ? fallback : answered });
+  });
+  await ask(page);
+  await expect(page.getByRole('note')).toHaveText(
+    'The full assistant was busy, so this is a summary from the site.',
+  );
+  await page.getByRole('button', { name: 'Try again' }).click();
+  await expect(page.getByText(answered.answer)).toBeVisible();
+  await expect(page.getByRole('note')).toHaveCount(0);
+  expect(calls).toBe(2);
+});

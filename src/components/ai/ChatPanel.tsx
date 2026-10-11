@@ -1,9 +1,10 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import type { RoleId } from '@/types/content';
 import { chatFailureMessage, type ChatFailureCode } from './chat-errors';
 import { ChatMessage } from './ChatMessage';
 import { ChatSuggestions } from './ChatSuggestions';
 import { NeuralGlyph } from './NeuralGlyph';
+import { RolePicker } from './RolePicker';
 import type { ThreadEntry } from './session-store';
 
 const roleLabels: Record<RoleId, string> = {
@@ -48,6 +49,7 @@ export function ChatPanel({
   retry(question: string): void;
 }) {
   const end = useRef<HTMLDivElement>(null);
+  const [rolesOpen, setRolesOpen] = useState(false);
   useEffect(() => {
     // Newest at the bottom, kept in view.
     const reduced = window.matchMedia?.(
@@ -110,7 +112,13 @@ export function ChatPanel({
             stays in your browser session.
           </p>
 
-          <div className="chat-conversation" aria-live="polite">
+          {rolesOpen && <RolePicker onClose={() => setRolesOpen(false)} />}
+
+          <div
+            className="chat-conversation"
+            aria-live="polite"
+            hidden={rolesOpen}
+          >
             {!thread.length && !pendingQuestion && state === 'ready' && (
               <div className="chat-welcome">
                 <p className="chat-query-label">QUERY PORTFOLIO</p>
@@ -181,7 +189,17 @@ export function ChatPanel({
             <div ref={end} aria-hidden="true" />
           </div>
 
-          <ChatSuggestions suggestions={suggestions} onChoose={setDraft} />
+          <div hidden={rolesOpen}>
+            <ChatSuggestions suggestions={suggestions} onChoose={setDraft} />
+            <button
+              type="button"
+              className="chat-role-entry"
+              onClick={() => setRolesOpen(true)}
+            >
+              <span>Hiring for a role?</span>
+              <span aria-hidden="true">↗</span>
+            </button>
+          </div>
         </div>
 
         <div className="chat-turnstile" data-active={challengeVisible}>

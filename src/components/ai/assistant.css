@@ -1168,3 +1168,178 @@ button.chat-action:disabled {
     transition-duration: 0.01ms;
   }
 }
+
+.chat-conversation[hidden],
+.chat-panel-body > div[hidden] {
+  display: none;
+}
+
+.chat-role-entry {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 0.55rem;
+  border: 1px solid rgb(85 223 253 / 22%);
+  border-radius: 0.7rem;
+  padding: 0.55rem 0.75rem;
+  color: var(--color-ink-100);
+  background: rgb(85 223 253 / 6%);
+  font: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chat-role-entry:hover,
+.chat-role-entry:focus-visible {
+  border-color: rgb(85 223 253 / 60%);
+}
+
+.chat-role-picker {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.chat-role-picker > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.chat-role-picker h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.chat-role-picker > p {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.chat-role-list {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chat-role-list button {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid rgb(85 223 253 / 18%);
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-ink-100);
+  background: rgb(16 32 61 / 52%);
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chat-role-list button:hover,
+.chat-role-list button:focus-visible {
+  border-color: rgb(85 223 253 / 60%);
+}
+
+.brief-card {
+  display: grid;
+  gap: 0.9rem;
+  border: 1px solid rgb(85 223 253 / 18%);
+  border-radius: 0.9rem;
+  padding: 0.9rem;
+  background: rgb(16 32 61 / 52%);
+}
+
+.brief-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.brief-card h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.brief-card ul {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.brief-card li p {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+}
+
+.brief-card blockquote {
+  margin: 0;
+  border-left: 2px solid var(--color-ai-300);
+  padding-left: 0.7rem;
+}
+
+.brief-card-label {
+  display: inline-block;
+  margin-bottom: 0.3rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.brief-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.brief-card-status {
+  font-size: 0.72rem;
+}
+
+@media print {
+  /* Print the brief card alone: hide the site, the chat chrome and the buttons. */
+  body:has(.brief-card) .site-shell,
+  body:has(.brief-card) .ambient-background,
+  .chat-backdrop,
+  .chat-neural-field,
+  .chat-header,
+  .chat-context-bar,
+  .chat-privacy,
+  .chat-composer,
+  .chat-turnstile,
+  .chat-role-picker > header,
+  .chat-role-picker > button,
+  .brief-card-actions {
+    display: none;
+  }
+
+  .chat-panel,
+  .chat-panel-body {
+    position: static;
+    display: block;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    background: none;
+    box-shadow: none;
+  }
+
+  .brief-card {
+    border: 0;
+    padding: 0;
+    color: #000;
+    background: none;
+  }
+
+  .brief-card * {
+    color: #000;
+  }
+}
