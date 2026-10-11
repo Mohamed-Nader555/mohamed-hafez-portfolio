@@ -28,7 +28,7 @@ To roll back, set `ASSISTANT_MODE` to `classic` and redeploy. With `ledger` set 
 
 ## Cost cap
 
-Model-backed questions are counted per UTC day in the `CHAT_BUDGET` KV namespace (one key, `model-questions:YYYY-MM-DD`). Above `DAILY_MODEL_QUESTION_CAP` (default `200`) the rest of the day is answered by the classic pipeline. KV is eventually consistent, so the count is approximate; that is acceptable for a cost guard. A missing or failing KV never blocks a question. The writer sends roughly 52,000 tokens per question; see `src/data/assistant-eval.json` for the measured numbers.
+Model-backed questions are counted per UTC day in the `CHAT_BUDGET` KV namespace (one key, `model-questions:YYYY-MM-DD`). Above `DAILY_MODEL_QUESTION_CAP` (default `20`, Mohamed's spending limit of 11 Oct 2026) the rest of the day is answered by the classic pipeline. KV is eventually consistent, so the count is approximate; that is acceptable for a cost guard. A missing or failing KV never blocks a question. The writer sends roughly 52,000 tokens per question; see `src/data/assistant-eval.json` for the measured numbers.
 
 Every question logs one JSON line with token counts (input, cached, output, thinking), latency and the model ids. It never contains question or answer text.
 
@@ -39,7 +39,7 @@ Every question logs one JSON line with token counts (input, cached, output, thin
 | `ASSISTANT_MODE`           | variable | `ledger` or `classic`                                     |
 | `GEMINI_WRITER_MODEL`      | variable | writer model id (default `gemini-3.8-flash`)              |
 | `GEMINI_CHECKER_MODEL`     | variable | checker model id (default `gemini-3.5-flash-lite`)        |
-| `DAILY_MODEL_QUESTION_CAP` | variable | model-backed questions per UTC day (default `200`)        |
+| `DAILY_MODEL_QUESTION_CAP` | variable | model-backed questions per UTC day (default `20`)         |
 | `CHAT_BUDGET`              | KV       | the daily counter                                         |
 | `GEMINI_API_KEY`           | secret   | `npx wrangler secret put GEMINI_API_KEY`; never committed |
 | `TURNSTILE_SECRET_KEY`     | secret   | Turnstile verification                                    |
@@ -49,7 +49,7 @@ Model ids live in configuration, never in code. Locally, the key goes in the git
 
 ## Evaluating answers
 
-`npm run answers:evaluate` asks the 56 cases in `tests/fixtures/answer-evaluation.json` through the real models and scores them (it reads `GEMINI_API_KEY` from `.dev.vars`, costs about $3 a run, and is not part of `npm test`). Raw outputs go to `Claude outputs/eval/` (git-ignored). A full run writes the numbers to `src/data/assistant-eval.json`. Required before a merge: every case passes in the refusal, personal-attribute, injection, named-gap and not-on-the-site groups, and at least 90% in each other group. Cases that need a pasted job description are marked for stage D and skipped until then. `npm run knowledge:evaluate` still scores keyword retrieval, which the hints and the fallback rely on.
+`npm run answers:evaluate -- --only <case ids>` asks the named cases in `tests/fixtures/answer-evaluation.json` through the real models and scores them (it reads `GEMINI_API_KEY` from `.dev.vars` and is not part of `npm test`). Since 11 Oct 2026 it is a spending-limited tool: it exits at once unless the environment has `ALLOW_PAID_MODEL_CALLS=yes`, it takes case ids only, and it refuses more than 10 cases (`scripts/paid-guard.ts`). A full run cost about $3, so none is run now. Raw outputs go to `Claude outputs/eval/` (git-ignored). `src/data/assistant-eval.json` holds the numbers of the last full run (run 7, 11 Oct 2026). Required before a merge: every case passes in the refusal, personal-attribute, injection, named-gap and not-on-the-site groups, and at least 90% in each other group. Cases that need a pasted job description are marked for stage D and skipped until then. `npm run knowledge:evaluate` still scores keyword retrieval, which the hints and the fallback rely on.
 
 ## Fallback and failure
 
@@ -58,7 +58,7 @@ If the writer has a quota, capacity, timeout or format failure, or no segment pa
 ## Changing a model or provider
 
 1. Change `GEMINI_WRITER_MODEL` or `GEMINI_CHECKER_MODEL` in `wrangler.jsonc` only after reading Google's current model, thinking and pricing pages, and note the thinking levels the model allows.
-2. Run `npm run answers:evaluate` and read every output before merging.
+2. Ask the owner how many paid questions the change may use, run `npm run answers:evaluate -- --only <case ids>` for those cases, and read every output before merging.
 3. A paid plan or provider change needs the owner's approval. There is no automatic upgrade and no automatic failover.
 
 ## Cloudflare setup

@@ -1,9 +1,10 @@
-// `npm run answers:evaluate`: asks every case in tests/fixtures/answer-evaluation.json
-// through the real writer and checker models and scores the replies.
-// It needs GEMINI_API_KEY (npm loads it from the git-ignored .dev.vars) and
-// costs real money, so it is not part of `npm test`.
+// `npm run answers:evaluate -- --only a,b`: asks the named cases in
+// tests/fixtures/answer-evaluation.json through the real writer and checker
+// models and scores the replies. It needs GEMINI_API_KEY (npm loads it from
+// the git-ignored .dev.vars) and costs real money, so it is not part of
+// `npm test`. Brief 3, section 0a: it refuses to start unless the environment
+// has ALLOW_PAID_MODEL_CALLS=yes, and it takes case ids only, at most 10.
 //   --stage D     also run the cases that need the pasted job description
-//   --only a,b    run only those case ids and write nothing to src/data
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,6 +15,7 @@ import { createGeminiProvider } from '../src/lib/ai/gemini-provider.ts';
 import type { LedgerDeps } from '../src/lib/ai/ledger-answer.ts';
 import type { ChatResponse } from '../src/lib/ai/types.ts';
 import type { LedgerEntry } from '../src/lib/rag/ledger.ts';
+import { checkPaidRun, parseCaseIds } from './paid-guard.ts';
 import {
   GROUP_REQUIRED_RATE,
   meetsRequirements,
@@ -30,7 +32,16 @@ const CHECKER_MODEL =
 
 const args = process.argv.slice(2);
 const includeStageD = args[args.indexOf('--stage') + 1] === 'D';
-const only = args.includes('--only') ? args[args.indexOf('--only') + 1] : '';
+
+const guard = checkPaidRun({
+  env: process.env,
+  requestedIds: parseCaseIds(args),
+  knownIds: (cases as EvalCase[]).map((c) => c.id),
+});
+if (!guard.ok) {
+  process.stderr.write(`${guard.message}\n`);
+  process.exit(1);
+}
 
 const apiKey = process.env.GEMINI_API_KEY?.trim();
 if (!apiKey) {
@@ -95,10 +106,7 @@ const classicUnused = {
 const results: CaseResult[] = [];
 const raw: Array<Record<string, unknown>> = [];
 const usages: Usage[] = [];
-const onlyIds = only ? only.split(',') : [];
-const selected = (cases as EvalCase[]).filter(
-  (c) => !only || onlyIds.includes(c.id),
-);
+const selected = (cases as EvalCase[]).filter((c) => guard.ids.includes(c.id));
 
 for (const entry of selected) {
   if (entry.stage === 'D' && !includeStageD) {
@@ -195,27 +203,6 @@ await writeFile(
   `${JSON.stringify({ stamp, writer: WRITER_MODEL, checker: CHECKER_MODEL, raw }, null, 2)}\n`,
   'utf8',
 );
-
-if (!only) {
-  const report = {
-    date: new Date().toISOString().slice(0, 10),
-    models: { writer: WRITER_MODEL, checker: CHECKER_MODEL },
-    cases: results.length,
-    casesRun: results.filter((r) => !r.skipped).length,
-    groups: Object.fromEntries(
-      Object.entries(summary).map(([group, s]) => [
-        group,
-        { run: s.run, passed: s.passed, skipped: s.skipped },
-      ]),
-    ),
-    ...stats,
-  };
-  await writeFile(
-    resolve(root, 'src/data/assistant-eval.json'),
-    `${JSON.stringify(report, null, 2)}\n`,
-    'utf8',
-  );
-}
 
 if (!meetsRequirements(summary)) {
   process.stdout.write(

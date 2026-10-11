@@ -29,7 +29,8 @@ export const parseWriterThinking = (
 
 export const DEFAULT_WRITER_MODEL = 'gemini-3.8-flash';
 export const DEFAULT_CHECKER_MODEL = 'gemini-3.5-flash-lite';
-export const DEFAULT_CAP = 200;
+/** Brief 3, section 0a: 20 model-backed questions a day (about $0.90 at worst). */
+export const DEFAULT_CAP = 20;
 /** A count outlives its UTC day by a few hours, then KV removes it. */
 const COUNT_TTL_SECONDS = 36 * 60 * 60;
 

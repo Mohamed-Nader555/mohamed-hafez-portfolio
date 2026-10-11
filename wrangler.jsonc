@@ -15,7 +15,8 @@
     // Measured 10 Oct 2026: medium thinking took about 10 s a question and
     // often passed the writer's 12 s limit; low takes about 4 s.
     "GEMINI_WRITER_THINKING": "low",
-    "DAILY_MODEL_QUESTION_CAP": "200",
+    // Brief 3, section 0a: 20 model-backed questions a day.
+    "DAILY_MODEL_QUESTION_CAP": "20",
   },
   "kv_namespaces": [
     {

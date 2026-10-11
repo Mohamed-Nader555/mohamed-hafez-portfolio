@@ -29,7 +29,7 @@ describe('parseCap', () => {
     expect(parseCap('abc')).toBe(DEFAULT_CAP);
     expect(parseCap('-3')).toBe(DEFAULT_CAP);
     expect(parseCap('0')).toBe(DEFAULT_CAP);
-    expect(DEFAULT_CAP).toBe(200);
+    expect(DEFAULT_CAP).toBe(20);
   });
 });
 
@@ -76,7 +76,7 @@ describe('assistantConfig', () => {
     expect(assistantConfig({})).toMatchObject({
       writerModel: 'gemini-3.8-flash',
       checkerModel: 'gemini-3.5-flash-lite',
-      cap: 200,
+      cap: 20,
     });
     expect(
       assistantConfig({ GEMINI_WRITER_MODEL: 'w', GEMINI_CHECKER_MODEL: 'c' }),
