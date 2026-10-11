@@ -6,3 +6,6 @@ PUBLIC_TURNSTILE_SITEKEY=1x00000000000000000000AA
 # Gemini API key (placeholder only; the real key goes in .dev.vars, which is
 # git-ignored, and in production through `wrangler secret put GEMINI_API_KEY`).
 GEMINI_API_KEY=replace-with-your-key
+# Keep local runs and tests on the classic pipeline so they never call Gemini
+# (and never cost money). Remove this line to try the ledger pipeline locally.
+ASSISTANT_MODE=classic

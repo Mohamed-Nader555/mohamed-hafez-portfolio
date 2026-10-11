@@ -9,12 +9,12 @@
   "groups": {
     "facts": {
       "run": 10,
-      "passed": 10,
+      "passed": 8,
       "skipped": 0
     },
     "indirect": {
       "run": 10,
-      "passed": 7,
+      "passed": 9,
       "skipped": 0
     },
     "role-fit": {
@@ -29,7 +29,7 @@
     },
     "gaps": {
       "run": 5,
-      "passed": 4,
+      "passed": 5,
       "skipped": 0
     },
     "not-on-site": {
@@ -53,9 +53,9 @@
       "skipped": 2
     }
   },
-  "medianLatencyMs": 3859,
-  "medianInputTokens": 55062,
-  "medianCachedTokens": 52946,
-  "medianOutputTokens": 203,
+  "medianLatencyMs": 5163,
+  "medianInputTokens": 55069,
+  "medianCachedTokens": 52956,
+  "medianOutputTokens": 196,
   "medianThinkingTokens": 0
 }
