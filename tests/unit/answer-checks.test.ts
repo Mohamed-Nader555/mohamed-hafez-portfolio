@@ -161,6 +161,46 @@ describe('checkDraft', () => {
     ).toEqual([]);
   });
 
+  describe('citing the claim that names a technology of the same project', () => {
+    const withStack = new Map(claims);
+    withStack.set(
+      'c-dostava-stack',
+      claim('c-dostava-stack', 'Dostava also used Python for its tooling.', {
+        projectId: 'dostava',
+      }),
+    );
+    const stackCtx = { ...ctx, claims: withStack };
+
+    it('adds that claim instead of dropping the segment', () => {
+      const { kept, dropped } = checkDraft(
+        [{ text: 'Dostava used Python.', claimIds: ['c-dostava'] }],
+        stackCtx,
+      );
+      expect(dropped).toEqual([]);
+      expect(kept[0]!.claimIds).toEqual(['c-dostava', 'c-dostava-stack']);
+    });
+
+    it('does not borrow from another project or invent a source', () => {
+      expect(
+        checkDraft(
+          [{ text: 'Dostava used Python.', claimIds: ['c-dostava'] }],
+          ctx,
+        ).kept,
+      ).toEqual([]);
+      const other = new Map(claims);
+      other.set(
+        'c-other',
+        claim('c-other', 'Another app used Python.', { projectId: 'other' }),
+      );
+      expect(
+        checkDraft(
+          [{ text: 'Dostava used Python.', claimIds: ['c-dostava'] }],
+          { ...ctx, claims: other },
+        ).kept,
+      ).toEqual([]);
+    });
+  });
+
   it('drops an employer the cited claims do not name', () => {
     const { kept, dropped } = run([
       { text: 'He worked at BASS.', claimIds: ['c-dostava'] },

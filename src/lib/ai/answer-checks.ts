@@ -171,14 +171,77 @@ function problemWith(
   return undefined;
 }
 
+/**
+ * A segment that names a technology or project that none of its cited claims
+ * shows can still be grounded: another claim of the same project may name it.
+ * That claim is added to the segment's citations, so the check below passes
+ * only because the cited claims show the name.
+ */
+function withProjectCitations(
+  segment: DraftSegment,
+  ctx: CheckContext,
+): DraftSegment {
+  const cited = segment.claimIds.flatMap((id) => {
+    const claim = ctx.claims.get(id);
+    return claim ? [claim] : [];
+  });
+  if (cited.length === 0 || cited.length !== segment.claimIds.length)
+    return segment;
+  const projects = new Set(
+    cited.map((claim) => claim.projectId).filter(Boolean),
+  );
+  if (projects.size === 0) return segment;
+  const groundedKeys = new Set(
+    ctx
+      .entitiesIn(
+        cited
+          .flatMap((claim) => [
+            claim,
+            ...(claim.basisIds ?? []).flatMap((id) => {
+              const basis = ctx.claims.get(id);
+              return basis ? [basis] : [];
+            }),
+          ])
+          .map((claim) => claim.text)
+          .join(' '),
+      )
+      .map((entity) => entity.key),
+  );
+  const added: string[] = [];
+  for (const entity of ctx.entitiesIn(segment.text)) {
+    if (
+      groundedKeys.has(entity.key) ||
+      (entity.projectId && projects.has(entity.projectId))
+    )
+      continue;
+    const source = [...ctx.claims.values()].find(
+      (claim) =>
+        claim.origin === 'site' &&
+        claim.projectId !== undefined &&
+        projects.has(claim.projectId) &&
+        ctx.entitiesIn(claim.text).some((named) => named.key === entity.key),
+    );
+    if (
+      source &&
+      !segment.claimIds.includes(source.id) &&
+      !added.includes(source.id)
+    )
+      added.push(source.id);
+  }
+  return added.length
+    ? { ...segment, claimIds: [...segment.claimIds, ...added].slice(0, 8) }
+    : segment;
+}
+
 export function checkDraft(
-  segments: readonly DraftSegment[],
+  drafted: readonly DraftSegment[],
   ctx: CheckContext,
 ): { kept: DraftSegment[]; dropped: Dropped[] } {
   const kept: DraftSegment[] = [];
   const dropped: Dropped[] = [];
   let ownReadingTaken = false;
-  segments.forEach((segment, index) => {
+  drafted.forEach((original, index) => {
+    const segment = withProjectCitations(original, ctx);
     const reason = problemWith(segment, ctx, ownReadingTaken);
     if (reason) {
       dropped.push({ index, reason, kind: kindOf(reason) });
