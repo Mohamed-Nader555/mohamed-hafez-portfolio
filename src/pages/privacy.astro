@@ -55,6 +55,14 @@ export const prerender = true;
         active session and will not be written to a permanent portfolio
         transcript.
       </p>
+      <p>
+        To write an answer, the assistant sends your question, the last few
+        turns of the conversation and the published facts about Mohamed to
+        Google’s Gemini API, which writes the answer and then checks it. If the
+        assistant is switched to its earlier mode, Cloudflare Workers AI does
+        this instead. The portfolio itself does not keep your question or the
+        answer.
+      </p>
     </section>
 
     <section aria-labelledby="retention-title">
