@@ -7,7 +7,19 @@
     "AI_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast",
     "PUBLIC_TURNSTILE_SITEKEY": "0x4AAAAAAEYpXcGcmRdA3lPr",
     "TURNSTILE_EXPECTED_HOSTNAMES": "mohamednhafez.com,www.mohamednhafez.com,mohamed-hafez-portfolio.mohamed-m-nader555.workers.dev",
+    // "ledger" runs the Gemini writer and checker; "classic" runs the earlier
+    // Workers AI pipeline untouched. GEMINI_API_KEY is a Worker secret.
+    "ASSISTANT_MODE": "ledger",
+    "GEMINI_WRITER_MODEL": "gemini-3.8-flash",
+    "GEMINI_CHECKER_MODEL": "gemini-3.5-flash-lite",
+    "DAILY_MODEL_QUESTION_CAP": "200",
   },
+  "kv_namespaces": [
+    {
+      "binding": "CHAT_BUDGET",
+      "id": "a21f58f6ab884952bc9637cfeba3e962",
+    },
+  ],
   "ratelimits": [
     {
       "name": "CHAT_SESSION_RATE_LIMITER",

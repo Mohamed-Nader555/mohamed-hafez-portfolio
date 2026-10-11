@@ -5,6 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "answers:evaluate": "tsx --env-file=.dev.vars scripts/evaluate-answers.ts",
     "assets:images": "tsx scripts/optimize-project-images.ts",
     "assets:verify": "tsx scripts/verify-public-assets.ts",
     "budget:js": "tsx scripts/verify-javascript-budgets.ts",
