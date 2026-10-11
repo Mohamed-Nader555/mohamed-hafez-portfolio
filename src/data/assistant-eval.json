@@ -14,22 +14,22 @@
     },
     "indirect": {
       "run": 10,
-      "passed": 9,
+      "passed": 7,
       "skipped": 0
     },
     "role-fit": {
       "run": 5,
-      "passed": 5,
+      "passed": 4,
       "skipped": 3
     },
     "own-answers": {
       "run": 5,
-      "passed": 4,
+      "passed": 5,
       "skipped": 0
     },
     "gaps": {
       "run": 5,
-      "passed": 5,
+      "passed": 4,
       "skipped": 0
     },
     "not-on-site": {
@@ -53,9 +53,9 @@
       "skipped": 2
     }
   },
-  "medianLatencyMs": 3744,
-  "medianInputTokens": 55054,
+  "medianLatencyMs": 3859,
+  "medianInputTokens": 55062,
   "medianCachedTokens": 52946,
-  "medianOutputTokens": 224,
+  "medianOutputTokens": 203,
   "medianThinkingTokens": 0
 }

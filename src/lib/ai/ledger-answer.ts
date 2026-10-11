@@ -201,6 +201,7 @@ export async function answerFromLedger(
     log({
       event: 'assistant_answer',
       path: 'fallback',
+      codeDropKinds: dropped.map((d) => d.kind),
       latencyMs: Date.now() - started,
       writer: { model: deps.writerModel, ...usageFields(writerUsage) },
     });

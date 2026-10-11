@@ -20,7 +20,8 @@ export type DropKind =
   | 'number'
   | 'entity'
   | 'quote'
-  | 'gap';
+  | 'gap'
+  | 'repeat';
 
 function kindOf(reason: string): DropKind {
   if (reason.startsWith('unknown claim')) return 'unknown-claim';
@@ -30,6 +31,7 @@ function kindOf(reason: string): DropKind {
   if (reason.startsWith('number')) return 'number';
   if (reason.startsWith('a quote')) return 'quote';
   if (reason.startsWith('names a named gap')) return 'gap';
+  if (reason.startsWith('repeats')) return 'repeat';
   return 'entity';
 }
 
@@ -233,6 +235,38 @@ function withProjectCitations(
     : segment;
 }
 
+/**
+ * A segment that rests only on his stored answers but does not reproduce them
+ * is replaced by the first of those answers, word for word: it is already
+ * approved, and the label then says it is his answer.
+ */
+function withVerbatimQuote(
+  segment: DraftSegment,
+  ctx: CheckContext,
+): DraftSegment {
+  const cited = segment.claimIds.flatMap((id) => {
+    const claim = ctx.claims.get(id);
+    return claim ? [claim] : [];
+  });
+  if (
+    cited.length === 0 ||
+    cited.length !== segment.claimIds.length ||
+    !cited.every((claim) => claim.origin === 'own-words')
+  )
+    return segment;
+  const answers = cited.flatMap((claim) => {
+    const answer = ctx.bank.find((a) => a.id === claim.id);
+    return answer ? [answer] : [];
+  });
+  if (answers.length !== cited.length) return segment;
+  const stored = answers.map((answer) => normalise(answer.answer));
+  const verbatim = sentencesOf(segment.text).every((sentence) =>
+    stored.some((text) => text.includes(sentence)),
+  );
+  if (verbatim) return segment;
+  return { text: answers[0]!.answer.trim(), claimIds: [answers[0]!.id] };
+}
+
 export function checkDraft(
   drafted: readonly DraftSegment[],
   ctx: CheckContext,
@@ -240,14 +274,26 @@ export function checkDraft(
   const kept: DraftSegment[] = [];
   const dropped: Dropped[] = [];
   let ownReadingTaken = false;
+  const quoted = new Set<string>();
   drafted.forEach((original, index) => {
-    const segment = withProjectCitations(original, ctx);
-    const reason = problemWith(segment, ctx, ownReadingTaken);
+    const segment = withProjectCitations(withVerbatimQuote(original, ctx), ctx);
+    const repeated =
+      segment.claimIds.length === 1 &&
+      ctx.claims.get(segment.claimIds[0]!)?.origin === 'own-words' &&
+      quoted.has(segment.claimIds[0]!);
+    const reason = repeated
+      ? 'repeats an earlier quote'
+      : problemWith(segment, ctx, ownReadingTaken);
     if (reason) {
       dropped.push({ index, reason, kind: kindOf(reason) });
       return;
     }
     if (segment.claimIds.length === 0) ownReadingTaken = true;
+    if (
+      segment.claimIds.length === 1 &&
+      ctx.claims.get(segment.claimIds[0]!)?.origin === 'own-words'
+    )
+      quoted.add(segment.claimIds[0]!);
     kept.push(segment);
   });
   return { kept, dropped };

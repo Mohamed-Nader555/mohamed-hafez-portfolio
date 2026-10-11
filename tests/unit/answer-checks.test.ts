@@ -225,8 +225,39 @@ describe('checkDraft', () => {
     const paraphrase = run([
       { text: 'He is not certified.', claimIds: ['qb-ceh'] },
     ]);
-    expect(paraphrase.kept).toEqual([]);
-    expect(paraphrase.dropped[0]!.reason).toMatch(/verbatim|quote/i);
+    // A paraphrase of his answer is replaced by the answer itself.
+    expect(paraphrase.dropped).toEqual([]);
+    expect(paraphrase.kept).toEqual([
+      {
+        text: 'No. I completed a training course. It was useful.',
+        claimIds: ['qb-ceh'],
+      },
+    ]);
+  });
+
+  it('serves his gap answer word for word when the draft paraphrased it', () => {
+    const { kept, dropped } = run([
+      {
+        text: 'He has not operated Kubernetes clusters.',
+        claimIds: ['qb-gap-k8s'],
+      },
+    ]);
+    expect(dropped).toEqual([]);
+    expect(kept[0]).toEqual({
+      text: 'I have not run Kubernetes. I have used Docker.',
+      claimIds: ['qb-gap-k8s'],
+    });
+  });
+
+  it('does not rewrite a segment that mixes his answer with other claims', () => {
+    const { kept, dropped } = run([
+      {
+        text: 'He is not certified and built Dostava.',
+        claimIds: ['qb-ceh', 'c-dostava'],
+      },
+    ]);
+    expect(kept).toEqual([]);
+    expect(dropped[0]!.reason).toMatch(/verbatim|quote/i);
   });
 
   it('does not let a quote carry extra text or other claims', () => {
