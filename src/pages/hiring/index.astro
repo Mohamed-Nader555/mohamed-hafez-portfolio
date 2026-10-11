@@ -1,0 +1,39 @@
+---
+import { roleBriefs } from '@/data/claims/role-briefs';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import '@/styles/hiring.css';
+
+export const prerender = true;
+---
+
+<BaseLayout
+  title="Hiring for a role — Mohamed Hafez"
+  description="One page for each kind of role Mohamed Hafez is open to, showing the direct and related experience the site backs up with sources. No score and no verdict."
+  roleId="aiml"
+>
+  <header class="longform-hero shell-container hiring-hero">
+    <p class="utility-label">Hiring for a role</p>
+    <h1>Roles Mohamed is open to</h1>
+    <p class="longform-hero__summary">
+      Pick the role you are hiring for to see what the site shows against it,
+      with a link to the evidence behind every line.
+    </p>
+  </header>
+
+  <section class="hiring-index shell-container" aria-label="Roles">
+    <ul>
+      {
+        roleBriefs.map((brief) => (
+          <li>
+            <a href={`/hiring/${brief.slug}`}>
+              <span class="hiring-index__title">{brief.title}</span>
+              <span class="hiring-index__also">
+                Also called {brief.alsoCalled.slice(0, 3).join(', ')}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

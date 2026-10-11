@@ -1,3 +1,5 @@
+import { roleBriefs } from '../../src/data/claims/role-briefs';
+
 export interface PublicRouteExpectation {
   path: string;
   title: string;
@@ -119,7 +121,18 @@ export const existingPublicRoutes: readonly PublicRouteExpectation[] = [
   { path: '/about', title: 'About Mohamed Hafez' },
 ];
 
+// Stage D: one indexable page per role, plus a list of them. They are in the
+// sitemap too (brief 3, decision 11).
+export const hiringRoutes: readonly PublicRouteExpectation[] = [
+  { path: '/hiring', title: 'Hiring for a role — Mohamed Hafez' },
+  ...roleBriefs.map((brief) => ({
+    path: `/hiring/${brief.slug}`,
+    title: `${brief.title} — Mohamed Hafez`,
+  })),
+];
+
 export const publicRoutes: readonly PublicRouteExpectation[] = [
   ...existingPublicRoutes,
   { path: '/privacy', title: 'Privacy — Mohamed Hafez' },
+  ...hiringRoutes,
 ];
