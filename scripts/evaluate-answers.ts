@@ -3,12 +3,13 @@
 // It needs GEMINI_API_KEY (npm loads it from the git-ignored .dev.vars) and
 // costs real money, so it is not part of `npm test`.
 //   --stage D     also run the cases that need the pasted job description
-//   --only <id>   run one case and write nothing to src/data
+//   --only a,b    run only those case ids and write nothing to src/data
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import cases from '../tests/fixtures/answer-evaluation.json' with { type: 'json' };
 import { answerRecruiterQuestion } from '../src/lib/ai/answer-service.ts';
+import { parseWriterThinking } from '../src/lib/ai/assistant-runtime.ts';
 import { createGeminiProvider } from '../src/lib/ai/gemini-provider.ts';
 import type { LedgerDeps } from '../src/lib/ai/ledger-answer.ts';
 import type { ChatResponse } from '../src/lib/ai/types.ts';
@@ -64,14 +65,17 @@ type Usage = {
   cachedTokens: number;
 };
 let lastUsage: Usage | undefined;
+let lastEvent: Record<string, unknown> | undefined;
 const deps: LedgerDeps = {
   writer: createGeminiProvider({ apiKey, model: WRITER_MODEL }),
   checker: createGeminiProvider({ apiKey, model: CHECKER_MODEL }),
   writerModel: WRITER_MODEL,
   checkerModel: CHECKER_MODEL,
+  writerThinking: parseWriterThinking(process.env.GEMINI_WRITER_THINKING),
   claims,
   knowledge,
   log: (event) => {
+    lastEvent = event;
     const writer = (event.writer ?? {}) as Record<string, number>;
     lastUsage = {
       latencyMs: Number(event.latencyMs ?? 0),
@@ -91,7 +95,10 @@ const classicUnused = {
 const results: CaseResult[] = [];
 const raw: Array<Record<string, unknown>> = [];
 const usages: Usage[] = [];
-const selected = (cases as EvalCase[]).filter((c) => !only || c.id === only);
+const onlyIds = only ? only.split(',') : [];
+const selected = (cases as EvalCase[]).filter(
+  (c) => !only || onlyIds.includes(c.id),
+);
 
 for (const entry of selected) {
   if (entry.stage === 'D' && !includeStageD) {
@@ -100,6 +107,7 @@ for (const entry of selected) {
     continue;
   }
   lastUsage = undefined;
+  lastEvent = undefined;
   const started = Date.now();
   let response: ChatResponse;
   try {
@@ -143,6 +151,9 @@ for (const entry of selected) {
     status: response.answerStatus,
     path: response.trace?.path ?? 'refused-before-model',
     checker: response.trace?.checker,
+    trace: response.trace,
+    codeDropKinds: lastEvent?.codeDropKinds,
+    checkerFlagged: lastEvent?.checkerFlagged,
     latencyMs,
     usage,
     pass: scored.pass,

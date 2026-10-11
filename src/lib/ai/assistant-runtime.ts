@@ -17,8 +17,15 @@ export type AssistantEnv = {
   GEMINI_WRITER_MODEL?: string;
   GEMINI_CHECKER_MODEL?: string;
   DAILY_MODEL_QUESTION_CAP?: string;
+  /** `low`, `medium` or `high`; the writer's thinking level. */
+  GEMINI_WRITER_THINKING?: string;
   CHAT_BUDGET?: KvLike;
 };
+
+export type WriterThinking = 'low' | 'medium' | 'high';
+export const parseWriterThinking = (
+  value: string | undefined,
+): WriterThinking => (value === 'low' || value === 'high' ? value : 'medium');
 
 export const DEFAULT_WRITER_MODEL = 'gemini-3.8-flash';
 export const DEFAULT_CHECKER_MODEL = 'gemini-3.5-flash-lite';
@@ -42,6 +49,7 @@ export function assistantConfig(env: AssistantEnv) {
     writerModel: env.GEMINI_WRITER_MODEL?.trim() || DEFAULT_WRITER_MODEL,
     checkerModel: env.GEMINI_CHECKER_MODEL?.trim() || DEFAULT_CHECKER_MODEL,
     cap: parseCap(env.DAILY_MODEL_QUESTION_CAP),
+    writerThinking: parseWriterThinking(env.GEMINI_WRITER_THINKING),
   };
 }
 

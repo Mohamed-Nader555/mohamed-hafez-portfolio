@@ -27,6 +27,7 @@ export function createLedgerDeps(
     }),
     writerModel: config.writerModel,
     checkerModel: config.checkerModel,
+    writerThinking: config.writerThinking,
     claims,
     knowledge,
   };

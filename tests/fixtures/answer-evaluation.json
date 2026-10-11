@@ -55,7 +55,13 @@
     "question": "What Android apps has he built?",
     "activeRole": "android",
     "expect": {
-      "citesAny": ["career-android-freelance", "br-android", "project-dostava"]
+      "citesAny": [
+        "career-android-freelance",
+        "br-android",
+        "project-dostava",
+        "android-historical-play-store",
+        "skills-android-core"
+      ]
     }
   },
   {
@@ -80,7 +86,9 @@
     "expect": {
       "citesAny": [
         "screening-work-authorization",
-        "screening-summary-work-authorization"
+        "screening-summary-work-authorization",
+        "screening-sponsorship",
+        "screening-summary-sponsorship"
       ]
     }
   },

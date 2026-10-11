@@ -32,6 +32,8 @@ export type LedgerDeps = {
   checker: GeminiProvider;
   writerModel: string;
   checkerModel: string;
+  /** The writer's thinking level; medium when not set. */
+  writerThinking?: 'low' | 'medium' | 'high';
   claims: readonly LedgerEntry[];
   /** The whole knowledge file, sent to the writer with every question. */
   knowledge: string;
@@ -117,9 +119,46 @@ export async function answerFromLedger(
   };
 
   const ledgerIds = new Set(deps.claims.map((claim) => claim.id));
+  const matched = matchHints(input.question);
+  const byId = new Map(deps.claims.map((claim) => [claim.id, claim]));
+  const matchedClaims = [
+    ...matched.gapIds,
+    ...matched.answerIds,
+    ...matched.bridgeIds,
+  ]
+    .slice(0, 4)
+    .flatMap((id) => {
+      const claim = byId.get(id);
+      return claim ? [{ id, text: claim.text.slice(0, 700) }] : [];
+    });
+  // The direct site evidence nearest to each matched bridge, so an answer can
+  // cite the record that states the fact (for example banking clients in
+  // regulated environments), not only the bridge written from it.
+  const bridgeEvidence = matched.bridgeIds.slice(0, 2).flatMap((id) => {
+    const bridge = byId.get(id);
+    if (!bridge) return [];
+    return retrieveEvidence({
+      question: bridge.text,
+      history: [],
+      activeRole: input.activeRole,
+      limit: 6,
+    })
+      .chunks.filter((chunk) => chunk.family !== 'overview')
+      .filter((chunk) => ledgerIds.has(chunk.id))
+      .slice(0, 2);
+  });
+  for (const chunk of bridgeEvidence)
+    if (!matchedClaims.some((claim) => claim.id === chunk.id))
+      matchedClaims.push({
+        id: chunk.id,
+        text: byId.get(chunk.id)!.text.slice(0, 500),
+      });
   const hintIds = buildHintIds(
-    matchHints(input.question),
-    retrieval.chunks.map((chunk) => chunk.id),
+    matched,
+    [
+      ...bridgeEvidence.map((chunk) => chunk.id),
+      ...retrieval.chunks.map((chunk) => chunk.id),
+    ],
     ledgerIds,
   );
 
@@ -131,7 +170,9 @@ export async function answerFromLedger(
       question: input.question,
       history: input.history,
       hintIds,
+      matchedClaims,
       unknownSubject: retrieval.unknownSubject,
+      thinkingLevel: deps.writerThinking,
     });
     draft = result.draft;
     writerUsage = result.usage;
@@ -154,7 +195,7 @@ export async function answerFromLedger(
 
   const askedText = input.question;
   const context = createCheckContext(deps.claims, askedText);
-  const { kept } = checkDraft(draft.segments, context);
+  const { kept, dropped } = checkDraft(draft.segments, context);
   const notShown = filterNotShown(draft.notShown, askedText);
   if (kept.length === 0 && notShown.length === 0) {
     log({
@@ -238,6 +279,8 @@ export async function answerFromLedger(
     latencyMs: elapsed,
     kept: finalSegments.length,
     dropped: trace.dropped,
+    codeDropKinds: dropped.map((d) => d.kind),
+    checkerFlagged: checked.flagged.length,
     checker: checked.status,
     writer: { model: deps.writerModel, ...usageFields(writerUsage) },
     checkerUsage: { model: deps.checkerModel, ...usageFields(checked.usage) },

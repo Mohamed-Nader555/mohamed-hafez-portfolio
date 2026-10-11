@@ -350,6 +350,21 @@ describe('answerFromLedger', () => {
     expect(line).not.toContain(sentence.slice(0, 30));
   });
 
+  it('shows the writer the direct evidence nearest to a matched bridge', async () => {
+    const { deps, writer } = setup({
+      answerStatus: 'not_covered',
+      segments: [],
+      notShown: [],
+    });
+    await answerFromLedger(
+      deps,
+      input('Would he be a good fit for an NLP engineer role at a bank?'),
+    );
+    const sent = writer.requests[0]!.input;
+    expect(sent).toContain('[br-regulated-finance]');
+    expect(sent).toContain('[documentum-workflows-purpose]');
+  });
+
   it('sends only claim ids from the ledger as hints', async () => {
     const { deps, writer } = setup({
       answerStatus: 'answered',

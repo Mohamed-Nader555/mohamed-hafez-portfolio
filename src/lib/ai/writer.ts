@@ -8,7 +8,11 @@ import {
   wordingRules,
 } from '@/data/claims/wording-rules';
 import { z } from 'zod';
-import type { GeminiProvider, GeminiUsage } from './gemini-provider';
+import type {
+  GeminiProvider,
+  GeminiThinkingLevel,
+  GeminiUsage,
+} from './gemini-provider';
 import type { ConversationTurn } from '@/lib/rag/types';
 
 export const WRITER_TIMEOUT_MS = 12_000;
@@ -119,6 +123,7 @@ HIS OWN ANSWERS
 
 ROLE FIT
 - Map evidence; never judge. Show direct experience first, then related experience, then what the site does not show (through notShown).
+- Answer the setting the question names (a bank, a regulated company, a startup, a team that needs both backend and ML): lead with the claims about that setting, such as work for banking clients or in regulated environments, before general background. Hint claim ids marked as bridges (they start with "br-") are written for this.
 - Never write a verdict, score, rating, ranking or hiring advice: no "good fit", "great fit", "perfect fit", "strong candidate", "not a fit", no percentage match, no judgement of seniority.
 
 PEOPLE
@@ -155,14 +160,19 @@ export type WriterInput = {
   question: string;
   history: ConversationTurn[];
   hintIds: readonly string[];
+  /** Claims the router matched in code (a bridge, his answer, a gap answer), shown in full. */
+  matchedClaims?: ReadonlyArray<{ id: string; text: string }>;
   /** A technology or employer keyword search found nowhere on the site. */
   unknownSubject?: string;
+  /** Defaults to medium; lower is faster. */
+  thinkingLevel?: Exclude<GeminiThinkingLevel, 'minimal'>;
 };
 
 export function buildWriterInput({
   question,
   history,
   hintIds,
+  matchedClaims = [],
   unknownSubject,
 }: WriterInput): string {
   const recent = history.slice(-HISTORY_TURNS);
@@ -179,6 +189,12 @@ export function buildWriterInput({
   if (hintIds.length)
     parts.push(
       `HINT CLAIM IDS (most likely to help, not a limit): ${hintIds.join(', ')}`,
+    );
+  if (matchedClaims.length)
+    parts.push(
+      `MATCHED CLAIMS (the router found these written for this kind of question; use them first):\n${matchedClaims
+        .map((claim) => `[${claim.id}] ${claim.text}`)
+        .join('\n')}`,
     );
   if (unknownSubject)
     parts.push(
@@ -198,7 +214,7 @@ export async function runWriter(
     system: buildWriterSystem(input.knowledge),
     input: buildWriterInput(input),
     schema: WRITER_SCHEMA as unknown as Record<string, unknown>,
-    thinkingLevel: 'medium',
+    thinkingLevel: input.thinkingLevel ?? 'medium',
     maxOutputTokens: WRITER_MAX_OUTPUT_TOKENS,
     timeoutMs: WRITER_TIMEOUT_MS,
   });

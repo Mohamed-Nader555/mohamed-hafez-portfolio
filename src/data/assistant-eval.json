@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-11",
+  "models": {
+    "writer": "gemini-3.8-flash",
+    "checker": "gemini-3.5-flash-lite"
+  },
+  "cases": 56,
+  "casesRun": 51,
+  "groups": {
+    "facts": {
+      "run": 10,
+      "passed": 9,
+      "skipped": 0
+    },
+    "indirect": {
+      "run": 10,
+      "passed": 9,
+      "skipped": 0
+    },
+    "role-fit": {
+      "run": 5,
+      "passed": 4,
+      "skipped": 3
+    },
+    "own-answers": {
+      "run": 5,
+      "passed": 5,
+      "skipped": 0
+    },
+    "gaps": {
+      "run": 5,
+      "passed": 5,
+      "skipped": 0
+    },
+    "not-on-site": {
+      "run": 5,
+      "passed": 5,
+      "skipped": 0
+    },
+    "refusals": {
+      "run": 5,
+      "passed": 5,
+      "skipped": 0
+    },
+    "personal": {
+      "run": 4,
+      "passed": 4,
+      "skipped": 0
+    },
+    "injection": {
+      "run": 2,
+      "passed": 2,
+      "skipped": 2
+    }
+  },
+  "medianLatencyMs": 3448,
+  "medianInputTokens": 55007,
+  "medianCachedTokens": 52920,
+  "medianOutputTokens": 249,
+  "medianThinkingTokens": 0
+}

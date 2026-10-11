@@ -108,6 +108,22 @@ describe('writer input', () => {
     expect(input).not.toContain('x'.repeat(1300));
   });
 
+  it('shows the claims the router matched in full, before the question', () => {
+    const input = buildWriterInput({
+      question: 'Has he worked at a bank?',
+      history: [],
+      hintIds: ['br-regulated-finance'],
+      matchedClaims: [
+        { id: 'br-regulated-finance', text: 'He worked for banking clients.' },
+      ],
+    });
+    const matched = input.indexOf(
+      '[br-regulated-finance] He worked for banking',
+    );
+    expect(matched).toBeGreaterThan(-1);
+    expect(matched).toBeLessThan(input.indexOf('Has he worked at a bank?'));
+  });
+
   it('omits the history and hint sections when there are none', () => {
     const input = buildWriterInput({
       question: 'Hello?',
@@ -203,6 +219,22 @@ describe('runWriter', () => {
     expect(request.maxOutputTokens).toBeGreaterThanOrEqual(4096);
     expect(result.draft.segments[0]!.claimIds).toEqual(['claim-a']);
     expect(result.usage).toEqual(usage);
+  });
+
+  it('uses the thinking level it is given', async () => {
+    const { provider, requests } = fakeProvider({
+      answerStatus: 'refused',
+      segments: [],
+      notShown: [],
+    });
+    await runWriter(provider, {
+      knowledge: KNOWLEDGE,
+      question: 'x?',
+      history: [],
+      hintIds: [],
+      thinkingLevel: 'low',
+    });
+    expect(requests[0]!.thinkingLevel).toBe('low');
   });
 
   it('calls the provider once, even when the draft is unusable', async () => {

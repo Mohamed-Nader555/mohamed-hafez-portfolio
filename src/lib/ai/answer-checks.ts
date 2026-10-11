@@ -10,7 +10,28 @@ import { extractNumbers } from './answer-guards';
 import { triggerMatches } from './hints';
 
 export type DraftSegment = { text: string; claimIds: string[] };
-export type Dropped = { index: number; reason: string };
+export type Dropped = { index: number; reason: string; kind: DropKind };
+
+/** What kind of check failed; safe to log, unlike the reason, which can name things. */
+export type DropKind =
+  | 'unknown-claim'
+  | 'wording'
+  | 'own-reading'
+  | 'number'
+  | 'entity'
+  | 'quote'
+  | 'gap';
+
+function kindOf(reason: string): DropKind {
+  if (reason.startsWith('unknown claim')) return 'unknown-claim';
+  if (reason.startsWith('verdict') || reason.startsWith('wording'))
+    return 'wording';
+  if (/own reading/.test(reason)) return 'own-reading';
+  if (reason.startsWith('number')) return 'number';
+  if (reason.startsWith('a quote')) return 'quote';
+  if (reason.startsWith('names a named gap')) return 'gap';
+  return 'entity';
+}
 
 /** An entity named in some text: its key, and the project it stands for. */
 export type NamedEntity = { key: string; projectId?: string };
@@ -148,7 +169,7 @@ export function checkDraft(
   segments.forEach((segment, index) => {
     const reason = problemWith(segment, ctx, ownReadingTaken);
     if (reason) {
-      dropped.push({ index, reason });
+      dropped.push({ index, reason, kind: kindOf(reason) });
       return;
     }
     if (segment.claimIds.length === 0) ownReadingTaken = true;

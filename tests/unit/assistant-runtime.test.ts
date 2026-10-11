@@ -96,6 +96,16 @@ describe('assistantConfig', () => {
     ).not.toContain('secret-1');
   });
 
+  it('reads the writer’s thinking level, medium unless told otherwise', () => {
+    expect(assistantConfig({}).writerThinking).toBe('medium');
+    expect(
+      assistantConfig({ GEMINI_WRITER_THINKING: 'low' }).writerThinking,
+    ).toBe('low');
+    expect(
+      assistantConfig({ GEMINI_WRITER_THINKING: 'minimal' }).writerThinking,
+    ).toBe('medium');
+  });
+
   it('treats an unknown or missing mode as classic', () => {
     expect(assistantConfig({}).mode).toBe('classic');
     expect(assistantConfig({ ASSISTANT_MODE: 'turbo' }).mode).toBe('classic');
