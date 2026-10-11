@@ -8,6 +8,7 @@ import { POST } from '@/pages/api/chat';
 import { GET as health } from '@/pages/api/chat/health';
 import { validateTurnstile } from '@/lib/security/turnstile';
 import { HEALTH_VERSION } from '@/lib/health-version';
+import ledgerJson from '@/generated/ledger.json';
 
 const payload = {
   question: 'How was Northstar built?',
@@ -233,12 +234,15 @@ describe('GET /api/chat/health', () => {
     const body = JSON.parse(text) as Record<string, unknown>;
     expect(Object.keys(body).sort()).toEqual([
       'ai',
+      'geminiKey',
       'hostnames',
       'knowledgeChunks',
+      'mode',
       'ok',
       'verification',
       'version',
     ]);
+    expect(body).toMatchObject({ mode: 'classic', geminiKey: false });
     expect(body).toMatchObject({
       ok: true,
       ai: true,
@@ -249,6 +253,17 @@ describe('GET /api/chat/health', () => {
     // Each brief 3 stage bumps this so a deployment can be recognised.
     expect(body.version).toBe(HEALTH_VERSION);
     expect(HEALTH_VERSION).toMatch(/^brief3-[a-e]$/);
+  });
+
+  it('reports the mode and whether the Gemini key is set, never the key', async () => {
+    setTestCloudflareEnv({
+      ...configured,
+      ASSISTANT_MODE: 'ledger',
+      GEMINI_API_KEY: 'never-shown-key',
+    });
+    const text = await (await health({} as never)).text();
+    expect(text).not.toContain('never-shown-key');
+    expect(JSON.parse(text)).toMatchObject({ mode: 'ledger', geminiKey: true });
   });
 
   it('is not ok when verification or hostnames are missing', async () => {
@@ -263,5 +278,143 @@ describe('GET /api/chat/health', () => {
       verification: false,
       hostnames: 0,
     });
+  });
+});
+
+describe('which pipeline answers', () => {
+  const sentence = (id: string) =>
+    (ledgerJson as Array<{ id: string; text: string }>)
+      .find((claim) => claim.id === id)!
+      .text.split(/(?<=\.)\s/)[0]!;
+  const geminiReply = (data: unknown) =>
+    new Response(
+      JSON.stringify({
+        status: 'completed',
+        steps: [
+          {
+            type: 'model_output',
+            content: [{ type: 'text', text: JSON.stringify(data) }],
+          },
+        ],
+        usage: { total_input_tokens: 10, total_output_tokens: 5 },
+      }),
+      { status: 200 },
+    );
+  const fetchStub = () =>
+    vi.fn(async (_url: unknown, init?: RequestInit) => {
+      const model = JSON.parse(String(init?.body)).model as string;
+      return model === 'writer-test'
+        ? geminiReply({
+            answerStatus: 'answered',
+            segments: [
+              {
+                text: sentence('northstar-chunking'),
+                claimIds: ['northstar-chunking'],
+              },
+            ],
+            notShown: [],
+          })
+        : geminiReply({ verdicts: [{ index: 0, verdict: 'supported' }] });
+    });
+  const kvWith = (count: number) => {
+    const store = new Map<string, string>([
+      [
+        `model-questions:${new Date().toISOString().slice(0, 10)}`,
+        String(count),
+      ],
+    ]);
+    return {
+      store,
+      get: vi.fn(async (key: string) => store.get(key) ?? null),
+      put: vi.fn(async (key: string, value: string) => {
+        store.set(key, value);
+      }),
+    };
+  };
+  const ledgerEnv = (extra: Record<string, unknown> = {}) => ({
+    ...configured,
+    ASSISTANT_MODE: 'ledger',
+    GEMINI_API_KEY: 'test-key',
+    GEMINI_WRITER_MODEL: 'writer-test',
+    GEMINI_CHECKER_MODEL: 'checker-test',
+    ...extra,
+  });
+  const ask = (question = payload.question) =>
+    POST({
+      request: new Request('http://local.test/api/chat', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          ...payload,
+          question,
+          sessionId: crypto.randomUUID(),
+        }),
+      }),
+    } as never);
+  beforeEach(() => {
+    // Earlier tests may leave the real validator installed.
+    vi.mocked(validateTurnstile).mockResolvedValue(true);
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('answers through the writer and checker in ledger mode and counts the question', async () => {
+    const fetchMock = fetchStub();
+    vi.stubGlobal('fetch', fetchMock);
+    const run = vi.fn();
+    const kv = kvWith(0);
+    setTestCloudflareEnv(ledgerEnv({ AI: { run }, CHAT_BUDGET: kv }));
+    const body = (await (await ask()).json()) as {
+      answerStatus: string;
+      segments: Array<{ label: string }>;
+      trace: { path: string };
+    };
+    expect(body.answerStatus).toBe('answered');
+    expect(body.segments[0]!.label).toBe('site');
+    expect(body.trace.path).toBe('ledger');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(run).not.toHaveBeenCalled();
+    expect([...kv.store.values()]).toContain('1');
+  });
+
+  it('runs the classic pipeline once the daily cap is reached', async () => {
+    const fetchMock = fetchStub();
+    vi.stubGlobal('fetch', fetchMock);
+    const run = vi.fn().mockRejectedValue(new Error('classic down'));
+    setTestCloudflareEnv(
+      ledgerEnv({
+        AI: { run },
+        CHAT_BUDGET: kvWith(3),
+        DAILY_MODEL_QUESTION_CAP: '3',
+      }),
+    );
+    const body = (await (await ask()).json()) as { answerStatus: string };
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(run).toHaveBeenCalledTimes(1);
+    expect(body.answerStatus).toBe('fallback');
+  });
+
+  it('runs the classic pipeline in classic mode and when the key is missing', async () => {
+    const fetchMock = fetchStub();
+    vi.stubGlobal('fetch', fetchMock);
+    const run = vi.fn().mockRejectedValue(new Error('classic down'));
+    setTestCloudflareEnv(ledgerEnv({ AI: { run }, ASSISTANT_MODE: 'classic' }));
+    await ask();
+    setTestCloudflareEnv(ledgerEnv({ AI: { run }, GEMINI_API_KEY: undefined }));
+    await ask();
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(run).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not count or send a question the hard guard refuses', async () => {
+    const fetchMock = fetchStub();
+    vi.stubGlobal('fetch', fetchMock);
+    const kv = kvWith(0);
+    setTestCloudflareEnv(ledgerEnv({ CHAT_BUDGET: kv }));
+    const body = (await (await ask('What salary does he expect?')).json()) as {
+      answerStatus: string;
+    };
+    expect(body.answerStatus).toBe('refused');
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(kv.put).not.toHaveBeenCalled();
   });
 });

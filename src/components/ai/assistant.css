@@ -515,7 +515,8 @@
 }
 
 .chat-turn--user p,
-.chat-message > p {
+.chat-message > p,
+.chat-segment p {
   color: var(--color-ink-100);
   font-size: 0.94rem;
   line-height: 1.58;
@@ -556,6 +557,67 @@
   font-size: 0.58rem;
   letter-spacing: 0.045em;
   text-transform: uppercase;
+}
+
+.chat-segment + .chat-segment {
+  margin-top: 0.7rem;
+}
+
+.chat-segment-label {
+  display: inline-block;
+  margin-bottom: 0.2rem;
+  color: var(--color-evidence-300);
+  font-family: var(--font-utility);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chat-segment--notes .chat-segment-label {
+  color: var(--color-verified-500);
+}
+
+.chat-segment--own-words .chat-segment-label {
+  color: var(--color-ai-300);
+}
+
+.chat-segment--reading .chat-segment-label {
+  color: var(--color-ink-300, var(--color-ink-100));
+}
+
+.chat-segment blockquote {
+  margin: 0;
+  border-left: 2px solid var(--color-ai-300);
+  padding-left: 0.7rem;
+}
+
+.chat-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  margin-top: 0.72rem;
+}
+
+.chat-action {
+  display: inline-block;
+  border: 1px solid rgb(85 223 253 / 28%);
+  border-radius: 999px;
+  padding: 0.3rem 0.62rem;
+  color: var(--color-ink-100);
+  background: rgb(85 223 253 / 8%);
+  font-size: 0.72rem;
+  text-decoration: none;
+}
+
+.chat-action:hover,
+.chat-action:focus-visible {
+  border-color: rgb(85 223 253 / 60%);
+}
+
+.chat-message--not_covered {
+  border-color: rgb(255 214 107 / 24%);
+  box-shadow: inset 3px 0 0 rgb(255 214 107 / 60%);
 }
 
 .chat-message--refused .chat-answer-status {

@@ -26,11 +26,44 @@ export type AiMessage = {
   role: 'system' | 'user' | 'assistant';
   content: string;
 };
+/** Where a part of an answer came from; set by code from the claims it cites. */
+export type ChatLabel = 'site' | 'notes' | 'own-words' | 'reading';
+export type ChatSegment = {
+  text: string;
+  label: ChatLabel;
+  /** Public ids of the claims behind the text; empty for the assistant's own reading. */
+  claimIds: string[];
+  citations: Citation[];
+};
+/**
+ * A next step offered under an answer. The email action carries only the
+ * address; the browser builds the `mailto:` link with the visitor's question.
+ */
+export type ChatAction =
+  | { kind: 'case-study'; label: string; href: string }
+  | { kind: 'resume'; label: string; href: string }
+  | { kind: 'email'; label: string; address: string };
+/** How an answer was made, for the "How this answer was made" note. No text. */
+export type ChatTrace = {
+  path: 'ledger' | 'fallback';
+  writerModel?: string;
+  checkerModel?: string;
+  checker: 'passed' | 'unchecked' | 'skipped';
+  /** Segments the writer drafted, and how many code or the checker dropped. */
+  drafted: number;
+  dropped: number;
+};
 export type ChatResponse = {
   requestId: string;
+  /** The segments joined; kept so stored threads and older code still work. */
   answer: string;
-  answerStatus: 'answered' | 'refused' | 'fallback';
+  answerStatus: 'answered' | 'not_covered' | 'refused' | 'fallback';
   citations: Citation[];
+  segments?: ChatSegment[];
+  actions?: ChatAction[];
+  /** Terms the visitor asked about that the site does not show. */
+  notShown?: string[];
+  trace?: ChatTrace;
   followUps: string[];
   telemetry: {
     questionCategory: KnowledgeCategory | 'unknown';

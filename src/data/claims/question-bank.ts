@@ -15,6 +15,17 @@ export const questionBank: readonly BankAnswer[] = [
     basisIds: [],
   },
   {
+    id: 'qb-short-bio',
+    group: 'About me',
+    question: 'Tell me about yourself.',
+    alsoAskedAs: ['Give me a short bio', 'What is his background?'],
+    answer:
+      'I’m a Toronto-based machine learning engineer focused on PII extraction, named-entity recognition and LLM evaluation. My M.A. thesis at York University produced ASC-PIE, a 333,109-example PII corpus and benchmark, and SPRINT-PP, a continual-learning method that keeps earlier PII types without storing raw personal data. Before that I delivered more than ten applied ML projects, built enterprise document workflows for banking clients, and delivered 16 Android applications. I now work as a Founding AI Engineer at Eklan.',
+    gap: false,
+    triggers: [],
+    basisIds: [],
+  },
+  {
     id: 'qb-through-line',
     group: 'About me',
     question:
@@ -159,6 +170,18 @@ export const questionBank: readonly BankAnswer[] = [
     answer:
       'I implemented OpenText Documentum workflows and lifecycles for document intake, review, routing, archival and retention for banking clients, with DQL validation of metadata and retention, Java and iText PDF services, and production support.',
     lens: 'software',
+    gap: false,
+    triggers: [],
+    basisIds: [],
+  },
+  {
+    id: 'qb-pitch-android',
+    group: 'My background, by role',
+    question: 'What is your Android background?',
+    alsoAskedAs: [],
+    answer:
+      'Over five years I delivered 16 Android applications in Kotlin and Java, with MVVM, Retrofit, Room, Firebase and Play Console releases. Four were previously published on Google Play: three under client-owned listings and one as part of my ITI training. I have also integrated OCR, computer vision and ML into mobile apps, including an assistive smart-glasses system.',
+    lens: 'android',
     gap: false,
     triggers: [],
     basisIds: [],

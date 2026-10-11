@@ -1,35 +1,16 @@
 import { buildEvidenceFallback } from '@/lib/rag/extractive-fallback';
-import { followUpsFor, retrieveEvidence } from '@/lib/rag/retrieve';
-import type { RetrievalResult } from '@/lib/rag/types';
+import {
+  followUpsFor,
+  guardRefuses,
+  retrieveEvidence,
+} from '@/lib/rag/retrieve';
 import { starterSuggestions } from '@/data/assistant-suggestions';
 import { parseModelOutput, ungroundedNumbers } from './answer-guards';
+import { answerFromLedger, type LedgerDeps } from './ledger-answer';
 import { buildGroundedMessages } from './prompt';
+import { refusal } from './refusal';
 import { validateModelAnswer } from './response-schema';
 import type { AiProvider, AnswerInput, ChatResponse } from './types';
-
-const OUT_OF_SCOPE =
-  'I do not have verified public evidence for that. I can help with Mohamed’s projects, experience, education, availability, or work authorization.';
-
-const refusal = (
-  requestId: string,
-  retrieval?: RetrievalResult,
-  fallbackSuggestions: string[] = [],
-): ChatResponse => ({
-  requestId,
-  answer:
-    retrieval?.refusalReason === 'unknown-technology'
-      ? `The portfolio doesn’t show experience with ${retrieval.unknownSubject}. I can tell you which technologies Mohamed has used in his published projects.`
-      : retrieval?.refusalReason === 'unknown-employer'
-        ? `The portfolio doesn’t list ${retrieval.unknownSubject} among Mohamed’s employers. I can tell you where he has worked.`
-        : OUT_OF_SCOPE,
-  answerStatus: 'refused',
-  citations: [],
-  followUps: (retrieval?.suggestions?.length
-    ? retrieval.suggestions
-    : fallbackSuggestions
-  ).slice(0, 3),
-  telemetry: { questionCategory: 'unknown', latencyBucket: 'lt-500ms' },
-});
 
 function normalizeModelAnswer(raw: unknown, allowed: Set<string>): unknown {
   const value = parseModelOutput(raw);
@@ -54,10 +35,17 @@ function normalizeModelAnswer(raw: unknown, allowed: Set<string>): unknown {
   return { ...record, citationIds: safeCitationIds, followUps: [] };
 }
 
+/**
+ * The router. In order: the hard guard refuses (unchanged); everything else
+ * goes to the writer when the ledger pipeline is on, and to today's pipeline
+ * when it is not. A question the guard refuses never reaches a model.
+ */
 export async function answerRecruiterQuestion(
-  deps: { provider: AiProvider; modelId?: string },
+  deps: { provider: AiProvider; modelId?: string; ledger?: LedgerDeps },
   input: AnswerInput,
 ): Promise<ChatResponse> {
+  if (deps.ledger && !guardRefuses(input.question))
+    return answerFromLedger(deps.ledger, input);
   const started = Date.now();
   const retrieval = retrieveEvidence({ ...input, limit: 8 });
   if (!retrieval.supported)

@@ -1,12 +1,13 @@
 import type { APIRoute } from 'astro';
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import { HEALTH_VERSION } from '@/lib/health-version';
+import { assistantConfig, type AssistantEnv } from '@/lib/ai/assistant-runtime';
 import { knowledgeChunkCount } from '@/lib/rag/retrieve';
 import { parseExpectedHostnames } from '@/lib/security/turnstile';
 
 export const prerender = false;
 
-type Env = {
+type Env = AssistantEnv & {
   AI?: unknown;
   TURNSTILE_SECRET_KEY?: string;
   TURNSTILE_EXPECTED_HOSTNAMES?: string;
@@ -18,6 +19,7 @@ export const GET: APIRoute = async () => {
   const env = cloudflareEnv as Env;
   const verification = Boolean(env.TURNSTILE_SECRET_KEY);
   const hostnames = parseExpectedHostnames(env).length;
+  const assistant = assistantConfig(env);
   return new Response(
     JSON.stringify({
       ok: verification && hostnames > 0,
@@ -25,6 +27,8 @@ export const GET: APIRoute = async () => {
       verification,
       hostnames,
       knowledgeChunks: knowledgeChunkCount(),
+      mode: assistant.mode,
+      geminiKey: assistant.keyPresent,
       version: HEALTH_VERSION,
     }),
     {

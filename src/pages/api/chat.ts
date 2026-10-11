@@ -1,6 +1,9 @@
 import type { APIRoute } from 'astro';
 import { env as cloudflareEnv } from 'cloudflare:workers';
 import { answerRecruiterQuestion } from '@/lib/ai/answer-service';
+import { chooseAssistant, type AssistantEnv } from '@/lib/ai/assistant-runtime';
+import { createLedgerDeps } from '@/lib/ai/ledger-deps';
+import { guardRefuses } from '@/lib/rag/retrieve';
 import {
   createWorkersAiProvider,
   DEFAULT_WORKERS_AI_MODEL,
@@ -36,7 +39,7 @@ const error = (
     }),
     { status, headers },
   );
-type Env = {
+type Env = AssistantEnv & {
   AI?: { run(model: string, input: Record<string, unknown>): Promise<unknown> };
   TURNSTILE_SECRET_KEY?: string;
   RATE_LIMIT_HASH_SECRET?: string;
@@ -125,8 +128,19 @@ export const POST: APIRoute = async ({ request }) => {
           throw new Error('AI unavailable');
         },
       };
+  // A question the hard guard refuses never reaches a model, so it does not
+  // count towards the daily cap.
+  const ledger =
+    !guardRefuses(requestBody.data.question) &&
+    (await chooseAssistant(env)) === 'ledger'
+      ? createLedgerDeps(env)
+      : undefined;
   const response = await answerRecruiterQuestion(
-    { provider, modelId: env.AI_MODEL ?? DEFAULT_WORKERS_AI_MODEL },
+    {
+      provider,
+      modelId: env.AI_MODEL ?? DEFAULT_WORKERS_AI_MODEL,
+      ledger,
+    },
     { ...requestBody.data, requestId },
   );
   return new Response(JSON.stringify(response), { status: 200, headers });

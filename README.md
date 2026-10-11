@@ -37,7 +37,7 @@ The portfolio is intentionally content-driven and mostly server-rendered.
 - **MDX** stores long-form case studies.
 - **TypeScript and Zod** provide typed content and API validation.
 - **MiniSearch** builds a curated lexical retrieval index from public evidence at build time.
-- **Cloudflare Workers AI** generates grounded answers in production.
+- **Google Gemini** (a writer model and a cheaper checker model) writes and checks grounded answers in production; **Cloudflare Workers AI** runs the earlier pipeline when `ASSISTANT_MODE` is `classic` or the daily cap is reached.
 - **Cloudflare Turnstile and rate-limit bindings** protect the chat endpoint.
 - **Vitest, Playwright, axe, and Lighthouse CI** cover logic, browser behavior, accessibility, and performance.
 
@@ -45,13 +45,15 @@ The role switcher changes emphasis and ordering rather than hiding the rest of m
 
 ## AI assistant behavior
 
-The assistant is not a fixed FAQ. It retrieves relevant facts from the curated knowledge base and can answer supported questions about projects, technologies, responsibilities, research, teaching, experience, location, availability, work authorization, and contact details.
+The assistant is not a fixed FAQ. It reasons over a claims ledger built from the site, from Mohamed's notes and from his own answers, labels each part of an answer by where it came from, and can answer supported questions about projects, technologies, responsibilities, research, teaching, experience, location, availability, work authorization, and contact details.
 
 The assistant follows three important boundaries:
 
 1. It answers only from approved public evidence in this repository.
 2. It refuses unrelated or unsupported questions instead of guessing.
-3. If the model is unavailable, it returns a clearly labeled extractive summary of verified facts.
+3. If the model is unavailable, or nothing in its draft passes the checks, it returns a clearly labeled extractive summary of verified facts.
+
+Each question costs at most two model calls (one writer, one checker), never a second model, and is capped per day. It never gives a verdict on fit: role questions get an evidence map.
 
 Raw resumes, local file paths, prompts, chat questions, and generated answers are not stored in the generated knowledge artifact. Production provider calls happen only on the server.
 
@@ -83,7 +85,7 @@ npm run dev
 
 Then open [http://localhost:4321](http://localhost:4321).
 
-The static portfolio works locally without a Cloudflare account. Live Workers AI generation requires the production Cloudflare bindings; the assistant retains its verified fallback behavior when the provider is unavailable.
+The static portfolio works locally without a Cloudflare account. Live generation needs `GEMINI_API_KEY` in the git-ignored `.dev.vars` (see `.dev.vars.example`) or, for the earlier mode, the Workers AI binding; without them the assistant keeps its verified fallback behavior.
 
 ## Useful commands
 

@@ -3,9 +3,10 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e',
   globalSetup: './tests/e2e/global-setup.ts',
-  // The dev server compiles on demand; two workers keep first-load latency
-  // well inside the per-test timeout.
-  workers: 2,
+  // The dev server compiles on demand; with two workers the first load of a
+  // page sometimes ran past the per-test timeout, so one worker is the default.
+  // Pass `--workers=2` to go faster on a warm machine.
+  workers: 1,
   use: {
     baseURL: 'http://127.0.0.1:4321',
   },
