@@ -103,9 +103,12 @@ export function PortfolioAssistant({
     setOpen(false);
   };
   closeRef.current = closePanel;
-  const submit = async (event: { preventDefault(): void }) => {
-    event.preventDefault();
-    const question = draft.trim();
+  /**
+   * Asks one question. A retry (after a fallback summary) sends the history
+   * without the failed exchange and replaces that exchange when it succeeds;
+   * when it fails the summary stays and the draft is left alone.
+   */
+  const ask = async (question: string, isRetry = false) => {
     if (!store || !question || state === 'verifying' || state === 'submitting')
       return;
     cancelPending();
@@ -119,7 +122,7 @@ export function PortfolioAssistant({
     setState('verifying');
     setErrorCode(undefined);
     setPendingQuestion(question);
-    setDraft('');
+    if (!isRetry) setDraft('');
     try {
       const session = store.load();
       const turnstileToken = await requestTurnstileToken(
@@ -145,13 +148,14 @@ export function PortfolioAssistant({
         {
           question,
           activeRole: selectedRole,
-          history: session.history,
+          history: isRetry ? session.history.slice(0, -2) : session.history,
           sessionId: session.sessionId,
           turnstileToken,
         },
         abort.signal,
       );
       if (run !== runId.current) return;
+      if (isRetry) store.dropLastExchange();
       store.append({ role: 'user', content: question });
       store.append({
         role: 'assistant',
@@ -165,7 +169,7 @@ export function PortfolioAssistant({
     } catch (error) {
       // Cleared, closed or superseded: whoever cancelled already reset state.
       if (run !== runId.current) return;
-      setDraft(question);
+      if (!isRetry) setDraft(question);
       setPendingQuestion('');
       setErrorCode(
         error instanceof ChatFailure
@@ -179,6 +183,10 @@ export function PortfolioAssistant({
       window.clearTimeout(timeout);
       if (run === runId.current) setChallengeVisible(false);
     }
+  };
+  const submit = (event: { preventDefault(): void }) => {
+    event.preventDefault();
+    void ask(draft.trim());
   };
   const latest = thread[thread.length - 1]?.response;
   const suggestions = latest?.followUps.length
@@ -203,6 +211,7 @@ export function PortfolioAssistant({
           turnstileSlotRef={turnstileSlotRef}
           suggestions={suggestions}
           selectedRole={selectedRole}
+          retry={(retried) => void ask(retried, true)}
         />
       )}
       <p className="sr-only" aria-live="polite">

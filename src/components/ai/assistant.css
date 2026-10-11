@@ -615,6 +615,25 @@
   border-color: rgb(85 223 253 / 60%);
 }
 
+button.chat-action {
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+button.chat-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.chat-notice {
+  margin: 0 0 0.6rem;
+  border-left: 2px solid rgb(255 214 107 / 60%);
+  padding-left: 0.6rem;
+  color: var(--color-ink-100);
+  font-size: 0.78rem;
+}
+
 .chat-message--not_covered {
   border-color: rgb(255 214 107 / 24%);
   box-shadow: inset 3px 0 0 rgb(255 214 107 / 60%);

@@ -28,6 +28,7 @@ export function ChatPanel({
   turnstileSlotRef,
   suggestions,
   selectedRole,
+  retry,
 }: {
   inputRef: RefObject<HTMLTextAreaElement | null>;
   draft: string;
@@ -43,6 +44,8 @@ export function ChatPanel({
   turnstileSlotRef: RefObject<HTMLDivElement | null>;
   suggestions: string[];
   selectedRole: RoleId;
+  /** Asks the newest question again, in place of its fallback summary. */
+  retry(question: string): void;
 }) {
   const end = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -131,6 +134,12 @@ export function ChatPanel({
                 <ChatMessage
                   response={entry.response}
                   question={entry.question}
+                  onRetry={
+                    index === thread.length - 1
+                      ? () => retry(entry.question)
+                      : undefined
+                  }
+                  retryDisabled={busy}
                 />
               </div>
             ))}
