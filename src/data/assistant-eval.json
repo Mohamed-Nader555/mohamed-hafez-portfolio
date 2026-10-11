@@ -9,7 +9,7 @@
   "groups": {
     "facts": {
       "run": 10,
-      "passed": 9,
+      "passed": 10,
       "skipped": 0
     },
     "indirect": {
@@ -53,9 +53,9 @@
       "skipped": 2
     }
   },
-  "medianLatencyMs": 3448,
-  "medianInputTokens": 55007,
-  "medianCachedTokens": 52920,
-  "medianOutputTokens": 249,
+  "medianLatencyMs": 3533,
+  "medianInputTokens": 55023,
+  "medianCachedTokens": 52925,
+  "medianOutputTokens": 220,
   "medianThinkingTokens": 0
 }

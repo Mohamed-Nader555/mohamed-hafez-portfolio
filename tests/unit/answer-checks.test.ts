@@ -140,6 +140,27 @@ describe('checkDraft', () => {
     expect(kept).toHaveLength(1);
   });
 
+  it('counts the claims a bridge rests on as grounding for names', () => {
+    const withBasis = new Map(claims);
+    withBasis.set(
+      'br-x',
+      claim('br-x', 'He built services for clients.', {
+        origin: 'notes',
+        basisIds: ['c-python'],
+      }),
+    );
+    const result = checkDraft(
+      [{ text: 'He built services in Python.', claimIds: ['br-x'] }],
+      { ...ctx, claims: withBasis },
+    );
+    expect(result.kept).toHaveLength(1);
+    // Without the basis, the same name is still dropped.
+    expect(
+      run([{ text: 'He built services in Python.', claimIds: ['c-dostava'] }])
+        .kept,
+    ).toEqual([]);
+  });
+
   it('drops an employer the cited claims do not name', () => {
     const { kept, dropped } = run([
       { text: 'He worked at BASS.', claimIds: ['c-dostava'] },
@@ -269,6 +290,18 @@ describe('createCheckContext with the real ledger', () => {
       real,
     );
     expect(kept).toHaveLength(1);
+  });
+
+  it('does not mistake ordinary words for a project name', () => {
+    const entities = real.entitiesIn(
+      'He brings applied machine learning to a capstone and a proof of concept.',
+    );
+    expect(entities).toEqual([]);
+    expect(
+      real.entitiesIn(
+        'He built the Applied Machine Learning Portfolio at DotPy.',
+      ).length,
+    ).toBeGreaterThan(0);
   });
 
   it('drops an invented technology next to a real claim', () => {

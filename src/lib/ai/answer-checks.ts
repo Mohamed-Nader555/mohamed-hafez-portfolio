@@ -122,9 +122,21 @@ function problemWith(
   if (stray.length)
     return `number ${stray.join(', ')} is not in the cited claims`;
 
-  const citedKeys = new Set(ctx.entitiesIn(citedText).map((e) => e.key));
+  // A bridge, skill group or gap answer rests on its basis claims, so names
+  // that appear in them are grounded too.
+  const grounding = [
+    ...cited,
+    ...cited.flatMap((claim) =>
+      (claim.basisIds ?? []).flatMap((id) => {
+        const basis = ctx.claims.get(id);
+        return basis ? [basis] : [];
+      }),
+    ),
+  ];
+  const groundingText = grounding.map((claim) => claim.text).join(' ');
+  const citedKeys = new Set(ctx.entitiesIn(groundingText).map((e) => e.key));
   const citedProjects = new Set(
-    cited.map((claim) => claim.projectId).filter(Boolean),
+    grounding.map((claim) => claim.projectId).filter(Boolean),
   );
   const unnamed = segmentEntities.find(
     (entity) =>
@@ -132,7 +144,7 @@ function problemWith(
       !(entity.projectId && citedProjects.has(entity.projectId)),
   );
   if (unnamed) return `${unnamed.key} is not named in the cited claims`;
-  const citedEmployers = new Set(employersIn(citedText));
+  const citedEmployers = new Set(employersIn(groundingText));
   const employer = segmentEmployers.find((name) => !citedEmployers.has(name));
   if (employer) return `${employer} is not named in the cited claims`;
 

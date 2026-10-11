@@ -42,13 +42,20 @@ export const knowledgeChunkCount = () => chunks.length;
 const escapeRegExp = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-function findEntities(raw: string, cap = 3) {
+function findEntities(raw: string, cap = 3, namesOnly = false) {
   const padded = ` ${matchKey(raw)} `;
   const projectHits: KnowledgeEntity[] = [];
   let techHits: KnowledgeEntity[] = [];
   for (const entity of entities) {
+    // A project's first two terms are its slug and its title; the rest are
+    // descriptive aliases ("applied machine learning", "capstone") that match
+    // questions but would also match ordinary prose.
+    const terms =
+      namesOnly && entity.kind === 'project'
+        ? entity.terms.slice(0, 2)
+        : entity.terms;
     const matched =
-      entity.terms.some((term) => padded.includes(` ${term} `)) ||
+      terms.some((term) => padded.includes(` ${term} `)) ||
       entity.exactCase?.some((term) =>
         new RegExp(
           `(^|[^A-Za-z0-9])${escapeRegExp(term)}($|[^A-Za-z0-9+#])`,
@@ -71,9 +78,12 @@ function findEntities(raw: string, cap = 3) {
   };
 }
 
-/** Every project and technology a text names, uncapped; used by the answer checks. */
+/**
+ * Every project (by name) and technology a text names, uncapped; used by the
+ * answer checks.
+ */
 export function entitiesNamedIn(text: string): KnowledgeEntity[] {
-  const { projectHits, techHits } = findEntities(text, Infinity);
+  const { projectHits, techHits } = findEntities(text, Infinity, true);
   return [...projectHits, ...techHits];
 }
 
