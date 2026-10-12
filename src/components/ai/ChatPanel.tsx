@@ -1,9 +1,11 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import type { RoleId } from '@/types/content';
 import { chatFailureMessage, type ChatFailureCode } from './chat-errors';
 import { ChatMessage } from './ChatMessage';
+import { MAX_JOB_DESCRIPTION_CHARS } from './job-description';
 import { ChatSuggestions } from './ChatSuggestions';
 import { NeuralGlyph } from './NeuralGlyph';
+import { RolePicker } from './RolePicker';
 import type { ThreadEntry } from './session-store';
 
 const roleLabels: Record<RoleId, string> = {
@@ -17,6 +19,8 @@ export function ChatPanel({
   inputRef,
   draft,
   setDraft,
+  jobDescription,
+  setJobDescription,
   close,
   clear,
   submit,
@@ -28,10 +32,13 @@ export function ChatPanel({
   turnstileSlotRef,
   suggestions,
   selectedRole,
+  retry,
 }: {
   inputRef: RefObject<HTMLTextAreaElement | null>;
   draft: string;
   setDraft(value: string): void;
+  jobDescription: string;
+  setJobDescription(value: string): void;
   close(): void;
   clear(): void;
   submit(event: { preventDefault(): void }): void;
@@ -43,8 +50,12 @@ export function ChatPanel({
   turnstileSlotRef: RefObject<HTMLDivElement | null>;
   suggestions: string[];
   selectedRole: RoleId;
+  /** Asks the newest question again, in place of its fallback summary. */
+  retry(question: string): void;
 }) {
   const end = useRef<HTMLDivElement>(null);
+  const [rolesOpen, setRolesOpen] = useState(false);
+  const [jdOpen, setJdOpen] = useState(false);
   useEffect(() => {
     // Newest at the bottom, kept in view.
     const reduced = window.matchMedia?.(
@@ -107,7 +118,13 @@ export function ChatPanel({
             stays in your browser session.
           </p>
 
-          <div className="chat-conversation" aria-live="polite">
+          {rolesOpen && <RolePicker onClose={() => setRolesOpen(false)} />}
+
+          <div
+            className="chat-conversation"
+            aria-live="polite"
+            hidden={rolesOpen}
+          >
             {!thread.length && !pendingQuestion && state === 'ready' && (
               <div className="chat-welcome">
                 <p className="chat-query-label">QUERY PORTFOLIO</p>
@@ -131,6 +148,12 @@ export function ChatPanel({
                 <ChatMessage
                   response={entry.response}
                   question={entry.question}
+                  onRetry={
+                    index === thread.length - 1
+                      ? () => retry(entry.question)
+                      : undefined
+                  }
+                  retryDisabled={busy}
                 />
               </div>
             ))}
@@ -172,7 +195,17 @@ export function ChatPanel({
             <div ref={end} aria-hidden="true" />
           </div>
 
-          <ChatSuggestions suggestions={suggestions} onChoose={setDraft} />
+          <div hidden={rolesOpen}>
+            <ChatSuggestions suggestions={suggestions} onChoose={setDraft} />
+            <button
+              type="button"
+              className="chat-role-entry"
+              onClick={() => setRolesOpen(true)}
+            >
+              <span>Hiring for a role?</span>
+              <span aria-hidden="true">↗</span>
+            </button>
+          </div>
         </div>
 
         <div className="chat-turnstile" data-active={challengeVisible}>
@@ -190,6 +223,24 @@ export function ChatPanel({
           <label className="sr-only" htmlFor="portfolio-chat-question">
             Your question
           </label>
+          {jdOpen && (
+            <div className="chat-jd">
+              <label htmlFor="portfolio-chat-job-description">
+                Job description
+              </label>
+              <textarea
+                id="portfolio-chat-job-description"
+                value={jobDescription}
+                onChange={(event) => setJobDescription(event.target.value)}
+                maxLength={MAX_JOB_DESCRIPTION_CHARS}
+                rows={5}
+                placeholder="Paste the posting here. It is only used to write your brief and is never stored."
+              />
+              <span className="chat-character-count">
+                {jobDescription.length}/{MAX_JOB_DESCRIPTION_CHARS}
+              </span>
+            </div>
+          )}
           <div className="chat-input-shell">
             <textarea
               ref={inputRef}
@@ -207,14 +258,14 @@ export function ChatPanel({
                 }
               }}
               maxLength={600}
-              required
+              required={!jobDescription.trim()}
               rows={2}
               placeholder="Ask about a project, technology, or experience…"
             />
             <button
               className="chat-send"
               type="submit"
-              disabled={busy || !draft.trim()}
+              disabled={busy || (!draft.trim() && !jobDescription.trim())}
               aria-label={
                 state === 'verifying'
                   ? 'Checking you’re human'
@@ -230,6 +281,13 @@ export function ChatPanel({
           <div className="chat-composer-meta">
             <button type="button" onClick={clear}>
               Clear session
+            </button>
+            <button
+              type="button"
+              aria-expanded={jdOpen}
+              onClick={() => setJdOpen((open) => !open)}
+            >
+              {jdOpen ? 'Hide job description' : 'Paste a job description'}
             </button>
             <span>
               <span className="chat-keyboard-hint">

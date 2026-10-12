@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-11",
+  "models": {
+    "writer": "gemini-3.8-flash",
+    "checker": "gemini-3.5-flash-lite"
+  },
+  "note": "Job-description cases only. Run once, then the three that timed out were rerun once after changing the writer from high to medium thinking.",
+  "firstRun": {
+    "thinking": "high",
+    "jobDescriptionCases": { "run": 3, "passed": 0, "timeouts": 3 },
+    "injectionCases": { "run": 2, "passed": 2, "modelCalls": 0 }
+  },
+  "rerun": {
+    "thinking": "medium",
+    "jobDescriptionCases": { "run": 3, "passed": 2 },
+    "miss": "One case failed its check as first written: it expected a group of requirements the site does not show, and the posting's requirements were all covered. The expectation was corrected after reading the output; the output itself was not changed or rerun.",
+    "medianLatencyMs": 9758,
+    "slowestLatencyMs": 21330,
+    "medianInputTokens": 55438,
+    "medianCachedTokens": 52582,
+    "medianOutputTokens": 828
+  }
+}

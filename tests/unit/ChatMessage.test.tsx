@@ -1,5 +1,11 @@
-import { cleanup, render, screen, within } from '@testing-library/react';
-import { afterEach, expect, it } from 'vitest';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
+import { afterEach, expect, it, vi } from 'vitest';
 import { ChatMessage } from '@/components/ai/ChatMessage';
 import type { ChatResponse } from '@/lib/ai/types';
 
@@ -124,4 +130,47 @@ it('says plainly when the site does not cover the question', () => {
 it('keeps the supporting-evidence list', () => {
   render(<ChatMessage response={labelled} question="Q?" />);
   expect(screen.getByText(/Supporting evidence/i)).toBeInTheDocument();
+});
+
+const fallback: ChatResponse = {
+  ...base,
+  answerStatus: 'fallback',
+  answer: 'A summary of verified facts.',
+};
+
+it('says in one line that the full assistant was busy when it serves the fallback', () => {
+  render(<ChatMessage response={fallback} question="Q?" />);
+  expect(screen.getByRole('note')).toHaveTextContent(
+    'The full assistant was busy, so this is a summary from the site.',
+  );
+  expect(screen.getAllByRole('note')).toHaveLength(1);
+});
+
+it('offers Try again on the fallback, among the next steps, and calls back when chosen', () => {
+  const onRetry = vi.fn();
+  render(<ChatMessage response={fallback} question="Q?" onRetry={onRetry} />);
+  const steps = screen.getByRole('group', { name: /next steps/i });
+  fireEvent.click(within(steps).getByRole('button', { name: 'Try again' }));
+  expect(onRetry).toHaveBeenCalledTimes(1);
+});
+
+it('has no Try again button without a retry handler, and none on a real answer', () => {
+  const { unmount } = render(<ChatMessage response={fallback} question="Q?" />);
+  expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull();
+  unmount();
+  render(<ChatMessage response={labelled} question="Q?" onRetry={vi.fn()} />);
+  expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull();
+  expect(screen.queryByRole('note')).toBeNull();
+});
+
+it('disables Try again while another question is running', () => {
+  render(
+    <ChatMessage
+      response={fallback}
+      question="Q?"
+      onRetry={vi.fn()}
+      retryDisabled
+    />,
+  );
+  expect(screen.getByRole('button', { name: 'Try again' })).toBeDisabled();
 });

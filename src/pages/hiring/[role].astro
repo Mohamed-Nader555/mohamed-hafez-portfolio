@@ -1,0 +1,137 @@
+---
+import ContactLinks from '@/components/layout/ContactLinks.astro';
+import { roleBriefs } from '@/data/claims/role-briefs';
+import type { RoleBrief, RoleRequirement } from '@/data/claims/types';
+import { roles } from '@/data/roles';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import '@/styles/hiring.css';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return roleBriefs.map((brief) => ({
+    params: { role: brief.slug },
+    props: { brief },
+  }));
+}
+
+const { brief } = Astro.props as { brief: RoleBrief };
+const lens = roles.find((role) => role.id === brief.lens);
+if (!lens) throw new Error(`No résumé lens for ${brief.slug}.`);
+
+const groups = [
+  {
+    id: 'direct-title',
+    label: 'Direct experience',
+    lead: 'Work the site shows him doing, at core or working level.',
+    items: brief.direct,
+  },
+  {
+    id: 'related-title',
+    label: 'Related experience',
+    lead: 'Nearby evidence: adjacent work, or skills at exposure level.',
+    items: brief.related,
+  },
+].filter((group) => group.items.length > 0);
+
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+const sourcesOf = (requirement: RoleRequirement) => requirement.citations;
+---
+
+<BaseLayout
+  title={`${brief.title} — Mohamed Hafez`}
+  description={`Where Mohamed Hafez’s published evidence matches a ${brief.title} role: direct and related experience with its sources, and his own answer. No score and no verdict.`}
+  roleId={brief.lens}
+>
+  <header class="longform-hero shell-container hiring-hero">
+    <p class="utility-label">Hiring for a role</p>
+    <h1>{brief.title}</h1>
+    <p class="longform-hero__summary">
+      Also called: {brief.alsoCalled.join(' · ')}
+    </p>
+    <p class="hiring-note">
+      This page lines up what the role asks for with what the site shows. It
+      does not rate or rank anything; each line links to its sources.
+    </p>
+  </header>
+
+  <section
+    class="hiring-summary shell-container"
+    aria-labelledby="summary-title"
+  >
+    <h2 id="summary-title">In Mohamed’s words</h2>
+    <div class="hiring-quote">
+      <span class="hiring-label">Mohamed’s answer</span>
+      <blockquote>
+        <p>{brief.summary.text}</p>
+      </blockquote>
+    </div>
+  </section>
+
+  {
+    groups.map((group) => (
+      <section class="hiring-group shell-container" aria-labelledby={group.id}>
+        <header>
+          <h2 id={group.id}>{group.label}</h2>
+          <p>{group.lead}</p>
+        </header>
+        <div class="hiring-requirements">
+          {group.items.map((requirement) => (
+            <article class="hiring-requirement">
+              <h3>{requirement.text}</h3>
+              <ul class="hiring-evidence">
+                {requirement.evidence.map((item) => (
+                  <li>{item.text}</li>
+                ))}
+              </ul>
+              <p class="hiring-sources">
+                <span>Sources:</span>
+                {sourcesOf(requirement).map((source) => (
+                  <a
+                    class="source-link"
+                    href={source.href}
+                    rel={isExternal(source.href) ? 'noopener' : undefined}
+                  >
+                    {source.label}
+                  </a>
+                ))}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="hiring-ask shell-container" aria-labelledby="ask-title">
+    <h2 id="ask-title">Ask him about</h2>
+    <ul>
+      {
+        brief.askHim.map((prompt) => (
+          <li>
+            <a href={`/about#${prompt.answerId}`}>{prompt.question}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section
+    class="hiring-actions shell-container"
+    aria-labelledby="actions-title"
+  >
+    <div>
+      <h2 id="actions-title">Next steps</h2>
+      <p>
+        <a class="hiring-resume" href={lens.resumeHref}>
+          Résumé: {lens.label}
+        </a>
+      </p>
+      <p>
+        <a href="/hiring">All roles</a> ·
+        <a href="/about#questions">More of his answers</a>
+      </p>
+    </div>
+    <ContactLinks ariaLabel="Contact Mohamed" variant="compact" />
+  </section>
+</BaseLayout>

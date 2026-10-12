@@ -44,6 +44,8 @@ export type ScorableAnswer = {
   answerStatus: string;
   notShown?: string[];
   segments?: Array<{ text: string; label: string; claimIds: string[] }>;
+  /** A job-description brief: the groups and how many items each holds. */
+  brief?: { groups: Array<{ id: string; items: unknown[] }> };
 };
 
 export type CaseResult = {
@@ -117,6 +119,18 @@ export function scoreCase(
         );
       for (const id of expect.citesAll ?? [])
         if (!cited.has(id)) reasons.push(`does not cite ${id}`);
+      // A job-description brief must show the groups the case expects. The
+      // related group may be empty: the posting may not call for any.
+      if (expect.groups) {
+        const filled = new Set(
+          (answer.brief?.groups ?? [])
+            .filter((group) => group.items.length > 0)
+            .map((group) => group.id),
+        );
+        for (const group of expect.groups)
+          if (group !== 'related' && !filled.has(group))
+            reasons.push(`the brief has no ${group} group`);
+      }
       break;
     }
     case 'own-answers': {

@@ -1,4 +1,5 @@
 import { buildEvidenceFallback } from '@/lib/rag/extractive-fallback';
+import { jobDescriptionHasInjection } from '@/lib/rag/guard';
 import {
   followUpsFor,
   guardRefuses,
@@ -6,9 +7,10 @@ import {
 } from '@/lib/rag/retrieve';
 import { starterSuggestions } from '@/data/assistant-suggestions';
 import { parseModelOutput, ungroundedNumbers } from './answer-guards';
+import { answerFit } from './fit-answer';
 import { answerFromLedger, type LedgerDeps } from './ledger-answer';
 import { buildGroundedMessages } from './prompt';
-import { refusal } from './refusal';
+import { jobDescriptionRefusal, refusal } from './refusal';
 import { validateModelAnswer } from './response-schema';
 import type { AiProvider, AnswerInput, ChatResponse } from './types';
 
@@ -35,15 +37,38 @@ function normalizeModelAnswer(raw: unknown, allowed: Set<string>): unknown {
   return { ...record, citationIds: safeCitationIds, followUps: [] };
 }
 
+/** A job description needs the full assistant; there is no cheaper way to read one. */
+export class FitUnavailableError extends Error {
+  constructor() {
+    super('The job description could not be matched just now.');
+    this.name = 'FitUnavailableError';
+  }
+}
+
 /**
- * The router. In order: the hard guard refuses (unchanged); everything else
- * goes to the writer when the ledger pipeline is on, and to today's pipeline
- * when it is not. A question the guard refuses never reaches a model.
+ * The router. In order: the hard guard refuses (unchanged); a pasted job
+ * description goes to fit mode; everything else goes to the writer when the
+ * ledger pipeline is on, and to today's pipeline when it is not. A question
+ * the guard refuses never reaches a model. A job description with no full
+ * assistant to read it throws `FitUnavailableError` rather than being ignored.
  */
 export async function answerRecruiterQuestion(
   deps: { provider: AiProvider; modelId?: string; ledger?: LedgerDeps },
   input: AnswerInput,
 ): Promise<ChatResponse> {
+  if (input.jobDescription && !guardRefuses(input.question)) {
+    // The API checks this first (so a refused paste is not counted); it is
+    // repeated here so every caller, including the evaluation runner, is safe.
+    if (jobDescriptionHasInjection(input.jobDescription))
+      return jobDescriptionRefusal(
+        input.requestId,
+        starterSuggestions[input.activeRole],
+      );
+    if (!deps.ledger) throw new FitUnavailableError();
+    const brief = await answerFit(deps.ledger, input);
+    if (!brief) throw new FitUnavailableError();
+    return brief;
+  }
   if (deps.ledger && !guardRefuses(input.question))
     return answerFromLedger(deps.ledger, input);
   const started = Date.now();

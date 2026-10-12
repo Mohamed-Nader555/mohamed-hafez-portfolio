@@ -14,6 +14,8 @@ export type SessionStore = {
   append(turn: ConversationTurn): void;
   thread(): ThreadEntry[];
   appendExchange(entry: ThreadEntry): void;
+  /** Removes the newest exchange: its thread entry and its two history turns. */
+  dropLastExchange(): void;
   clear(): void;
 };
 export function createSessionStore(storage: Storage): SessionStore {
@@ -59,6 +61,10 @@ export function createSessionStore(storage: Storage): SessionStore {
         THREAD_KEY,
         JSON.stringify([...thread(), entry].slice(-THREAD_LIMIT)),
       ),
+    dropLastExchange: () => {
+      write(HISTORY_KEY, JSON.stringify(history().slice(0, -2)));
+      write(THREAD_KEY, JSON.stringify(thread().slice(0, -1)));
+    },
     load: () => ({ sessionId: sessionId(), history: history() }),
     append: (turn) =>
       write(

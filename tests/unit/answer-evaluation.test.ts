@@ -118,6 +118,32 @@ describe('scoreCase', () => {
     expect(result.reasons.join(' ')).toMatch(/expected claim/i);
   });
 
+  it('scores a job-description case on the groups of its brief: direct and not-shown must have items, related may be empty', () => {
+    const entry = byId('fit-jd-nlp-fintech');
+    const brief = (groups: Record<string, number>) => ({
+      answer: 'x',
+      answerStatus: 'answered',
+      segments: [
+        { text: 'a', label: 'notes', claimIds: ['br-regulated-finance'] },
+      ],
+      brief: {
+        groups: Object.entries(groups).map(([id, count]) => ({
+          id,
+          items: Array.from({ length: count }, () => ({})),
+        })),
+      },
+    });
+    expect(
+      scoreCase(entry, brief({ direct: 2, related: 0, 'not-shown': 1 })).pass,
+    ).toBe(true);
+    const missing = scoreCase(
+      entry,
+      brief({ direct: 2, related: 1, 'not-shown': 0 }),
+    );
+    expect(missing.pass).toBe(false);
+    expect(missing.reasons.join(' ')).toMatch(/not-shown/);
+  });
+
   it('fails an indirect question that was refused or only got the fallback', () => {
     for (const answerStatus of ['refused', 'fallback']) {
       const result = scoreCase(byId('indirect-rag'), {

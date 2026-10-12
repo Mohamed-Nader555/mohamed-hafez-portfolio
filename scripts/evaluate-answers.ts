@@ -123,6 +123,9 @@ for (const entry of selected) {
       { provider: classicUnused, modelId: WRITER_MODEL, ledger: deps },
       {
         question: entry.question,
+        ...(entry.jobDescription
+          ? { jobDescription: entry.jobDescription }
+          : {}),
         history: [],
         activeRole: entry.activeRole,
         requestId: entry.id,
@@ -150,6 +153,7 @@ for (const entry of selected) {
       label: segment.label,
       claimIds: segment.claimIds,
     })),
+    brief: response.brief,
   });
   results.push({ case: entry, ...scored, skipped: false });
   raw.push({
@@ -169,6 +173,7 @@ for (const entry of selected) {
     answer: response.answer,
     segments: response.segments,
     notShown: response.notShown,
+    brief: response.brief,
   });
   process.stdout.write(
     `${scored.pass ? 'PASS' : 'FAIL'} ${entry.group} ${entry.id} ${latencyMs}ms${

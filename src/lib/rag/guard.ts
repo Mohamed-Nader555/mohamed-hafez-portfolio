@@ -35,6 +35,27 @@ const soft: RegExp[] = [
   /\b(tell me a joke|write (me )?(a|an) (poem|essay|story|song|cover letter|email))\b/i,
 ];
 
+/**
+ * Instructions aimed at the assistant hidden in a pasted job description. Only
+ * injection wording counts here: an advert may rightly mention salary,
+ * confidential information or a private company, so the hard guard above is
+ * not run on it (brief 3, task D4).
+ */
+const injectionInJobDescription: RegExp[] = [
+  /\b(ignore|disregard|forget|override|bypass)\b.{0,40}\b(previous|prior|above|earlier|all|your|system|these)\b.{0,40}\b(instruction|prompt|rule|guideline|polic)\w*/i,
+  /\b(system prompt|developer message|your (hidden )?instructions|jailbreak|developer mode|dan mode|reveal (your|the) (prompt|rules|instructions)|from now on you|pretend (to be|you are)|act as if|roleplay as)\b/i,
+  /\byou are now (a|an|the)\b/i,
+  /\b(note|message|instruction|prompt|request)s? (to|for) (the )?(assistant|ai|model|llm|chatbot|bot)\b/i,
+  /\b(output|print|reveal|repeat|show|display|dump|leak)\b.{0,60}\b(knowledge file|claims file|your (instructions|rules|prompt)|system prompt|private documents?|hidden documents?)\b/i,
+  /\b(state|say|write|claim|declare)\b.{0,30}\b(he|mohamed|the candidate)\b.{0,20}\b(is|has)\b.{0,30}\b(perfect|the best|ideal|ten years)\b/i,
+  /\b(rate|score|rank|grade)\b.{0,30}\b(candidate|him|mohamed)\b.{0,30}\b\d+\s*(\/|out of)\s*\d+/i,
+];
+
+export function jobDescriptionHasInjection(text: string): boolean {
+  const normal = text.replace(/[’‘]/g, "'");
+  return injectionInJobDescription.some((pattern) => pattern.test(normal));
+}
+
 export type GuardVerdict = 'allowed' | 'refuse';
 
 export function checkQuestion(

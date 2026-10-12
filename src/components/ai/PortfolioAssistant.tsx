@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RoleId } from '@/types/content';
 import { starterSuggestions } from '@/data/assistant-suggestions';
+import { CHAT_REQUEST_TIMEOUT_MS } from '@/lib/ai/timeouts';
 import { submitChatTurn } from './chat-client';
 import { ChatFailure, type ChatFailureCode } from './chat-errors';
 import { ChatLauncher } from './ChatLauncher';
 import { ChatPanel } from './ChatPanel';
+import { DEFAULT_JOB_DESCRIPTION_QUESTION } from './job-description';
 import { createSessionStore, type ThreadEntry } from './session-store';
 import {
   requestTurnstileToken,
@@ -25,6 +27,9 @@ export function PortfolioAssistant({
   const [selectedRole, setSelectedRole] = useState(activeRole);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState('');
+  // A pasted job description lives only here, until it is sent: it is never
+  // written to the session store.
+  const [jobDescription, setJobDescription] = useState('');
   const [state, setState] = useState('ready');
   const [thread, setThread] = useState<ThreadEntry[]>([]);
   const [pendingQuestion, setPendingQuestion] = useState('');
@@ -85,6 +90,7 @@ export function PortfolioAssistant({
     cancelPending();
     store?.clear();
     setDraft('');
+    setJobDescription('');
     setThread([]);
     setPendingQuestion('');
     setErrorCode(undefined);
@@ -102,9 +108,18 @@ export function PortfolioAssistant({
     setOpen(false);
   };
   closeRef.current = closePanel;
-  const submit = async (event: { preventDefault(): void }) => {
-    event.preventDefault();
-    const question = draft.trim();
+  /**
+   * Asks one question. A retry (after a fallback summary) sends the history
+   * without the failed exchange and replaces that exchange when it succeeds;
+   * when it fails the summary stays and the draft is left alone. A pasted job
+   * description goes with the question and is emptied once its brief arrives;
+   * if the request fails it stays, so the visitor can send it again.
+   */
+  const ask = async (
+    question: string,
+    isRetry = false,
+    pastedJobDescription?: string,
+  ) => {
     if (!store || !question || state === 'verifying' || state === 'submitting')
       return;
     cancelPending();
@@ -118,7 +133,7 @@ export function PortfolioAssistant({
     setState('verifying');
     setErrorCode(undefined);
     setPendingQuestion(question);
-    setDraft('');
+    if (!isRetry) setDraft('');
     try {
       const session = store.load();
       const turnstileToken = await requestTurnstileToken(
@@ -139,32 +154,42 @@ export function PortfolioAssistant({
       timeout = window.setTimeout(() => {
         timedOut = true;
         abort.abort();
-      }, 20_000);
+      }, CHAT_REQUEST_TIMEOUT_MS);
       const next = await submitChatTurn(
         {
           question,
+          ...(pastedJobDescription
+            ? { jobDescription: pastedJobDescription }
+            : {}),
           activeRole: selectedRole,
-          history: session.history,
+          history: isRetry ? session.history.slice(0, -2) : session.history,
           sessionId: session.sessionId,
           turnstileToken,
         },
         abort.signal,
       );
       if (run !== runId.current) return;
+      if (isRetry) store.dropLastExchange();
       store.append({ role: 'user', content: question });
       store.append({
         role: 'assistant',
-        content: next.answer,
+        // A brief is remembered by its one-line summary only.
+        content: next.brief
+          ? `Job description brief. ${next.brief.summary?.text ?? ''}`.trim()
+          : next.answer,
         citationIds: next.citations.map((citation) => citation.sourceId),
       });
       store.appendExchange({ question, response: next });
       setThread(store.thread());
       setPendingQuestion('');
+      if (pastedJobDescription) setJobDescription('');
       setState(next.answerStatus);
     } catch (error) {
       // Cleared, closed or superseded: whoever cancelled already reset state.
       if (run !== runId.current) return;
-      setDraft(question);
+      // Hand back what the visitor typed; a default question is not theirs.
+      if (!isRetry && question !== DEFAULT_JOB_DESCRIPTION_QUESTION)
+        setDraft(question);
       setPendingQuestion('');
       setErrorCode(
         error instanceof ChatFailure
@@ -179,6 +204,16 @@ export function PortfolioAssistant({
       if (run === runId.current) setChallengeVisible(false);
     }
   };
+  const submit = (event: { preventDefault(): void }) => {
+    event.preventDefault();
+    const pasted = jobDescription.trim();
+    const typed = draft.trim();
+    void ask(
+      typed || (pasted ? DEFAULT_JOB_DESCRIPTION_QUESTION : ''),
+      false,
+      pasted || undefined,
+    );
+  };
   const latest = thread[thread.length - 1]?.response;
   const suggestions = latest?.followUps.length
     ? latest.followUps
@@ -191,6 +226,8 @@ export function PortfolioAssistant({
           inputRef={inputRef}
           draft={draft}
           setDraft={setDraft}
+          jobDescription={jobDescription}
+          setJobDescription={setJobDescription}
           close={closePanel}
           clear={clear}
           submit={submit}
@@ -202,6 +239,7 @@ export function PortfolioAssistant({
           turnstileSlotRef={turnstileSlotRef}
           suggestions={suggestions}
           selectedRole={selectedRole}
+          retry={(retried) => void ask(retried, true)}
         />
       )}
       <p className="sr-only" aria-live="polite">

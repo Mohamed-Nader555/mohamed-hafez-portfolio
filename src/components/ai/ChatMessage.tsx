@@ -1,3 +1,4 @@
+import { BriefCard } from './BriefCard';
 import { CitationList } from './CitationList';
 import type { ChatAction, ChatLabel, ChatResponse } from '@/lib/ai/types';
 
@@ -31,13 +32,23 @@ function Action({
   );
 }
 
+/** Shown on every fallback answer; the words are fixed, never model-written. */
+export const FALLBACK_NOTICE =
+  'The full assistant was busy, so this is a summary from the site.';
+
 export function ChatMessage({
   response,
   question = '',
+  onRetry,
+  retryDisabled = false,
 }: {
   response: ChatResponse;
   question?: string;
+  /** Given only to the newest exchange; asks the same question again. */
+  onRetry?: () => void;
+  retryDisabled?: boolean;
 }) {
+  const retry = response.answerStatus === 'fallback' ? onRetry : undefined;
   const statusLabel =
     response.answerStatus === 'fallback'
       ? 'From the portfolio'
@@ -53,7 +64,14 @@ export function ChatMessage({
         <span className="chat-turn-label">Mohamed.AI</span>
         <span className="chat-answer-status">{statusLabel}</span>
       </header>
-      {response.segments?.length ? (
+      {response.answerStatus === 'fallback' && (
+        <p className="chat-notice" role="note">
+          {FALLBACK_NOTICE}
+        </p>
+      )}
+      {response.brief ? (
+        <BriefCard card={response.brief} />
+      ) : response.segments?.length ? (
         response.segments.map((segment, index) => (
           <div
             className={`chat-segment chat-segment--${segment.label}`}
@@ -76,9 +94,19 @@ export function ChatMessage({
       {response.citations.length > 0 && (
         <CitationList citations={response.citations} />
       )}
-      {response.actions?.length ? (
+      {response.actions?.length || retry ? (
         <div className="chat-actions" role="group" aria-label="Next steps">
-          {response.actions.map((action) => (
+          {retry && (
+            <button
+              type="button"
+              className="chat-action chat-action--retry"
+              onClick={retry}
+              disabled={retryDisabled}
+            >
+              Try again
+            </button>
+          )}
+          {response.actions?.map((action) => (
             <Action key={action.kind} action={action} question={question} />
           ))}
         </div>

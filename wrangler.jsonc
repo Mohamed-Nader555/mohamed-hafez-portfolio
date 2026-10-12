@@ -13,7 +13,7 @@
     "GEMINI_WRITER_MODEL": "gemini-3.8-flash",
     "GEMINI_CHECKER_MODEL": "gemini-3.5-flash-lite",
     // Measured 10 Oct 2026: medium thinking took about 10 s a question and
-    // often passed the writer's 12 s limit; low takes about 4 s.
+    // often passed the writer's old 12 s limit (now 20 s); low takes about 4 s.
     "GEMINI_WRITER_THINKING": "low",
     // Brief 3, section 0a: 20 model-backed questions a day.
     "DAILY_MODEL_QUESTION_CAP": "20",
