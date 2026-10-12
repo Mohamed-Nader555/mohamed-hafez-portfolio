@@ -118,7 +118,9 @@ export async function runFit(
     system: buildWriterSystem(input.knowledge),
     input: buildFitInput(input),
     schema: FIT_SCHEMA as unknown as Record<string, unknown>,
-    thinkingLevel: 'high',
+    // Medium, not high: on 11 Oct 2026 all three job-description cases timed
+    // out at 25 s with high thinking over the full knowledge file.
+    thinkingLevel: 'medium',
     maxOutputTokens: FIT_MAX_OUTPUT_TOKENS,
     timeoutMs: FIT_WRITER_TIMEOUT_MS,
   });

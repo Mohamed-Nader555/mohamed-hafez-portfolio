@@ -100,7 +100,7 @@ describe('runFit', () => {
     expect(requests[0]!.system).toBe(buildWriterSystem(KNOWLEDGE));
   });
 
-  it('thinks at a high level, with the fit time limit and its own schema', async () => {
+  it('thinks at a medium level (high did not finish in 25 s), with the fit time limit and its own schema', async () => {
     const { provider, requests } = fakeProvider(draft);
     const result = await runFit(provider, {
       knowledge: KNOWLEDGE,
@@ -108,7 +108,7 @@ describe('runFit', () => {
       jobDescription: JD,
       hintIds: [],
     });
-    expect(requests[0]!.thinkingLevel).toBe('high');
+    expect(requests[0]!.thinkingLevel).toBe('medium');
     expect(requests[0]!.timeoutMs).toBe(FIT_WRITER_TIMEOUT_MS);
     expect(requests[0]!.schema).toBe(FIT_SCHEMA);
     expect(requests[0]!.maxOutputTokens).toBeGreaterThanOrEqual(8192);

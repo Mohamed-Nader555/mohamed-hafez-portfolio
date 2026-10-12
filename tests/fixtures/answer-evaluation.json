@@ -308,7 +308,7 @@
         "career-android-freelance",
         "skills-android-core"
       ],
-      "groups": ["direct", "related", "not-shown"]
+      "groups": ["direct", "related"]
     }
   },
   {
