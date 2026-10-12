@@ -24,7 +24,7 @@ describe('pickAllowedFiles', () => {
     const names = [
       '00_README_INDEX.md',
       '01_THE_HAFEZ_CODEX.md',
-      '02_OFFERBOUND_AUTOMATION_KNOWLEDGE_BASE.md',
+      '02_OTHER_NOTES.md',
       '03_ROLE_ATLAS_TITLES_AND_DESCRIPTIONS.md',
       '04_PROJECT_VAULT.md',
       '05_RESEARCH_DOSSIER_ASC-PIE_SPRINT-PP.md',
