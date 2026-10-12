@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 import type { RoleId } from '@/types/content';
 import { chatFailureMessage, type ChatFailureCode } from './chat-errors';
 import { ChatMessage } from './ChatMessage';
+import { MAX_JOB_DESCRIPTION_CHARS } from './job-description';
 import { ChatSuggestions } from './ChatSuggestions';
 import { NeuralGlyph } from './NeuralGlyph';
 import { RolePicker } from './RolePicker';
@@ -18,6 +19,8 @@ export function ChatPanel({
   inputRef,
   draft,
   setDraft,
+  jobDescription,
+  setJobDescription,
   close,
   clear,
   submit,
@@ -34,6 +37,8 @@ export function ChatPanel({
   inputRef: RefObject<HTMLTextAreaElement | null>;
   draft: string;
   setDraft(value: string): void;
+  jobDescription: string;
+  setJobDescription(value: string): void;
   close(): void;
   clear(): void;
   submit(event: { preventDefault(): void }): void;
@@ -50,6 +55,7 @@ export function ChatPanel({
 }) {
   const end = useRef<HTMLDivElement>(null);
   const [rolesOpen, setRolesOpen] = useState(false);
+  const [jdOpen, setJdOpen] = useState(false);
   useEffect(() => {
     // Newest at the bottom, kept in view.
     const reduced = window.matchMedia?.(
@@ -217,6 +223,24 @@ export function ChatPanel({
           <label className="sr-only" htmlFor="portfolio-chat-question">
             Your question
           </label>
+          {jdOpen && (
+            <div className="chat-jd">
+              <label htmlFor="portfolio-chat-job-description">
+                Job description
+              </label>
+              <textarea
+                id="portfolio-chat-job-description"
+                value={jobDescription}
+                onChange={(event) => setJobDescription(event.target.value)}
+                maxLength={MAX_JOB_DESCRIPTION_CHARS}
+                rows={5}
+                placeholder="Paste the posting here. It is only used to write your brief and is never stored."
+              />
+              <span className="chat-character-count">
+                {jobDescription.length}/{MAX_JOB_DESCRIPTION_CHARS}
+              </span>
+            </div>
+          )}
           <div className="chat-input-shell">
             <textarea
               ref={inputRef}
@@ -234,14 +258,14 @@ export function ChatPanel({
                 }
               }}
               maxLength={600}
-              required
+              required={!jobDescription.trim()}
               rows={2}
               placeholder="Ask about a project, technology, or experience…"
             />
             <button
               className="chat-send"
               type="submit"
-              disabled={busy || !draft.trim()}
+              disabled={busy || (!draft.trim() && !jobDescription.trim())}
               aria-label={
                 state === 'verifying'
                   ? 'Checking you’re human'
@@ -257,6 +281,13 @@ export function ChatPanel({
           <div className="chat-composer-meta">
             <button type="button" onClick={clear}>
               Clear session
+            </button>
+            <button
+              type="button"
+              aria-expanded={jdOpen}
+              onClick={() => setJdOpen((open) => !open)}
+            >
+              {jdOpen ? 'Hide job description' : 'Paste a job description'}
             </button>
             <span>
               <span className="chat-keyboard-hint">

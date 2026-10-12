@@ -212,3 +212,83 @@ test('a fallback answer says the full assistant was busy, and Try again asks aga
   await expect(page.getByRole('note')).toHaveCount(0);
   expect(calls).toBe(2);
 });
+
+test('a pasted job description comes back as a brief card, and the field empties', async ({
+  page,
+}) => {
+  const pasted =
+    'Backend Engineer. Requirements: Java, Spring Boot, REST APIs.';
+  let sent: { jobDescription?: string; question?: string } = {};
+  await page.route('**/api/chat', async (route) => {
+    sent = route.request().postDataJSON();
+    await route.fulfill({
+      json: {
+        ...answered,
+        answer: 'Job description brief',
+        citations: [],
+        brief: {
+          title: 'Job description brief',
+          summary: {
+            label: 'Summary',
+            text: '2 requirements in the posting: 1 direct, 0 related, 1 not shown on the site.',
+          },
+          groups: [
+            {
+              id: 'direct',
+              label: 'Direct experience',
+              items: [{ text: 'Java', detail: ['He built Java services.'] }],
+            },
+            {
+              id: 'not-shown',
+              label: 'Not shown on the site',
+              items: [{ text: 'The site doesn’t show REST APIs.', detail: [] }],
+            },
+          ],
+          askHim: [],
+        },
+      },
+    });
+  });
+  await openAssistant(page);
+  await page.getByRole('button', { name: /paste a job description/i }).click();
+  await page.getByRole('textbox', { name: /job description/i }).fill(pasted);
+  await page.getByRole('button', { name: /send question/i }).click();
+
+  const card = page.getByRole('article', { name: 'Job description brief' });
+  await expect(card).toBeVisible();
+  await expect(card.getByText('He built Java services.')).toBeVisible();
+  await expect(card.getByRole('button', { name: 'Copy brief' })).toBeVisible();
+  expect(sent.jobDescription).toBe(pasted);
+  expect(sent.question).toMatch(/job description/i);
+  await expect(
+    page.getByRole('textbox', { name: /job description/i }),
+  ).toHaveValue('');
+  // It is not kept in the browser's session storage.
+  const stored = await page.evaluate(() =>
+    JSON.stringify({ ...sessionStorage }),
+  );
+  expect(stored).not.toContain('Spring Boot');
+  expect(stored).not.toContain('Backend Engineer');
+});
+
+test('printing shows the brief card alone', async ({ page }) => {
+  await openAssistant(page);
+  await page.getByRole('button', { name: 'Hiring for a role?' }).click();
+  await page
+    .getByRole('region', { name: /hiring for a role/i })
+    .getByRole('button', { name: 'NLP Engineer' })
+    .click();
+  const card = page.getByRole('article', { name: 'NLP Engineer' });
+  await expect(card).toBeVisible();
+
+  await page.emulateMedia({ media: 'print' });
+  await expect(card).toBeVisible();
+  await expect(
+    page.locator('.site-main > :not(:has(.portfolio-assistant))').first(),
+  ).toBeHidden();
+  await expect(
+    page.locator('.site-header, header.site-header, .site-footer').first(),
+  ).toBeHidden();
+  await expect(page.locator('.chat-composer')).toBeHidden();
+  await expect(card.locator('.brief-card-actions')).toBeHidden();
+});

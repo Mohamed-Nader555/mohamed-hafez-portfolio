@@ -1,3 +1,4 @@
+import { BriefCard } from './BriefCard';
 import { CitationList } from './CitationList';
 import type { ChatAction, ChatLabel, ChatResponse } from '@/lib/ai/types';
 
@@ -68,7 +69,9 @@ export function ChatMessage({
           {FALLBACK_NOTICE}
         </p>
       )}
-      {response.segments?.length ? (
+      {response.brief ? (
+        <BriefCard card={response.brief} />
+      ) : response.segments?.length ? (
         response.segments.map((segment, index) => (
           <div
             className={`chat-segment chat-segment--${segment.label}`}

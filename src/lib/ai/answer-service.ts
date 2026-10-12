@@ -1,4 +1,5 @@
 import { buildEvidenceFallback } from '@/lib/rag/extractive-fallback';
+import { jobDescriptionHasInjection } from '@/lib/rag/guard';
 import {
   followUpsFor,
   guardRefuses,
@@ -9,7 +10,7 @@ import { parseModelOutput, ungroundedNumbers } from './answer-guards';
 import { answerFit } from './fit-answer';
 import { answerFromLedger, type LedgerDeps } from './ledger-answer';
 import { buildGroundedMessages } from './prompt';
-import { refusal } from './refusal';
+import { jobDescriptionRefusal, refusal } from './refusal';
 import { validateModelAnswer } from './response-schema';
 import type { AiProvider, AnswerInput, ChatResponse } from './types';
 
@@ -56,6 +57,13 @@ export async function answerRecruiterQuestion(
   input: AnswerInput,
 ): Promise<ChatResponse> {
   if (input.jobDescription && !guardRefuses(input.question)) {
+    // The API checks this first (so a refused paste is not counted); it is
+    // repeated here so every caller, including the evaluation runner, is safe.
+    if (jobDescriptionHasInjection(input.jobDescription))
+      return jobDescriptionRefusal(
+        input.requestId,
+        starterSuggestions[input.activeRole],
+      );
     if (!deps.ledger) throw new FitUnavailableError();
     const brief = await answerFit(deps.ledger, input);
     if (!brief) throw new FitUnavailableError();

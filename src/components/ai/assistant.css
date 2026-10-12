@@ -1306,8 +1306,10 @@ button.chat-action:disabled {
 
 @media print {
   /* Print the brief card alone: hide the site, the chat chrome and the buttons. */
-  body:has(.brief-card) .site-shell,
   body:has(.brief-card) .ambient-background,
+  body:has(.brief-card) .site-shell > :not(.site-main),
+  body:has(.brief-card) .site-main > :not(:has(.portfolio-assistant)),
+  body:has(.brief-card) .portfolio-assistant > :not(.chat-panel),
   .chat-backdrop,
   .chat-neural-field,
   .chat-header,
@@ -1342,4 +1344,41 @@ button.chat-action:disabled {
   .brief-card * {
     color: #000;
   }
+}
+
+.chat-jd {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.chat-jd label {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.chat-jd textarea {
+  width: 100%;
+  min-height: 6rem;
+  resize: vertical;
+  border: 1px solid rgb(85 223 253 / 22%);
+  border-radius: 0.7rem;
+  padding: 0.55rem 0.7rem;
+  color: var(--color-ink-100);
+  background: rgb(16 32 61 / 52%);
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.chat-jd .chat-character-count {
+  justify-self: end;
+}
+
+.chat-composer-meta button[aria-expanded] {
+  min-height: 44px;
+}
+
+.brief-card-note {
+  font-style: italic;
 }

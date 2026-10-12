@@ -47,8 +47,24 @@ export function BriefCard({ card }: { card: BriefCardData }) {
                 <li key={item.text}>
                   <strong>{item.text}</strong>
                   {item.detail.map((line) => (
-                    <p key={line}>{line}</p>
+                    <p key={line}>
+                      {item.detailLabel && (
+                        <span className="brief-card-label">
+                          {item.detailLabel}
+                        </span>
+                      )}
+                      {item.detailLabel ? ' ' : ''}
+                      {line}
+                    </p>
                   ))}
+                  {item.note && (
+                    <p className="brief-card-note">
+                      <span className="brief-card-label">
+                        Assistant’s reading
+                      </span>{' '}
+                      {item.note}
+                    </p>
+                  )}
                 </li>
               ))}
             </ul>
