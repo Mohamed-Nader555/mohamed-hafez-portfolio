@@ -82,7 +82,12 @@ export const unconfirmedClaims: readonly string[] = [
   'Trello, Azure DevOps, formal Agile ceremonies at BASS',
   'Documentum D2, xCP or DFC depth',
   'A dataset name or a metric for any DotPy project',
-  'Any description of what he does at Eklan beyond the title',
+  'Usage numbers for Eklan features (users, learners, sessions, revenue, retention)',
+  "At Eklan, Stripe billing or the paywall, auth hardening, LiveKit live classes, the mobile app, the dark theme or the visual design of the simulation screens (teammates' work)",
+  'Internal Eklan product names, prompts, model ids, screenshots or learner data',
+  'Python, Java, Kotlin, Docker or PyTorch as part of the Eklan work (earlier roles only)',
+  'Eklan latency or load figures from production traffic (they were measured in testing against the live models)',
+  'Building an MCP server (he uses MCP servers daily; he has not built one)',
 ];
 
 export const excludedTopics: readonly string[] = [
@@ -101,7 +106,7 @@ export const namedGaps: readonly string[] = [
   'A/B testing, causal inference, experimentation design',
   'TensorRT, ONNX, quantisation',
   'iOS, delivered Flutter or React Native apps',
-  'React, Angular, front-end engineering',
+  'Angular',
   'Formal people management',
   'A PhD',
 ];
@@ -126,6 +131,11 @@ export const datedStatements: readonly { date: string; statement: string }[] = [
     date: '2026-10-10',
     statement:
       'He works at Eklan as Founding AI Engineer, with a one-week notice period. The site and the assistant may say so.',
+  },
+  {
+    date: '2026-10-18',
+    statement:
+      'Since Sep 2026 he is Founding AI Engineer at Eklan in Toronto, and the site now describes that work (experience entry and five case studies). Use model families only (Gemini Live, Gemini Flash, OpenAI GPT). Latency and load numbers were measured in testing against the live models. Multi-character voice mode is live in production; give no usage numbers.',
   },
   {
     date: '2026-10-10',

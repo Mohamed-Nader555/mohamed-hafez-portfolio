@@ -4,6 +4,7 @@ import YAML from 'yaml';
 import { evidence, projects } from '@/data';
 import { architectures } from '@/data/architectures';
 import { careerExperience, careerRoles, skillGroups } from '@/data/career';
+import { namedGaps, unconfirmedClaims } from '@/data/claims/wording-rules';
 import { keyFactsBySlug } from '@/data/key-facts';
 import { PROJECT_STATUS } from '@/data/project-status';
 import { VERIFIED_TECH } from '@/data/verified-tech';
@@ -268,5 +269,20 @@ describe('skills from the Section 4 resume block', () => {
       'web-backend',
       'data-cloud',
     ]);
+  });
+});
+
+describe('the assistant’s rules for the Eklan role', () => {
+  it('may describe the work, within the publishing limits', () => {
+    const rules = unconfirmedClaims.join('\n');
+    expect(rules).not.toMatch(/beyond the title/);
+    expect(rules).toMatch(/Stripe.*LiveKit.*mobile app.*dark theme/);
+    expect(rules).toMatch(/Usage numbers for Eklan/);
+    expect(rules).toMatch(/measured in testing against the live models/);
+    expect(rules).toMatch(/model ids/);
+  });
+
+  it('no longer lists React or front-end work as a gap', () => {
+    expect(namedGaps.join(' ')).not.toMatch(/React(?! Native)|front-end/);
   });
 });

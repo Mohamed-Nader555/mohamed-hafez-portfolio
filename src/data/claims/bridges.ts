@@ -52,7 +52,7 @@ export const bridges: readonly Bridge[] = [
       'project-documentum-workflows',
       'research-abstract',
       'minds-eye-ocr-speech',
-      'stack-pdf-utilities',
+      'project-pdf-utilities',
       'project-northstar-rag',
       'project-asc-pie',
     ],
@@ -147,7 +147,7 @@ export const bridges: readonly Bridge[] = [
       'page-what-mohamed-would-do-next-asc-pie',
       'page-outcome-asc-pie-3',
       'research-rq2',
-      'page-the-problem-northstar-rag',
+      'page-what-mohamed-learned-asc-pie',
     ],
   },
   {
@@ -343,12 +343,12 @@ export const bridges: readonly Bridge[] = [
       'He has delivered directly to clients: proofs of concept and REST contracts as an ECM consultant at BASS, client scoping and delivery as a freelance Android developer, and model-serving contracts with other teams at DotPy.',
     limit: 'The site does not show sales quotas or pre-sales roles.',
     basisIds: [
-      'rest-pocs-purpose',
+      'project-rest-pocs',
       'passport-applied-ml-portfolio',
       'applied-ml-portfolio-lifecycle',
-      'dostava-no-download-metrics',
       'page-who-it-was-for-rest-pocs',
       'page-how-it-works-rest-pocs',
+      'dostava-no-download-metrics',
     ],
   },
   {
@@ -469,8 +469,9 @@ export const bridges: readonly Bridge[] = [
       'career-eklan',
       'features-this-portfolio',
       'career-graduate-researcher',
+      'page-what-mohamed-built-this-portfolio',
       'minds-eye-purpose',
-      'career-java-freelance',
+      'decisions-rest-pocs',
     ],
   },
 ];

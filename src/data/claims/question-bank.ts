@@ -400,8 +400,8 @@ export const questionBank: readonly BankAnswer[] = [
       'credentials-and-training',
       'page-what-mohamed-built-dive-2',
       'rest-pocs-stack',
+      'page-who-it-was-for-rest-pocs',
       'career-bass',
-      'career-eklan',
     ],
   },
   {
@@ -411,15 +411,16 @@ export const questionBank: readonly BankAnswer[] = [
       'Have you built production agent systems, for example with LangGraph or AutoGen?',
     alsoAskedAs: [],
     answer:
-      'I have not run a production system on LangGraph or AutoGen. My LLM work so far is evaluation, in-context protocol design and a grounded RAG service.',
+      'I have not run a production system on LangGraph or AutoGen. At Eklan I built multi-agent orchestration directly on the model APIs: in a multi-character voice mode, each AI character runs as its own Gemini Live session and voice, and a fast Gemini Flash director routes every learner turn to the right character. Before that, my LLM work was evaluation, in-context protocol design and a grounded RAG service.',
     gap: true,
     triggers: ['LangGraph', 'AutoGen', 'agentic frameworks', 'multi-agent'],
     basisIds: [
-      'stack-northstar-rag',
-      'page-who-it-was-for-asc-pie',
+      'features-eklan-voice-roleplay-1',
+      'career-eklan',
       'project-northstar-rag',
-      'page-what-mohamed-built-northstar-rag-1',
-      'page-what-mohamed-would-do-next-northstar-rag',
+      'page-who-it-was-for-asc-pie',
+      'page-what-mohamed-built-northstar-rag-2',
+      'page-what-mohamed-would-do-next-asc-pie',
     ],
   },
   {
