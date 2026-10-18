@@ -116,7 +116,7 @@ const currentRoleRecords = [
     topics: ['Eklan', 'information extraction', 'LLM tool calling', 'tutors'],
     aliases: ['transcript analysis', 'mistake extraction'],
     roleWeights: { aiml: 5, software: 3, android: 0, teaching: 4 },
-    sourceIds: ['public-experience'],
+    sourceIds: ['public-experience', 'case-study-eklan-transcript-mining'],
     public: true,
   },
   {

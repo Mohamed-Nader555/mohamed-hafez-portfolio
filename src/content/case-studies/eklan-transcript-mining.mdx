@@ -1,0 +1,126 @@
+---
+slug: eklan-transcript-mining
+publishedAt: 2026-10-18
+passport:
+  context: 'Founding AI Engineer, Eklan'
+  period: 'Sep 2026 – present'
+  platform: 'Tutor tools in a Next.js web app'
+stats:
+  - value: '7 of 8'
+    label: tutor-found mistakes matched in the best runs
+  - value: '17–39 s'
+    label: to analyse one class
+    note: Measured in testing against the live models
+  - value: '0'
+    label: duplicates across groups after the dedupe fix
+  - value: '4'
+    label: mistake groups per learner
+features:
+  - title: The learner's own mistakes
+    detail: One LLM tool call reads the transcript and pulls out only that learner's mistakes, in four groups (grammar, expressions, pronunciation, and answers under pressure), each tagged as roleplay or conversation and as already corrected during the lesson or not.
+  - title: Deterministic clean-up
+    detail: Code, not the model, keeps one quote per group, drops edits that only change punctuation, and removes duplicates across groups.
+  - title: A sensitive-topic backstop
+    detail: Items that touch immigration, citizenship, military service, religion or politics are blocked in any context, whatever the model returned.
+  - title: A tutor stays in charge
+    detail: Tutors link the right class to the learner's week, run the analysis (up to three runs, with crashed runs detected), edit or delete items, and undo. Saves are compare-and-set, so two people editing never overwrite each other.
+  - title: Straight into practice
+    detail: The tutor picks which groups to send, and drill generation builds practice around those exact mistakes for the same learner and week.
+decisions:
+  - choice: a tutor reviews every result before it reaches a learner
+    over: sending extracted mistakes to learners automatically
+    because: a wrongly attributed mistake undermines trust in the whole tool, and tutors already know what happened in the room
+  - choice: filtering and deduping in code after the model
+    over: asking the model to follow more rules
+    because: rules like one quote per group or never mention religion are cheap to enforce in code and unreliable to enforce in a prompt
+  - choice: stop and show the numbers when the prompt outgrew my own limit
+    over: quietly trimming the prompt to fit
+    because: my brief said to stop if a prompt passed about 20,000 characters, and the worst case measured 37,249, so the owner chose between three options with the numbers in front of them
+challenges:
+  - problem: Long classes produced far bigger prompts than a typical one.
+    solution: I measured the worst case (37,249 characters against about 17,500 typical) before shipping and kept the extra block outside the normal budget, so nothing the learner said was cut. A test now prints the size.
+  - problem: The same mistake showed up in more than one group.
+    solution: A dedupe pass in code removes cross-group repeats; after the fix the evaluation found none.
+  - problem: Transcripts can drift into personal topics that have no place in practice material.
+    solution: The sensitive-topic backstop blocks those items in any context, independent of how the model labelled them.
+stack:
+  - layer: Extraction
+    items:
+      - name: LLM tool calling
+        kind: ml
+        purpose: Structured extraction of the learner's mistakes
+      - name: TypeScript
+        kind: language
+        purpose: Redaction, dedupe and the sensitive-topic filter
+  - layer: App and data
+    items:
+      - name: Next.js
+        kind: framework
+        purpose: Analysis runs and tutor APIs
+      - name: React
+        kind: framework
+        purpose: Tutor editing with undo
+      - name: MongoDB
+        kind: data
+        purpose: Compare-and-set saves and run state
+      - name: Vercel
+        kind: tool
+        purpose: Staging and production
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Eklan's live classes are where learners speak the most, and where tutors hear the most errors. But a tutor can't write down every slip for every learner while running a lesson, so most of that evidence was lost when the call ended. The transcript holds it all, buried in an hour of conversation between several people.
+
+## Who it was for
+
+Tutors who want each learner's next practice set to come from what that learner actually got wrong, and learners who get drills built around their own sentences instead of generic exercises.
+
+## My role
+
+I built the extraction pipeline end to end: the LLM tool call with redaction and a length cap, the deterministic dedupe and sensitive-topic filter, the tutor editing workflow with conflict-safe saves, and the link into drill generation.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+## How it works
+
+A tutor links a transcript to a learner's week. The transcript is redacted and capped, one LLM tool call pulls out that learner's mistakes, and code dedupes and filters them. The tutor then edits the list and sends the chosen groups to drill generation.
+
+<ArchitectureFlow
+  slug="eklan-transcript-mining"
+  title="Turning Live-Class Transcripts into Practice"
+/>
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Results
+
+I evaluated the pipeline on a real recorded lesson against the mistakes a tutor had found by hand. The best runs matched 7 of the tutor's 8, with no duplicates across groups after the dedupe fix. Each analysis took 17–39 s per class, measured in testing against the live models.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Let the model find candidates. Let code and a tutor decide what counts.
+
+The model was good at spotting mistakes in a messy, multi-speaker transcript. It was not the right place to enforce rules about privacy, duplication or tone. Splitting the work that way made the tool something tutors could trust with their learners.
+
+## What I'd do next
+
+Evaluate on more lessons and more tutors, so the 7 of 8 becomes a measured rate rather than a best run.

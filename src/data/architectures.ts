@@ -23,6 +23,65 @@ export interface ArchitectureDefinition {
 }
 
 export const architectures: Readonly<Record<string, ArchitectureDefinition>> = {
+  'eklan-transcript-mining': {
+    summary:
+      "A tutor links a class transcript to a learner's week; one LLM tool call pulls out that learner's mistakes, code dedupes and filters them, the tutor edits, and the chosen groups go to drill generation.",
+    nodes: [
+      {
+        id: 'transcript',
+        label: 'Class transcript',
+        detail: "Linked by the tutor to the learner's week",
+      },
+      {
+        id: 'prepare',
+        label: 'Prepare',
+        detail: 'Redaction and a length cap',
+      },
+      {
+        id: 'extract',
+        label: 'LLM tool call',
+        detail: 'Four groups, tagged by context',
+      },
+      {
+        id: 'postprocess',
+        label: 'Post-processing in code',
+        detail: 'Dedupe, one quote per group, sensitive-topic block',
+      },
+      {
+        id: 'review',
+        label: 'Tutor review',
+        detail: 'Edit, delete, undo, conflict-safe saves',
+      },
+      {
+        id: 'drills',
+        label: 'Drill generation',
+        detail: 'Chosen groups become targeted practice',
+      },
+    ],
+    edges: [
+      {
+        from: 'transcript',
+        to: 'prepare',
+      },
+      {
+        from: 'prepare',
+        to: 'extract',
+      },
+      {
+        from: 'extract',
+        to: 'postprocess',
+      },
+      {
+        from: 'postprocess',
+        to: 'review',
+      },
+      {
+        from: 'review',
+        to: 'drills',
+      },
+    ],
+    pipeline: ['link', 'prepare', 'extract', 'filter', 'review', 'drill'],
+  },
   'eklan-ai-coach': {
     summary:
       'A question arrives as text or a voice note, is redacted before anything is stored, answered as structured output, checked by rules in code, and locked once solved; a background job then turns the chat into a drill.',

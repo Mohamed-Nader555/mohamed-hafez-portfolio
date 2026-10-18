@@ -156,6 +156,13 @@ const sourceRecords = [
     publicHref: '/work/eklan-ai-coach',
     isPublic: true,
   },
+  {
+    id: 'case-study-eklan-transcript-mining',
+    label: 'Turning Live-Class Transcripts into Practice case study',
+    kind: 'case-study',
+    publicHref: '/work/eklan-transcript-mining',
+    isPublic: true,
+  },
   // Case-study sources: one per §4 flagship/story/brief page (brief §6.4).
   {
     id: 'case-study-sprint-pp',

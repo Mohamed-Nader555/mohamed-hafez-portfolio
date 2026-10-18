@@ -6,6 +6,15 @@
  */
 export const VERIFIED_TECH: Readonly<Record<string, readonly string[]>> = {
   // Eklan (Mohamed's own work log, experience bank 18 Oct 2026)
+  'eklan-transcript-mining': [
+    'TypeScript',
+    'LLM tool calling',
+    'Next.js',
+    'React',
+    'MongoDB',
+    'Vercel',
+  ],
+  // Eklan (Mohamed's own work log, experience bank 18 Oct 2026)
   'eklan-ai-coach': [
     'TypeScript',
     'Next.js',

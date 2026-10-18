@@ -5,6 +5,19 @@
  * Projects with no entry (or an empty array) may not show any stat tiles.
  */
 export const ALLOWED_NUMBERS: Readonly<Record<string, readonly string[]>> = {
+  'eklan-transcript-mining': [
+    '7 of 8',
+    '7',
+    '8',
+    '17–39 s',
+    '17–39',
+    '0',
+    '4',
+    '3',
+    '37,249',
+    '17,500',
+    '20,000',
+  ],
   'eklan-ai-coach': [
     '3 days',
     '3',

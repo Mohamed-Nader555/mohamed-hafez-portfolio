@@ -104,6 +104,39 @@ const projectsData = [
     detailLevel: 'story',
     public: true,
   },
+  {
+    id: 'eklan-transcript-mining',
+    slug: 'eklan-transcript-mining',
+    title: 'Turning Live-Class Transcripts into Practice',
+    hook: "After a live class, each learner's own mistakes are pulled from the transcript and turned into targeted drills.",
+    category: 'AI/ML · Teaching tools',
+    group: 'eklan',
+    status: 'eklan',
+    summary:
+      "At Eklan, I built an LLM pipeline that pulls each learner's own mistakes out of a live-class transcript, groups and dedupes them, filters sensitive personal topics, and lets tutors edit the results into targeted drills.",
+    ownership:
+      'I built the extraction pipeline end to end: the LLM tool call with redaction and a length cap, the deterministic dedupe and sensitive-topic filter, the tutor editing workflow with conflict-safe saves, and the link into drill generation.',
+    contextLine: 'Founding AI Engineer · Eklan · 2026',
+    roleLine:
+      'Built the extraction pipeline, sensitive-topic filter and tutor editing workflow.',
+    roles: ['aiml', 'software', 'teaching'],
+    roleWeights: {
+      aiml: 4,
+      software: 3,
+      android: 0,
+      teaching: 4,
+    },
+    technologies: [
+      'TypeScript',
+      'LLM tool calling',
+      'Next.js',
+      'React',
+      'MongoDB',
+    ],
+    sourceIds: ['public-experience', 'case-study-eklan-transcript-mining'],
+    detailLevel: 'story',
+    public: true,
+  },
   // ---- Flagship (§4 #1-6) ----
   {
     id: 'asc-pie',
