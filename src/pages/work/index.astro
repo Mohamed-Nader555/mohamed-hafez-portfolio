@@ -12,6 +12,10 @@ export const prerender = true;
 const pageProjects = projects.filter((project) =>
   ['flagship', 'story', 'brief'].includes(project.detailLevel),
 );
+// Current work at Eklan leads the page, ahead of the flagships.
+const eklanProjects = pageProjects.filter(
+  (project) => project.group === 'eklan',
+);
 const flagshipProjects = pageProjects.filter(
   (project) => project.detailLevel === 'flagship',
 );
@@ -109,6 +113,31 @@ const focusChips = [
     <p class="visually-hidden" role="status" aria-live="polite" data-focus-live>
     </p>
   </section>
+
+  {
+    eklanProjects.length > 0 && (
+      <section
+        class="work-index__group work-index__group--current shell-container"
+        aria-labelledby="group-eklan"
+      >
+        <h2 id="group-eklan">Founding AI Engineer at Eklan</h2>
+        <p class="work-index__group-intro">
+          What I’ve built since September 2026 at Eklan, an
+          English-communication training platform for healthcare professionals.
+          Told in my own words and diagrams, without internal names, prompts,
+          screenshots or learner data.
+        </p>
+        <div class="work-index__group-grid">
+          {eklanProjects.map((project) => (
+            <StoryCard
+              project={project}
+              keyFacts={keyFactsBySlug[project.id]}
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
 
   <section
     class="work-index__flagships shell-container"
@@ -285,6 +314,13 @@ const focusChips = [
     font-family: var(--font-display);
     font-size: var(--type-lead);
     margin-bottom: var(--space-4);
+  }
+
+  .work-index__group-intro {
+    max-width: 68ch;
+    margin: calc(var(--space-2) * -1) 0 var(--space-4);
+    color: var(--color-ink-300);
+    font-size: var(--type-sm);
   }
 
   .work-index__group-grid {

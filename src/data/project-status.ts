@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const statusKeySchema = z.enum([
+  'eklan',
   'thesis-awarded',
   'accepted-cascon',
   'independent',
@@ -31,6 +32,11 @@ export interface StatusDefinition {
 }
 
 export const PROJECT_STATUS: Readonly<Record<StatusKey, StatusDefinition>> = {
+  eklan: {
+    badge: 'Eklan · Founding AI Engineer',
+    longer:
+      'Built at Eklan as Founding AI Engineer (Sep 2026 to present). Described in my own words and diagrams, without internal names, prompts, screenshots or learner data.',
+  },
   'thesis-awarded': {
     badge: 'Thesis · awarded 2026',
     longer: 'M.A. thesis completed; degree officially awarded 2026.',

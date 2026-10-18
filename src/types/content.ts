@@ -6,6 +6,7 @@ export const roleIdSchema = z.enum(['aiml', 'software', 'android', 'teaching']);
 export type RoleId = z.infer<typeof roleIdSchema>;
 
 export const projectGroupSchema = z.enum([
+  'eklan',
   'research',
   'ml',
   'android',

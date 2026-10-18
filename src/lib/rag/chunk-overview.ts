@@ -14,6 +14,7 @@ import type { KnowledgeChunk, KnowledgeEntity } from './types';
 import { assistantVoice } from './voice';
 
 export const GROUP_LABELS: Record<ProjectGroup | 'teaching', string> = {
+  eklan: 'AI products at Eklan (current role)',
   research: 'AI/ML research',
   ml: 'Applied ML and AI systems',
   android: 'Android apps',
@@ -21,7 +22,14 @@ export const GROUP_LABELS: Record<ProjectGroup | 'teaching', string> = {
   early: 'Early Java, desktop and C work',
   teaching: 'Teaching',
 };
-const GROUP_ORDER = ['research', 'ml', 'android', 'backend', 'early'] as const;
+const GROUP_ORDER = [
+  'eklan',
+  'research',
+  'ml',
+  'android',
+  'backend',
+  'early',
+] as const;
 
 const groupOf = (project: ProjectRecord): ProjectGroup | 'teaching' =>
   project.group ?? 'teaching';

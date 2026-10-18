@@ -1,9 +1,10 @@
 ---
 import { architectures } from '@/data/architectures';
+import type { ProjectGroup } from '@/types/content';
 
 interface Props {
   slug: string;
-  group?: 'research' | 'ml' | 'android' | 'backend' | 'early';
+  group?: ProjectGroup;
 }
 
 const { slug, group } = Astro.props;
@@ -29,7 +30,7 @@ function mulberry32(seed: number) {
 }
 
 const color =
-  group === 'research' || group === 'ml'
+  group === 'research' || group === 'ml' || group === 'eklan'
     ? 'var(--color-ai-500)'
     : group === 'early'
       ? 'var(--color-verified-500)'
