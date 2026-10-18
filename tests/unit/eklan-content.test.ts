@@ -89,6 +89,8 @@ describe('Eklan rule checker', () => {
     expect(modelIdsIn('we used gemini-2.5-flash')).toHaveLength(1);
     expect(modelIdsIn('a Flash-Lite director')).toHaveLength(1);
     expect(modelIdsIn('GPT-4o tool calls')).toHaveLength(1);
+    expect(modelIdsIn('gemini-live-2.5-flash-preview')).toHaveLength(1);
+    expect(modelIdsIn('browser-to-Gemini-Live streaming')).toEqual([]);
   });
 
   it('finds teammates’ work and usage numbers', () => {

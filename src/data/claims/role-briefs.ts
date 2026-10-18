@@ -25,7 +25,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-dotpy',
-            text: 'Jun 2021 — Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
+            text: 'Jun 2021 – Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
           },
           {
             claimId: 'applied-ml-portfolio-lifecycle',
@@ -64,7 +64,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'career-graduate-researcher',
-            text: 'Sep 2024 — Apr 2026. York University · CERAS Lab · Toronto. Mohamed designed end-to-end ML/NLP pipelines for privacy-aware information extraction using Python, PyTorch, and Hugging Face. Mohamed built ASC-PIE, standardized heterogeneous datasets under a shared 19-entity schema, benchmarked multiple model families, and developed the privacy-safe SPRINT-PP continual-learning method. Mohamed created reproducible research artifacts covering schemas, prompts, configurations, evaluation summaries, and prediction traces.',
+            text: 'Sep 2024 – Apr 2026. York University · CERAS Lab · Toronto. Mohamed designed end-to-end ML/NLP pipelines for privacy-aware information extraction using Python, PyTorch, and Hugging Face. Mohamed built ASC-PIE, standardized heterogeneous datasets under a shared 19-entity schema, benchmarked multiple model families, and developed the privacy-safe SPRINT-PP continual-learning method. Mohamed created reproducible research artifacts covering schemas, prompts, configurations, evaluation summaries, and prediction traces.',
           },
         ],
         citations: [
@@ -159,7 +159,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'career-dotpy',
-            text: 'Jun 2021 — Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
+            text: 'Jun 2021 – Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
           },
         ],
         citations: [
@@ -219,7 +219,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'career-dotpy',
-            text: 'Jun 2021 — Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
+            text: 'Jun 2021 – Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
           },
         ],
         citations: [
@@ -528,7 +528,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-dotpy',
-            text: 'Jun 2021 — Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
+            text: 'Jun 2021 – Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
           },
           {
             claimId: 'applied-ml-portfolio-purpose',
@@ -790,7 +790,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'career-bass',
-            text: 'Aug 2023 — Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
+            text: 'Aug 2023 – Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
           },
         ],
         citations: [
@@ -821,7 +821,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-bass',
-            text: 'Aug 2023 — Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
+            text: 'Aug 2023 – Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
           },
           {
             claimId: 'asc-pie-evaluation-framework',
@@ -1313,7 +1313,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-graduate-researcher',
-            text: 'Sep 2024 — Apr 2026. York University · CERAS Lab · Toronto. Mohamed designed end-to-end ML/NLP pipelines for privacy-aware information extraction using Python, PyTorch, and Hugging Face. Mohamed built ASC-PIE, standardized heterogeneous datasets under a shared 19-entity schema, benchmarked multiple model families, and developed the privacy-safe SPRINT-PP continual-learning method. Mohamed created reproducible research artifacts covering schemas, prompts, configurations, evaluation summaries, and prediction traces.',
+            text: 'Sep 2024 – Apr 2026. York University · CERAS Lab · Toronto. Mohamed designed end-to-end ML/NLP pipelines for privacy-aware information extraction using Python, PyTorch, and Hugging Face. Mohamed built ASC-PIE, standardized heterogeneous datasets under a shared 19-entity schema, benchmarked multiple model families, and developed the privacy-safe SPRINT-PP continual-learning method. Mohamed created reproducible research artifacts covering schemas, prompts, configurations, evaluation summaries, and prediction traces.',
           },
         ],
         citations: [
@@ -1485,7 +1485,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'career-bass',
-            text: 'Aug 2023 — Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
+            text: 'Aug 2023 – Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
           },
         ],
         citations: [
@@ -1520,7 +1520,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'career-bass',
-            text: 'Aug 2023 — Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
+            text: 'Aug 2023 – Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
           },
         ],
         citations: [
@@ -1612,7 +1612,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 — Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
           {
             claimId: 'rest-pocs-purpose',
@@ -1714,7 +1714,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-dotpy',
-            text: 'Jun 2021 — Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
+            text: 'Jun 2021 – Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
           },
           {
             claimId: 'applied-ml-portfolio-lifecycle',
@@ -1779,7 +1779,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-bass',
-            text: 'Aug 2023 — Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
+            text: 'Aug 2023 – Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
           },
           {
             claimId: 'documentum-workflows-purpose',
@@ -1820,7 +1820,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'career-private-instructor',
-            text: 'Jan 2023 — Aug 2024. Independent · Cairo. Mohamed delivered more than 200 hours across 40+ individual and small-group sessions in data structures, algorithms, Java/OOP, AI/ML, and Android. Mohamed supported students from six institutions and created 30+ problem sets, 10+ mock examinations, walkthroughs, and structured study plans.',
+            text: 'Jan 2023 – Aug 2024. Independent · Cairo. Mohamed delivered more than 200 hours across 40+ individual and small-group sessions in data structures, algorithms, Java/OOP, AI/ML, and Android. Mohamed supported students from six institutions and created 30+ problem sets, 10+ mock examinations, walkthroughs, and structured study plans.',
           },
         ],
         citations: [
@@ -1999,7 +1999,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-bass',
-            text: 'Aug 2023 — Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
+            text: 'Aug 2023 – Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
           },
           {
             claimId: 'documentum-workflows-purpose',
@@ -2331,7 +2331,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'career-bass',
-            text: 'Aug 2023 — Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
+            text: 'Aug 2023 – Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
           },
         ],
         citations: [
@@ -2412,7 +2412,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'career-bass',
-            text: 'Aug 2023 — Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
+            text: 'Aug 2023 – Sep 2024. BASS · Cairo. Mohamed implemented and supported OpenText Documentum workflows for document intake, review, routing, archival, and retention in regulated environments. Mohamed built Java and Python utilities, REST prototypes, DQL validation controls, PDF-processing workflows, and structured diagnostics for production support.',
           },
         ],
         citations: [
@@ -2474,7 +2474,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 — Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
           {
             claimId: 'weather-checker-stack',
@@ -2579,7 +2579,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 — Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
         ],
         citations: [
@@ -2635,7 +2635,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 — Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
         ],
         citations: [
@@ -2666,7 +2666,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 — Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
           {
             claimId: 'weather-checker-purpose',
@@ -2801,7 +2801,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-york-ta',
-            text: 'Sep 2024 — Apr 2026. York University · Toronto. Mohamed led labs, tutorials, and office hours covering visualization, architecture, object-oriented design, design patterns, debugging, and code quality. Mohamed assessed assignments and examinations using shared rubrics and prepared walkthroughs and student-support materials.',
+            text: 'Sep 2024 – Apr 2026. York University · Toronto. Mohamed led labs, tutorials, and office hours covering visualization, architecture, object-oriented design, design patterns, debugging, and code quality. Mohamed assessed assignments and examinations using shared rubrics and prepared walkthroughs and student-support materials.',
           },
           {
             claimId: 'teaching-delivery',
@@ -2836,7 +2836,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-private-instructor',
-            text: 'Jan 2023 — Aug 2024. Independent · Cairo. Mohamed delivered more than 200 hours across 40+ individual and small-group sessions in data structures, algorithms, Java/OOP, AI/ML, and Android. Mohamed supported students from six institutions and created 30+ problem sets, 10+ mock examinations, walkthroughs, and structured study plans.',
+            text: 'Jan 2023 – Aug 2024. Independent · Cairo. Mohamed delivered more than 200 hours across 40+ individual and small-group sessions in data structures, algorithms, Java/OOP, AI/ML, and Android. Mohamed supported students from six institutions and created 30+ problem sets, 10+ mock examinations, walkthroughs, and structured study plans.',
           },
           {
             claimId: 'teaching-computing-topics',
@@ -2871,7 +2871,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'teaching-portfolio-1',
-            text: '2019 — 2024. CIC · DotPy Academy · Minders · Google Developer Student Club · Most Electronics. Mohamed delivered 15+ workshops and coding clinics to 100+ attendees across data structures, C/C++, problem solving, Java/OOP, AI/ML, data science, and introductory Android development.',
+            text: '2019 – 2024. CIC · DotPy Academy · Minders · Google Developer Student Club · Most Electronics. Mohamed delivered 15+ workshops and coding clinics to 100+ attendees across data structures, C/C++, problem solving, Java/OOP, AI/ML, data science, and introductory Android development.',
           },
         ],
         citations: [
@@ -2887,7 +2887,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'teaching-portfolio-2',
-            text: '2019 — 2026. Reusable instructional materials. Six core topics, 12+ lab exercises, 30+ automated test cases, complexity notes, and solution walkthroughs.',
+            text: '2019 – 2026. Reusable instructional materials. Six core topics, 12+ lab exercises, 30+ automated test cases, complexity notes, and solution walkthroughs.',
           },
         ],
         citations: [
@@ -2903,11 +2903,11 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-private-instructor',
-            text: 'Jan 2023 — Aug 2024. Independent · Cairo. Mohamed delivered more than 200 hours across 40+ individual and small-group sessions in data structures, algorithms, Java/OOP, AI/ML, and Android. Mohamed supported students from six institutions and created 30+ problem sets, 10+ mock examinations, walkthroughs, and structured study plans.',
+            text: 'Jan 2023 – Aug 2024. Independent · Cairo. Mohamed delivered more than 200 hours across 40+ individual and small-group sessions in data structures, algorithms, Java/OOP, AI/ML, and Android. Mohamed supported students from six institutions and created 30+ problem sets, 10+ mock examinations, walkthroughs, and structured study plans.',
           },
           {
             claimId: 'career-york-ta',
-            text: 'Sep 2024 — Apr 2026. York University · Toronto. Mohamed led labs, tutorials, and office hours covering visualization, architecture, object-oriented design, design patterns, debugging, and code quality. Mohamed assessed assignments and examinations using shared rubrics and prepared walkthroughs and student-support materials.',
+            text: 'Sep 2024 – Apr 2026. York University · Toronto. Mohamed led labs, tutorials, and office hours covering visualization, architecture, object-oriented design, design patterns, debugging, and code quality. Mohamed assessed assignments and examinations using shared rubrics and prepared walkthroughs and student-support materials.',
           },
         ],
         citations: [
@@ -2942,7 +2942,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'teaching-portfolio-3',
-            text: '2019 — 2026. Reusable instructional materials. 10+ notebooks with answer keys covering classification, regression, evaluation, introductory NLP, computer vision, and data-quality practice.',
+            text: '2019 – 2026. Reusable instructional materials. 10+ notebooks with answer keys covering classification, regression, evaluation, introductory NLP, computer vision, and data-quality practice.',
           },
         ],
         citations: [
@@ -2968,7 +2968,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-york-ta',
-            text: 'Sep 2024 — Apr 2026. York University · Toronto. Mohamed led labs, tutorials, and office hours covering visualization, architecture, object-oriented design, design patterns, debugging, and code quality. Mohamed assessed assignments and examinations using shared rubrics and prepared walkthroughs and student-support materials.',
+            text: 'Sep 2024 – Apr 2026. York University · Toronto. Mohamed led labs, tutorials, and office hours covering visualization, architecture, object-oriented design, design patterns, debugging, and code quality. Mohamed assessed assignments and examinations using shared rubrics and prepared walkthroughs and student-support materials.',
           },
         ],
         citations: [
@@ -2999,7 +2999,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-dotpy',
-            text: 'Jun 2021 — Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
+            text: 'Jun 2021 – Aug 2023. DotPy · Cairo. Mohamed delivered applied ML projects across forecasting, segmentation, recommendation, sentiment analysis, fraud detection, and image classification. Mohamed owned workflows from problem definition and data preparation through evaluation, API or Docker packaging, documentation, and technical handover. Mohamed also designed AI/ML, data-science, Python, and mobile-integration workshops and mentored junior developers.',
           },
         ],
         citations: [
@@ -3032,11 +3032,11 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'teaching-portfolio-4',
-            text: '2019 — 2026. Reusable instructional materials. Three or more applications demonstrating networking, local storage, architecture patterns, offline behaviour, and UI construction.',
+            text: '2019 – 2026. Reusable instructional materials. Three or more applications demonstrating networking, local storage, architecture patterns, offline behaviour, and UI construction.',
           },
           {
             claimId: 'teaching-portfolio-1',
-            text: '2019 — 2024. CIC · DotPy Academy · Minders · Google Developer Student Club · Most Electronics. Mohamed delivered 15+ workshops and coding clinics to 100+ attendees across data structures, C/C++, problem solving, Java/OOP, AI/ML, data science, and introductory Android development.',
+            text: '2019 – 2024. CIC · DotPy Academy · Minders · Google Developer Student Club · Most Electronics. Mohamed delivered 15+ workshops and coding clinics to 100+ attendees across data structures, C/C++, problem solving, Java/OOP, AI/ML, data science, and introductory Android development.',
           },
         ],
         citations: [

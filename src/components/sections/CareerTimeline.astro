@@ -1,12 +1,13 @@
 ---
-import { careerExperience, roleRank } from '@/data/career';
+import { careerDetailsFor, careerForRole } from '@/data/career';
 import type { RoleId } from '@/types/content';
 
 interface Props {
   roleId: RoleId;
 }
 const { roleId } = Astro.props;
-const ordered = roleRank(careerExperience, roleId);
+// The current role (Eklan) always leads; the rest follow this focus's ranking.
+const ordered = careerForRole(roleId);
 ---
 
 <section class="career-section shell-container" aria-labelledby="career-title">
@@ -34,7 +35,7 @@ const ordered = roleRank(careerExperience, roleId);
             <h3>{entry.title}</h3>
             <p class="career-timeline__organization">{entry.organization}</p>
             <ul>
-              {entry.details.map((detail) => (
+              {careerDetailsFor(entry, roleId).map((detail) => (
                 <li>{detail}</li>
               ))}
             </ul>

@@ -87,16 +87,40 @@ export const proofStats = [
 export const careerExperience = [
   {
     id: 'eklan',
+    current: true,
     period: 'Sep 2026 – present',
     title: 'Founding AI Engineer',
     organization: 'Eklan · Toronto',
-    details: ['I am currently working as Founding AI Engineer at Eklan.'],
+    details: [
+      'I architected and shipped real-time voice roleplay where learners practise hospital conversations out loud with AI patients and clinicians: browser audio streams straight to the Gemini Live API through short-lived, locked tokens, with AudioWorklet capture, a noise gate and tuned voice-activity detection. Median time to first AI audio is about 1.4 s (p90 about 1.7 s), measured in testing against the live models.',
+      'I built a multi-character voice mode, now live in production, where each extra character runs as its own Gemini Live session and voice and a fast Gemini Flash director routes every learner turn to the right character. It held 10 concurrent learners with 3 live sessions each and 0 errors, measured in testing against the live models.',
+      'I designed a 5-stage speech grading pipeline (verbatim transcription, SpeechAce pronunciation scoring, LLM language and communication scoring, fluency computed in code, LLM coaching) with retries, locks and model fallback. Grading during the call cut report time by 26–41% and showed the first result in 0.5 s instead of 20–36 s, measured in testing against the live models.',
+      'I took an on-demand AI coach for unplanned workplace English from PRD to staging in 3 days: Gemini structured outputs against a versioned schema, a rule-based output checker, English and Korean PII redaction, a 48-case eval suite (23 of 23 critical cases passing) and a leased, retrying job queue that turns a solved chat into a personalized drill.',
+      'I replaced one shared drill-generation prompt with composed per-drill-type prompts behind feature flags, doubling items per drill (vocabulary 12 to 20, fill-in-the-blank 10 to 20) and cutting answer-position bias (correct answer in the first slot 10 of 10 to 7 of 20).',
+      'I built an LLM pipeline that pulls each learner’s own mistakes out of live-class transcripts, filters sensitive personal topics and lets tutors edit the results into targeted drills; it matched 7 of 8 tutor-found mistakes in the best runs.',
+    ],
+    detailsByRole: {
+      aiml: null,
+      software: [
+        'I own features end to end on a small founding team: TypeScript and Next.js APIs, React UI, MongoDB models and indexes, PostHog analytics, and feature-flagged releases from staging to production on Vercel.',
+        'I built the backend of an on-demand AI coach in 3 days from the PRD: Next.js route handlers, Zod-validated structured outputs, MongoDB unique indexes so retries never create duplicates, and a leased job queue with backoff that a Vercel cron sweeps every minute.',
+        'I moved live voice roleplay from a server relay to direct streaming from the browser to the Gemini Live API over WebSockets, with the server issuing short-lived tokens that lock the model, instructions and voice, and a Web Audio and AudioWorklet engine in the browser.',
+        'I built a 5-stage speech grading pipeline that runs in the background during the call with Next.js after(), stores each part’s status, attempts, error reason and timing in MongoDB, and falls back to a second model on rate limits.',
+        'I planned MongoDB Atlas indexes for a production setup with auto-indexing off, wrote index scripts checked by read-only queries before release, and shipped through staging and production pull requests with a rollback plan for every release.',
+      ],
+      android: [
+        'At Eklan, an English-communication training platform for healthcare professionals, I build the AI product features (real-time voice roleplay, speech grading and an AI coach) in TypeScript and Next.js.',
+      ],
+      teaching: [
+        'At Eklan, an English-communication training platform for healthcare professionals, I build the AI practice around live tutor-led classes: voice roleplay, speech feedback, and tutor tools that turn class transcripts into targeted drills.',
+      ],
+    },
     sourceIds: ['public-experience'],
-    weights: { aiml: 5, software: 3, android: 0, teaching: 0 },
+    weights: { aiml: 5, software: 5, android: 1, teaching: 1 },
   },
   {
     id: 'graduate-researcher',
-    period: 'Sep 2024 — Apr 2026',
+    period: 'Sep 2024 – Apr 2026',
     title: 'Graduate Researcher — Machine Learning & NLP',
     organization: 'York University · CERAS Lab · Toronto',
     details: [
@@ -108,7 +132,7 @@ export const careerExperience = [
   },
   {
     id: 'bass',
-    period: 'Aug 2023 — Sep 2024',
+    period: 'Aug 2023 – Sep 2024',
     title: 'Software Engineer — ECM Consultant',
     organization: 'BASS · Cairo',
     details: [
@@ -119,7 +143,7 @@ export const careerExperience = [
   },
   {
     id: 'dotpy',
-    period: 'Jun 2021 — Aug 2023',
+    period: 'Jun 2021 – Aug 2023',
     title: 'AI & ML Specialist',
     organization: 'DotPy · Cairo',
     details: [
@@ -131,7 +155,7 @@ export const careerExperience = [
   },
   {
     id: 'android-freelance',
-    period: 'Jul 2019 — Jun 2024',
+    period: 'Jul 2019 – Jun 2024',
     title: 'Freelance Android Developer',
     organization: 'Client projects · Remote',
     details: [
@@ -143,7 +167,7 @@ export const careerExperience = [
   },
   {
     id: 'private-instructor',
-    period: 'Jan 2023 — Aug 2024',
+    period: 'Jan 2023 – Aug 2024',
     title: 'Private Instructor — Computer Science & Software Development',
     organization: 'Independent · Cairo',
     details: [
@@ -154,7 +178,7 @@ export const careerExperience = [
   },
   {
     id: 'java-freelance',
-    period: 'Sep 2019 — Jun 2023',
+    period: 'Sep 2019 – Jun 2023',
     title: 'Freelance Java Developer',
     organization: 'Client projects · Remote',
     details: [
@@ -165,7 +189,7 @@ export const careerExperience = [
   },
   {
     id: 'york-ta',
-    period: 'Sep 2024 — Apr 2026',
+    period: 'Sep 2024 – Apr 2026',
     title: 'Teaching Assistant — Data Visualization & Systems Architecture',
     organization: 'York University · Toronto',
     details: [
@@ -276,7 +300,7 @@ export const skillGroups = [
 
 export const teachingPortfolio = [
   {
-    period: '2019 — 2024',
+    period: '2019 – 2024',
     title: 'Workshops & coding clinics',
     organization:
       'CIC · DotPy Academy · Minders · Google Developer Student Club · Most Electronics',
@@ -284,21 +308,21 @@ export const teachingPortfolio = [
       'I delivered 15+ workshops and coding clinics to 100+ attendees across data structures, C/C++, problem solving, Java/OOP, AI/ML, data science, and introductory Android development.',
   },
   {
-    period: '2019 — 2026',
+    period: '2019 – 2026',
     title: 'Data Structures Lab Series',
     organization: 'Reusable instructional materials',
     detail:
       'Six core topics, 12+ lab exercises, 30+ automated test cases, complexity notes, and solution walkthroughs.',
   },
   {
-    period: '2019 — 2026',
+    period: '2019 – 2026',
     title: 'Intro AI/ML Notebooks & Assignments',
     organization: 'Reusable instructional materials',
     detail:
       '10+ notebooks with answer keys covering classification, regression, evaluation, introductory NLP, computer vision, and data-quality practice.',
   },
   {
-    period: '2019 — 2026',
+    period: '2019 – 2026',
     title: 'Android teaching mini-apps',
     organization: 'Reusable instructional materials',
     detail:
@@ -308,7 +332,7 @@ export const teachingPortfolio = [
 
 export const education = [
   {
-    period: '2024 — 2026',
+    period: '2024 – 2026',
     credential: 'M.A. Information Systems & Technology',
     institution: 'York University · Toronto',
     details: [
@@ -318,7 +342,7 @@ export const education = [
     ],
   },
   {
-    period: '2018 — 2022',
+    period: '2018 – 2022',
     credential: 'B.Sc. Computer Science & Artificial Intelligence',
     institution: 'Helwan University · Cairo',
     details: [
@@ -366,6 +390,37 @@ export const awards = [
   ['Capstone grade A+ · Mind’s Eye', 'Helwan University · 2022'],
   ['ICPC contestant · three consecutive years', '2019 · 2020 · 2021'],
 ] as const;
+
+/** Career details for a focus: its own list when it has one, else the default. */
+export function careerDetailsFor(
+  entry: (typeof careerExperience)[number],
+  role: RoleId,
+): readonly string[] {
+  if ('detailsByRole' in entry)
+    return entry.detailsByRole[role] ?? entry.details;
+  return entry.details;
+}
+
+/** Every distinct career line for an entry, across all focuses. */
+export function allCareerDetails(
+  entry: (typeof careerExperience)[number],
+): string[] {
+  const lists =
+    'detailsByRole' in entry
+      ? [entry.details, ...Object.values(entry.detailsByRole)]
+      : [entry.details];
+  return [...new Set(lists.flatMap((list) => list ?? []))];
+}
+
+/**
+ * Experience in the order a focus shows it: the current role always first,
+ * then the rest ranked by how much they matter to that focus.
+ */
+export function careerForRole(role: RoleId) {
+  const current = careerExperience.filter((entry) => 'current' in entry);
+  const rest = careerExperience.filter((entry) => !('current' in entry));
+  return [...current, ...roleRank(rest, role)];
+}
 
 export function roleRank<T extends { weights: RoleWeights }>(
   items: readonly T[],

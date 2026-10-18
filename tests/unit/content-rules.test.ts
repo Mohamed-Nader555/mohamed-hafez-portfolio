@@ -1,7 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { evidence, profile, projects, screeningFacts } from '@/data';
-import { careerExperience } from '@/data/career';
+import {
+  careerDetailsFor,
+  careerExperience,
+  careerForRole,
+} from '@/data/career';
 
 describe('locked public-content rules', () => {
   it('locks Dive ownership to Mohamed without unrelated attribution', () => {
@@ -57,7 +61,7 @@ describe('locked public-content rules', () => {
     );
   });
 
-  it('names the current role at Eklan without describing the work', () => {
+  it('leads the experience with the current role at Eklan', () => {
     const current = careerExperience[0];
     expect(current).toMatchObject({
       id: 'eklan',
@@ -67,9 +71,21 @@ describe('locked public-content rules', () => {
     });
     const record = evidence.find((item) => item.id === 'eklan-current-role');
     expect(record?.statement).toBe(
-      'I am currently working as Founding AI Engineer at Eklan (2026 to present).',
+      'I am currently working as Founding AI Engineer at Eklan in Toronto (Sep 2026 to present), where I build the AI features of an English-communication training platform for healthcare professionals.',
     );
     expect(record?.sourceIds).toEqual(['public-experience']);
+  });
+
+  it('shows Eklan first on every focus, in full for AI/ML and Software and as one line for Android and teaching', () => {
+    for (const role of ['aiml', 'software', 'android', 'teaching'] as const)
+      expect(careerForRole(role)[0]?.id, role).toBe('eklan');
+    const eklan = careerExperience[0];
+    expect(careerDetailsFor(eklan, 'aiml').length).toBeGreaterThanOrEqual(5);
+    const software = careerDetailsFor(eklan, 'software');
+    expect(software.length).toBeGreaterThanOrEqual(5);
+    expect(software[0]).toMatch(/TypeScript.*Next\.js.*MongoDB.*Vercel/);
+    expect(careerDetailsFor(eklan, 'android')).toHaveLength(1);
+    expect(careerDetailsFor(eklan, 'teaching')).toHaveLength(1);
   });
 
   it('no longer claims immediate availability anywhere on the site', () => {

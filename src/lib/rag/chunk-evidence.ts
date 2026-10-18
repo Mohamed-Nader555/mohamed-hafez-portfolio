@@ -1,5 +1,6 @@
 import { evidence, projects, screeningFacts } from '@/data';
 import {
+  allCareerDetails,
   careerExperience,
   credentials,
   education,
@@ -143,7 +144,7 @@ function evidenceChunks(): KnowledgeChunk[] {
     id: `career-${entry.id}`,
     title: entry.title,
     text: assistantVoice(
-      `${entry.period}. ${entry.organization}. ${entry.details.join(' ')}`,
+      `${entry.period}. ${entry.organization}. ${allCareerDetails(entry).join(' ')}`,
     ),
     topics: [entry.title, entry.organization, 'experience'],
     aliases: [entry.id, ...entry.title.split(/\s+/)],

@@ -19,7 +19,7 @@ export const LIVE_MODEL_QUALIFIER =
   'measured in testing against the live models';
 
 const MODEL_ID =
-  /\b(?:gemini|gpt|o[134]|chatgpt|claude)-[a-z0-9][\w.-]*|\bflash-lite\b|\bgpt-?\d|\bgemini\s+\d/gi;
+  /\b(?:gemini|gpt|o[134]|chatgpt|claude)-(?=[\w.-]*\d)[\w.-]+|\bflash-lite\b|\bgpt-?\d|\bgemini\s+\d/gi;
 
 const TEAMMATE_WORK =
   /\bstripe\b|\bpaywall\b|\blivekit\b|auth(?:entication)? hardening|better auth|\bmobile app\b|\bdark (?:theme|mode)\b|light and dark|\bredesign\b|visual design/gi;
