@@ -14,6 +14,7 @@ const FLAGSHIP_SLUGS = [
   'dostava',
 ] as const;
 const STORY_SLUGS = [
+  'eklan-grading-pipeline',
   'eklan-voice-roleplay',
   'applied-ml-portfolio',
   'cti-intrusion-detection',

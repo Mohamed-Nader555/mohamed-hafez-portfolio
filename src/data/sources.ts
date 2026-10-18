@@ -142,6 +142,13 @@ const sourceRecords = [
     publicHref: '/work/eklan-voice-roleplay',
     isPublic: true,
   },
+  {
+    id: 'case-study-eklan-grading-pipeline',
+    label: 'Speech Grading That Arrives During the Call case study',
+    kind: 'case-study',
+    publicHref: '/work/eklan-grading-pipeline',
+    isPublic: true,
+  },
   // Case-study sources: one per §4 flagship/story/brief page (brief §6.4).
   {
     id: 'case-study-sprint-pp',

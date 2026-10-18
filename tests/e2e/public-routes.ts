@@ -12,6 +12,10 @@ export interface PublicRouteExpectation {
 // `src/data/projects.ts` (including the curly apostrophe in "Mind's Eye").
 const workRoutes: readonly PublicRouteExpectation[] = [
   {
+    path: '/work/eklan-grading-pipeline',
+    title: 'Speech Grading That Arrives During the Call — Mohamed Hafez',
+  },
+  {
     path: '/work/eklan-voice-roleplay',
     title: 'Real-Time Voice Roleplay with AI Patients — Mohamed Hafez',
   },

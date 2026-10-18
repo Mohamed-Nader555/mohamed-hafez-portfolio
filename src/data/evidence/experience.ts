@@ -94,7 +94,7 @@ const currentRoleRecords = [
     topics: ['Eklan', 'LLM evaluation', 'speech grading', 'SpeechAce'],
     aliases: ['speech assessment', 'pronunciation scoring', 'LLM-as-judge'],
     roleWeights: { aiml: 5, software: 4, android: 0, teaching: 3 },
-    sourceIds: ['public-experience'],
+    sourceIds: ['public-experience', 'case-study-eklan-grading-pipeline'],
     public: true,
   },
   {

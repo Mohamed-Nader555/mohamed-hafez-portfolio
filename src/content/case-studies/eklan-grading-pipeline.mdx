@@ -1,0 +1,149 @@
+---
+slug: eklan-grading-pipeline
+publishedAt: 2026-10-18
+passport:
+  context: 'Founding AI Engineer, Eklan'
+  period: 'Sep 2026 – present'
+  platform: 'Background grading in a Next.js web app'
+stats:
+  - value: '26–41%'
+    label: shorter wait from the end of the call to the full report
+    note: Measured in testing against the live models
+  - value: '0.5 s'
+    label: to the first result on the page, down from 20–36 s
+    note: Measured in testing against the live models
+  - value: '1.5'
+    label: median points between two gradings of the same session (out of 100)
+  - value: '5'
+    label: grading stages, each with its own status and error reason
+features:
+  - title: Verbatim transcription
+    detail: The first stage writes down exactly what the learner said, fillers and false starts included, because fluency and pronunciation feedback is useless on a cleaned-up transcript.
+  - title: Pronunciation and language in parallel
+    detail: SpeechAce scores pronunciation word by word while an LLM scores language and communication against a rubric. The two run side by side, not one after the other.
+  - title: Fluency computed in code
+    detail: Words per minute, fillers per 100 words, speaking time and response onset are counted in code, not judged by a model, so the same audio always gets the same fluency score.
+  - title: Coaching from the scores
+    detail: A final LLM stage writes tips from the scored parts. Learners get a report with scores, tips, model audio, a "practise it" recording and a trend across attempts; tutors can review and override a score.
+  - title: Every part reports on itself
+    detail: Each part stores its status, attempts, error reason and timing on the session, so a partial failure shows up as one missing part with a reason instead of a blank report.
+  - title: Mistakes that feed practice
+    detail: Weaknesses from grading and from tutors' notes go into one record per learner, which drill generation reads back so practice targets that learner's actual mistakes.
+decisions:
+  - choice: grade each turn in the background while the call is still running
+    over: grading the whole session after the learner hangs up
+    because: most of the work can be done before the call ends, so the learner waits for the last turn instead of for the whole session
+  - choice: fluency measured in code
+    over: asking the model for a fluency score
+    because: pace and filler counts are arithmetic; computing them makes the score repeatable and leaves the model only the judgements that need it
+  - choice: a narrow fallback plus a stored error reason
+    over: guessing at a failure I couldn't reproduce
+    because: a rare error deserved a safe path for the learner today and enough evidence to fix it properly the next time it happened
+challenges:
+  - problem: The transcription model accepts only about 10 requests a minute, and a busy session sends many more.
+    solution: Transcription calls run 8 at a time, and a rate-limit error falls back to the grading model instead of failing the turn.
+  - problem: One stage occasionally failed with an invalid-argument error that I could not reproduce after many tries.
+    solution: I shipped a narrow fallback that retries that clip once on a second model, and stored a short error reason for every part, so the next failure would be visible instead of guessed.
+  - problem: An LLM grader is only useful if it gives the same session roughly the same score twice.
+    solution: I graded 8 real sessions twice and compared them. The median difference was 1.5 points out of 100 and the largest was 6, which made the scores fit for showing learners.
+stack:
+  - layer: Models and speech
+    items:
+      - name: Gemini Flash
+        kind: ml
+        purpose: Rubric scoring, coaching and the transcription fallback
+      - name: SpeechAce
+        kind: ml
+        purpose: Word-level pronunciation scores
+  - layer: Server
+    items:
+      - name: TypeScript
+        kind: language
+        purpose: Pipeline, scoring and fallbacks
+      - name: Next.js
+        kind: framework
+        purpose: Background grading with after() and the results API
+      - name: MongoDB
+        kind: data
+        purpose: Per-part status, attempts, errors and timings
+      - name: Vercel
+        kind: tool
+        purpose: Function limits, staging and production
+  - layer: Interface
+    items:
+      - name: React
+        kind: framework
+        purpose: Staged results page and tutor review views
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import CompareTable from '@/components/case-study/CompareTable.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+After a voice roleplay, a learner wants to know how they did. The old flow graded the whole session only after the call ended, so learners stared at a loading screen for over a minute, and one failed step could leave the whole report empty. The feedback also had to be trustworthy: a grade that changes every time you ask is worse than no grade.
+
+## Who it was for
+
+Nurses and clinicians practising spoken English, who need specific, repeatable feedback on pronunciation, language, communication and fluency, and the tutors who review that feedback with them.
+
+## My role
+
+I designed the grading pipeline and built it end to end: the five stages, grading during the call, retries, locks and model fallback, the stored status for every part, the calibration check and the staged results page.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+The fluency score blends the AI coach's voice notes and the roleplay results 60/40, so it reflects how a learner speaks in both settings.
+
+## How it works
+
+Each learner turn is transcribed word for word, then scored for pronunciation and, in parallel, for language and communication. Fluency is computed in code, and an LLM writes coaching tips from all of the scores. While the call is running, Next.js grades each finished turn in the background, and the results page fills in part by part.
+
+<ArchitectureFlow
+  slug="eklan-grading-pipeline"
+  title="Speech Grading That Arrives During the Call"
+/>
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Results
+
+Grading during the call cut the wait from the end of the call to the full report by 26–41% on two real sessions, and the first result now appears in 0.5 s instead of 20–36 s. These timings were measured in testing against the live models, on a local setup, not from production traffic.
+
+<CompareTable
+  caption="End of call to full report, measured in testing against the live models"
+  columns={['Session', 'Before', 'After']}
+  rows={[
+    ['Session A', '69.6 s', '51.2 s'],
+    ['Session B', '68.6 s', '40.4 s'],
+    ['First result visible', '20–36 s', '0.5 s'],
+  ]}
+/>
+
+Grading the same 8 sessions twice gave a median difference of 1.5 points out of 100, with a largest difference of 6.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> A pipeline is only as useful as its worst failure. Make each part report on itself.
+
+Splitting grading into parts that each record their own status changed what failure looks like. A rate limit or an odd clip now costs the learner one part of the report for a while, with a reason attached, instead of the whole report. The calibration check mattered just as much: it turned "the model seems consistent" into a number I could stand behind.
+
+## What I'd do next
+
+Repeat the calibration on a larger set of sessions and track it over time, so a prompt or model change that makes grading less consistent is caught before release.

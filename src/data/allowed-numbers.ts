@@ -5,6 +5,28 @@
  * Projects with no entry (or an empty array) may not show any stat tiles.
  */
 export const ALLOWED_NUMBERS: Readonly<Record<string, readonly string[]>> = {
+  'eklan-grading-pipeline': [
+    '26–41%',
+    '26',
+    '41',
+    '0.5 s',
+    '0.5',
+    '20–36 s',
+    '20–36',
+    '69.6',
+    '51.2',
+    '68.6',
+    '40.4',
+    '1.5',
+    '6',
+    '8',
+    '5',
+    '100',
+    '10',
+    '60/40',
+    '400',
+    '429',
+  ],
   'eklan-voice-roleplay': [
     '~1.4 s',
     '1.4',

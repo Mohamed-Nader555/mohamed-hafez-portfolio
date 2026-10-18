@@ -23,6 +23,87 @@ export interface ArchitectureDefinition {
 }
 
 export const architectures: Readonly<Record<string, ArchitectureDefinition>> = {
+  'eklan-grading-pipeline': {
+    summary:
+      'Each learner turn is transcribed word for word, scored for pronunciation and for language and communication in parallel, given a fluency score computed in code, and coached by an LLM; parts land on the results page one by one.',
+    nodes: [
+      {
+        id: 'turn',
+        label: 'Learner turn',
+        detail: 'Audio saved as the call runs',
+      },
+      {
+        id: 'transcription',
+        label: 'Verbatim transcription',
+        detail: 'A Gemini model keeps fillers and false starts',
+      },
+      {
+        id: 'pronunciation',
+        label: 'Pronunciation',
+        detail: 'SpeechAce word-level scores',
+      },
+      {
+        id: 'language',
+        label: 'Language and communication',
+        detail: 'LLM scoring against a rubric',
+      },
+      {
+        id: 'fluency',
+        label: 'Fluency',
+        detail: 'Computed in code: pace, fillers, onset',
+      },
+      {
+        id: 'coaching',
+        label: 'Coaching',
+        detail: 'LLM tips from the scored parts',
+      },
+      {
+        id: 'report',
+        label: 'Staged report',
+        detail: 'Each part appears as soon as it is ready',
+      },
+    ],
+    edges: [
+      {
+        from: 'turn',
+        to: 'transcription',
+      },
+      {
+        from: 'transcription',
+        to: 'pronunciation',
+      },
+      {
+        from: 'transcription',
+        to: 'language',
+        label: 'in parallel',
+      },
+      {
+        from: 'pronunciation',
+        to: 'fluency',
+        label: 'scores',
+      },
+      {
+        from: 'language',
+        to: 'fluency',
+      },
+      {
+        from: 'fluency',
+        to: 'coaching',
+      },
+      {
+        from: 'coaching',
+        to: 'report',
+      },
+    ],
+    pipeline: [
+      'transcribe',
+      'pronounce',
+      'score',
+      'fluency',
+      'coach',
+      'report',
+    ],
+  },
   'eklan-voice-roleplay': {
     summary:
       "The learner's browser captures audio and streams it straight to Gemini Live with a short-lived token the server locks; a fast director picks which character answers, guards filter what plays, and the app, not the model, keeps time.",

@@ -37,6 +37,39 @@ const projectsData = [
     detailLevel: 'story',
     public: true,
   },
+  {
+    id: 'eklan-grading-pipeline',
+    slug: 'eklan-grading-pipeline',
+    title: 'Speech Grading That Arrives During the Call',
+    hook: 'Five stages grade pronunciation, language, communication and fluency, then write coaching tips, while the learner is still talking.',
+    category: 'AI/ML · LLM evaluation',
+    group: 'eklan',
+    status: 'eklan',
+    summary:
+      "At Eklan, I designed a five-stage speech grading pipeline that scores a learner's spoken English on pronunciation, language, communication and fluency, writes coaching tips, and grades each turn in the background while the call is still running.",
+    ownership:
+      'I designed the grading pipeline and built it end to end: the five stages, grading during the call, retries, locks and model fallback, the stored status for every part, the calibration check and the staged results page.',
+    contextLine: 'Founding AI Engineer · Eklan · 2026',
+    roleLine:
+      'Designed and built the five stages, grading during the call and model fallback.',
+    roles: ['aiml', 'software'],
+    roleWeights: {
+      aiml: 5,
+      software: 4,
+      android: 0,
+      teaching: 3,
+    },
+    technologies: [
+      'TypeScript',
+      'Gemini Flash',
+      'SpeechAce',
+      'Next.js',
+      'MongoDB',
+    ],
+    sourceIds: ['public-experience', 'case-study-eklan-grading-pipeline'],
+    detailLevel: 'story',
+    public: true,
+  },
   // ---- Flagship (§4 #1-6) ----
   {
     id: 'asc-pie',
