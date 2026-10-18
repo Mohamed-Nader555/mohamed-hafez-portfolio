@@ -8,19 +8,23 @@ test('hero presents a meaningful project spotlight for each selected role', asyn
   const spotlight = page.getByRole('complementary', {
     name: 'Project spotlight',
   });
-  await expect(spotlight).toContainText('ASC-PIE');
+  await expect(spotlight).toContainText(
+    'Real-Time Voice Roleplay with AI Patients',
+  );
   await expect(spotlight.getByRole('link')).toHaveAttribute(
     'href',
-    '/work/asc-pie',
+    '/work/eklan-voice-roleplay',
   );
 
   await page
     .getByRole('link', { name: 'Software Engineer', exact: true })
     .click();
-  await expect(spotlight).toContainText('Northstar RAG System');
+  await expect(spotlight).toContainText(
+    'On-Demand AI Coach, PRD to Staging in 3 Days',
+  );
   await expect(spotlight.getByRole('link')).toHaveAttribute(
     'href',
-    '/work/northstar-rag',
+    '/work/eklan-ai-coach',
   );
 
   await page

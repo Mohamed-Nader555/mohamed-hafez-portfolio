@@ -57,7 +57,7 @@ const projectsData = [
       aiml: 5,
       software: 4,
       android: 0,
-      teaching: 3,
+      teaching: 2,
     },
     technologies: [
       'TypeScript',
@@ -124,7 +124,7 @@ const projectsData = [
       aiml: 4,
       software: 3,
       android: 0,
-      teaching: 4,
+      teaching: 2,
     },
     technologies: [
       'TypeScript',
@@ -157,7 +157,7 @@ const projectsData = [
       aiml: 4,
       software: 3,
       android: 0,
-      teaching: 3,
+      teaching: 2,
     },
     technologies: [
       'TypeScript',

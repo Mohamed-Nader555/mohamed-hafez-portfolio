@@ -16,12 +16,17 @@ const roleById = (roleId: RoleLens['id']) => {
 describe('resolveLens', () => {
   it('ranks projects and selects the matching resume for every role', () => {
     expect(resolveLens('aiml').projects.map(({ id }) => id)).toEqual([
+      'eklan-voice-roleplay',
       'asc-pie',
       'sprint-pp',
       'northstar-rag',
       'applied-ml-portfolio',
       'cti-intrusion-detection',
+      'eklan-grading-pipeline',
       'minds-eye',
+      'eklan-composed-prompts',
+      'eklan-ai-coach',
+      'eklan-transcript-mining',
       'dive',
       'face-recognition-pipeline',
       'this-portfolio',
@@ -200,8 +205,9 @@ describe('rankProjectsForRole', () => {
   });
 
   it('rejects duplicate project ids in the configured catalog', () => {
+    const ascPie = projects.find((project) => project.id === 'asc-pie')!;
     expect(() =>
-      rankProjectsForRole(roleById('aiml'), [projects[0], projects[0]]),
+      rankProjectsForRole(roleById('aiml'), [ascPie, ascPie]),
     ).toThrow(/duplicate project id.*asc-pie/i);
   });
 

@@ -6,7 +6,7 @@ const lenses = [
     label: 'AI/ML Engineer',
     title: 'Mohamed Hafez — AI/ML Engineer',
     resume: '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',
-    firstProject: 'ASC-PIE',
+    firstProject: 'Real-Time Voice Roleplay with AI Patients',
     heroPhrase: 'privacy-aware NLP',
   },
   {
@@ -14,7 +14,7 @@ const lenses = [
     label: 'Software Engineer',
     title: 'Mohamed Hafez — Software Engineer',
     resume: '/resumes/Mohamed-Hafez-Software-Engineer.pdf',
-    firstProject: 'Northstar RAG System',
+    firstProject: 'On-Demand AI Coach, PRD to Staging in 3 Days',
     heroPhrase: 'reliable services',
   },
   {
@@ -183,19 +183,19 @@ test('lens, contact, resume, and case-study links remain real without JavaScript
 // section on the same page.
 const featuredCards = {
   '/': [
+    ['Real-Time Voice Roleplay with AI Patients', '/work/eklan-voice-roleplay'],
     ['ASC-PIE', '/work/asc-pie'],
     ['SPRINT-PP', '/work/sprint-pp'],
     ['Northstar RAG System', '/work/northstar-rag'],
-    ['Applied Machine Learning Portfolio', '/work/applied-ml-portfolio'],
   ],
   '/software': [
+    ['On-Demand AI Coach, PRD to Staging in 3 Days', '/work/eklan-ai-coach'],
     ['Northstar RAG System', '/work/northstar-rag'],
     [
       'Documentum Workflow & Lifecycle Optimization',
       '/work/documentum-workflows',
     ],
     ['This Portfolio', '/work/this-portfolio'],
-    ['Internal REST Endpoints & Client Proofs of Concept', '/work/rest-pocs'],
   ],
   '/android': [
     ['Mind’s Eye', '/work/minds-eye'],
@@ -301,7 +301,9 @@ test('the whole home card is clickable through its single link', async ({
   await card.scrollIntoViewIfNeeded();
   const box = (await card.locator('.story-card__summary').boundingBox())!;
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-  await expect(page).toHaveURL(/\/work\/asc-pie$/, { timeout: 30_000 });
+  await expect(page).toHaveURL(/\/work\/eklan-voice-roleplay$/, {
+    timeout: 30_000,
+  });
 });
 
 test('cards show allowlisted key facts only where a number exists', async ({

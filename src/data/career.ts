@@ -12,9 +12,9 @@ export interface CareerRoleContent {
 export const careerRoles: Record<RoleId, CareerRoleContent> = {
   aiml: {
     eyebrow: 'AI/ML Engineer',
-    hero: 'I build privacy-aware NLP, grounded AI, and reproducible machine-learning systems from research through deployment.',
+    hero: 'I build production LLM and real-time voice AI, backed by privacy-aware NLP research and careful evaluation.',
     summary:
-      'I build end-to-end ML and NLP pipelines for information extraction, named-entity recognition, retrieval-augmented generation, and model evaluation. My work spans dataset construction, preprocessing, fine-tuning, inference, benchmarking, and reproducible experimentation across encoder, encoder-decoder, and decoder-only architectures. My M.A. research at York University produced ASC-PIE and the SPRINT-PP method, while my applied work includes more than ten ML projects and ML-integrated mobile systems.',
+      'As Founding AI Engineer at Eklan, I build the AI behind an English-communication training platform for healthcare professionals: real-time voice roleplay on the Gemini Live API, a multi-character mode where a director model routes speech between AI characters, a five-stage speech grading pipeline, an AI coach taken from PRD to staging in three days behind a 48-case eval suite, and composed prompts for personalized drills. Before Eklan, I built end-to-end ML and NLP pipelines for information extraction, named-entity recognition, retrieval-augmented generation, and model evaluation. My work spans dataset construction, preprocessing, fine-tuning, inference, benchmarking, and reproducible experimentation across encoder, encoder-decoder, and decoder-only architectures. My M.A. research at York University produced ASC-PIE and the SPRINT-PP method, while my applied work includes more than ten ML projects and ML-integrated mobile systems.',
     skillOrder: [
       'machine-learning',
       'nlp-llms',
@@ -28,9 +28,9 @@ export const careerRoles: Record<RoleId, CareerRoleContent> = {
   },
   software: {
     eyebrow: 'Software Engineer',
-    hero: 'I design reliable services, APIs, enterprise workflows, and client products from architecture through production support.',
+    hero: 'I ship full-stack TypeScript on Next.js, MongoDB and Vercel, and design reliable services, APIs and enterprise workflows.',
     summary:
-      'I develop Java- and Python-based services, REST APIs, enterprise content workflows, and document-processing utilities. I have worked across requirements, implementation, testing, debugging, performance tuning, documentation, and production support with Spring Boot, FastAPI, Tomcat, SQL/DQL, OpenText Documentum, iText, structured logging, and PII-aware document handling.',
+      'At Eklan, I own AI product features end to end in TypeScript: Next.js route handlers and React UI, MongoDB models and indexes, background job queues with leases and retries, PostHog analytics, and feature-flagged releases from staging to production on Vercel. Before that, I developed Java- and Python-based services, REST APIs, enterprise content workflows, and document-processing utilities. I have worked across requirements, implementation, testing, debugging, performance tuning, documentation, and production support with Spring Boot, FastAPI, Tomcat, SQL/DQL, OpenText Documentum, iText, structured logging, and PII-aware document handling.',
     skillOrder: [
       'languages',
       'backend',

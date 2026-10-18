@@ -98,12 +98,17 @@ test('featured story cards swap instantly with the role and stay one document', 
   );
 
   const expectations = [
-    ['aiml', 'AI/ML Engineer', 'ASC-PIE', '/work/asc-pie'],
+    [
+      'aiml',
+      'AI/ML Engineer',
+      'Real-Time Voice Roleplay with AI Patients',
+      '/work/eklan-voice-roleplay',
+    ],
     [
       'software',
       'Software Engineer',
-      'Northstar RAG System',
-      '/work/northstar-rag',
+      'On-Demand AI Coach, PRD to Staging in 3 Days',
+      '/work/eklan-ai-coach',
     ],
     ['android', 'Android Developer', 'Mind’s Eye', '/work/minds-eye'],
     [

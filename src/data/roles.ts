@@ -7,11 +7,17 @@ const roleLenses = [
     route: '/',
     title: 'Mohamed Hafez — AI/ML Engineer',
     description:
-      'I build privacy-aware NLP research and grounded RAG systems, with a focus on evaluation, reliability, and production delivery.',
+      'I build production LLM and real-time voice AI as Founding AI Engineer at Eklan, backed by privacy-aware NLP research, grounded RAG systems and careful evaluation.',
     summary:
-      'AI/ML engineer focused on privacy-aware NLP, applied machine learning, and grounded RAG systems.',
+      'AI/ML engineer building production LLM and voice AI at Eklan, with privacy-aware NLP research, applied machine learning and grounded RAG systems behind it.',
     resumeHref: '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',
-    featuredProjectIds: ['asc-pie', 'sprint-pp', 'northstar-rag', 'minds-eye'],
+    featuredProjectIds: [
+      'eklan-voice-roleplay',
+      'asc-pie',
+      'sprint-pp',
+      'northstar-rag',
+      'minds-eye',
+    ],
     depthEvidenceIds: {
       research: ['asc-pie-evaluation-framework', 'sprint-pp-status'],
       teaching: ['teaching-ai-ml', 'teaching-delivery'],
@@ -24,11 +30,12 @@ const roleLenses = [
     route: '/software',
     title: 'Mohamed Hafez — Software Engineer',
     description:
-      'I develop reliable services, enterprise workflows, APIs, and client products from architecture through delivery.',
+      'I ship full-stack TypeScript features on Next.js, MongoDB and Vercel at Eklan, and develop reliable services, enterprise workflows, APIs and client products.',
     summary:
-      'Software engineer with backend, enterprise-system, API, and product-delivery experience.',
+      'Software engineer shipping full-stack TypeScript, Next.js, MongoDB and Vercel features at Eklan, with backend, enterprise-system, API and product-delivery experience.',
     resumeHref: '/resumes/Mohamed-Hafez-Software-Engineer.pdf',
     featuredProjectIds: [
+      'eklan-ai-coach',
       'northstar-rag',
       'documentum-workflows',
       'this-portfolio',
