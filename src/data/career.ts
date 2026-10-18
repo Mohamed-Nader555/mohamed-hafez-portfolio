@@ -16,10 +16,13 @@ export const careerRoles: Record<RoleId, CareerRoleContent> = {
     summary:
       'As Founding AI Engineer at Eklan, I build the AI behind an English-communication training platform for healthcare professionals: real-time voice roleplay on the Gemini Live API, a multi-character mode where a director model routes speech between AI characters, a five-stage speech grading pipeline, an AI coach taken from PRD to staging in three days behind a 48-case eval suite, and composed prompts for personalized drills. Before Eklan, I built end-to-end ML and NLP pipelines for information extraction, named-entity recognition, retrieval-augmented generation, and model evaluation. My work spans dataset construction, preprocessing, fine-tuning, inference, benchmarking, and reproducible experimentation across encoder, encoder-decoder, and decoder-only architectures. My M.A. research at York University produced ASC-PIE and the SPRINT-PP method, while my applied work includes more than ten ML projects and ML-integrated mobile systems.',
     skillOrder: [
+      'ai-llm',
       'machine-learning',
       'nlp-llms',
-      'data-mlops',
       'languages',
+      'web-backend',
+      'data-cloud',
+      'data-mlops',
       'computer-vision',
       'cloud',
       'backend',
@@ -33,13 +36,16 @@ export const careerRoles: Record<RoleId, CareerRoleContent> = {
       'At Eklan, I own AI product features end to end in TypeScript: Next.js route handlers and React UI, MongoDB models and indexes, background job queues with leases and retries, PostHog analytics, and feature-flagged releases from staging to production on Vercel. Before that, I developed Java- and Python-based services, REST APIs, enterprise content workflows, and document-processing utilities. I have worked across requirements, implementation, testing, debugging, performance tuning, documentation, and production support with Spring Boot, FastAPI, Tomcat, SQL/DQL, OpenText Documentum, iText, structured logging, and PII-aware document handling.',
     skillOrder: [
       'languages',
+      'web-backend',
+      'data-cloud',
+      'ai-llm',
       'backend',
+      'tools',
       'ecm',
-      'document-processing',
       'databases',
+      'document-processing',
       'data-mlops',
       'cloud',
-      'tools',
     ],
   },
   android: {
@@ -202,10 +208,28 @@ export const careerExperience = [
 
 export const skillGroups = [
   {
+    id: 'ai-llm',
+    label: 'AI / LLM',
+    skills:
+      'Gemini Live API · OpenAI GPT · prompt engineering · structured outputs · function calling · multi-agent orchestration · LLM evaluation · LLM-as-judge · guardrails · PII redaction · speech-to-text · TTS (ElevenLabs) · pronunciation scoring (SpeechAce)',
+  },
+  {
     id: 'languages',
     label: 'Programming languages',
     skills:
-      'Python · Java · Kotlin · SQL · C · C++ · C# · Dart · JavaScript · PHP · HTML/CSS · Bash · XML',
+      'TypeScript · JavaScript · Python · SQL · Java · Kotlin · C · C++ · C# · Dart · PHP · HTML/CSS · Bash · XML',
+  },
+  {
+    id: 'web-backend',
+    label: 'Web and backend',
+    skills:
+      'Next.js · React · Node.js · REST APIs · WebSockets · Web Audio / AudioWorklet · Tailwind CSS · Zod',
+  },
+  {
+    id: 'data-cloud',
+    label: 'Data and cloud',
+    skills:
+      'MongoDB Atlas · Mongoose · Vercel (serverless, cron) · Cloudinary · PostHog · Sentry · Docker',
   },
   {
     id: 'machine-learning',
@@ -217,7 +241,7 @@ export const skillGroups = [
     id: 'nlp-llms',
     label: 'NLP & LLMs',
     skills:
-      'NER · token classification · Transformers · Hugging Face · RAG · prompting · in-context learning · LLM evaluation · continual learning',
+      'NER · token classification · Transformers · Hugging Face · fine-tuning · RAG · prompting · in-context learning · LLM evaluation · continual learning',
   },
   {
     id: 'computer-vision',
@@ -251,7 +275,7 @@ export const skillGroups = [
   },
   {
     id: 'backend',
-    label: 'Backend',
+    label: 'Java and Python backend',
     skills:
       'Spring Boot · FastAPI · Flask · Tomcat · Maven · REST APIs · authentication · JDBC · structured logging · production support',
   },
@@ -288,7 +312,7 @@ export const skillGroups = [
     id: 'tools',
     label: 'Engineering tools',
     skills:
-      'Git · GitHub Actions · VS Code · IntelliJ · Eclipse · Conda · Arduino · PlantUML · draw.io · LaTeX',
+      'Git · GitHub · Claude Code · MCP · VS Code · CI/CD · feature flags · GitHub Actions · IntelliJ · Eclipse · Conda · Arduino · PlantUML · draw.io · LaTeX',
   },
   {
     id: 'professional',

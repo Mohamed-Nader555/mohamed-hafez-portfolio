@@ -229,3 +229,44 @@ describe('Eklan content rules', () => {
       expect(text).not.toMatch(banned);
   });
 });
+
+describe('skills from the Section 4 resume block', () => {
+  const group = (id: string) =>
+    skillGroups.find((entry) => entry.id === id)?.skills ?? '';
+
+  it('carries every line of the resume skills block', () => {
+    expect(group('ai-llm')).toMatch(/^Gemini Live API · OpenAI GPT · /);
+    expect(group('ai-llm')).toContain('pronunciation scoring (SpeechAce)');
+    expect(group('languages')).toMatch(
+      /^TypeScript · JavaScript · Python · SQL · Java · Kotlin/,
+    );
+    expect(group('web-backend')).toBe(
+      'Next.js · React · Node.js · REST APIs · WebSockets · Web Audio / AudioWorklet · Tailwind CSS · Zod',
+    );
+    expect(group('data-cloud')).toBe(
+      'MongoDB Atlas · Mongoose · Vercel (serverless, cron) · Cloudinary · PostHog · Sentry · Docker',
+    );
+    for (const skill of [
+      'PyTorch',
+      'Hugging Face',
+      'fine-tuning',
+      'NER',
+      'RAG',
+    ])
+      expect(`${group('machine-learning')} ${group('nlp-llms')}`).toContain(
+        skill,
+      );
+    expect(group('tools')).toMatch(
+      /^Git · GitHub · Claude Code · MCP · VS Code · CI\/CD · feature flags/,
+    );
+  });
+
+  it('leads AI/ML with AI / LLM and Software with the web stack', () => {
+    expect(careerRoles.aiml.skillOrder[0]).toBe('ai-llm');
+    expect(careerRoles.software.skillOrder.slice(0, 3)).toEqual([
+      'languages',
+      'web-backend',
+      'data-cloud',
+    ]);
+  });
+});
