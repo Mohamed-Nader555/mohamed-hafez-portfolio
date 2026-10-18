@@ -1,0 +1,179 @@
+---
+slug: eklan-voice-roleplay
+publishedAt: 2026-10-18
+passport:
+  context: 'Founding AI Engineer, Eklan'
+  period: 'Sep 2026 – present'
+  platform: 'Web app with real-time browser audio'
+stats:
+  - value: '~1.4 s'
+    label: median time to first AI audio (p90 about 1.7 s)
+    note: Measured in testing against the live models
+  - value: '1.60 → 1.04 s'
+    label: reply after the learner stops speaking
+    note: Measured in testing against the live models
+  - value: '4.4–4.7 → 1.0 s'
+    label: reply time in a loud room, with the noise gate
+    note: Measured in testing against the live models
+  - value: '10 × 3'
+    label: concurrent learners × live sessions, with 0 errors
+    note: Measured in testing against the live models
+features:
+  - title: Direct streaming with locked tokens
+    detail: The browser talks to the Gemini Live API itself. The server only hands out short-lived tokens that fix the model, the instructions, the voice, transcription, session resumption and context compression, so the browser can't change any of them.
+  - title: A browser audio engine
+    detail: AudioWorklet capture and playback, a noise gate, a turn tracker, interruption handling and resumable sessions, built for hospital wards rather than quiet offices.
+  - title: Multi-character scenes
+    detail: A patient, a relative and a doctor can share one scene. Each extra character runs as its own live session with its own voice, and a fast Gemini Flash director decides who the learner is talking to. The mode is live in production.
+  - title: The app keeps time
+    detail: Each scene phase has fixed minutes. The model can ask to move on, but the app only accepts that near the end of a phase, steers the scene as time runs down, and closes the phase itself when time is up.
+  - title: Guards for model failure modes
+    detail: A floor guard holds back turns nobody asked for, a speaker guard cuts audio when the model speaks as the wrong character and asks again, speech markers are stripped, and an English-only check keeps the practice in English.
+  - title: Tutor authoring
+    detail: One OpenAI GPT tool call turns a tutor's class notes and prep deck into a draft scenario. Tutors edit it, and publishing renders the narration and greeting with ElevenLabs in parallel and stores them on Cloudinary.
+decisions:
+  - choice: streaming straight from the browser to Gemini Live with locked, short-lived tokens
+    over: relaying every audio chunk through our own server
+    because: the relay added a hop to every turn and a server to keep alive, while a locked token keeps the model, instructions and voice under server control without carrying the audio
+  - choice: the app owns the scene clock
+    over: letting the model decide when a phase is over
+    because: in testing the model asked to move on far too early, so its phase-change calls became requests the app accepts only near the end of a phase
+  - choice: one live session per character, plus a fast director model
+    over: one session that voices everyone
+    because: a single session drifts between voices and personas; separate sessions keep each character's voice and role stable, and the director only has to answer one small question per turn
+challenges:
+  - problem: Some characters spoke in the wrong voice, and nothing in the logs said why.
+    solution: The Live API silently accepted voice names it didn't know and fell back to a default voice. I wrote a check that rendered all 30 candidate voices and compared their pitch with the character each was meant for, found 8 that didn't read consistently, and limited every cast to voices that passed three runs out of three.
+  - problem: In loud wards the model kept waiting for silence that never came.
+    solution: I tuned voice-activity detection, added a noise gate in the audio worklet, and gave learners a hold-to-talk mode and an "I'm done" control for the noisiest rooms.
+  - problem: The model sometimes spoke when it wasn't its turn, or answered as another character.
+    solution: The floor guard holds back unprompted turns, and the speaker guard cuts the audio and re-asks the right character when the voice and the speaker don't match.
+stack:
+  - layer: Browser
+    items:
+      - name: TypeScript
+        kind: language
+        purpose: The audio engine and the session logic
+      - name: React
+        kind: framework
+        purpose: Scene, phase card and controls
+      - name: Web Audio / AudioWorklet
+        kind: framework
+        purpose: Mic capture, playback and the noise gate
+      - name: WebSockets
+        kind: tool
+        purpose: The live audio stream to Gemini
+  - layer: Models and speech
+    items:
+      - name: Gemini Live API
+        kind: ml
+        purpose: Bidirectional audio, function calls and transcription
+      - name: Gemini Flash
+        kind: ml
+        purpose: The director that routes each learner turn
+      - name: OpenAI GPT
+        kind: ml
+        purpose: Drafting a scenario from a tutor's notes
+      - name: ElevenLabs
+        kind: ml
+        purpose: Narration and greetings
+  - layer: Server and data
+    items:
+      - name: Next.js
+        kind: framework
+        purpose: Token route, publishing and session APIs
+      - name: MongoDB
+        kind: data
+        purpose: Scenarios, sessions and transcripts
+      - name: Cloudinary
+        kind: data
+        purpose: Rendered narration audio
+      - name: Vercel
+        kind: tool
+        purpose: Hosting, staging and production
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import CompareTable from '@/components/case-study/CompareTable.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Eklan trains nurses and clinicians, many of them Korean-speaking, to communicate in English before they start work in English-speaking hospitals. Reading a dialogue is easy; answering a worried relative out loud, in real time, is the part that needs practice. The first version of the voice roleplay sent every turn through a server relay. It was slow, every scene had one voice, and the model decided for itself when a scene moved on.
+
+## Who it was for
+
+Learners practise a scene that a tutor prepared for their class: a patient with a chart, a relative with questions, a doctor giving instructions. Tutors author and publish the scenes; learners join from the browser and talk.
+
+## My role
+
+I designed and built the voice system end to end as the founding AI engineer: the token-locked streaming, the audio engine, voice-activity tuning, phase pacing, the multi-character director, the guards and the test harness. The screens themselves were designed by a teammate, and I merged that work onto this engine.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+In an ensemble scene, characters also speak up on their own at set points in a phase, but only in natural gaps in the conversation. Cue to first audio had a median of about 1.9 s, with no two voices overlapping in the final checks, measured in testing against the live models.
+
+## How it works
+
+The learner's browser captures audio and streams it straight to Gemini Live, using a short-lived token that the server has locked. When a scene has several characters, a fast director model picks who answers each turn. Guards decide what is allowed to play, and the app, not the model, keeps the scene's clock.
+
+<ArchitectureFlow
+  slug="eklan-voice-roleplay"
+  title="Real-Time Voice Roleplay with AI Patients"
+/>
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## How I tested it
+
+A voice agent can't be checked by reading its code, so I built an automated harness that uses the same session setup and the same audio engine as the browser. A synthetic student speaks with text-to-speech audio, 19 checks cover voice, turn-taking, phase timing, response time and overlap, and an LLM judge reads the transcript. Every prompt or engine change was measured with it before release.
+
+## Results
+
+All of these numbers were measured in testing against the live models, not taken from production traffic.
+
+<CompareTable
+  caption="Voice roleplay, measured in testing against the live models"
+  columns={['Measure', 'Result']}
+  rows={[
+    ['Median time to first AI audio', 'about 1.4 s (p90 about 1.7 s)'],
+    [
+      'Reply after the learner stops speaking',
+      '1.60 s before tuning, 1.04 s after',
+    ],
+    ['Reply in a loud room', '4.4–4.7 s before the noise gate, 1.0 s after'],
+    ['Voice change between phases (median)', '1.58 s'],
+    ['Narration and greeting rendered on publish', 'about 2.7 s, in parallel'],
+    [
+      'Multi-character load test',
+      '10 concurrent learners × 3 live sessions, 0 errors',
+    ],
+  ]}
+/>
+
+Multi-character mode is live in production.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> With a live voice model, the model is one component. Timing, turn-taking and who gets to speak belong to the application.
+
+The biggest gains came from taking decisions away from the model: who keeps time, who may speak, which voice belongs to which character. The other lesson was about rolling back. Two reliability commits for the multi-character mode made it less stable in testing, so I went back to the last stable version the same day and kept the commits recoverable instead of patching forward.
+
+## What I'd do next
+
+Run the same harness checks against a sample of real sessions, so the numbers on this page come from production as well as from testing.

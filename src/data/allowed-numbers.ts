@@ -5,6 +5,27 @@
  * Projects with no entry (or an empty array) may not show any stat tiles.
  */
 export const ALLOWED_NUMBERS: Readonly<Record<string, readonly string[]>> = {
+  'eklan-voice-roleplay': [
+    '~1.4 s',
+    '1.4',
+    '1.7',
+    '1.60 → 1.04 s',
+    '1.60',
+    '1.04',
+    '4.4–4.7 → 1.0 s',
+    '4.4–4.7',
+    '1.0',
+    '10 × 3',
+    '10',
+    '3',
+    '0',
+    '1.58',
+    '1.9',
+    '2.7',
+    '30',
+    '8',
+    '19',
+  ],
   'asc-pie': [
     '333,109',
     '312,085',

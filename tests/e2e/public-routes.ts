@@ -11,6 +11,10 @@ export interface PublicRouteExpectation {
 // `CaseStudyLayout.astro`. Titles are copied verbatim from
 // `src/data/projects.ts` (including the curly apostrophe in "Mind's Eye").
 const workRoutes: readonly PublicRouteExpectation[] = [
+  {
+    path: '/work/eklan-voice-roleplay',
+    title: 'Real-Time Voice Roleplay with AI Patients — Mohamed Hafez',
+  },
   { path: '/work/asc-pie', title: 'ASC-PIE — Mohamed Hafez' },
   { path: '/work/sprint-pp', title: 'SPRINT-PP — Mohamed Hafez' },
   {

@@ -23,6 +23,81 @@ export interface ArchitectureDefinition {
 }
 
 export const architectures: Readonly<Record<string, ArchitectureDefinition>> = {
+  'eklan-voice-roleplay': {
+    summary:
+      "The learner's browser captures audio and streams it straight to Gemini Live with a short-lived token the server locks; a fast director picks which character answers, guards filter what plays, and the app, not the model, keeps time.",
+    nodes: [
+      {
+        id: 'capture',
+        label: 'Browser audio',
+        detail: 'AudioWorklet capture, noise gate, turn tracker',
+      },
+      {
+        id: 'token',
+        label: 'Token route',
+        detail: 'Next.js issues a short-lived, config-locked token',
+      },
+      {
+        id: 'live',
+        label: 'Gemini Live sessions',
+        detail: 'Audio both ways; one session and voice per character',
+      },
+      {
+        id: 'director',
+        label: 'Director',
+        detail: 'Gemini Flash routes each learner turn to a character',
+      },
+      {
+        id: 'guards',
+        label: 'Guards',
+        detail: 'Floor, speaker and English-only checks',
+      },
+      {
+        id: 'clock',
+        label: 'Phase clock',
+        detail: 'The app keeps time; early phase changes are rejected',
+      },
+      {
+        id: 'record',
+        label: 'Session record',
+        detail: 'Transcript and turn timings saved for grading',
+      },
+    ],
+    edges: [
+      {
+        from: 'capture',
+        to: 'token',
+      },
+      {
+        from: 'token',
+        to: 'live',
+      },
+      {
+        from: 'live',
+        to: 'director',
+      },
+      {
+        from: 'director',
+        to: 'guards',
+      },
+      {
+        from: 'guards',
+        to: 'capture',
+        label: 'audio that passes plays back',
+      },
+      {
+        from: 'clock',
+        to: 'live',
+        label: 'phase changes',
+      },
+      {
+        from: 'live',
+        to: 'record',
+        label: 'transcript',
+      },
+    ],
+    pipeline: ['token', 'stream', 'route', 'guard', 'pace', 'save'],
+  },
   'asc-pie': {
     summary:
       'Four public corpora and a synthetic component are mapped to a shared 19-type schema, split once, exported in three formats, and scored through one canonical evaluator across three model families.',

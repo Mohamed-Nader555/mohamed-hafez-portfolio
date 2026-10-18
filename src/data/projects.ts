@@ -2,6 +2,41 @@ import { reposForProject } from '@/data/repos';
 import { projectRecordSchema, type ProjectRecord } from '@/types/content';
 
 const projectsData = [
+  // ---- Current role: Eklan ----
+  {
+    id: 'eklan-voice-roleplay',
+    slug: 'eklan-voice-roleplay',
+    title: 'Real-Time Voice Roleplay with AI Patients',
+    hook: 'Learners practise hospital conversations out loud with AI patients, relatives and doctors, each with their own voice.',
+    category: 'AI/ML · Voice AI',
+    group: 'eklan',
+    status: 'eklan',
+    summary:
+      'At Eklan, I architected and shipped real-time voice roleplay for nurses and clinicians preparing to work in English-speaking hospitals: they talk out loud with AI characters while browser audio streams straight to the Gemini Live API.',
+    ownership:
+      'I designed and built the voice system end to end: token-locked streaming to the Gemini Live API, the browser audio engine, voice-activity tuning, phase pacing, the multi-character director, the guards against model failure modes and the test harness that measured every change.',
+    contextLine: 'Founding AI Engineer · Eklan · 2026',
+    roleLine:
+      'Designed and built the voice engine, the director model and the failure guards.',
+    roles: ['aiml', 'software'],
+    roleWeights: {
+      aiml: 5,
+      software: 4,
+      android: 1,
+      teaching: 2,
+    },
+    technologies: [
+      'TypeScript',
+      'Gemini Live API',
+      'Web Audio / AudioWorklet',
+      'WebSockets',
+      'Next.js',
+      'ElevenLabs',
+    ],
+    sourceIds: ['public-experience', 'case-study-eklan-voice-roleplay'],
+    detailLevel: 'story',
+    public: true,
+  },
   // ---- Flagship (§4 #1-6) ----
   {
     id: 'asc-pie',

@@ -5,6 +5,21 @@
  * §7 (Core chips / Stack table) and §3.1 decisions D1/D5/D7/D8/D12/D13.
  */
 export const VERIFIED_TECH: Readonly<Record<string, readonly string[]>> = {
+  // Eklan (Mohamed's own work log, experience bank 18 Oct 2026)
+  'eklan-voice-roleplay': [
+    'TypeScript',
+    'Next.js',
+    'React',
+    'Gemini Live API',
+    'Gemini Flash',
+    'OpenAI GPT',
+    'Web Audio / AudioWorklet',
+    'WebSockets',
+    'ElevenLabs',
+    'Cloudinary',
+    'MongoDB',
+    'Vercel',
+  ],
   // §7.1 — thesis deck / Thesis-Experiments repo (source rank 2, 8)
   'asc-pie': [
     'Python',

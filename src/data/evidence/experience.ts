@@ -72,7 +72,7 @@ const currentRoleRecords = [
     ],
     aliases: ['voice roleplay', 'speech-to-speech', 'conversational AI'],
     roleWeights: { aiml: 5, software: 4, android: 1, teaching: 2 },
-    sourceIds: ['public-experience'],
+    sourceIds: ['public-experience', 'case-study-eklan-voice-roleplay'],
     public: true,
   },
   {

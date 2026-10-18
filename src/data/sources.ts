@@ -135,6 +135,13 @@ const sourceRecords = [
     publicHref: '/',
     isPublic: true,
   },
+  {
+    id: 'case-study-eklan-voice-roleplay',
+    label: 'Real-Time Voice Roleplay with AI Patients case study',
+    kind: 'case-study',
+    publicHref: '/work/eklan-voice-roleplay',
+    isPublic: true,
+  },
   // Case-study sources: one per §4 flagship/story/brief page (brief §6.4).
   {
     id: 'case-study-sprint-pp',
