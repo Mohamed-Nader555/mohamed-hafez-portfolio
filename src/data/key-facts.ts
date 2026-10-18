@@ -10,6 +10,20 @@ export interface KeyFact {
  * entry here and shows no facts row: never invent one.
  */
 export const keyFactsBySlug: Readonly<Record<string, readonly KeyFact[]>> = {
+  'eklan-ai-coach': [
+    {
+      value: '3 days',
+      label: 'from PRD to staging',
+    },
+    {
+      value: '48/48',
+      label: 'eval cases passing',
+    },
+    {
+      value: '238',
+      label: 'unit tests',
+    },
+  ],
   'eklan-grading-pipeline': [
     {
       value: '26–41%',

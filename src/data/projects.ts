@@ -70,6 +70,40 @@ const projectsData = [
     detailLevel: 'story',
     public: true,
   },
+  {
+    id: 'eklan-ai-coach',
+    slug: 'eklan-ai-coach',
+    title: 'On-Demand AI Coach, PRD to Staging in 3 Days',
+    hook: 'A nurse types or says a real problem from their shift and gets one clear answer, then a drill to practise it.',
+    category: 'AI/ML · Software',
+    group: 'eklan',
+    status: 'eklan',
+    summary:
+      "At Eklan, I took an on-demand AI coach for unplanned workplace English from the founder's PRD to staging in 3 days, with structured outputs, a rule-based output checker, English and Korean PII redaction, a 48-case eval suite and a job queue that turns a solved chat into a drill.",
+    ownership:
+      "I turned the founder's PRD into a buildable design in one day and built the coach in three: the structured-output layer, the output checker, English and Korean PII redaction, the eval suite, the drill job queue, audio and pronunciation practice, and the interface.",
+    contextLine: 'Founding AI Engineer · Eklan · 2026',
+    roleLine:
+      'Turned the PRD into a design and built the coach, checker, redaction and job queue.',
+    roles: ['aiml', 'software'],
+    roleWeights: {
+      aiml: 4,
+      software: 5,
+      android: 0,
+      teaching: 2,
+    },
+    technologies: [
+      'TypeScript',
+      'Next.js',
+      'Gemini API',
+      'Zod',
+      'MongoDB',
+      'Vercel',
+    ],
+    sourceIds: ['public-experience', 'case-study-eklan-ai-coach'],
+    detailLevel: 'story',
+    public: true,
+  },
   // ---- Flagship (§4 #1-6) ----
   {
     id: 'asc-pie',

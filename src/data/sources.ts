@@ -149,6 +149,13 @@ const sourceRecords = [
     publicHref: '/work/eklan-grading-pipeline',
     isPublic: true,
   },
+  {
+    id: 'case-study-eklan-ai-coach',
+    label: 'On-Demand AI Coach, PRD to Staging in 3 Days case study',
+    kind: 'case-study',
+    publicHref: '/work/eklan-ai-coach',
+    isPublic: true,
+  },
   // Case-study sources: one per §4 flagship/story/brief page (brief §6.4).
   {
     id: 'case-study-sprint-pp',

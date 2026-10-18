@@ -5,6 +5,22 @@
  * Projects with no entry (or an empty array) may not show any stat tiles.
  */
 export const ALLOWED_NUMBERS: Readonly<Record<string, readonly string[]>> = {
+  'eklan-ai-coach': [
+    '3 days',
+    '3',
+    '48/48',
+    '48',
+    '44/48',
+    '47/48',
+    '23/23',
+    '23',
+    '238',
+    '100%',
+    '5',
+    '6',
+    '8',
+    '390',
+  ],
   'eklan-grading-pipeline': [
     '26–41%',
     '26',

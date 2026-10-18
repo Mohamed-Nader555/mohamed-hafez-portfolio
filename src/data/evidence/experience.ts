@@ -105,7 +105,7 @@ const currentRoleRecords = [
     topics: ['Eklan', 'AI coach', 'structured outputs', 'PII redaction'],
     aliases: ['LLM guardrails', 'eval suite', 'job queue'],
     roleWeights: { aiml: 5, software: 5, android: 0, teaching: 2 },
-    sourceIds: ['public-experience'],
+    sourceIds: ['public-experience', 'case-study-eklan-ai-coach'],
     public: true,
   },
   {

@@ -23,6 +23,80 @@ export interface ArchitectureDefinition {
 }
 
 export const architectures: Readonly<Record<string, ArchitectureDefinition>> = {
+  'eklan-ai-coach': {
+    summary:
+      'A question arrives as text or a voice note, is redacted before anything is stored, answered as structured output, checked by rules in code, and locked once solved; a background job then turns the chat into a drill.',
+    nodes: [
+      {
+        id: 'question',
+        label: 'Question',
+        detail: 'Text or a voice note in Korean, English or both',
+      },
+      {
+        id: 'redaction',
+        label: 'Redaction',
+        detail: 'Names, record numbers and IDs removed, EN and KO',
+      },
+      {
+        id: 'coach',
+        label: 'Coach',
+        detail: 'Gemini structured output against a versioned schema',
+      },
+      {
+        id: 'checker',
+        label: 'Output checker',
+        detail: 'Rules in code, one retry, safe fallback',
+      },
+      {
+        id: 'lock',
+        label: 'Resolve and lock',
+        detail: 'One problem per chat, closed when solved',
+      },
+      {
+        id: 'queue',
+        label: 'Drill job queue',
+        detail: 'Leases, retries with backoff, a cron sweep',
+      },
+      {
+        id: 'drill',
+        label: 'Personal drill',
+        detail: "Audio in the learner's accent, say-it-aloud practice",
+      },
+    ],
+    edges: [
+      {
+        from: 'question',
+        to: 'redaction',
+      },
+      {
+        from: 'redaction',
+        to: 'coach',
+      },
+      {
+        from: 'coach',
+        to: 'checker',
+      },
+      {
+        from: 'checker',
+        to: 'coach',
+        label: 'one retry',
+      },
+      {
+        from: 'checker',
+        to: 'lock',
+        label: 'passes',
+      },
+      {
+        from: 'lock',
+        to: 'queue',
+      },
+      {
+        from: 'queue',
+        to: 'drill',
+      },
+    ],
+    pipeline: ['redact', 'answer', 'check', 'lock', 'queue', 'drill'],
+  },
   'eklan-grading-pipeline': {
     summary:
       'Each learner turn is transcribed word for word, scored for pronunciation and for language and communication in parallel, given a fluency score computed in code, and coached by an LLM; parts land on the results page one by one.',

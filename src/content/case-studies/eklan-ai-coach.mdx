@@ -1,0 +1,159 @@
+---
+slug: eklan-ai-coach
+publishedAt: 2026-10-18
+passport:
+  context: 'Founding AI Engineer, Eklan'
+  period: 'Sep 2026 – present'
+  platform: 'Next.js web app, text and voice notes'
+stats:
+  - value: '3 days'
+    label: from the founder's PRD to staging
+  - value: '48/48'
+    label: eval cases passing against the live model
+  - value: '23/23'
+    label: critical eval cases passing
+  - value: '238'
+    label: unit tests for the feature
+features:
+  - title: One problem per chat
+    detail: A learner brings one real situation from their shift. The coach works out what kind of help it is, may ask one clarifying question, answers, and the chat is locked once the problem is solved.
+  - title: Text or voice, Korean or English
+    detail: Learners type or record a voice note in Korean, English or a mix of both, and can correct the transcript before the coach reads it.
+  - title: Structured outputs with versioned schemas
+    detail: The coach answers as Gemini structured output against a versioned schema, with versioned prompts, so every answer has the same shape and old answers stay readable after a change.
+  - title: A rule-based output checker
+    detail: Checks in code reject answers that invent a dose, mark a correct sentence as wrong, or carry on when the question contains sensitive data that needs a clarification first. A failed check gets one retry, then a safe fallback.
+  - title: Privacy before storage
+    detail: Names, record numbers and IDs are redacted in English and Korean before anything is stored or sent on. Analytics events carry only IDs and codes, never free text.
+  - title: From chat to drill
+    detail: A solved chat can become a personal drill. Audio plays in the learner's accent with a slow option, and say-it-aloud practice gives word-level pronunciation feedback.
+decisions:
+  - choice: agree the design with the founder in one day, then build in gated tasks
+    over: starting to code from the PRD as written
+    because: settling one problem per chat, resolve-and-lock, five kinds of help mapped to five drill types, and a clear boundary for requests about treatment made the three-day build possible
+  - choice: a rule-based checker in code after the model
+    over: trusting a well-written prompt
+    because: the failures that matter most here, like an invented dose, are easy to detect in code and too costly to leave to the model
+  - choice: a leased job queue with unique indexes
+    over: generating the drill inside the chat request
+    because: drill generation is slow and can fail; a queue with leases, retries and unique indexes lets it retry safely without ever creating a duplicate drill
+challenges:
+  - problem: The MVP was due in three days, with testing the day after.
+    solution: I wrote the design up the first day, split the build into 8 gated tasks, and made release depend on a 48-case eval run against the live model.
+  - problem: Learners sometimes paste real details from their shift into the chat.
+    solution: Redaction runs in English and Korean before storage or any onward call, and sensitive data in a question makes the coach ask for a clarification instead of answering.
+  - problem: Background work on serverless functions can be cut off or run twice.
+    solution: Drill jobs take a lease, get three attempts with a backoff of thirty seconds and then two minutes, re-check for cancellation before writing, and are swept by a Vercel cron every minute. Unique indexes in MongoDB make a retry harmless.
+stack:
+  - layer: Model and checks
+    items:
+      - name: Gemini API
+        kind: ml
+        purpose: Structured outputs against a versioned schema
+      - name: Zod
+        kind: tool
+        purpose: Schema validation of every answer
+  - layer: Server and data
+    items:
+      - name: TypeScript
+        kind: language
+        purpose: Coach, checker, redaction and job queue
+      - name: Next.js
+        kind: framework
+        purpose: Route handlers and background work
+      - name: MongoDB
+        kind: data
+        purpose: Chats, jobs, leases and unique indexes
+      - name: Vercel
+        kind: tool
+        purpose: Cron sweep, staging and production
+  - layer: Speech and media
+    items:
+      - name: ElevenLabs
+        kind: ml
+        purpose: Playback in the learner's accent, with a slow option
+      - name: SpeechAce
+        kind: ml
+        purpose: Say-it-aloud pronunciation feedback
+      - name: Cloudinary
+        kind: data
+        purpose: Cached audio
+  - layer: Interface and analytics
+    items:
+      - name: React
+        kind: framework
+        purpose: Chat interface in 6 languages, checked at 390 px wide
+      - name: PostHog
+        kind: tool
+        purpose: Events with IDs and codes only
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import CompareTable from '@/components/case-study/CompareTable.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Planned lessons cover planned situations. Real shifts don't: a nurse might need to explain a delay to a family, or ask a colleague to repeat an order, and want the right English for it now. The founder's PRD asked for an always-available coach for exactly these moments, with an MVP due in three days.
+
+## Who it was for
+
+Nurses and clinicians preparing for, or already working in, English-speaking hospitals. They need one clear, safe answer to the situation in front of them, then a quick way to practise it. Eklan is training software, so the coach helps with communication and stays out of clinical decisions.
+
+## My role
+
+I turned the founder's PRD into a buildable design in one day and built the coach in three: the structured-output layer, the output checker, English and Korean PII redaction, the eval suite, the drill job queue, audio and pronunciation practice, and the interface. Admins can change who has access (plan, pilot list and a kill switch) without a redeploy.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+## How it works
+
+A question arrives as text or a voice note and is redacted before anything is stored. The coach answers as structured output, rules in code check the answer, and the chat is locked once the problem is solved. A background job then turns the solved chat into a personal drill.
+
+<ArchitectureFlow
+  slug="eklan-ai-coach"
+  title="On-Demand AI Coach, PRD to Staging in 3 Days"
+/>
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Results
+
+The coach was live on staging three days after the PRD. The release gate was a 48-case eval suite run against the live model, and it climbed over three rounds of fixes:
+
+<CompareTable
+  caption="48-case eval suite, run against the live model"
+  columns={['Round', 'Cases passing']}
+  rows={[
+    ['First run', '44/48'],
+    ['After the first fixes', '47/48'],
+    ['Release', '48/48, with all 23 critical cases passing'],
+  ]}
+/>
+
+Detection of the kind of help a learner needed was right in 100% of the eval cases, and the feature shipped with 238 unit tests.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Three days is enough if the first one is spent deciding what not to build.
+
+The day spent agreeing the design with the founder did more for the deadline than any shortcut in the code. Gating the release on an eval run, rather than on a demo that looked right, is what made it safe to ship that fast.
+
+## What I'd do next
+
+Grow the eval suite from the questions learners actually ask once the coach is in wider use, keeping the redaction rules in front of anything that gets saved.
