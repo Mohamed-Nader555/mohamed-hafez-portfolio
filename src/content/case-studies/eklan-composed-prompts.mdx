@@ -92,6 +92,10 @@ I designed and built the prompt composer, the cached lesson-focus service, the s
 
 <FeatureGrid items={frontmatter.features} />
 
+The learner block carries more than a level. It includes the weaknesses recorded for that learner, from grading and from tutors' notes, so the drills lean towards what that person actually gets wrong. The scenario block places the drill in a situation from the learner's current unit, and the lesson-focus block names the phrases and sounds the whole week should repeat. The drill-type block is the only part that differs between, say, a vocabulary drill and a fill-in-the-blank drill.
+
+The budget matters because a learner with a long history can produce a very large context. Instead of letting the prompt grow without limit, the composer has a fixed order for what is dropped first when the 9,500-character budget is reached, and unit tests cover each block and each drop.
+
 ## How it works
 
 For each drill type, a pure composer assembles the prompt from five blocks under a character budget. A cached lesson-focus call makes every drill type share the same phrases and pronunciation targets, and the composed prompt then goes to generation.
@@ -101,6 +105,8 @@ For each drill type, a pure composer assembles the prompt from five blocks under
   title="Composed Prompts for Personalized Drills"
 />
 
+The lesson-focus call is cached per learner, so it runs once and every drill type reads the same result. A lock in the database, with a way to reclaim a lock left behind by a crashed run, makes sure two requests never pick two different focuses for the same learner.
+
 ## Decisions that mattered
 
 <DecisionCards items={frontmatter.decisions} />
@@ -109,7 +115,11 @@ For each drill type, a pure composer assembles the prompt from five blocks under
 
 <ChallengeCards items={frontmatter.challenges} />
 
-## Results
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
 
 <CompareTable
   caption="Drill generation before and after composed prompts"
@@ -123,9 +133,7 @@ For each drill type, a pure composer assembles the prompt from five blocks under
 
 The trade-off is size: composed prompts use about 47% more tokens than the old shared prompt, which I reported along with the gains.
 
-## Tech stack
-
-<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+Because the flags kept the old prompts byte for byte when switched off, the change could go to staging dark, be compared there, and be switched on without a second deploy.
 
 ## What I learned
 

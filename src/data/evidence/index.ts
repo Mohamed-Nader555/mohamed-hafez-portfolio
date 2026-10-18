@@ -104,7 +104,19 @@ function byIdPrefix(prefix: string): readonly EvidenceRecord[] {
   return evidence.filter((record) => record.id.startsWith(prefix));
 }
 
+function byIds(...ids: string[]): readonly EvidenceRecord[] {
+  return evidence.filter((record) => ids.includes(record.id));
+}
+
 const projectEvidence = new Map<string, readonly EvidenceRecord[]>([
+  [
+    'eklan-voice-roleplay',
+    byIds('eklan-voice-roleplay', 'eklan-multi-character'),
+  ],
+  ['eklan-grading-pipeline', byIds('eklan-grading-pipeline')],
+  ['eklan-ai-coach', byIds('eklan-ai-coach', 'eklan-full-stack-delivery')],
+  ['eklan-transcript-mining', byIds('eklan-transcript-mining')],
+  ['eklan-composed-prompts', byIds('eklan-composed-prompts')],
   ['asc-pie', canonicalRecords(researchEvidence)],
   ['sprint-pp', canonicalRecords(sprintPpEvidence)],
   ['northstar-rag', canonicalRecords(northstarEvidence)],

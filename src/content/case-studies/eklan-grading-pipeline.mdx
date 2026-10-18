@@ -101,6 +101,8 @@ I designed the grading pipeline and built it end to end: the five stages, gradin
 
 The fluency score blends the AI coach's voice notes and the roleplay results 60/40, so it reflects how a learner speaks in both settings.
 
+Locks stop two workers from grading the same turn twice, and retries are limited so a stubborn clip can't hold up the rest of the report.
+
 ## How it works
 
 Each learner turn is transcribed word for word, then scored for pronunciation and, in parallel, for language and communication. Fluency is computed in code, and an LLM writes coaching tips from all of the scores. While the call is running, Next.js grades each finished turn in the background, and the results page fills in part by part.
@@ -118,7 +120,11 @@ Each learner turn is transcribed word for word, then scored for pronunciation an
 
 <ChallengeCards items={frontmatter.challenges} />
 
-## Results
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
 
 Grading during the call cut the wait from the end of the call to the full report by 26–41% on two real sessions, and the first result now appears in 0.5 s instead of 20–36 s. These timings were measured in testing against the live models, on a local setup, not from production traffic.
 
@@ -133,10 +139,6 @@ Grading during the call cut the wait from the end of the call to the full report
 />
 
 Grading the same 8 sessions twice gave a median difference of 1.5 points out of 100, with a largest difference of 6.
-
-## Tech stack
-
-<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
 
 ## What I learned
 

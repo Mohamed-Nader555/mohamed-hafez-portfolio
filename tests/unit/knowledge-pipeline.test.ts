@@ -129,8 +129,8 @@ describe('the generated knowledge index', () => {
     ['flagship', 'story', 'brief'].includes(project.detailLevel),
   );
 
-  it('covers every one of the 28 case-study pages with body and data chunks', () => {
-    expect(pageProjects).toHaveLength(28);
+  it('covers every one of the 33 case-study pages with body and data chunks', () => {
+    expect(pageProjects).toHaveLength(33);
     for (const project of pageProjects) {
       const own = index.chunks.filter(
         (chunk) => chunk.projectId === project.id && chunk.family === 'page',

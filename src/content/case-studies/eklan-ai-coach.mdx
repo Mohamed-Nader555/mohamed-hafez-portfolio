@@ -111,6 +111,8 @@ I turned the founder's PRD into a buildable design in one day and built the coac
 
 <FeatureGrid items={frontmatter.features} />
 
+The design maps five kinds of help a learner might need to the five drill types the platform already had, so a solved chat can become practice without a new kind of exercise. Requests that drift towards treatment advice meet a clear boundary: the coach helps with how to say something, not with what to do clinically.
+
 ## How it works
 
 A question arrives as text or a voice note and is redacted before anything is stored. The coach answers as structured output, rules in code check the answer, and the chat is locked once the problem is solved. A background job then turns the solved chat into a personal drill.
@@ -128,7 +130,11 @@ A question arrives as text or a voice note and is redacted before anything is st
 
 <ChallengeCards items={frontmatter.challenges} />
 
-## Results
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
 
 The coach was live on staging three days after the PRD. The release gate was a 48-case eval suite run against the live model, and it climbed over three rounds of fixes:
 
@@ -143,10 +149,6 @@ The coach was live on staging three days after the PRD. The release gate was a 4
 />
 
 Detection of the kind of help a learner needed was right in 100% of the eval cases, and the feature shipped with 238 unit tests.
-
-## Tech stack
-
-<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
 
 ## What I learned
 

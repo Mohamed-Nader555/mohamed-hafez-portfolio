@@ -90,6 +90,10 @@ I built the extraction pipeline end to end: the LLM tool call with redaction and
 
 <FeatureGrid items={frontmatter.features} />
 
+Before the transcript reaches the model it is redacted and capped in length, so the call never carries more personal detail or more text than it needs. The tags matter to tutors: a mistake made under pressure in a roleplay means something different from a slip in small talk, and a mistake the tutor already corrected in the lesson may not need a drill at all.
+
+The workflow is built for real tutors' days. A run that crashes is detected rather than left spinning, a tutor can re-run the analysis up to three times, and every edit can be undone. Two people can work on the same learner without one quietly overwriting the other.
+
 ## How it works
 
 A tutor links a transcript to a learner's week. The transcript is redacted and capped, one LLM tool call pulls out that learner's mistakes, and code dedupes and filters them. The tutor then edits the list and sends the chosen groups to drill generation.
@@ -99,6 +103,8 @@ A tutor links a transcript to a learner's week. The transcript is redacted and c
   title="Turning Live-Class Transcripts into Practice"
 />
 
+The model's job is narrow on purpose: find the candidate mistakes and say which group each belongs to. Everything that has to be guaranteed, such as one quote per group, no punctuation-only edits, no duplicates and no sensitive topics, happens afterwards in code.
+
 ## Decisions that mattered
 
 <DecisionCards items={frontmatter.decisions} />
@@ -107,13 +113,13 @@ A tutor links a transcript to a learner's week. The transcript is redacted and c
 
 <ChallengeCards items={frontmatter.challenges} />
 
-## Results
-
-I evaluated the pipeline on a real recorded lesson against the mistakes a tutor had found by hand. The best runs matched 7 of the tutor's 8, with no duplicates across groups after the dedupe fix. Each analysis took 17–39 s per class, measured in testing against the live models.
-
 ## Tech stack
 
 <StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## Outcome
+
+I evaluated the pipeline on a real recorded lesson against the mistakes a tutor had found by hand. The best runs matched 7 of the tutor's 8, with no duplicates across groups after the dedupe fix. Each analysis took 17–39 s per class, measured in testing against the live models.
 
 ## What I learned
 

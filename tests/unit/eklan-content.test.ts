@@ -128,7 +128,7 @@ describe('Eklan content rules', () => {
       for (const heading of [
         'The problem',
         'What I built',
-        'Results',
+        'Outcome',
         'Tech stack',
       ])
         expect(headings, `${page.slug}: ${heading}`).toContain(heading);

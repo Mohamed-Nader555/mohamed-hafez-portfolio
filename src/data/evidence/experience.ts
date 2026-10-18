@@ -83,7 +83,7 @@ const currentRoleRecords = [
     topics: ['Eklan', 'multi-agent orchestration', 'voice AI', 'Gemini Live'],
     aliases: ['multi-agent', 'director model', 'agent routing'],
     roleWeights: { aiml: 5, software: 4, android: 1, teaching: 1 },
-    sourceIds: ['public-experience'],
+    sourceIds: ['public-experience', 'case-study-eklan-voice-roleplay'],
     public: true,
   },
   {

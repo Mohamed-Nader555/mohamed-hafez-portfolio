@@ -127,6 +127,8 @@ The learner's browser captures audio and streams it straight to Gemini Live, usi
   title="Real-Time Voice Roleplay with AI Patients"
 />
 
+A voice agent can't be checked by reading its code, so I also built an automated harness that uses the same session setup and the same audio engine as the browser. A synthetic student speaks with text-to-speech audio, 19 checks cover voice, turn-taking, phase timing, response time and overlap, and an LLM judge reads the transcript. Every prompt or engine change was measured with it before release.
+
 ## Decisions that mattered
 
 <DecisionCards items={frontmatter.decisions} />
@@ -135,11 +137,11 @@ The learner's browser captures audio and streams it straight to Gemini Live, usi
 
 <ChallengeCards items={frontmatter.challenges} />
 
-## How I tested it
+## Tech stack
 
-A voice agent can't be checked by reading its code, so I built an automated harness that uses the same session setup and the same audio engine as the browser. A synthetic student speaks with text-to-speech audio, 19 checks cover voice, turn-taking, phase timing, response time and overlap, and an LLM judge reads the transcript. Every prompt or engine change was measured with it before release.
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
 
-## Results
+## Outcome
 
 All of these numbers were measured in testing against the live models, not taken from production traffic.
 
@@ -163,10 +165,6 @@ All of these numbers were measured in testing against the live models, not taken
 />
 
 Multi-character mode is live in production.
-
-## Tech stack
-
-<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
 
 ## What I learned
 
