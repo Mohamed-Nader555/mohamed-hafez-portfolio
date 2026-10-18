@@ -115,6 +115,30 @@ describe('Eklan rule checker', () => {
 });
 
 describe('Eklan content rules', () => {
+  it('has the five Section 6 case studies, each with a card and a detail page', () => {
+    expect(eklanPages.map((page) => page.slug)).toEqual([
+      'eklan-voice-roleplay',
+      'eklan-grading-pipeline',
+      'eklan-ai-coach',
+      'eklan-transcript-mining',
+      'eklan-composed-prompts',
+    ]);
+    for (const page of eklanPages) {
+      const headings = [...page.body.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
+      for (const heading of [
+        'The problem',
+        'What I built',
+        'Results',
+        'Tech stack',
+      ])
+        expect(headings, `${page.slug}: ${heading}`).toContain(heading);
+    }
+    for (const project of eklanProjects) {
+      expect(project.group, project.id).toBe('eklan');
+      expect(project.status, project.id).toBe('eklan');
+    }
+  });
+
   it('uses no em dashes in Eklan content, role copy or skills', () => {
     const texts = [
       ...eklanTexts,

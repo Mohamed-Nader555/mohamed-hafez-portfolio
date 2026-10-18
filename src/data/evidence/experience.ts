@@ -127,7 +127,7 @@ const currentRoleRecords = [
     topics: ['Eklan', 'prompt engineering', 'personalization', 'drills'],
     aliases: ['prompt composition', 'feature flags'],
     roleWeights: { aiml: 5, software: 3, android: 0, teaching: 3 },
-    sourceIds: ['public-experience'],
+    sourceIds: ['public-experience', 'case-study-eklan-composed-prompts'],
     public: true,
   },
   {

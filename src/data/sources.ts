@@ -163,6 +163,13 @@ const sourceRecords = [
     publicHref: '/work/eklan-transcript-mining',
     isPublic: true,
   },
+  {
+    id: 'case-study-eklan-composed-prompts',
+    label: 'Composed Prompts for Personalized Drills case study',
+    kind: 'case-study',
+    publicHref: '/work/eklan-composed-prompts',
+    isPublic: true,
+  },
   // Case-study sources: one per §4 flagship/story/brief page (brief §6.4).
   {
     id: 'case-study-sprint-pp',

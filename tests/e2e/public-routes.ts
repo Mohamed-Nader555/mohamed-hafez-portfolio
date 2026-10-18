@@ -12,6 +12,10 @@ export interface PublicRouteExpectation {
 // `src/data/projects.ts` (including the curly apostrophe in "Mind's Eye").
 const workRoutes: readonly PublicRouteExpectation[] = [
   {
+    path: '/work/eklan-composed-prompts',
+    title: 'Composed Prompts for Personalized Drills — Mohamed Hafez',
+  },
+  {
     path: '/work/eklan-transcript-mining',
     title: 'Turning Live-Class Transcripts into Practice — Mohamed Hafez',
   },

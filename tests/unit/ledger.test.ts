@@ -169,7 +169,7 @@ describe('renderKnowledgeMarkdown', () => {
   });
 
   it('fails when the file would be larger than the limit', () => {
-    expect(KNOWLEDGE_MAX_CHARS).toBe(280_000);
+    expect(KNOWLEDGE_MAX_CHARS).toBe(320_000);
     expect(() =>
       renderKnowledgeMarkdown(claims, { projects, maxChars: 200 }),
     ).toThrow(/limit/);

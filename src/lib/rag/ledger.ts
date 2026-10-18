@@ -24,7 +24,7 @@ export type LedgerEntry = {
  * exactly, and the whole file is sent with every question; this is the size at
  * which the build stops.
  */
-export const KNOWLEDGE_MAX_CHARS = 280_000;
+export const KNOWLEDGE_MAX_CHARS = 320_000;
 
 const oneLine = (text: string) => text.replace(/\s+/g, ' ').trim();
 

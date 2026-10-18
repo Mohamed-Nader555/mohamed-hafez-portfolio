@@ -10,6 +10,16 @@ export interface KeyFact {
  * entry here and shows no facts row: never invent one.
  */
 export const keyFactsBySlug: Readonly<Record<string, readonly KeyFact[]>> = {
+  'eklan-composed-prompts': [
+    {
+      value: '12 → 20',
+      label: 'vocabulary items per drill',
+    },
+    {
+      value: '10/10 → 7/20',
+      label: 'correct answers in the first slot',
+    },
+  ],
   'eklan-transcript-mining': [
     {
       value: '7 of 8',

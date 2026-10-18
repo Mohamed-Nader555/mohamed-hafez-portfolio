@@ -137,6 +137,39 @@ const projectsData = [
     detailLevel: 'story',
     public: true,
   },
+  {
+    id: 'eklan-composed-prompts',
+    slug: 'eklan-composed-prompts',
+    title: 'Composed Prompts for Personalized Drills',
+    hook: 'Five drill types now teach the same lesson to the same learner, instead of five unrelated ones.',
+    category: 'AI/ML · Prompt engineering',
+    group: 'eklan',
+    status: 'eklan',
+    summary:
+      "At Eklan, I replaced one shared drill-generation prompt with prompts composed per drill type from the learner's profile, a scenario, a shared lesson focus and type-specific rules, behind feature flags, doubling items per drill and cutting answer-position bias.",
+    ownership:
+      'I designed and built the prompt composer, the cached lesson-focus service, the scenario templates for a 25-topic by 14-unit matrix, and the feature-flagged rollout.',
+    contextLine: 'Founding AI Engineer · Eklan · 2026',
+    roleLine:
+      'Designed and built the prompt composer, lesson-focus service and flagged rollout.',
+    roles: ['aiml', 'software', 'teaching'],
+    roleWeights: {
+      aiml: 4,
+      software: 3,
+      android: 0,
+      teaching: 3,
+    },
+    technologies: [
+      'TypeScript',
+      'Prompt engineering',
+      'Next.js',
+      'MongoDB',
+      'Feature flags',
+    ],
+    sourceIds: ['public-experience', 'case-study-eklan-composed-prompts'],
+    detailLevel: 'story',
+    public: true,
+  },
   // ---- Flagship (§4 #1-6) ----
   {
     id: 'asc-pie',

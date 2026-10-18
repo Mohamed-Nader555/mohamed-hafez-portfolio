@@ -23,6 +23,65 @@ export interface ArchitectureDefinition {
 }
 
 export const architectures: Readonly<Record<string, ArchitectureDefinition>> = {
+  'eklan-composed-prompts': {
+    summary:
+      "A pure composer builds each drill type's prompt from five blocks under a character budget; a cached lesson-focus call makes all five drill types share one lesson, and flags keep the old output byte for byte when off.",
+    nodes: [
+      {
+        id: 'learner',
+        label: 'Learner block',
+        detail: 'Profile, level and recorded weaknesses',
+      },
+      {
+        id: 'scenario',
+        label: 'Scenario block',
+        detail: 'Template from a 25-topic × 14-unit matrix',
+      },
+      {
+        id: 'focus',
+        label: 'Lesson focus',
+        detail: 'One cached LLM call: shared phrases and sounds',
+      },
+      {
+        id: 'rules',
+        label: 'Drill-type rules',
+        detail: 'Instructions and competencies per type',
+      },
+      {
+        id: 'composer',
+        label: 'Composer',
+        detail: 'Pure function, 9,500-character budget, fixed drop order',
+      },
+      {
+        id: 'drills',
+        label: 'Five drill types',
+        detail: 'Same lesson, same learner',
+      },
+    ],
+    edges: [
+      {
+        from: 'learner',
+        to: 'scenario',
+      },
+      {
+        from: 'scenario',
+        to: 'focus',
+      },
+      {
+        from: 'focus',
+        to: 'rules',
+      },
+      {
+        from: 'rules',
+        to: 'composer',
+      },
+      {
+        from: 'composer',
+        to: 'drills',
+      },
+    ],
+    pipeline: ['learner', 'scenario', 'focus', 'rules', 'compose', 'generate'],
+  },
   'eklan-transcript-mining': {
     summary:
       "A tutor links a class transcript to a learner's week; one LLM tool call pulls out that learner's mistakes, code dedupes and filters them, the tutor edits, and the chosen groups go to drill generation.",

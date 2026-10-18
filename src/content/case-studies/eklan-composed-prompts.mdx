@@ -1,0 +1,138 @@
+---
+slug: eklan-composed-prompts
+publishedAt: 2026-10-18
+passport:
+  context: 'Founding AI Engineer, Eklan'
+  period: 'Sep 2026 – present'
+  platform: 'Drill generation in a Next.js web app'
+stats:
+  - value: '12 → 20'
+    label: vocabulary items per drill
+  - value: '10 → 20'
+    label: fill-in-the-blank items per drill
+  - value: '10/10 → 7/20'
+    label: drills with the correct answer in the first slot
+  - value: '25 × 14'
+    label: topics × units covered by scenario templates
+features:
+  - title: Prompts composed from blocks
+    detail: Each drill type's prompt is built by a pure function from five blocks (the learner, the scenario, the lesson focus, the drill-type instructions and the competencies) under a 9,500-character budget with a fixed order for what gets dropped first.
+  - title: One lesson across five drill types
+    detail: One cached LLM call per learner picks a shared phrase bank and pronunciation targets, so vocabulary, fill-in-the-blank and the other drill types all reinforce the same lesson. A database lock with stale-lock reclaim stops two runs from doing it twice.
+  - title: Scenario templates
+    detail: I wrote scenario templates for a matrix of 25 topics by 14 units, so a drill reads like a situation from that unit rather than a list of words.
+  - title: Chained drill types
+    detail: Vocabulary output feeds fill-in-the-blank generation, so the second drill practises the words the first one taught.
+  - title: Practice from live lessons
+    detail: Tutors record what a learner got wrong in a live lesson on that learner's week page and generate a targeted drill set for the same learner and week.
+  - title: A safe rollout
+    detail: Everything sits behind feature flags. With the flags off, the generated prompts stayed byte for byte identical to the old ones, so turning the change on and off was safe.
+decisions:
+  - choice: a pure composer function with a character budget
+    over: one long shared prompt edited by hand
+    because: a pure function can be unit-tested block by block, and a fixed drop order decides in advance what gives way when a learner's context is large
+  - choice: a cached lesson-focus call per learner
+    over: letting each drill type pick its own focus
+    because: five independent choices produced five unrelated drills; one shared focus makes the set teach one lesson
+  - choice: byte-identical output with the flags off
+    over: shipping the new prompts directly
+    because: it proved the change did nothing until switched on, so rollout and rollback were a flag flip
+challenges:
+  - problem: The model put the correct answer in the first option every time.
+    solution: Type-specific rules in the composed prompts spread the answers; the correct answer landed in the first slot 7 times in 20 instead of 10 in 10.
+  - problem: Drills were short and generic.
+    solution: The scenario and lesson-focus blocks gave the model enough material to write longer, connected drills, doubling the items per drill.
+  - problem: While tracing the old prompt path I found defects nobody had reported.
+    solution: I documented them for the team to prioritise (a template lookup that never matched, translations fixed to one language, and multi-learner batches collapsing into one) rather than fixing them silently inside this change.
+stack:
+  - layer: Generation
+    items:
+      - name: Prompt engineering
+        kind: ml
+        purpose: Composed, per-type prompts with a budget
+      - name: TypeScript
+        kind: language
+        purpose: The pure composer and its unit tests
+  - layer: App and data
+    items:
+      - name: Next.js
+        kind: framework
+        purpose: Drill generation APIs
+      - name: MongoDB
+        kind: data
+        purpose: Cached lesson focus and the generation lock
+      - name: Feature flags
+        kind: tool
+        purpose: Dark launch and instant rollback
+      - name: Vercel
+        kind: tool
+        purpose: Staging and production
+---
+
+import FeatureGrid from '@/components/case-study/FeatureGrid.astro';
+import ArchitectureFlow from '@/components/case-study/ArchitectureFlow.astro';
+import DecisionCards from '@/components/case-study/DecisionCards.astro';
+import ChallengeCards from '@/components/case-study/ChallengeCards.astro';
+import CompareTable from '@/components/case-study/CompareTable.astro';
+import StackLayers from '@/components/case-study/StackLayers.astro';
+
+## The problem
+
+Eklan generates five types of practice drill for each learner every week. They all came from one shared prompt, so each drill type picked its own vocabulary and its own situation. A learner could get five drills that had nothing to do with each other or with what they had studied, and the multiple-choice drills almost always put the right answer first.
+
+## Who it was for
+
+Learners, who should practise one lesson from several angles, and tutors, who want the week's drills to match the week's class.
+
+## My role
+
+I designed and built the prompt composer, the cached lesson-focus service, the scenario templates for a 25-topic by 14-unit matrix, and the feature-flagged rollout.
+
+## What I built
+
+<FeatureGrid items={frontmatter.features} />
+
+## How it works
+
+For each drill type, a pure composer assembles the prompt from five blocks under a character budget. A cached lesson-focus call makes every drill type share the same phrases and pronunciation targets, and the composed prompt then goes to generation.
+
+<ArchitectureFlow
+  slug="eklan-composed-prompts"
+  title="Composed Prompts for Personalized Drills"
+/>
+
+## Decisions that mattered
+
+<DecisionCards items={frontmatter.decisions} />
+
+## Hard problems I solved
+
+<ChallengeCards items={frontmatter.challenges} />
+
+## Results
+
+<CompareTable
+  caption="Drill generation before and after composed prompts"
+  columns={['Measure', 'Before', 'After']}
+  rows={[
+    ['Vocabulary items per drill', '12', '20'],
+    ['Fill-in-the-blank items per drill', '10', '20'],
+    ['Correct answer in the first slot', '10 of 10', '7 of 20'],
+  ]}
+/>
+
+The trade-off is size: composed prompts use about 47% more tokens than the old shared prompt, which I reported along with the gains.
+
+## Tech stack
+
+<StackLayers slug={frontmatter.slug} layers={frontmatter.stack} />
+
+## What I learned
+
+> Treat a prompt like code: compose it, budget it, test it, and ship it behind a flag.
+
+Once the prompt was a function of named blocks, the questions changed from "is the wording right" to "which block is missing for this learner", which is a much easier question to test.
+
+## What I'd do next
+
+Measure whether learners retain the shared lesson better across a week, not only whether the drills are longer and less biased.

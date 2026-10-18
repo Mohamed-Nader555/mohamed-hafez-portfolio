@@ -5,6 +5,23 @@
  * Projects with no entry (or an empty array) may not show any stat tiles.
  */
 export const ALLOWED_NUMBERS: Readonly<Record<string, readonly string[]>> = {
+  'eklan-composed-prompts': [
+    '12 → 20',
+    '12',
+    '20',
+    '10 → 20',
+    '10',
+    '10/10 → 7/20',
+    '10/10',
+    '7/20',
+    '25 × 14',
+    '25',
+    '14',
+    '5',
+    '9,500',
+    '+47%',
+    '47%',
+  ],
   'eklan-transcript-mining': [
     '7 of 8',
     '7',
