@@ -87,9 +87,9 @@ export const proofStats = [
 export const careerExperience = [
   {
     id: 'eklan',
-    period: '2026 — present',
+    period: 'Sep 2026 – present',
     title: 'Founding AI Engineer',
-    organization: 'Eklan',
+    organization: 'Eklan · Toronto',
     details: ['I am currently working as Founding AI Engineer at Eklan.'],
     sourceIds: ['public-experience'],
     weights: { aiml: 5, software: 3, android: 0, teaching: 0 },

@@ -62,8 +62,8 @@ describe('locked public-content rules', () => {
     expect(current).toMatchObject({
       id: 'eklan',
       title: 'Founding AI Engineer',
-      organization: 'Eklan',
-      period: '2026 — present',
+      organization: 'Eklan · Toronto',
+      period: 'Sep 2026 – present',
     });
     const record = evidence.find((item) => item.id === 'eklan-current-role');
     expect(record?.statement).toBe(

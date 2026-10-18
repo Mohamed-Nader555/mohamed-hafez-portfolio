@@ -59,6 +59,11 @@ export const FORBIDDEN_HASHES: ReadonlySet<string> = new Set([
   '5794b24e10c86bba0ed5943a4e43ddf333088cb3bb1afc6f3dedc2b4edaa90c6',
   '6ac69a7c5e51332076c6daa142369d9abc9ee222638a17daab27c1b2feb01bea',
   '67f03499549b3d737cd5579e50ce3de92908663deaa337f2dc794b8f59ee36d9',
+  // Internal Eklan product names: the site describes these features instead.
+  'c77ae6de7508c168ca55b04b5d916e60dcdfc56b147cc751684acd3cef118814',
+  '18a13f0605d035b083d5463828823b670ef964e553d8139621412d39ea0cf2ca',
+  '555cbc5b1e4f737dab419e449698e1f94af76fa05aec69c97a87da4ff731111f',
+  '75a5457147458c008a0c40d30f63fb30fbaf9596c8f03737a3308e78492be2ba',
 ]);
 
 export const sha256 = (value: string) =>
