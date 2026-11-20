@@ -21,7 +21,7 @@ test('thesis page states the official degree and the accepted-paper status accur
   );
 });
 
-test('thesis page shows the supervisor and the paper line without an author list', async ({
+test('thesis page shows the supervisor and the paper line with its authors and program page', async ({
   page,
 }) => {
   await page.goto('/research/asc-pie');
@@ -33,8 +33,14 @@ test('thesis page shows the supervisor and the paper line without an author list
     'ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction',
   );
   await expect(meta).toContainText(/accepted to IEEE CASCON 2026/i);
-  // The paper line carries a title and a status, never names.
-  await expect(meta.locator('dd').nth(1)).not.toContainText(/Hafez|Litoiu/);
+  // The paper line carries the title, status, authors and the program page link.
+  const paper = meta.locator('dd').nth(1);
+  await expect(paper).toContainText(
+    'Mohamed Hafez, Amr M. Zaki, Farhoud Jafari Kaleibar, Marin Litoiu',
+  );
+  await expect(
+    paper.getByRole('link', { name: 'CASCON 2026 program page' }),
+  ).toHaveAttribute('href', /conf\.researchr\.org/);
 });
 
 test('thesis page quotes the abstract and answers all four research questions', async ({

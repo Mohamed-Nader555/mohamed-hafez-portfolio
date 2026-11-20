@@ -431,7 +431,7 @@ test('the work index counts case studies, and no label says "story"', async ({
 }) => {
   await page.goto('/work');
   await expect(page.locator('.work-index__counter')).toContainText(
-    '28 case studies',
+    '33 case studies',
   );
   await expect(page.locator('main')).not.toContainText(
     /read the story|project stories/i,
