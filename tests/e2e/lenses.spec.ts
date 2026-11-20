@@ -92,8 +92,16 @@ test('each lens spotlights its own project and never claims an unpublished SPRIN
   page,
 }) => {
   const spotlights = [
-    ['/', 'ASC-PIE', '/work/asc-pie'],
-    ['/software', 'Northstar RAG System', '/work/northstar-rag'],
+    [
+      '/',
+      'Real-Time Voice Roleplay with AI Patients',
+      '/work/eklan-voice-roleplay',
+    ],
+    [
+      '/software',
+      'On-Demand AI Coach for Unplanned Workplace English',
+      '/work/eklan-ai-coach',
+    ],
     ['/android', 'Mind’s Eye', '/work/minds-eye'],
     [
       '/teaching',
