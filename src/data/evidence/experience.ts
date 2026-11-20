@@ -61,7 +61,7 @@ const currentRoleRecords = [
     id: 'eklan-voice-roleplay',
     title: 'Real-time voice roleplay at Eklan',
     statement:
-      'At Eklan, I architected and shipped real-time voice roleplay where learners practise hospital conversations out loud with AI patients, relatives and clinicians. Browser audio streams straight to the Gemini Live API through short-lived, config-locked tokens; median time to first AI audio is about 1.4 s, measured in testing against the live models.',
+      'At Eklan, I architected and shipped real-time voice roleplay where learners practise hospital conversations out loud with AI patients, relatives and clinicians. Browser audio streams straight to the Gemini Live API through short-lived, config-locked tokens, with voice-activity tuning, interruption handling and function calling that drives the phases of a session.',
     topics: [
       'Eklan',
       'voice AI',
@@ -79,7 +79,7 @@ const currentRoleRecords = [
     id: 'eklan-multi-character',
     title: 'Multi-character voice mode at Eklan',
     statement:
-      'At Eklan, I built a multi-character voice mode, live in production, where each extra character runs as its own Gemini Live session and voice and a fast Gemini Flash director model routes every learner turn to the right character.',
+      'At Eklan, I built a multi-character voice mode, built and load-tested, where each extra character runs as its own Gemini Live session and voice and a fast Gemini Flash director model routes every learner turn to the right character.',
     topics: ['Eklan', 'multi-agent orchestration', 'voice AI', 'Gemini Live'],
     aliases: ['multi-agent', 'director model', 'agent routing'],
     roleWeights: { aiml: 5, software: 4, android: 1, teaching: 1 },
@@ -101,7 +101,7 @@ const currentRoleRecords = [
     id: 'eklan-ai-coach',
     title: 'On-demand AI coach at Eklan',
     statement:
-      'At Eklan, I took an on-demand AI coach for unplanned workplace English from PRD to staging in 3 days, with Gemini structured outputs, a rule-based output checker, English and Korean PII redaction and a 48-case eval suite.',
+      'At Eklan, I built an on-demand AI coach for unplanned workplace English, with Gemini structured outputs, a rule-based output checker, English and Korean PII redaction and a 48-case eval suite.',
     topics: ['Eklan', 'AI coach', 'structured outputs', 'PII redaction'],
     aliases: ['LLM guardrails', 'eval suite', 'job queue'],
     roleWeights: { aiml: 5, software: 5, android: 0, teaching: 2 },
@@ -170,9 +170,9 @@ const mercatoRecords = [
     id: 'android-historical-play-store',
     title: 'Historical Android app availability',
     statement:
-      'Four apps were previously published on Google Play: three under client-owned listings (Dostava, Your Life Is My Life, and The Death Ninja) and one, Healthy Habit / Food Planner, as part of my ITI training. Search for Eats was not published to Google Play.',
+      'Four apps were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. Healthy Habit / Food Planner was an ITI training project and is not claimed as published.',
     topics: ['Android', 'Google Play', 'historical availability'],
-    aliases: ['Play Store', 'Google Play apps', '16 Android applications'],
+    aliases: ['Play Store', 'Google Play apps', '9 Android applications'],
     roleWeights: { aiml: 1, software: 3, android: 5, teaching: 1 },
     sourceIds: ['resume-android', 'resume-software'],
     public: true,

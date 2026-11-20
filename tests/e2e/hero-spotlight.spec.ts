@@ -20,7 +20,7 @@ test('hero presents a meaningful project spotlight for each selected role', asyn
     .getByRole('link', { name: 'Software Engineer', exact: true })
     .click();
   await expect(spotlight).toContainText(
-    'On-Demand AI Coach, PRD to Staging in 3 Days',
+    'On-Demand AI Coach for Unplanned Workplace English',
   );
   await expect(spotlight.getByRole('link')).toHaveAttribute(
     'href',

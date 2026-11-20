@@ -46,7 +46,7 @@ for (const route of publicRoutes) {
     );
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       'content',
-      `${testOrigin}/og/mohamed-hafez-portfolio.svg`,
+      `${testOrigin}/og/mohamed-hafez-portfolio.png`,
     );
     await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
       'content',

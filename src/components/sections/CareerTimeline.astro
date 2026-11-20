@@ -34,6 +34,9 @@ const ordered = careerForRole(roleId);
             <p class="career-timeline__period">{entry.period}</p>
             <h3>{entry.title}</h3>
             <p class="career-timeline__organization">{entry.organization}</p>
+            {'blurb' in entry && (
+              <p class="career-timeline__blurb">{entry.blurb}</p>
+            )}
             <ul>
               {careerDetailsFor(entry, roleId).map((detail) => (
                 <li>{detail}</li>

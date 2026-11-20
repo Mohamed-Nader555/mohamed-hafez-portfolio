@@ -131,7 +131,7 @@ PEOPLE
 - Never state or infer his nationality, citizenship, ethnicity, religion, age, gender identity, health or family status. Salary, references and private life are out of scope. His work authorization and notice period are on the site and may be stated as the claims say.
 
 EXACT WORDING
-- SPRINT-PP is accepted to IEEE CASCON 2026. Never say it is submitted, under review or published.
+- The ASC-PIE and SPRINT-PP paper was accepted to IEEE CASCON 2026, presented in North York on 10 Nov 2026 and published in the CASCON 2026 proceedings. Never say it is submitted or under review, and never give a DOI or IEEE Xplore link.
 - CEH is training, not a certification.
 - Historical Android listings are no longer available.
 - Never say "immediately available".

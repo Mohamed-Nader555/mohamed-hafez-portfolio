@@ -50,9 +50,11 @@ import CompareTable from '@/components/case-study/CompareTable.astro';
 import StageMatrix from '@/components/case-study/StageMatrix.astro';
 import RepositoryLinks from '@/components/case-study/RepositoryLinks.astro';
 
-_Paper: "ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction" — accepted to IEEE CASCON 2026 (Toronto, 10–12 Nov 2026); the method is also part of my M.A. thesis. No author list yet._
+_Paper: "ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction" by Mohamed Hafez, Amr M. Zaki, Farhoud Jafari Kaleibar and Marin Litoiu (York University). Accepted to IEEE CASCON 2026, presented in North York on 10 Nov 2026 and published in the CASCON 2026 proceedings ([program page](https://conf.researchr.org/details/cascon-2026/cascontechnical-papers2026/34/ASC-PIE-and-SPRINT-PP-Evaluating-Privacy-Safe-Continual-Learning-for-PII-Extraction)). The SPRINT-PP method is also the core of my M.A. thesis, where I designed the protocol, implemented the strategies and ran the experiments; the paper has four authors._
 
 ## The problem
+
+SPRINT-PP stands for Selective Prototype-Routed Incremental NER Triage with Privacy Preservation.
 
 PII requirements do not stay fixed. A system built to find one set of categories today may need to find more next year, as a regulator adds a category or a product adds a new field. The obvious fix is to keep fine-tuning the same model on the new types.
 
@@ -117,7 +119,7 @@ SPRINT-PP finished ahead of every other strategy on ACC and BWT, and it did so w
   ]}
 />
 
-SPRINT-PP was also 25.6% faster to train than distillation, on the same backbone and the same staged protocol.
+SPRINT-PP also took 25.6% less training time than distillation, on the same backbone and the same staged protocol.
 
 <StageMatrix
   strategies={['Baseline', 'Replay', 'Distillation', 'SPRINT-PP']}
@@ -170,6 +172,7 @@ Read down the diagonal and every strategy looks fine: each stage is learned well
     ],
   }}
   title="Cumulative F1: old and new labels scored together"
+  view="cumulative F1"
 />
 
 The baseline is left out of the cumulative view above: only its final row is available from the underlying research, and I would rather show three strategies in full than estimate a fourth.

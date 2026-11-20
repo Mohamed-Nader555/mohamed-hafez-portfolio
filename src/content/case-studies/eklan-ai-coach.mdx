@@ -6,8 +6,8 @@ passport:
   period: 'Sep 2026 – present'
   platform: 'Next.js web app, text and voice notes'
 stats:
-  - value: '3 days'
-    label: from the founder's PRD to staging
+  - value: 'Live model'
+    label: every release is gated on an eval run against the live model
   - value: '48/48'
     label: eval cases passing against the live model
   - value: '23/23'
@@ -28,9 +28,9 @@ features:
   - title: From chat to drill
     detail: A solved chat can become a personal drill. Audio plays in the learner's accent with a slow option, and say-it-aloud practice gives word-level pronunciation feedback.
 decisions:
-  - choice: agree the design with the founder in one day, then build in gated tasks
+  - choice: agree the design with the founder first, then build in gated tasks
     over: starting to code from the PRD as written
-    because: settling one problem per chat, resolve-and-lock, five kinds of help mapped to five drill types, and a clear boundary for requests about treatment made the three-day build possible
+    because: settling one problem per chat, resolve-and-lock, five kinds of help mapped to five drill types, and a clear boundary for requests about treatment kept the build small and safe
   - choice: a rule-based checker in code after the model
     over: trusting a well-written prompt
     because: the failures that matter most here, like an invented dose, are easy to detect in code and too costly to leave to the model
@@ -38,8 +38,8 @@ decisions:
     over: generating the drill inside the chat request
     because: drill generation is slow and can fail; a queue with leases, retries and unique indexes lets it retry safely without ever creating a duplicate drill
 challenges:
-  - problem: The MVP was due in three days, with testing the day after.
-    solution: I wrote the design up the first day, split the build into 8 gated tasks, and made release depend on a 48-case eval run against the live model.
+  - problem: The MVP had a tight deadline, so every step had to be small enough to check.
+    solution: I wrote the design up first, split the build into 8 gated tasks, and made release depend on a 48-case eval run against the live model.
   - problem: Learners sometimes paste real details from their shift into the chat.
     solution: Redaction runs in English and Korean before storage or any onward call, and sensitive data in a question makes the coach ask for a clarification instead of answering.
   - problem: Background work on serverless functions can be cut off or run twice.
@@ -97,7 +97,7 @@ import StackLayers from '@/components/case-study/StackLayers.astro';
 
 ## The problem
 
-Planned lessons cover planned situations. Real shifts don't: a nurse might need to explain a delay to a family, or ask a colleague to repeat an order, and want the right English for it now. The founder's PRD asked for an always-available coach for exactly these moments, with an MVP due in three days.
+Planned lessons cover planned situations. Real shifts don't: a nurse might need to explain a delay to a family, or ask a colleague to repeat an order, and want the right English for it now. The founder's PRD asked for an always-available coach for exactly these moments,.
 
 ## Who it was for
 
@@ -105,7 +105,7 @@ Nurses and clinicians preparing for, or already working in, English-speaking hos
 
 ## My role
 
-I turned the founder's PRD into a buildable design in one day and built the coach in three: the structured-output layer, the output checker, English and Korean PII redaction, the eval suite, the drill job queue, audio and pronunciation practice, and the interface. Admins can change who has access (plan, pilot list and a kill switch) without a redeploy.
+I turned the founder's PRD into a buildable design and built the coach: the structured-output layer, the output checker, English and Korean PII redaction, the eval suite, the drill job queue, audio and pronunciation practice, and the interface. Admins can change who has access (plan, pilot list and a kill switch) without a redeploy.
 
 ## What I built
 
@@ -119,7 +119,7 @@ A question arrives as text or a voice note and is redacted before anything is st
 
 <ArchitectureFlow
   slug="eklan-ai-coach"
-  title="On-Demand AI Coach, PRD to Staging in 3 Days"
+  title="On-Demand AI Coach for Unplanned Workplace English"
 />
 
 ## Decisions that mattered
@@ -136,7 +136,7 @@ A question arrives as text or a voice note and is redacted before anything is st
 
 ## Outcome
 
-The coach was live on staging three days after the PRD. The release gate was a 48-case eval suite run against the live model, and it climbed over three rounds of fixes:
+The coach went to staging once it passed its release gate. The gate was a 48-case eval suite run against the live model, and it climbed over three rounds of fixes:
 
 <CompareTable
   caption="48-case eval suite, run against the live model"
@@ -152,9 +152,9 @@ Detection of the kind of help a learner needed was right in 100% of the eval cas
 
 ## What I learned
 
-> Three days is enough if the first one is spent deciding what not to build.
+> A tight deadline is manageable if the first step is deciding what not to build.
 
-The day spent agreeing the design with the founder did more for the deadline than any shortcut in the code. Gating the release on an eval run, rather than on a demo that looked right, is what made it safe to ship that fast.
+Agreeing the design with the founder first did more for the deadline than any shortcut in the code. Gating the release on an eval run, rather than on a demo that looked right, is what made it safe to ship quickly.
 
 ## What I'd do next
 

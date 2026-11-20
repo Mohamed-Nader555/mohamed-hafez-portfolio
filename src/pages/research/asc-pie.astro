@@ -86,6 +86,12 @@ const structuredData = [
         <dd>
           <cite>{paperLine.title}</cite>
           <strong>{paperLine.status}</strong>
+          <span>
+            {paperLine.authors.join(', ')} ({paperLine.affiliation}) ·{' '}
+            <a href={paperLine.programUrl} rel="noopener noreferrer">
+              CASCON 2026 program page
+            </a>
+          </span>
         </dd>
       </div>
     </dl>

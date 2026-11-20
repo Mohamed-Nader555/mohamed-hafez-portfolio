@@ -20,7 +20,7 @@ export const questionBank: readonly BankAnswer[] = [
     question: 'Tell me about yourself.',
     alsoAskedAs: ['Give me a short bio', 'What is his background?'],
     answer:
-      'I’m a Toronto-based machine learning engineer focused on PII extraction, named-entity recognition and LLM evaluation. My M.A. thesis at York University produced ASC-PIE, a 333,109-example PII corpus and benchmark, and SPRINT-PP, a continual-learning method that keeps earlier PII types without storing raw personal data. Before that I delivered more than ten applied ML projects, built enterprise document workflows for banking clients, and delivered 16 Android applications. I now work as a Founding AI Engineer at Eklan.',
+      'I’m a Toronto-based machine learning engineer focused on PII extraction, named-entity recognition and LLM evaluation. My M.A. thesis at York University produced ASC-PIE, a 333,109-example PII corpus and benchmark, and SPRINT-PP, a continual-learning method that keeps earlier PII types without storing raw personal data. Before that I delivered more than ten applied ML projects, built enterprise document workflows for banking clients, and delivered 9 Android applications. I now work as a Founding AI Engineer at Eklan.',
     gap: false,
     triggers: [],
     basisIds: [],
@@ -84,7 +84,7 @@ export const questionBank: readonly BankAnswer[] = [
     question: 'What have you done since finishing your degree in April 2026?',
     alsoAskedAs: ['Is there a gap after April 2026?'],
     answer:
-      'I deposited my thesis in July 2026, had the SPRINT-PP paper accepted to IEEE CASCON 2026, built Northstar and this portfolio, and joined Eklan as a Founding AI Engineer.',
+      'I deposited my thesis in July 2026, presented the ASC-PIE and SPRINT-PP paper at IEEE CASCON 2026, built Northstar and this portfolio, and joined Eklan as a Founding AI Engineer.',
     gap: false,
     triggers: [],
     basisIds: [],
@@ -180,7 +180,7 @@ export const questionBank: readonly BankAnswer[] = [
     question: 'What is your Android background?',
     alsoAskedAs: [],
     answer:
-      'Over five years I delivered 16 Android applications in Kotlin and Java, with MVVM, Retrofit, Room, Firebase and Play Console releases. Four were previously published on Google Play: three under client-owned listings and one as part of my ITI training. I have also integrated OCR, computer vision and ML into mobile apps, including an assistive smart-glasses system.',
+      'Over five years I delivered 9 Android applications in Kotlin and Java, with MVVM, Retrofit, Room, Firebase and Play Console releases. Four were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. I have also integrated OCR, computer vision and ML into mobile apps, including an assistive smart-glasses system.',
     lens: 'android',
     gap: false,
     triggers: [],
@@ -349,12 +349,7 @@ export const questionBank: readonly BankAnswer[] = [
       'feature store',
       'MLOps platform',
     ],
-    basisIds: [
-      'page-what-mohamed-built-northstar-rag-2',
-      'challenges-asc-pie',
-      'page-what-mohamed-would-do-next-northstar-rag',
-      'passport-northstar-rag',
-    ],
+    basisIds: ['page-what-mohamed-built-northstar-rag-2', 'career-eklan'],
   },
   {
     id: 'qb-gap-experiments',
@@ -400,8 +395,8 @@ export const questionBank: readonly BankAnswer[] = [
       'credentials-and-training',
       'page-what-mohamed-built-dive-2',
       'rest-pocs-stack',
-      'page-who-it-was-for-rest-pocs',
       'career-bass',
+      'page-who-it-was-for-rest-pocs',
     ],
   },
   {
@@ -415,11 +410,11 @@ export const questionBank: readonly BankAnswer[] = [
     gap: true,
     triggers: ['LangGraph', 'AutoGen', 'agentic frameworks', 'multi-agent'],
     basisIds: [
-      'features-eklan-voice-roleplay-1',
+      'page-outcome-eklan-voice-roleplay',
       'career-eklan',
-      'project-northstar-rag',
       'page-who-it-was-for-asc-pie',
-      'page-what-mohamed-built-northstar-rag-2',
+      'project-northstar-rag',
+      'stack-eklan-voice-roleplay',
       'page-what-mohamed-would-do-next-asc-pie',
     ],
   },
@@ -441,8 +436,8 @@ export const questionBank: readonly BankAnswer[] = [
       'edge optimisation',
     ],
     basisIds: [
-      'page-what-mohamed-built-minds-eye-3',
       'career-android-freelance',
+      'page-what-mohamed-built-minds-eye-3',
       'page-how-it-works-minds-eye',
       'stack-dive',
     ],

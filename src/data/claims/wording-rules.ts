@@ -5,7 +5,7 @@ import type { WordingRule } from './types';
 export const wordingRules: readonly WordingRule[] = [
   {
     topic: 'Google Play',
-    say: 'Use the site’s per-app status only. Never name or count which apps were on Google Play beyond what each project page states.',
+    say: 'Four apps were previously published through client-owned Google Play listings that are no longer maintained (Dostava, Your Life Is My Life, The Death Ninja and Search for Eats). Never claim Food Planner or any other app was on Google Play.',
     never: [],
   },
   {
@@ -86,7 +86,7 @@ export const unconfirmedClaims: readonly string[] = [
   "At Eklan, Stripe billing or the paywall, auth hardening, LiveKit live classes, the mobile app, the dark theme or the visual design of the simulation screens (teammates' work)",
   'Internal Eklan product names, prompts, model ids, screenshots or learner data',
   'Python, Java, Kotlin, Docker or PyTorch as part of the Eklan work (earlier roles only)',
-  'Eklan latency or load figures from production traffic (they were measured in testing against the live models)',
+  'Eklan latency, load, usage or timeline figures of any kind',
   'Building an MCP server (he uses MCP servers daily; he has not built one)',
 ];
 
@@ -115,7 +115,7 @@ export const datedStatements: readonly { date: string; statement: string }[] = [
   {
     date: '2026-10-06',
     statement:
-      'The SPRINT-PP paper is accepted to IEEE CASCON 2026. The folder still says "under review"; that is stale.',
+      'The ASC-PIE and SPRINT-PP paper was accepted, published in the CASCON 2026 proceedings and presented at IEEE CASCON 2026 (North York, 10 Nov 2026). The authors are Mohamed Hafez, Amr M. Zaki, Farhoud Jafari Kaleibar and Marin Litoiu (York University). No Xplore or DOI link is public yet.',
   },
   {
     date: '2026-10-06',
@@ -135,12 +135,12 @@ export const datedStatements: readonly { date: string; statement: string }[] = [
   {
     date: '2026-10-18',
     statement:
-      'Since Sep 2026 he is Founding AI Engineer at Eklan in Toronto, and the site now describes that work (experience entry and five case studies). Use model families only (Gemini Live, Gemini Flash, OpenAI GPT). Latency and load numbers were measured in testing against the live models. Multi-character voice mode is live in production; give no usage numbers.',
+      'Since Sep 2026 he is Founding AI Engineer at Eklan in Toronto, and the site now describes that work (experience entry and five case studies). Use model families only (Gemini Live, Gemini Flash, OpenAI GPT). Give no latency, load, usage or timeline figures. The multi-agent voice mode was built and load-tested; say nothing about its usage.',
   },
   {
     date: '2026-10-10',
     statement:
-      'His answers say 16 Android applications, as the site does. The folder\'s "nine" and its open question about the fourth Google Play app are stale; the site\'s wording stands.',
+      'Owner decision, 20 Nov 2026: he delivered 9 Android applications. Four were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. Food Planner (Healthy Habit) is an ITI Android track project and is not claimed as published.',
   },
 ];
 

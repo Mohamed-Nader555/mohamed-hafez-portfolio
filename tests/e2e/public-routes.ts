@@ -21,7 +21,7 @@ const workRoutes: readonly PublicRouteExpectation[] = [
   },
   {
     path: '/work/eklan-ai-coach',
-    title: 'On-Demand AI Coach, PRD to Staging in 3 Days — Mohamed Hafez',
+    title: 'On-Demand AI Coach for Unplanned Workplace English — Mohamed Hafez',
   },
   {
     path: '/work/eklan-grading-pipeline',

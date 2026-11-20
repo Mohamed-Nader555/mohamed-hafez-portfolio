@@ -107,7 +107,7 @@ test('featured story cards swap instantly with the role and stay one document', 
     [
       'software',
       'Software Engineer',
-      'On-Demand AI Coach, PRD to Staging in 3 Days',
+      'On-Demand AI Coach for Unplanned Workplace English',
       '/work/eklan-ai-coach',
     ],
     ['android', 'Android Developer', 'Mind’s Eye', '/work/minds-eye'],

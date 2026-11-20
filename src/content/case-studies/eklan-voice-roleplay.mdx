@@ -6,25 +6,19 @@ passport:
   period: 'Sep 2026 – present'
   platform: 'Web app with real-time browser audio'
 stats:
-  - value: '~1.4 s'
-    label: median time to first AI audio (p90 about 1.7 s)
-    note: Measured in testing against the live models
-  - value: '1.60 → 1.04 s'
-    label: reply after the learner stops speaking
-    note: Measured in testing against the live models
-  - value: '4.4–4.7 → 1.0 s'
-    label: reply time in a loud room, with the noise gate
-    note: Measured in testing against the live models
-  - value: '10 × 3'
-    label: concurrent learners × live sessions, with 0 errors
-    note: Measured in testing against the live models
+  - value: '1 per agent'
+    label: live session for each character in a scene
+  - value: 'Built and load-tested'
+    label: the multi-agent voice mode
+  - value: '19'
+    label: automated checks in the voice test harness
 features:
   - title: Direct streaming with locked tokens
     detail: The browser talks to the Gemini Live API itself. The server only hands out short-lived tokens that fix the model, the instructions, the voice, transcription, session resumption and context compression, so the browser can't change any of them.
   - title: A browser audio engine
     detail: AudioWorklet capture and playback, a noise gate, a turn tracker, interruption handling and resumable sessions, built for hospital wards rather than quiet offices.
   - title: Multi-character scenes
-    detail: A patient, a relative and a doctor can share one scene. Each extra character runs as its own live session with its own voice, and a fast Gemini Flash director decides who the learner is talking to. The mode is live in production.
+    detail: A patient, a relative and a doctor can share one scene. Each extra character runs as its own live session with its own voice, and a fast Gemini Flash director decides who the learner is talking to.
   - title: The app keeps time
     detail: Each scene phase has fixed minutes. The model can ask to move on, but the app only accepts that near the end of a phase, steers the scene as time runs down, and closes the phase itself when time is up.
   - title: Guards for model failure modes
@@ -116,7 +110,7 @@ I designed and built the voice system end to end as the founding AI engineer: th
 
 <FeatureGrid items={frontmatter.features} />
 
-In an ensemble scene, characters also speak up on their own at set points in a phase, but only in natural gaps in the conversation. Cue to first audio had a median of about 1.9 s, with no two voices overlapping in the final checks, measured in testing against the live models.
+In an ensemble scene, characters also speak up on their own at set points in a phase, but only in natural gaps in the conversation, with no two voices overlapping in the final checks.
 
 ## How it works
 
@@ -143,28 +137,24 @@ A voice agent can't be checked by reading its code, so I also built an automated
 
 ## Outcome
 
-All of these numbers were measured in testing against the live models, not taken from production traffic.
+The system streams voice straight from the browser, keeps its own scene clock, and routes each learner turn to the right character. The multi-character mode was built and load-tested, and the test harness measured every prompt or engine change before release. No usage figures are given here.
 
 <CompareTable
-  caption="Voice roleplay, measured in testing against the live models"
-  columns={['Measure', 'Result']}
+  caption="What the voice system does"
+  columns={['Part', 'Result']}
   rows={[
-    ['Median time to first AI audio', 'about 1.4 s (p90 about 1.7 s)'],
+    ['Streaming', 'Direct from the browser to Gemini Live with locked tokens'],
     [
-      'Reply after the learner stops speaking',
-      '1.60 s before tuning, 1.04 s after',
+      'Turn handling',
+      'Voice-activity tuning, a noise gate and interruption handling',
     ],
-    ['Reply in a loud room', '4.4–4.7 s before the noise gate, 1.0 s after'],
-    ['Voice change between phases (median)', '1.58 s'],
-    ['Narration and greeting rendered on publish', 'about 2.7 s, in parallel'],
     [
-      'Multi-character load test',
-      '10 concurrent learners × 3 live sessions, 0 errors',
+      'Multi-character scenes',
+      'One live session per character, routed by a director model',
     ],
+    ['Testing', 'A 19-check harness with synthetic speech and an LLM judge'],
   ]}
 />
-
-Multi-character mode is live in production.
 
 ## What I learned
 
@@ -174,4 +164,4 @@ The biggest gains came from taking decisions away from the model: who keeps time
 
 ## What I'd do next
 
-Run the same harness checks against a sample of real sessions, so the numbers on this page come from production as well as from testing.
+Run the same harness checks against a sample of real sessions, so quality is tracked on real conversations as well as in testing.

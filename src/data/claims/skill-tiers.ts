@@ -112,7 +112,7 @@ export const skillTierGroups: readonly SkillTierGroup[] = [
       'skills-nlp-llms',
       'asc-pie-thesis-title',
       'asc-pie-experiment-stack',
-      'skills-ai-llm',
+      'career-eklan',
       'sprint-pp-status',
     ],
     resumeSourceIds: [
@@ -215,7 +215,7 @@ export const skillTierGroups: readonly SkillTierGroup[] = [
       'regression testing',
       'code review',
     ],
-    basisIds: ['northstar-api-deployment', 'skills-data-mlops'],
+    basisIds: ['northstar-api-deployment', 'career-eklan', 'skills-data-mlops'],
     resumeSourceIds: [
       'resume-aiml',
       'resume-software',
@@ -393,6 +393,7 @@ export const skillTierGroups: readonly SkillTierGroup[] = [
       'skills-ai-llm',
       'project-eklan-composed-prompts',
       'eklan-ai-coach',
+      'career-eklan',
     ],
     resumeSourceIds: [],
   },

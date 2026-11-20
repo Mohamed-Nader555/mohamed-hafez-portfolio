@@ -377,30 +377,27 @@ describe('case-study content collection', () => {
       expect(nodeText(texts.get('mercato')!.tree)).not.toMatch(/marketplace/i);
     });
 
-    it('never describes Search for Eats as published on Google Play', async () => {
+    it('describes Search for Eats as previously on Google Play through a client-owned listing, now delisted', async () => {
       const texts = await pageTexts();
       const searchForEats = nodeText(texts.get('search-for-eats')!.tree);
-      // The one place Google Play is mentioned must negate it.
+      // Owner decision, 20 Nov 2026: it is the fourth previously published app.
       for (const sentence of sentences(searchForEats)) {
         if (/google play/i.test(sentence)) {
-          expect(sentence, sentence).toMatch(/\bnot\b/i);
-        }
-      }
-      // Anywhere else, a sentence naming Search for Eats and Google Play
-      // together must also negate it.
-      for (const entry of texts.values()) {
-        for (const sentence of sentences(nodeText(entry.tree))) {
-          if (
-            /search for eats/i.test(sentence) &&
-            /google play/i.test(sentence)
-          ) {
-            expect(sentence, `${entry.id}: ${sentence}`).toMatch(/\bnot\b/i);
-          }
+          expect(sentence, sentence).toMatch(
+            /previously.*client-owned listing.*delisted/i,
+          );
         }
       }
       expect(projectBySlug.get('search-for-eats')!.status).toBe(
-        'client-delivered',
+        'play-previously',
       );
+    });
+
+    it('does not claim Food Planner was published to Google Play', async () => {
+      const texts = await pageTexts();
+      const foodPlanner = nodeText(texts.get('food-planner')!.tree);
+      expect(foodPlanner).not.toMatch(/google play/i);
+      expect(projectBySlug.get('food-planner')!.status).toBe('iti-cohort');
     });
 
     it('never claims My Card is a payment gateway or processes payments', async () => {

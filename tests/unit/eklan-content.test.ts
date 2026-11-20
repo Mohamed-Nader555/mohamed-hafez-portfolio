@@ -12,7 +12,6 @@ import { splitFrontmatter } from '@/lib/rag/mdx-text';
 import {
   LIVE_MODEL_QUALIFIER,
   NOT_USED_AT_EKLAN,
-  carriesQualifier,
   emDashesIn,
   mentionsTimingOrLoad,
   modelIdsIn,
@@ -166,25 +165,13 @@ describe('Eklan content rules', () => {
     }
   });
 
-  it('says every latency or load number was measured in testing against the live models', () => {
+  it('states no latency, timing, load or usage figures (owner decision, 20 Nov 2026)', () => {
     for (const page of eklanPages) {
       expect(unqualifiedTimingBlocks(page.body), page.slug).toEqual([]);
-      for (const text of stringsIn({ ...page.data, stats: undefined }))
-        expect(
-          !mentionsTimingOrLoad(text) || carriesQualifier(text),
-          `${page.slug} frontmatter: ${text}`,
-        ).toBe(true);
-      const stats = (page.data.stats ?? []) as Array<{
-        value: string;
-        label: string;
-        note?: string;
-      }>;
-      for (const stat of stats)
-        if (mentionsTimingOrLoad(`${stat.value} ${stat.label}`))
-          expect(
-            carriesQualifier(stat.note ?? ''),
-            `${page.slug} stat ${stat.value}`,
-          ).toBe(true);
+      for (const text of stringsIn(page.data))
+        expect
+          .soft(mentionsTimingOrLoad(text), `${page.slug}: ${text}`)
+          .toBe(false);
     }
     const records = [
       ...eklanCareer.flatMap((entry) => stringsIn(entry)),
@@ -197,18 +184,16 @@ describe('Eklan content rules', () => {
       ...eklanProjects.flatMap((project) =>
         stringsIn(architectures[project.slug] ?? {}),
       ),
+      ...eklanProjects.flatMap((project) =>
+        (keyFactsBySlug[project.slug] ?? []).map(
+          (fact) => `${fact.value} ${fact.label}`,
+        ),
+      ),
     ];
     for (const text of records)
-      expect(
-        !mentionsTimingOrLoad(text) || carriesQualifier(text),
-        `unqualified: ${text}`,
-      ).toBe(true);
-    for (const project of eklanProjects)
-      for (const fact of keyFactsBySlug[project.slug] ?? [])
-        if (mentionsTimingOrLoad(`${fact.value} ${fact.label}`))
-          expect(fact.label, `${project.slug} card fact`).toMatch(
-            /tested|testing/i,
-          );
+      expect
+        .soft(mentionsTimingOrLoad(text), `timing or load: ${text}`)
+        .toBe(false);
   });
 
   it('keeps earlier-role technologies off the Eklan work', () => {
@@ -278,7 +263,7 @@ describe('the assistant’s rules for the Eklan role', () => {
     expect(rules).not.toMatch(/beyond the title/);
     expect(rules).toMatch(/Stripe.*LiveKit.*mobile app.*dark theme/);
     expect(rules).toMatch(/Usage numbers for Eklan/);
-    expect(rules).toMatch(/measured in testing against the live models/);
+    expect(rules).toMatch(/latency/i);
     expect(rules).toMatch(/model ids/);
   });
 

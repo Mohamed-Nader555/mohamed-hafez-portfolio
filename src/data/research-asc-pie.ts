@@ -12,12 +12,22 @@ export const supervisor = {
   lab: 'CERAS Lab, York University',
 } as const;
 
-// The paper line shows the title and its status only. No author list is
-// public yet, so none is shown here.
+// The paper line: title, status, authors (in the order on the CASCON program
+// page) and the program page link. No DOI or Xplore link exists to show yet.
 export const paperLine = {
   title:
     'ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction',
-  status: 'Accepted to IEEE CASCON 2026',
+  status:
+    'Accepted to IEEE CASCON 2026, presented in North York on 10 Nov 2026 and published in the CASCON 2026 proceedings',
+  authors: [
+    'Mohamed Hafez',
+    'Amr M. Zaki',
+    'Farhoud Jafari Kaleibar',
+    'Marin Litoiu',
+  ],
+  affiliation: 'York University',
+  programUrl:
+    'https://conf.researchr.org/details/cascon-2026/cascontechnical-papers2026/34/ASC-PIE-and-SPRINT-PP-Evaluating-Privacy-Safe-Continual-Learning-for-PII-Extraction',
 } as const;
 
 // Verbatim from the York University thesis record (content source §6.1).
@@ -51,7 +61,7 @@ export const researchQuestions = [
     label: 'RQ4',
     title: 'Corpus design and synthetic augmentation',
     answer:
-      'Corpus design is a major driver of extraction quality, not a preprocessing detail. With the same RoBERTa-large backbone and the same evaluation, training on public data alone reaches a strict F1 of 0.415, with recall limited to 0.307. Training on the full ASC-PIE corpus reaches 0.992, with recall at 0.995, a gain of +0.577. Strict and normalised F1 are nearly identical in both settings, so the gain reflects real coverage of entities, not formatting. The gains are broad but uneven, and largest where public data alone gave the least coverage.',
+      'Corpus design is a major driver of extraction quality, not a preprocessing detail. With the same RoBERTa-large backbone and the same evaluation, training on public data alone reaches a strict F1 of 0.415, with recall limited to 0.307. Training on the full ASC-PIE corpus reaches 0.992, with recall at 0.995, a gain of +57.7 points. Strict and normalised F1 are nearly identical in both settings, so the gain reflects real coverage of entities, not formatting. The gains are broad but uneven, and largest where public data alone gave the least coverage.',
   },
 ] as const;
 

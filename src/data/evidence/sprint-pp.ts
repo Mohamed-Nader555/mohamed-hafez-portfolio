@@ -5,7 +5,7 @@ const records = [
     id: 'sprint-pp-status',
     title: 'SPRINT-PP research status',
     statement:
-      'SPRINT-PP, a paper titled “ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction,” is accepted to IEEE CASCON 2026 in Toronto. The method is also part of Mohamed’s M.A. thesis. No author list is public yet.',
+      'SPRINT-PP, a paper titled “ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction,” was accepted to IEEE CASCON 2026, presented in North York on 10 Nov 2026 and published in the CASCON 2026 proceedings. The authors are Mohamed Hafez, Amr M. Zaki, Farhoud Jafari Kaleibar and Marin Litoiu (York University). The method is also part of Mohamed’s M.A. thesis.',
     topics: ['SPRINT-PP', 'research', 'privacy', 'CASCON', 'IEEE'],
     aliases: ['SPRINT PP', 'paper status', 'publication status', 'CASCON 2026'],
     roleWeights: { aiml: 5, software: 2, android: 0, teaching: 3 },

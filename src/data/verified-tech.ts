@@ -243,6 +243,7 @@ export const VERIFIED_TECH: Readonly<Record<string, readonly string[]>> = {
     'TypeScript',
     'Cloudflare Workers',
     'Workers AI',
+    'Gemini API',
     'Zod',
     'Playwright',
     'React',

@@ -1008,7 +1008,11 @@ export const architectures: Readonly<Record<string, ArchitectureDefinition>> = {
         label: 'Refusal gate',
         detail: 'Blocks unsupported questions before generation',
       },
-      { id: 'workers-ai', label: 'Workers AI', detail: 'Llama 3.1 8B' },
+      {
+        id: 'workers-ai',
+        label: 'Gemini API',
+        detail: 'Writes the answer; a second call checks it',
+      },
       {
         id: 'citation-check',
         label: 'Citation check',

@@ -6,7 +6,7 @@ const records = [
     id: 'search-for-eats-purpose',
     title: 'Search for Eats purpose',
     statement:
-      'Search for Eats is a restaurant-discovery Android app with map and list views, category filters, rating sort, and offline recent results. It was delivered to a client and was not published to Google Play.',
+      'Search for Eats is a restaurant-discovery Android app with map and list views, category filters, rating sort, and offline recent results. It was delivered to a client and was previously on Google Play through a client-owned listing that has since been delisted.',
     topics: ['Search for Eats', 'Android', 'restaurant discovery'],
     aliases: ['restaurant finder'],
     roleWeights: { aiml: 0, software: 2, android: 4, teaching: 1 },
@@ -29,7 +29,7 @@ const records = [
     id: 'food-planner-purpose',
     title: 'Food Planner purpose',
     statement:
-      'Healthy Habit / Food Planner is a recipe and meal-planning Android app: meal of the day, search by country or ingredient, weekly plans, reminders, favourites, and offline access. It was built during the ITI Android track and published to Google Play as part of that training, not as a client listing.',
+      'Healthy Habit / Food Planner is a recipe and meal-planning Android app: meal of the day, search by country or ingredient, weekly plans, reminders, favourites, and offline access. It was built during the ITI Android track as a training project and is not claimed as a Google Play release.',
     topics: ['Food Planner', 'Android', 'recipes', 'meal planning', 'ITI'],
     aliases: ['Healthy Habit'],
     roleWeights: { aiml: 0, software: 2, android: 4, teaching: 1 },

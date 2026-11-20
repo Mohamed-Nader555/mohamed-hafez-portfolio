@@ -5,9 +5,17 @@ interface Props {
   /** matrices[strategy][row][col] = F1 value (0-1) for that stage pair. */
   matrices: Readonly<Record<string, readonly (readonly number[])[]>>;
   title: string;
+  /** Which view the matrices show; used in each table's hidden caption. */
+  view?: string;
 }
 
-const { strategies, stageLabels, matrices, title } = Astro.props;
+const {
+  strategies,
+  stageLabels,
+  matrices,
+  title,
+  view = 'stage-restricted F1',
+} = Astro.props;
 
 // Sequential single-hue scale on the cyan token, per §5.4, in 21 steps. The
 // fill is a CSS class (heat-0 .. heat-20), not an inline style, because the
@@ -27,7 +35,7 @@ function heatClass(value: number) {
         <summary>{strategy}</summary>
         <table>
           <caption class="visually-hidden">
-            {strategy} stage-restricted F1
+            {strategy} {view}
           </caption>
           <thead>
             <tr>

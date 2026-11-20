@@ -47,7 +47,10 @@ stack:
         purpose: Assistant request handling
       - name: Workers AI
         kind: ml
-        purpose: Answer generation (Llama 3.1 8B)
+        purpose: Earlier fallback mode for answer generation, not in use
+      - name: Gemini API
+        kind: ml
+        purpose: Writes each answer from the retrieved evidence, and a second call checks it
       - name: Turnstile
         kind: tool
         purpose: Bot and abuse protection
@@ -85,7 +88,7 @@ This site: a four-focus portfolio built on typed, validated content, with a smal
 
 <FeatureGrid items={frontmatter.features} />
 
-The assistant is deliberately conservative. A question comes in behind Turnstile and two rate limiters, then goes through lexical retrieval over the published, validated content. If retrieval doesn't turn up anything that supports an answer, the pipeline refuses before it ever reaches generation. When it does have support, Workers AI (Llama 3.1 8B) writes the answer, its citations are checked against what was actually retrieved, and if that check fails the assistant falls back to an extractive answer built directly from the retrieved text instead of a generated one. Conversation history stays in the browser session only.
+The assistant is deliberately conservative. A question comes in behind Turnstile and two rate limiters, then goes through lexical retrieval over the published, validated content. If retrieval doesn't turn up anything that supports an answer, the pipeline refuses before it ever reaches generation. When it does have support, Google’s Gemini API writes the answer (pasted job descriptions go to the same API, only to write your brief), a second model call checks it, its citations are checked against what was actually retrieved, and if that check fails the assistant falls back to an extractive answer built directly from the retrieved text instead of a generated one. Conversation history stays in the browser session only.
 
 Analytics on how the assistant is used is not live today; the pipeline is built to support it later without storing raw transcripts, but nothing is currently collecting or reporting that data.
 

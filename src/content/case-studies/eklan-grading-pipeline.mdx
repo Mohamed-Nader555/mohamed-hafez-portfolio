@@ -6,12 +6,8 @@ passport:
   period: 'Sep 2026 – present'
   platform: 'Background grading in a Next.js web app'
 stats:
-  - value: '26–41%'
-    label: shorter wait from the end of the call to the full report
-    note: Measured in testing against the live models
-  - value: '0.5 s'
-    label: to the first result on the page, down from 20–36 s
-    note: Measured in testing against the live models
+  - value: 'During the call'
+    label: grading starts while the call is still running, so the report builds up part by part
   - value: '1.5'
     label: median points between two gradings of the same session (out of 100)
   - value: '5'
@@ -85,7 +81,7 @@ import StackLayers from '@/components/case-study/StackLayers.astro';
 
 ## The problem
 
-After a voice roleplay, a learner wants to know how they did. The old flow graded the whole session only after the call ended, so learners stared at a loading screen for over a minute, and one failed step could leave the whole report empty. The feedback also had to be trustworthy: a grade that changes every time you ask is worse than no grade.
+After a voice roleplay, a learner wants to know how they did. The old flow graded the whole session only after the call ended, so learners stared at a loading screen, and one failed step could leave the whole report empty. The feedback also had to be trustworthy: a grade that changes every time you ask is worse than no grade.
 
 ## Who it was for
 
@@ -126,17 +122,7 @@ Each learner turn is transcribed word for word, then scored for pronunciation an
 
 ## Outcome
 
-Grading during the call cut the wait from the end of the call to the full report by 26–41% on two real sessions, and the first result now appears in 0.5 s instead of 20–36 s. These timings were measured in testing against the live models, on a local setup, not from production traffic.
-
-<CompareTable
-  caption="End of call to full report, measured in testing against the live models"
-  columns={['Session', 'Before', 'After']}
-  rows={[
-    ['Session A', '69.6 s', '51.2 s'],
-    ['Session B', '68.6 s', '40.4 s'],
-    ['First result visible', '20–36 s', '0.5 s'],
-  ]}
-/>
+Grading during the call means the report no longer waits for the end of the call, and the results page fills in part by part as each stage finishes. If one stage hits a rate limit, the pipeline falls back to a second model and records the reason, so the learner still sees every part that did finish. A re-grading consistency check then compares two gradings of the same session, which is how I decided the scores were steady enough to show learners.
 
 Grading the same 8 sessions twice gave a median difference of 1.5 points out of 100, with a largest difference of 6.
 

@@ -40,8 +40,9 @@ describe('verified evidence corpus', () => {
     );
 
     expect(app?.statement).toMatch(/previously published/i);
-    expect(app?.statement).toMatch(/three under client-owned listings/i);
-    expect(app?.statement).toMatch(/ITI training/i);
+    expect(app?.statement).toMatch(/client-owned Google Play listings/i);
+    expect(app?.statement).toMatch(/Search for Eats/i);
+    expect(app?.statement).toMatch(/not claimed as published/i);
     expect(dostavaApp?.statement).toMatch(/previously published/i);
     expect(dostavaApp?.statement).toMatch(/no longer available/i);
   });

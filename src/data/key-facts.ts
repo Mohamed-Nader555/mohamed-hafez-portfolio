@@ -32,8 +32,8 @@ export const keyFactsBySlug: Readonly<Record<string, readonly KeyFact[]>> = {
   ],
   'eklan-ai-coach': [
     {
-      value: '3 days',
-      label: 'from PRD to staging',
+      value: 'Live model',
+      label: 'release gated on an eval run',
     },
     {
       value: '48/48',
@@ -55,14 +55,8 @@ export const keyFactsBySlug: Readonly<Record<string, readonly KeyFact[]>> = {
     },
   ],
   'eklan-voice-roleplay': [
-    {
-      value: '~1.4 s',
-      label: 'median to first AI audio, tested on the live models',
-    },
-    {
-      value: '10 × 3',
-      label: 'learners × live sessions in load testing, 0 errors',
-    },
+    { value: '1 per agent', label: 'live session for each character' },
+    { value: 'Built and load-tested', label: 'multi-agent voice mode' },
   ],
   'asc-pie': [
     { value: '333,109', label: 'examples' },

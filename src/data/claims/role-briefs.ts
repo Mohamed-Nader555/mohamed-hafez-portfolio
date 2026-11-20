@@ -417,7 +417,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'stats-asc-pie',
-            text: '333,109 examples in the corpus; 19 canonical PII types; 99.1% best strict F1 (RoBERTa-large, held-out subset); +0.577 F1 gained from corpus design (same backbone, public-only vs full ASC-PIE).',
+            text: '333,109 examples in the corpus; 19 canonical PII types; 99.1% best strict F1 (RoBERTa-large, held-out subset); +57.7 points F1 gained from corpus design (0.415 to 0.992) (same backbone, public-only vs full ASC-PIE).',
           },
         ],
         citations: [
@@ -585,7 +585,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'this-portfolio-assistant',
-            text: 'The assistant on this site is protected by Turnstile and two rate limiters, retrieves lexically over the published, validated content, refuses before generation when nothing supports an answer, generates with Workers AI (Llama 3.1 8B) when it does, validates citations, and falls back to an extractive, verified-text answer if generation is unavailable.',
+            text: 'The assistant on this site is protected by Turnstile and two rate limiters, retrieves lexically over the published, validated content, refuses before generation when nothing supports an answer, generates with Google’s Gemini API when it does (Cloudflare Workers AI is an unused earlier fallback mode), validates citations, and falls back to an extractive, verified-text answer if generation is unavailable.',
           },
         ],
         citations: [
@@ -1038,7 +1038,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'this-portfolio-assistant',
-            text: 'The assistant on this site is protected by Turnstile and two rate limiters, retrieves lexically over the published, validated content, refuses before generation when nothing supports an answer, generates with Workers AI (Llama 3.1 8B) when it does, validates citations, and falls back to an extractive, verified-text answer if generation is unavailable.',
+            text: 'The assistant on this site is protected by Turnstile and two rate limiters, retrieves lexically over the published, validated content, refuses before generation when nothing supports an answer, generates with Google’s Gemini API when it does (Cloudflare Workers AI is an unused earlier fallback mode), validates citations, and falls back to an extractive, verified-text answer if generation is unavailable.',
           },
           {
             claimId: 'this-portfolio-purpose',
@@ -1170,7 +1170,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'stats-asc-pie',
-            text: '333,109 examples in the corpus; 19 canonical PII types; 99.1% best strict F1 (RoBERTa-large, held-out subset); +0.577 F1 gained from corpus design (same backbone, public-only vs full ASC-PIE).',
+            text: '333,109 examples in the corpus; 19 canonical PII types; 99.1% best strict F1 (RoBERTa-large, held-out subset); +57.7 points F1 gained from corpus design (0.415 to 0.992) (same backbone, public-only vs full ASC-PIE).',
           },
         ],
         citations: [
@@ -1217,11 +1217,11 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'research-rq4',
-            text: 'Corpus design is a major driver of extraction quality, not a preprocessing detail. With the same RoBERTa-large backbone and the same evaluation, training on public data alone reaches a strict F1 of 0.415, with recall limited to 0.307. Training on the full ASC-PIE corpus reaches 0.992, with recall at 0.995, a gain of +0.577. Strict and normalised F1 are nearly identical in both settings, so the gain reflects real coverage of entities, not formatting. The gains are broad but uneven, and largest where public data alone gave the least coverage.',
+            text: 'Corpus design is a major driver of extraction quality, not a preprocessing detail. With the same RoBERTa-large backbone and the same evaluation, training on public data alone reaches a strict F1 of 0.415, with recall limited to 0.307. Training on the full ASC-PIE corpus reaches 0.992, with recall at 0.995, a gain of +57.7 points. Strict and normalised F1 are nearly identical in both settings, so the gain reflects real coverage of entities, not formatting. The gains are broad but uneven, and largest where public data alone gave the least coverage.',
           },
           {
             claimId: 'stats-asc-pie',
-            text: '333,109 examples in the corpus; 19 canonical PII types; 99.1% best strict F1 (RoBERTa-large, held-out subset); +0.577 F1 gained from corpus design (same backbone, public-only vs full ASC-PIE).',
+            text: '333,109 examples in the corpus; 19 canonical PII types; 99.1% best strict F1 (RoBERTa-large, held-out subset); +57.7 points F1 gained from corpus design (0.415 to 0.992) (same backbone, public-only vs full ASC-PIE).',
           },
         ],
         citations: [
@@ -1379,7 +1379,7 @@ export const roleBriefs: readonly RoleBrief[] = [
           },
           {
             claimId: 'stats-asc-pie',
-            text: '333,109 examples in the corpus; 19 canonical PII types; 99.1% best strict F1 (RoBERTa-large, held-out subset); +0.577 F1 gained from corpus design (same backbone, public-only vs full ASC-PIE).',
+            text: '333,109 examples in the corpus; 19 canonical PII types; 99.1% best strict F1 (RoBERTa-large, held-out subset); +57.7 points F1 gained from corpus design (0.415 to 0.992) (same backbone, public-only vs full ASC-PIE).',
           },
         ],
         citations: [
@@ -1551,11 +1551,11 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'sprint-pp-status',
-            text: 'SPRINT-PP, a paper titled “ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction,” is accepted to IEEE CASCON 2026 in Toronto. The method is also part of Mohamed’s M.A. thesis. No author list is public yet.',
+            text: 'SPRINT-PP, a paper titled “ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction,” was accepted to IEEE CASCON 2026, presented in North York on 10 Nov 2026 and published in the CASCON 2026 proceedings. The authors are Mohamed Hafez, Amr M. Zaki, Farhoud Jafari Kaleibar and Marin Litoiu (York University). The method is also part of Mohamed’s M.A. thesis.',
           },
           {
             claimId: 'research-paper',
-            text: 'The paper "ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction" has the status: Accepted to IEEE CASCON 2026. The thesis was supervised by Prof. Marin Litoiu, CERAS Lab, York University.',
+            text: 'The paper "ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction" has the status: Accepted to IEEE CASCON 2026, presented in North York on 10 Nov 2026 and published in the CASCON 2026 proceedings. The thesis was supervised by Prof. Marin Litoiu, CERAS Lab, York University.',
           },
         ],
         citations: [
@@ -1612,7 +1612,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 9 Android applications (a delivered app is one handed to a client or released with a team) using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
           {
             claimId: 'rest-pocs-purpose',
@@ -1861,11 +1861,6 @@ export const roleBriefs: readonly RoleBrief[] = [
             href: '/experience',
           },
           {
-            sourceId: 'case-study-this-portfolio',
-            label: 'This Portfolio case study',
-            href: '/work/this-portfolio',
-          },
-          {
             sourceId: 'resume-aiml',
             label: 'AI/ML Engineer résumé',
             href: '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',
@@ -1874,6 +1869,11 @@ export const roleBriefs: readonly RoleBrief[] = [
             sourceId: 'resume-software',
             label: 'Software Engineer résumé',
             href: '/resumes/Mohamed-Hafez-Software-Engineer.pdf',
+          },
+          {
+            sourceId: 'resume-android',
+            label: 'Android Developer résumé',
+            href: '/resumes/Mohamed-Hafez-Android-Developer.pdf',
           },
         ],
       },
@@ -2466,7 +2466,7 @@ export const roleBriefs: readonly RoleBrief[] = [
     lens: 'android',
     summary: {
       answerId: 'qb-pitch-android',
-      text: 'Over five years I delivered 16 Android applications in Kotlin and Java, with MVVM, Retrofit, Room, Firebase and Play Console releases. Four were previously published on Google Play: three under client-owned listings and one as part of my ITI training. I have also integrated OCR, computer vision and ML into mobile apps, including an assistive smart-glasses system.',
+      text: 'Over five years I delivered 9 Android applications in Kotlin and Java, with MVVM, Retrofit, Room, Firebase and Play Console releases. Four were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. I have also integrated OCR, computer vision and ML into mobile apps, including an assistive smart-glasses system.',
     },
     direct: [
       {
@@ -2474,7 +2474,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 9 Android applications (a delivered app is one handed to a client or released with a team) using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
           {
             claimId: 'weather-checker-stack',
@@ -2579,7 +2579,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 9 Android applications (a delivered app is one handed to a client or released with a team) using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
         ],
         citations: [
@@ -2635,7 +2635,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 9 Android applications (a delivered app is one handed to a client or released with a team) using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
         ],
         citations: [
@@ -2666,7 +2666,7 @@ export const roleBriefs: readonly RoleBrief[] = [
         evidence: [
           {
             claimId: 'career-android-freelance',
-            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of his ITI training. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
+            text: 'Jul 2019 – Jun 2024. Client projects · Remote. Mohamed delivered 9 Android applications (a delivered app is one handed to a client or released with a team) using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows. Four apps were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. Mohamed integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
           },
           {
             claimId: 'weather-checker-purpose',

@@ -14,7 +14,7 @@ const lenses = [
     label: 'Software Engineer',
     title: 'Mohamed Hafez — Software Engineer',
     resume: '/resumes/Mohamed-Hafez-Software-Engineer.pdf',
-    firstProject: 'On-Demand AI Coach, PRD to Staging in 3 Days',
+    firstProject: 'On-Demand AI Coach for Unplanned Workplace English',
     heroPhrase: 'reliable services',
   },
   {
@@ -189,7 +189,10 @@ const featuredCards = {
     ['Northstar RAG System', '/work/northstar-rag'],
   ],
   '/software': [
-    ['On-Demand AI Coach, PRD to Staging in 3 Days', '/work/eklan-ai-coach'],
+    [
+      'On-Demand AI Coach for Unplanned Workplace English',
+      '/work/eklan-ai-coach',
+    ],
     ['Northstar RAG System', '/work/northstar-rag'],
     [
       'Documentum Workflow & Lifecycle Optimization',

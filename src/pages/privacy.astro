@@ -22,9 +22,10 @@ export const prerender = true;
     <section aria-labelledby="traffic-measurement-title">
       <h2 id="traffic-measurement-title">Aggregate traffic measurement</h2>
       <p>
-        Cloudflare Web Analytics is the launch measurement service for page
-        traffic and Core Web Vitals once I enable it for the production
-        hostname. It is separate from the first-party custom-event system
+        Cloudflare Web Analytics is not switched on today: this site currently
+        loads no analytics script, so no page traffic is measured. If I enable
+        it later for aggregate page traffic and Core Web Vitals, I will say so
+        here. It would be separate from the first-party custom-event system
         described below.
       </p>
     </section>
@@ -58,10 +59,10 @@ export const prerender = true;
       <p>
         To write an answer, the assistant sends your question, the last few
         turns of the conversation and the published facts about Mohamed to
-        Google’s Gemini API, which writes the answer and then checks it. If the
-        assistant is switched to its earlier mode, Cloudflare Workers AI does
-        this instead. The portfolio itself does not keep your question or the
-        answer.
+        Google’s Gemini API, which writes the answer and then checks it. This is
+        the live path. Cloudflare Workers AI is only an earlier fallback mode
+        that is not in use. The portfolio itself does not keep your question or
+        the answer.
       </p>
       <p>
         If you paste a job description, it goes to Google’s Gemini API along
@@ -99,6 +100,14 @@ export const prerender = true;
           will become the working local opt-out control in the analytics phase.
         </p>
       </div>
+    </section>
+
+    <section aria-labelledby="privacy-contact-title">
+      <h2 id="privacy-contact-title">Contact and last update</h2>
+      <p>
+        Questions about this page or your data: mohamed.m.nader555@gmail.com.
+        Last updated 20 November 2026.
+      </p>
     </section>
   </article>
 </BaseLayout>

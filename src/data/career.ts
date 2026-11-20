@@ -14,7 +14,7 @@ export const careerRoles: Record<RoleId, CareerRoleContent> = {
     eyebrow: 'AI/ML Engineer',
     hero: 'I build production LLM and real-time voice AI, backed by privacy-aware NLP research and careful evaluation.',
     summary:
-      'As Founding AI Engineer at Eklan, I build the AI behind an English-communication training platform for healthcare professionals: real-time voice roleplay on the Gemini Live API, a multi-character mode where a director model routes speech between AI characters, a five-stage speech grading pipeline, an AI coach taken from PRD to staging in three days behind a 48-case eval suite, and composed prompts for personalized drills. Before Eklan, I built end-to-end ML and NLP pipelines for information extraction, named-entity recognition, retrieval-augmented generation, and model evaluation. My work spans dataset construction, preprocessing, fine-tuning, inference, benchmarking, and reproducible experimentation across encoder, encoder-decoder, and decoder-only architectures. My M.A. research at York University produced ASC-PIE and the SPRINT-PP method, while my applied work includes more than ten ML projects and ML-integrated mobile systems.',
+      'As Founding AI Engineer at Eklan, I build the AI behind an English-communication training platform for healthcare professionals: real-time voice roleplay on the Gemini Live API, a multi-character mode where a director model routes speech between AI characters, a five-stage speech grading pipeline, an on-demand AI coach with structured outputs and an eval suite, and composed prompts for personalized drills. Before Eklan, I built end-to-end ML and NLP pipelines for information extraction, named-entity recognition, retrieval-augmented generation, and model evaluation. My work spans dataset construction, preprocessing, fine-tuning, inference, benchmarking, and reproducible experimentation across encoder, encoder-decoder, and decoder-only architectures. My M.A. research at York University produced ASC-PIE and the SPRINT-PP method, while my applied work includes more than ten ML projects and ML-integrated mobile systems.',
     skillOrder: [
       'ai-llm',
       'machine-learning',
@@ -52,7 +52,7 @@ export const careerRoles: Record<RoleId, CareerRoleContent> = {
     eyebrow: 'Android Developer',
     hero: 'I create Android products that connect clean mobile architecture with APIs, offline data, maps, Firebase, and applied ML.',
     summary:
-      'I have delivered 16 Android applications across delivery, wellbeing, weather, e-commerce, sports, utilities, safety, education, community, and gaming. Four were previously published on Google Play: three under client-owned listings and one as part of my ITI training. My work covers Kotlin and Java, MVVM/MVP, Jetpack, Retrofit/OkHttp, Room/SQLite, Firebase, Maps and Location, background work, release workflows, and integrations involving OCR, computer vision, and API-based ML.',
+      'I have delivered 9 Android applications across delivery, wellbeing, weather, e-commerce, sports, utilities, safety, education, community, and gaming. Four were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats. My work covers Kotlin and Java, MVVM/MVP, Jetpack, Retrofit/OkHttp, Room/SQLite, Firebase, Maps and Location, background work, release workflows, and integrations involving OCR, computer vision, and API-based ML.',
     skillOrder: [
       'android',
       'mobile-integration',
@@ -83,8 +83,8 @@ export const careerRoles: Record<RoleId, CareerRoleContent> = {
 };
 
 export const proofStats = [
-  { value: '16', label: 'Android apps delivered' },
-  { value: '4', label: 'Previously shipped to Google Play' },
+  { value: '9', label: 'Android apps delivered (client or team releases)' },
+  { value: '4', label: 'Previously on Google Play (client-owned listings)' },
   { value: '10+', label: 'Applied ML projects' },
   { value: '200+', label: 'Teaching hours' },
   { value: '3.72', label: 'Undergraduate GPA' },
@@ -97,21 +97,23 @@ export const careerExperience = [
     period: 'Sep 2026 – present',
     title: 'Founding AI Engineer',
     organization: 'Eklan · Toronto',
+    blurb:
+      'AI communication-training platform for healthcare professionals (training software, not clinical).',
     details: [
-      'I architected and shipped real-time voice roleplay where learners practise hospital conversations out loud with AI patients and clinicians: browser audio streams straight to the Gemini Live API through short-lived, locked tokens, with AudioWorklet capture, a noise gate and tuned voice-activity detection. Median time to first AI audio is about 1.4 s (p90 about 1.7 s), measured in testing against the live models.',
-      'I built a multi-character voice mode, now live in production, where each extra character runs as its own Gemini Live session and voice and a fast Gemini Flash director routes every learner turn to the right character. It held 10 concurrent learners with 3 live sessions each and 0 errors, measured in testing against the live models.',
-      'I designed a 5-stage speech grading pipeline (verbatim transcription, SpeechAce pronunciation scoring, LLM language and communication scoring, fluency computed in code, LLM coaching) with retries, locks and model fallback. Grading during the call cut report time by 26–41% and showed the first result in 0.5 s instead of 20–36 s, measured in testing against the live models.',
-      'I took an on-demand AI coach for unplanned workplace English from PRD to staging in 3 days: Gemini structured outputs against a versioned schema, a rule-based output checker, English and Korean PII redaction, a 48-case eval suite (23 of 23 critical cases passing) and a leased, retrying job queue that turns a solved chat into a personalized drill.',
-      'I replaced one shared drill-generation prompt with composed per-drill-type prompts behind feature flags, doubling items per drill (vocabulary 12 to 20, fill-in-the-blank 10 to 20) and cutting answer-position bias (correct answer in the first slot 10 of 10 to 7 of 20).',
-      'I built an LLM pipeline that pulls each learner’s own mistakes out of live-class transcripts, filters sensitive personal topics and lets tutors edit the results into targeted drills; it matched 7 of 8 tutor-found mistakes in the best runs.',
+      'I own AI features end to end on a small founding team: TypeScript, Node.js and Next.js APIs, MongoDB, a React UI, evaluation, and feature-flagged CI/CD from staging to production.',
+      'I built real-time conversational voice AI on Gemini Live: browser audio streaming, short-lived config-locked session tokens, voice-activity tuning, interruption handling, and function calling that drives the phases of a session.',
+      'I built a multi-agent conversation system: one live session per agent, a director model that routes each turn, guardrails and a safe fallback. Built and load-tested.',
+      'I built a multi-stage LLM evaluation pipeline (transcription, pronunciation, LLM language and communication grading, coaching feedback) with retries, model fallback on rate limits, per-stage error reasons and a re-grading consistency check.',
+      'I built an on-demand AI copilot with structured outputs against versioned schemas, versioned prompts, rule-based checks, and English and Korean PII redaction before storage, tested against the live model.',
+      'I built a test harness for voice agents (synthetic user audio, latency and turn-taking checks, LLM-as-judge) and set up observability with Sentry, PostHog and Vercel logs. I work with a spec-driven agentic workflow using Claude Code and MCP connectors (used, not built).',
     ],
     detailsByRole: {
       aiml: null,
       software: [
         'I own features end to end on a small founding team: TypeScript and Next.js APIs, React UI, MongoDB models and indexes, PostHog analytics, and feature-flagged releases from staging to production on Vercel.',
-        'I built the backend of an on-demand AI coach in 3 days from the PRD: Next.js route handlers, Zod-validated structured outputs, MongoDB unique indexes so retries never create duplicates, and a leased job queue with backoff that a Vercel cron sweeps every minute.',
+        'I built the backend of an on-demand AI coach: Next.js route handlers, Zod-validated structured outputs, MongoDB unique indexes so retries never create duplicates, and a leased job queue with backoff that a Vercel cron sweeps every minute.',
         'I moved live voice roleplay from a server relay to direct streaming from the browser to the Gemini Live API over WebSockets, with the server issuing short-lived tokens that lock the model, instructions and voice, and a Web Audio and AudioWorklet engine in the browser.',
-        'I built a 5-stage speech grading pipeline that runs in the background during the call with Next.js after(), stores each part’s status, attempts, error reason and timing in MongoDB, and falls back to a second model on rate limits.',
+        'I built a 5-stage speech grading pipeline that runs in the background during the call with Next.js after(), stores each part’s status, attempts and error reason in MongoDB, and falls back to a second model on rate limits.',
         'I planned MongoDB Atlas indexes for a production setup with auto-indexing off, wrote index scripts checked by read-only queries before release, and shipped through staging and production pull requests with a rollback plan for every release.',
       ],
       android: [
@@ -165,8 +167,8 @@ export const careerExperience = [
     title: 'Freelance Android Developer',
     organization: 'Client projects · Remote',
     details: [
-      'I delivered 16 Android applications using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows.',
-      'Four apps were previously published on Google Play: three under client-owned listings, no longer maintained by the clients, and one as part of my ITI training.',
+      'I delivered 9 Android applications (a delivered app is one handed to a client or released with a team) using Kotlin and Java, MVVM/MVP, Retrofit, Room, WorkManager, Firebase, Maps, notifications, and offline-first data flows.',
+      'Four apps were previously published through client-owned Google Play listings that are no longer maintained: Dostava, Your Life Is My Life, The Death Ninja and Search for Eats.',
       'I integrated OCR, computer vision, API-based ML, text-to-speech, and location-aware workflows into mobile experiences.',
     ],
     weights: { aiml: 1, software: 2, android: 5, teaching: 1 },

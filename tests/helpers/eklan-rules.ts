@@ -28,7 +28,7 @@ const USAGE_NUMBER =
   /\b\d[\d,.]*\+?\s*(?:k\s+)?(?:users|customers|nurses|clinicians|daily|monthly|signups|sign-ups)\b|\brevenue\b|\bretention rate\b|\bactive learners\b/gi;
 
 const TIMING_OR_LOAD =
-  /(?:~|\b)\d+(?:\.\d+)?(?:\s?[–-]\s?\d+(?:\.\d+)?)?\s?(?:ms|s|sec|secs|seconds?)\b|\bp(?:50|90)\b|\bconcurrent\b|\bload[- ]test|\b0 errors\b|\breport time\b|\bfaster\b|\blatency\b/i;
+  /(?:~|\b)\d+(?:\.\d+)?(?:\s?[–-]\s?\d+(?:\.\d+)?)?\s?(?:ms|s|sec|secs|seconds?)\b|\bp(?:50|90)\b|\bconcurrent\b|\bload[- ]test(?!ed)|\b0 errors\b|\breport time\b|\bfaster\b/i;
 
 /** Technologies from Mohamed's earlier roles, never attached to Eklan. */
 export const NOT_USED_AT_EKLAN = [

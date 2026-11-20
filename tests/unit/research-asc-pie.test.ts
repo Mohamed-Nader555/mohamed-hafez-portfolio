@@ -81,12 +81,18 @@ describe('research record numbers', () => {
     });
   });
 
-  it('shows the paper title and status without an author list', () => {
+  it('shows the paper title, status, authors and program page', () => {
     expect(paperLine.title).toBe(
       'ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction',
     );
     expect(paperLine.status).toMatch(/accepted to IEEE CASCON 2026/i);
-    expect(JSON.stringify(paperLine)).not.toMatch(/author/i);
+    expect(paperLine.authors).toEqual([
+      'Mohamed Hafez',
+      'Amr M. Zaki',
+      'Farhoud Jafari Kaleibar',
+      'Marin Litoiu',
+    ]);
+    expect(paperLine.programUrl).toMatch(/conf\.researchr\.org/);
   });
 
   it('answers all four research questions in one paragraph each', () => {

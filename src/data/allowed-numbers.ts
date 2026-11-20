@@ -36,6 +36,7 @@ export const ALLOWED_NUMBERS: Readonly<Record<string, readonly string[]>> = {
     '20,000',
   ],
   'eklan-ai-coach': [
+    'Live model',
     '3 days',
     '3',
     '48/48',
@@ -52,6 +53,7 @@ export const ALLOWED_NUMBERS: Readonly<Record<string, readonly string[]>> = {
     '390',
   ],
   'eklan-grading-pipeline': [
+    'During the call',
     '26–41%',
     '26',
     '41',
@@ -74,6 +76,9 @@ export const ALLOWED_NUMBERS: Readonly<Record<string, readonly string[]>> = {
     '429',
   ],
   'eklan-voice-roleplay': [
+    '1 per agent',
+    'Built and load-tested',
+    '19',
     '~1.4 s',
     '1.4',
     '1.7',
@@ -131,6 +136,9 @@ export const ALLOWED_NUMBERS: Readonly<Record<string, readonly string[]>> = {
     '99.2%',
     '+0.577',
     '+57.7%',
+    '+57.7 points',
+    '+57.7',
+    '57.7',
     '64.0%',
     '98.9%',
     '30.7%',

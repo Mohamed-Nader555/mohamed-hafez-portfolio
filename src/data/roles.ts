@@ -7,7 +7,7 @@ const roleLenses = [
     route: '/',
     title: 'Mohamed Hafez — AI/ML Engineer',
     description:
-      'I build production LLM and real-time voice AI as Founding AI Engineer at Eklan, backed by privacy-aware NLP research, grounded RAG systems and careful evaluation.',
+      'I build LLM applications, agents and real-time voice AI as Founding AI Engineer at Eklan, backed by privacy-aware NLP research, grounded RAG systems and careful evaluation.',
     summary:
       'AI/ML engineer building production LLM and voice AI at Eklan, with privacy-aware NLP research, applied machine learning and grounded RAG systems behind it.',
     resumeHref: '/resumes/Mohamed-Hafez-AI-ML-Engineer.pdf',

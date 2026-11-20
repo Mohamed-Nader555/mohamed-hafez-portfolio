@@ -39,6 +39,14 @@ const sourceRecords = [
     isPublic: true,
   },
   {
+    id: 'official-cascon-program',
+    label: 'CASCON 2026 program page',
+    kind: 'official',
+    publicHref:
+      'https://conf.researchr.org/details/cascon-2026/cascontechnical-papers2026/34/ASC-PIE-and-SPRINT-PP-Evaluating-Privacy-Safe-Continual-Learning-for-PII-Extraction',
+    isPublic: true,
+  },
+  {
     id: 'official-thesis-handle',
     label: 'Thesis permanent handle',
     kind: 'official',
@@ -151,7 +159,7 @@ const sourceRecords = [
   },
   {
     id: 'case-study-eklan-ai-coach',
-    label: 'On-Demand AI Coach, PRD to Staging in 3 Days case study',
+    label: 'On-Demand AI Coach for Unplanned Workplace English case study',
     kind: 'case-study',
     publicHref: '/work/eklan-ai-coach',
     isPublic: true,

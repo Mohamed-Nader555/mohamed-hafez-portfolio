@@ -10,7 +10,6 @@ export const statusKeySchema = z.enum([
   'capstone-a-plus',
   'client-unpublished',
   'play-previously',
-  'play-iti',
   'client-delivered',
   'iti-cohort',
   'dotpy-delivery',
@@ -42,9 +41,9 @@ export const PROJECT_STATUS: Readonly<Record<StatusKey, StatusDefinition>> = {
     longer: 'M.A. thesis completed; degree officially awarded 2026.',
   },
   'accepted-cascon': {
-    badge: 'Accepted · CASCON 2026',
+    badge: 'Presented · CASCON 2026',
     longer:
-      'Paper accepted to IEEE CASCON 2026 (Toronto, 10–12 Nov 2026); the method is also part of my M.A. thesis.',
+      'Paper accepted to IEEE CASCON 2026, presented in North York on 10 Nov 2026 and published in the CASCON 2026 proceedings; the method is also part of my M.A. thesis.',
   },
   independent: {
     badge: 'Independent build',
@@ -72,11 +71,6 @@ export const PROJECT_STATUS: Readonly<Record<StatusKey, StatusDefinition>> = {
     badge: 'Previously on Google Play',
     longer:
       'Previously published under a client-owned Google Play listing; no longer available because the client stopped maintaining it.',
-  },
-  'play-iti': {
-    badge: 'Published · ITI training',
-    longer:
-      'Built during the ITI Android track (2023) and published to Google Play as part of the training.',
   },
   'client-delivered': {
     badge: 'Client project · delivered',

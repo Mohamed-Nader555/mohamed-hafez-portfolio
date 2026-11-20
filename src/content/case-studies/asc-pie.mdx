@@ -12,11 +12,11 @@ stats:
   - value: '99.1%'
     label: best strict F1
     note: RoBERTa-large, held-out subset
-  - value: '+0.577'
-    label: F1 gained from corpus design
+  - value: '+57.7 points'
+    label: F1 gained from corpus design (0.415 to 0.992)
     note: same backbone, public-only vs full ASC-PIE
 features:
-  - title: Four public corpora, unified
+  - title: Four public corpora plus a synthetic augmentation (five sources)
     detail: AI4Privacy, Gretel, CoNLL++, and PII-DD are remapped onto one schema, then extended with my own synthetic augmentation for rare PII types.
   - title: A shared 19-type schema
     detail: Every corpus is normalized to the same 19 canonical PII types, from NAME and EMAIL through SIN, PASSPORT, and ORGANIZATION.
@@ -87,6 +87,8 @@ import CompareTable from '@/components/case-study/CompareTable.astro';
 import RepositoryLinks from '@/components/case-study/RepositoryLinks.astro';
 
 ## The problem
+
+ASC-PIE stands for Augmented Synthetic Corpus for PII and Incremental Evaluation.
 
 People paste personal details into prompts, emails, chat logs, and support tickets constantly, and organizations are expected to find that PII before it causes harm. Regulations such as GDPR, PIPEDA, and CCPA all assume a system can locate personally identifying information reliably.
 
@@ -177,7 +179,7 @@ For the decoder-only models, in-context prompting beat fine-tuning outright. The
   ]}
 />
 
-The largest single result, though, came from the corpus itself rather than the model. Training the same RoBERTa-large backbone on the public corpora alone reached 41.5% strict F1, limited mainly by recall. Training it on the full ASC-PIE corpus, public corpora plus my own synthetic augmentation, reached 99.2% strict F1 under the identical protocol.
+The largest single result, though, came from the corpus itself rather than the model. Training the same RoBERTa-large backbone on the public corpora alone reached 41.5% strict F1, limited mainly by recall. Training it on the full ASC-PIE corpus, public corpora plus my own synthetic augmentation, reached 99.2% strict F1 under the identical protocol. The 99.1% in the model table above (0.9909, n = 1,000) and the 99.2% here (0.9920) are two different subsets: the first is the held-out subset used for the model comparison, the second is the paper's matched subset for the full-protocol comparison.
 
 <CompareTable
   caption="RoBERTa-large trained on public corpora only versus the full ASC-PIE corpus, same backbone and evaluation protocol."
@@ -188,7 +190,7 @@ The largest single result, though, came from the corpus itself rather than the m
   ]}
 />
 
-That is a gain of +0.577 strict F1 on the same backbone and the same evaluation protocol, and the gain was uneven in a telling way: the largest jumps landed on categories such as JOBTITLE, EMAIL, and SIN, where public-only training had almost nothing to work with, while already near-ceiling structured types such as CREDITCARD barely moved.
+That is a gain of +57.7 points of strict F1 (0.415 to 0.992) on the same backbone and the same evaluation protocol, and the gain was uneven in a telling way: the largest jumps landed on categories such as JOBTITLE, EMAIL, and SIN, where public-only training had almost nothing to work with, while already near-ceiling structured types such as CREDITCARD barely moved.
 
 <CompareTable
   caption="Selected per-type strict F1, public corpora only versus full ASC-PIE."
@@ -203,13 +205,13 @@ That is a gain of +0.577 strict F1 on the same backbone and the same evaluation 
   ]}
 />
 
-The same corpus and evaluator also underpin a paper, _ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction_, accepted to IEEE CASCON 2026, which walks through the continual-learning half of this work in full on its own page.
+The same corpus and evaluator also underpin a paper, _ASC-PIE and SPRINT-PP: Evaluating Privacy-Safe Continual Learning for PII Extraction_, presented at IEEE CASCON 2026 (North York, 10 Nov 2026) and published in its proceedings ([program page](https://conf.researchr.org/details/cascon-2026/cascontechnical-papers2026/34/ASC-PIE-and-SPRINT-PP-Evaluating-Privacy-Safe-Continual-Learning-for-PII-Extraction)), which walks through the continual-learning half of this work in full on its own page.
 
 ## What I learned
 
 > Corpus design moved results more than changing the model did.
 
-Two RoBERTa-large runs, identical architecture and identical protocol, landed 0.577 strict F1 apart because one saw a properly unified, augmented corpus and the other did not. That is a larger swing than moving between any two of the model families compared here, and it is the reason ASC-PIE treats corpus construction as a first-class contribution rather than a preprocessing footnote.
+Two RoBERTa-large runs, identical architecture and identical protocol, landed 57.7 points of strict F1 apart (0.415 against 0.992) because one saw a properly unified, augmented corpus and the other did not. That is a larger swing than moving between any two of the model families compared here, and it is the reason ASC-PIE treats corpus construction as a first-class contribution rather than a preprocessing footnote.
 
 ## What I'd do next
 

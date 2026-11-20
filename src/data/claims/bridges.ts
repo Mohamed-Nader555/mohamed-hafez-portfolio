@@ -236,7 +236,7 @@ export const bridges: readonly Bridge[] = [
       'research-abstract',
       'page-his-role-asc-pie',
       'page-what-mohamed-built-documentum-workflows',
-      'page-overview-sprint-pp',
+      'research-paper',
       'page-the-problem-sprint-pp-2',
       'page-what-mohamed-built-asc-pie-2',
     ],
@@ -298,10 +298,9 @@ export const bridges: readonly Bridge[] = [
     statement:
       'He built Android apps for clients over five years in Kotlin and Java, with MVVM or MVP, Retrofit, Room, Firebase and Play Console releases. Jetpack Compose, Hilt and RxJava are exposure-level only.',
     basisIds: [
-      'project-food-planner',
-      'stack-weather-checker',
+      'stack-shop-on-the-go',
       'page-outcome-dostava',
-      'decisions-weather-checker',
+      'decisions-food-planner',
     ],
   },
   {
@@ -346,8 +345,8 @@ export const bridges: readonly Bridge[] = [
       'project-rest-pocs',
       'passport-applied-ml-portfolio',
       'applied-ml-portfolio-lifecycle',
-      'page-who-it-was-for-rest-pocs',
       'page-how-it-works-rest-pocs',
+      'page-who-it-was-for-rest-pocs',
       'dostava-no-download-metrics',
     ],
   },
@@ -402,13 +401,13 @@ export const bridges: readonly Bridge[] = [
     ],
     strength: 'direct',
     statement:
-      'His M.A. thesis is deposited in YorkSpace, and the SPRINT-PP paper is accepted to IEEE CASCON 2026. His research artifacts include dataset manifests, configurations, evaluation summaries and prediction traces.',
+      'His M.A. thesis is deposited in YorkSpace, and the ASC-PIE and SPRINT-PP paper was presented at IEEE CASCON 2026 and published in its proceedings. His research artifacts include dataset manifests, configurations, evaluation summaries and prediction traces.',
     limit: 'He does not hold a PhD.',
     basisIds: [
-      'passport-sprint-pp',
+      'sprint-pp-status',
       'features-asc-pie',
-      'page-outcome-sprint-pp-1',
       'page-links-asc-pie',
+      'page-outcome-sprint-pp-1',
     ],
   },
   {
@@ -448,8 +447,8 @@ export const bridges: readonly Bridge[] = [
       'He has used Docker and Docker Compose to package ML prototypes and the Northstar service, with CI/CD and versioning practice. Kubernetes is not part of his experience.',
     basisIds: [
       'northstar-api-deployment',
-      'career-android-freelance',
-      'page-how-it-works-northstar-rag-2',
+      'career-eklan',
+      'passport-applied-ml-portfolio',
     ],
   },
   {
@@ -467,11 +466,11 @@ export const bridges: readonly Bridge[] = [
       'His record shows end-to-end ownership across research, backend, mobile and teaching, and he currently works as a Founding AI Engineer at Eklan.',
     basisIds: [
       'career-eklan',
-      'features-this-portfolio',
       'career-graduate-researcher',
+      'features-this-portfolio',
       'page-what-mohamed-built-this-portfolio',
-      'minds-eye-purpose',
       'decisions-rest-pocs',
+      'minds-eye-purpose',
     ],
   },
 ];

@@ -73,15 +73,15 @@ const projectsData = [
   {
     id: 'eklan-ai-coach',
     slug: 'eklan-ai-coach',
-    title: 'On-Demand AI Coach, PRD to Staging in 3 Days',
+    title: 'On-Demand AI Coach for Unplanned Workplace English',
     hook: 'A nurse types or says a real problem from their shift and gets one clear answer, then a drill to practise it.',
     category: 'AI/ML · Software',
     group: 'eklan',
     status: 'eklan',
     summary:
-      "At Eklan, I took an on-demand AI coach for unplanned workplace English from the founder's PRD to staging in 3 days, with structured outputs, a rule-based output checker, English and Korean PII redaction, a 48-case eval suite and a job queue that turns a solved chat into a drill.",
+      "At Eklan, I built an on-demand AI coach for unplanned workplace English from the founder's PRD, with structured outputs, a rule-based output checker, English and Korean PII redaction, a 48-case eval suite and a job queue that turns a solved chat into a drill.",
     ownership:
-      "I turned the founder's PRD into a buildable design in one day and built the coach in three: the structured-output layer, the output checker, English and Korean PII redaction, the eval suite, the drill job queue, audio and pronunciation practice, and the interface.",
+      "I turned the founder's PRD into a buildable design and built the coach: the structured-output layer, the output checker, English and Korean PII redaction, the eval suite, the drill job queue, audio and pronunciation practice, and the interface.",
     contextLine: 'Founding AI Engineer · Eklan · 2026',
     roleLine:
       'Turned the PRD into a design and built the coach, checker, redaction and job queue.',
@@ -197,6 +197,7 @@ const projectsData = [
       'Jupyter / Colab',
     ],
     sourceIds: [
+      'official-cascon-program',
       'official-yorkspace',
       'official-thesis-handle',
       'github-thesis-experiments',
@@ -229,6 +230,7 @@ const projectsData = [
       'Hugging Face Transformers',
     ],
     sourceIds: [
+      'official-cascon-program',
       'official-yorkspace',
       'official-thesis-handle',
       'resume-aiml',
@@ -430,7 +432,7 @@ const projectsData = [
     hook: 'Hungry, nearby, and picky: a restaurant finder built only for food.',
     category: 'Android · Discovery',
     group: 'android',
-    status: 'client-delivered',
+    status: 'play-previously',
     summary:
       'I built Search for Eats, a restaurant-finder Android app with map and list discovery, category filters, and offline recent results.',
     ownership:
@@ -479,9 +481,9 @@ const projectsData = [
     hook: '“What’s for dinner this week?” Recipes from around the world, planned, reminded, and available offline.',
     category: 'Android · ITI training',
     group: 'android',
-    status: 'play-iti',
+    status: 'iti-cohort',
     summary:
-      'I built Healthy Habit / Food Planner, a recipe and meal-planning Android app with weekly plans, reminders, and offline access, published to Google Play as part of my ITI training.',
+      'I built Healthy Habit / Food Planner, a recipe and meal-planning Android app with weekly plans, reminders, and offline access, as an ITI Android track project.',
     ownership:
       'I built the Android application end to end during the ITI Android track.',
     contextLine: 'ITI Android track project · 2023',
@@ -659,7 +661,7 @@ const projectsData = [
       'Astro',
       'TypeScript',
       'Cloudflare Workers',
-      'Workers AI',
+      'Gemini API',
       'Zod',
       'Playwright',
     ],
